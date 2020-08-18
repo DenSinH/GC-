@@ -9,6 +9,7 @@
 #define IPL_CODE_START 0x720  // offset corrected for missing IPL_HEADER
 
 u8* decrypt_IPL(const char file_name[]);
+void decrypt_IPL_to(const char file_name[], u8* target);
 void dump_IPL(u8* IPL, const char file_name[]);
 void free_IPL(u8* IPL);
 

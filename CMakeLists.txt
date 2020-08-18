@@ -8,11 +8,12 @@ set(CMAKE_MODULE_PATH ${PROJECT_SOURCE_DIR}/cmake)
 add_executable(GC_ main.c)
 
 add_subdirectory(src/IPL)
+add_subdirectory(src/Core)
 
 # for logging / stuff I want to use in all files
 include_directories(./include)
 
-target_link_libraries(GC_ IPL)
+target_link_libraries(GC_ Core)
 
 # add to turn on aggressive optimizations you can also add -O1 -O2 or -O3 to ADD_COMPILE_OPTIONS
 # or -Ofast (super fast) or -Oz (small code and optimized)

@@ -1,10 +1,10 @@
 #include <stdio.h>
 
-#include "src/IPL/loader.h"
+#include "src/Core/system.h"
 
 int main() {
-    u8* IPL = decrypt_IPL("./files/ipl.bin");
-    dump_IPL(IPL, "./files/ipl.dump");
-    free_IPL(IPL);
+    s_GameCube* GameCube = init_system();
+    run_system(GameCube);
+
     return 0;
 }

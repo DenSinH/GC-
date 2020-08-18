@@ -8,7 +8,8 @@
 
 
 u8* load_IPL_file(const char *file_name) {
-    FILE* file = fopen(file_name, "rb");
+    FILE* file;
+    fopen_s(&file, file_name, "rb");
     if (!file) log_fatal("Failed IPL file read");
 
     fseek(file, 0, SEEK_END);
@@ -25,13 +26,18 @@ u8* load_IPL_file(const char *file_name) {
 
     fread(IPL, 1, IPL_ROM_END - IPL_HEADER_END, file);
     fclose(file);
-    log_info("Loaded %x bytes", file_size);
+    log_info("[IPL] Loaded %x bytes", file_size);
 
     return IPL;
 }
 
 u8* decrypt_IPL(const char file_name[]) {
     u8* IPL = load_IPL_file(file_name);
+
+    /*
+     * bootrom descrambler reversed by segher
+     * Copyright 2008 Segher Boessenkool <segher@kernel.crashing.org>
+     * */
 
     u8 acc = 0;
     u8 nacc = 0;
@@ -86,7 +92,8 @@ u8* decrypt_IPL(const char file_name[]) {
 
 
 void dump_IPL(u8* IPL, const char file_name[]) {
-    FILE* file = fopen(file_name, "wb");
+    FILE* file;
+    fopen_s(&file, file_name, "wb");
 
     unsigned int written_length = fwrite(IPL + IPL_CODE_START, 1, IPL_DATA_LENGTH - IPL_CODE_START, file);
     if (written_length != IPL_DATA_LENGTH - IPL_CODE_START) {
@@ -97,4 +104,10 @@ void dump_IPL(u8* IPL, const char file_name[]) {
 
 void free_IPL(u8* IPL) {
     free(IPL);
+}
+
+void decrypt_IPL_to(const char file_name[], u8* target) {
+    u8* IPL = decrypt_IPL(file_name);
+    memcpy_s(target, IPL_DATA_LENGTH - IPL_CODE_START, IPL + IPL_CODE_START, IPL_DATA_LENGTH - IPL_CODE_START);
+    free_IPL(IPL);
 }
