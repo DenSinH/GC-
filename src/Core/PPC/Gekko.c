@@ -1,7 +1,7 @@
 #include <stdio.h>
 
 #include "Gekko.h"
-#include "instructions.h"
+#include "PPC/instructions/instructions.h"
 #include "../IPL/loader.h"
 
 #include "log.h"

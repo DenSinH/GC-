@@ -8,7 +8,7 @@
 #include "registers/floating_point_status_condition_register.h"
 #include "registers/MSR.h"
 #include "registers/XER.h"
-#include "gekko_instruction.h"
+#include "PPC/instructions/gekko_instruction.h"
 
 #include "default.h"
 
