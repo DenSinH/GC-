@@ -5,44 +5,47 @@
 
 #include "default.h"
 
-#define GET_GRn(CR, n, GRn) GRn.raw = (CR.raw >> (n << 2))
-#define SET_GRn(CR, n, GRn) CR.raw = (CR.raw & ~(0xf << (n << 2))) | CRn.raw
+#define GET_GRn(CR, n, GRn) GRn.raw = (CR.raw >> ((7 - n) << 2))
+#define SET_GRn(CR, n, GRn) CR.raw = (CR.raw & ~(0xf << ((7 - n) << 2))) | CRn.raw
 
 typedef union s_GRn {
+    // integer:
     struct {
-        bool LT: 1;  // Negative - result is negative
-        bool GT: 1;  // Positive - result is strictly positive
-        bool EQ: 1;  // Zero - result is 0
-        bool SO: 1;  // Summary Overflow - copy of XER[SO] after instruction
-    };
+        unsigned SO: 1;  // Summary Overflow - copy of XER[SO] after instruction
+        unsigned EQ: 1;  // Zero - result is 0
+        unsigned GT: 1;  // Positive - result is strictly positive
+        unsigned LT: 1;  // Negative - result is negative
+    } INT;
 
+    // float
     struct {
-        bool FX: 1;   // Exception summary
-        bool FEX: 1;  // Enabled exception summary
-        bool VX: 1;   // Invalid operation summary
-        bool OX: 1;   // Overflow exception
-    };
+        unsigned OX: 1;   // Overflow exception
+        unsigned VX: 1;   // Invalid operation summary
+        unsigned FEX: 1;  // Enabled exception summary
+        unsigned FX: 1;   // Exception summary
+    } FLOAT;
 
-    u8 raw;
+    unsigned raw;
 } s_GRn;
 
 typedef union s_CR {
     struct {
-        bool LT: 1;  // Negative - result is negative
-        bool GT: 1;  // Positive - result is strictly positive
-        bool EQ: 1;  // Zero - result is 0
-        bool SO: 1;  // Summary Overflow - copy of XER[SO] after instruction
+        unsigned:28;
+        unsigned SO: 1;  // Summary Overflow - copy of XER[SO] after instruction
+        unsigned EQ: 1;  // Zero - result is 0
+        unsigned GT: 1;  // Positive - result is strictly positive
+        unsigned LT: 1;  // Negative - result is negative
     } GR0;
 
     struct {
-        u32:4;
-        bool FX: 1;   // Exception summary
-        bool FEX: 1;  // Enabled exception summary
-        bool VX: 1;   // Invalid operation summary
-        bool OX: 1;   // Overflow exception
+        unsigned:24;
+        unsigned OX: 1;   // Overflow exception
+        unsigned VX: 1;   // Invalid operation summary
+        unsigned FEX: 1;  // Enabled exception summary
+        unsigned FX: 1;   // Exception summary
     } GR1;
 
-    u32 raw;
+    unsigned raw;
 } s_CR;
 
 #endif //GC__CONDITION_REGISTER_H

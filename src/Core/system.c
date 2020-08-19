@@ -1,5 +1,6 @@
 #include <stdio.h>
 #include <stdlib.h>
+#include <memory.h>
 #include <stdbool.h>
 
 #include "system.h"
@@ -7,6 +8,7 @@
 
 s_GameCube* init_system() {
     s_GameCube* GameCube = malloc(sizeof(s_GameCube));
+    memset(GameCube, 0x00, sizeof(struct s_GameCube));
     init_Gekko(&GameCube->cpu);
 
     return GameCube;

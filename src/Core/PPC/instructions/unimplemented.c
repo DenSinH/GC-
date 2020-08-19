@@ -1,6 +1,6 @@
-#include "instructions.h"
+#include "PPC/instructions.h"
 
 GEKKO_INSTR(unimplemented) {
-    log_fatal("Unimplemented instruction: %02x", instruction.raw);
+    log_fatal("Unimplemented instruction: %08x @%08x", instruction.raw, cpu->PC - 4);
 }
 

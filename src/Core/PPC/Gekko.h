@@ -8,13 +8,14 @@
 #include "registers/floating_point_status_condition_register.h"
 #include "registers/MSR.h"
 #include "registers/XER.h"
-#include "PPC/instructions/gekko_instruction.h"
+#include "gekko_instruction.h"
 
 #include "default.h"
+#include "log.h"
 
 
-#define LOG_LINE_LENGTH 511
-
+#define LOG_LINE_LENGTH 1024
+#define SP GPR[1]
 
 typedef struct s_Gekko {
     u8 memory[0x1800000];
@@ -39,7 +40,7 @@ typedef struct s_Gekko {
     u32 PC;         // Program counter
     u32 LR;         // Link register
 
-    void (*instructions[INSTR_TABLE_SIZE])(struct s_Gekko* cpu, s_gekko_instruction instruction);
+    void (*instructions[MAIN_INSTR_TABLE_SIZE])(struct s_Gekko* cpu, s_gekko_instruction instruction);
 
     /* Debugging stuff */
     char log_line[LOG_LINE_LENGTH];
