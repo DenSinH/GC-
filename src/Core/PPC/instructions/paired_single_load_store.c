@@ -23,23 +23,23 @@ GEKKO_INSTR(psq_l) {
     switch (GQR.LD_TYPE) {
         case GQR_TYPE_single_precision:
             PS0 = read32(&cpu->DMMU, EA);
-            if (instruction.paired_single_load.W) PS1 = read32(&cpu->DMMU, EA + 4);
+            if (!instruction.paired_single_load.W) PS1 = read32(&cpu->DMMU, EA + 4);
             break;
         case GQR_TYPE_unsigned_8bit_int:
             PS0 = (float)read8(&cpu->DMMU, EA) * scale;
-            if (instruction.paired_single_load.W) PS1 = (float)read8(&cpu->DMMU, EA + 1) * scale;
+            if (!instruction.paired_single_load.W) PS1 = (float)read8(&cpu->DMMU, EA + 1) * scale;
             break;
         case GQR_TYPE_unsigned_16_bit_int:
             PS0 = (float)read16(&cpu->DMMU, EA) * scale;
-            if (instruction.paired_single_load.W) PS1 = (float)read16(&cpu->DMMU, EA + 2) * scale;
+            if (!instruction.paired_single_load.W) PS1 = (float)read16(&cpu->DMMU, EA + 2) * scale;
             break;
         case GQR_TYPE_signed_8bit_int:
             PS0 = (float)((i8)read8(&cpu->DMMU, EA)) * scale;
-            if (instruction.paired_single_load.W) PS1 = (float)((i8)read8(&cpu->DMMU, EA + 1)) * scale;
+            if (!instruction.paired_single_load.W) PS1 = (float)((i8)read8(&cpu->DMMU, EA + 1)) * scale;
             break;
         case GQR_TYPE_signed_16bit_int:
             PS0 = (float)((i16)read16(&cpu->DMMU, EA)) * scale;
-            if (instruction.paired_single_load.W) PS1 = (float)((i16)read16(&cpu->DMMU, EA + 2)) * scale;
+            if (!instruction.paired_single_load.W) PS1 = (float)((i16)read16(&cpu->DMMU, EA + 2)) * scale;
             break;
         default:
             log_fatal("Invalid GQR_TYPE for single dequantization: %d", GQR.ST_TYPE);
