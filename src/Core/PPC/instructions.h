@@ -43,11 +43,20 @@ GEKKO_INSTR(stwu);
 #define LWZ_OPCODE 0x80000000
 GEKKO_INSTR(lwz);
 
+/* float load/store */
+#define LFD_OPCODE 0xc8000000
+GEKKO_INSTR(lfd);
+
 /* paired single load/store */
 #define PSQ_L_OPCODE 0xe0000000
 GEKKO_INSTR(psq_l);
 
 /* aggregate instructions */
+GEKKO_INSTR(instr_000100);
+
+#define PS_MR_OPCODE_EXTENDED_10bit 0x090
+INLINE_GEKKO_INSTR(ps_mr);
+
 GEKKO_INSTR(instr_010011);
 
 #define BCLR_X_OPCODE_EXTENDED 0x020
@@ -70,4 +79,8 @@ INLINE_GEKKO_INSTR(mtspr);
 #define SYNC_OPCODE_EXTENDED 0x4ac
 INLINE_GEKKO_INSTR(sync);
 
+GEKKO_INSTR(instr_111111);
+
+#define FMR_OPCODE_EXTENDED_10bit 0x090
+INLINE_GEKKO_INSTR(fmr);
 #endif //GC__INSTRUCTIONS_H

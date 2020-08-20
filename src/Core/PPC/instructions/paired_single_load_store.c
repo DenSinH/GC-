@@ -10,7 +10,7 @@ GEKKO_INSTR(psq_l) {
     ASSERT_FLOATING_POINT
     log_cpu("psq_l %08x", instruction.raw);
 
-    u32 EA = (cpu->GPR[instruction.paired_single_load.A] ? cpu->GPR[instruction.paired_single_load.A] : 0) +
+    u32 EA = (instruction.paired_single_load.A ? cpu->GPR[instruction.paired_single_load.A] : 0) +
              EXTS32(instruction.paired_single_load.d, 12);
 
     s_GQR GQR = cpu->GQR[instruction.paired_single_load.I];
@@ -44,4 +44,19 @@ GEKKO_INSTR(psq_l) {
     }
 
     LOAD_PAIRED_SINGLE(&cpu->FPR[instruction.paired_single_load.D], &PS0, &PS1);
+}
+
+INLINE_GEKKO_INSTR(ps_mr) {
+    ASSERT_BITFIELD_SIZE
+    ASSERT_FLOATING_POINT
+    log_cpu("ps_mr %x", instruction.raw);
+
+    cpu->FPR[instruction.general_DAB.D] = cpu->FPR[instruction.general_DAB.B];
+    if (instruction.general_DAB.Rc) {
+        // no floating point exception from moving, so I think this should all be 0
+        cpu->CR.CR1.FX = cpu->FPSCR.FX = 0;
+        cpu->CR.CR1.FEX = cpu->FPSCR.FEX = 0;
+        cpu->CR.CR1.VX = cpu->FPSCR.VX = 0;
+        cpu->CR.CR1.OX = cpu->FPSCR.OX = 0;
+    }
 }

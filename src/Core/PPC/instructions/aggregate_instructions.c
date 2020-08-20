@@ -35,3 +35,37 @@ GEKKO_INSTR(instr_011111) {
             log_fatal("Unimplemented instruction: %08x @%08x", instruction.raw, cpu->PC - 4);
     }
 }
+
+GEKKO_INSTR(instr_000100) {
+    // note: for this aggregate instruction, some have 5 bits to signify the instruction, others 10
+    // I want to handle the 10bit case in the default case for the statement
+    switch (instruction.raw & 0x03e) {
+        // bottom 6 - 1 bits
+        default:
+            switch (instruction.raw & 0x7fe) {
+                // bottom 11 bits
+                case PS_MR_OPCODE_EXTENDED_10bit:
+                    ps_mr(cpu, instruction);
+                    return;
+                default:
+                    log_fatal("Unimplemented instruction: %08x @%08x", instruction.raw, cpu->PC - 4);
+            }
+    }
+}
+
+GEKKO_INSTR(instr_111111) {
+    // note: for this aggregate instruction, some have 5 bits to signify the instruction, others 10
+    // I want to handle the 10bit case in the default case for the statement
+    switch (instruction.raw & 0x03e) {
+        // bottom 6 - 1 bits
+        default:
+            switch (instruction.raw & 0x7fe) {
+                // bottom 11 bits
+                case FMR_OPCODE_EXTENDED_10bit:
+                    fmr(cpu, instruction);
+                    return;
+                default:
+                log_fatal("Unimplemented instruction: %08x @%08x", instruction.raw, cpu->PC - 4);
+            }
+    }
+}

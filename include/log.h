@@ -25,6 +25,7 @@
     #define FOREGROUND_WHITE (FOREGROUND_RED | FOREGROUND_GREEN | FOREGROUND_BLUE)
 
     #define CONSOLE_BLUE() { SetConsoleTextAttribute(GetStdHandle(STD_OUTPUT_HANDLE), FOREGROUND_BLUE | FOREGROUND_INTENSITY); }
+    #define CONSOLE_GREEN() { SetConsoleTextAttribute(GetStdHandle(STD_OUTPUT_HANDLE), FOREGROUND_GREEN | FOREGROUND_INTENSITY); }
     #define CONSOLE_YELLOW() { SetConsoleTextAttribute(GetStdHandle(STD_OUTPUT_HANDLE), FOREGROUND_YELLOW); }
     #define CONSOLE_RED() { SetConsoleTextAttribute(GetStdHandle(STD_OUTPUT_HANDLE), FOREGROUND_RED); }
     #define CONSOLE_RESTORE() { SetConsoleTextAttribute(GetStdHandle(STD_OUTPUT_HANDLE), FOREGROUND_WHITE); }
@@ -32,7 +33,8 @@
 #else
 
     // linux / macOS
-    #define CONSOLE_YELLOW() { fprintf(stdout, "\033[0;36m"); }
+    #define CONSOLE_BLUE() { fprintf(stdout, "\033[0;36m"); }
+    #define CONSOLE_GREEN() { fprintf(stdout, "\033[0;32m"); }
     #define CONSOLE_YELLOW() { fprintf(stdout, "\033[0;33m"); }
     #define CONSOLE_RED() { fprintf(stderr, "\033[1;31m"); }
     #define CONSOLE_RESTORE() { fprintf(stdout, "\033[0m"); }
@@ -41,7 +43,7 @@
 
 #if COMPONENT_FLAGS & COMPONENT_CPU
     #define log_cpu(message, ...) {                        \
-        CONSOLE_BLUE();                                \
+        CONSOLE_GREEN();                                \
         fprintf(stdout, "[CPU]: " message "\n",  ##__VA_ARGS__); \
         CONSOLE_RESTORE();                             \
     }
@@ -51,7 +53,7 @@
 
 #if COMPONENT_FLAGS & COMPONENT_MMU
 #define log_mmu(message, ...) {                        \
-        CONSOLE_BLUE();                                \
+        CONSOLE_GREEN();                                \
         fprintf(stdout, "[MMU]: "message "\n",  ##__VA_ARGS__); \
         CONSOLE_RESTORE();                             \
     }

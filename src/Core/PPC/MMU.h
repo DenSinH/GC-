@@ -16,9 +16,11 @@ typedef struct s_MMU {
 u8 read8(s_MMU* mmu, u32 address);
 u16 read16(s_MMU* mmu, u32 address);
 u32 read32(s_MMU* mmu, u32 address);
+u64 read64(s_MMU* mmu, u32 address);
 
 void write8(s_MMU* mmu, u32 address, u8 value);
 void write16(s_MMU* mmu, u32 address, u16 value);
 void write32(s_MMU* mmu, u32 address, u32 value);
+void write64(s_MMU* mmu, u32 address, u64 value);
 
 #endif //GC__MMU_H

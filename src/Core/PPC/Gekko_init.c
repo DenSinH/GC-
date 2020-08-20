@@ -63,16 +63,26 @@ void build_instr_table(s_Gekko* cpu) {
             case MAIN_INSTR_HASH(LWZ_OPCODE):
                 cpu->instructions[i] = lwz;
                 break;
+            /* float single load/store */
+            case MAIN_INSTR_HASH(LFD_OPCODE):
+                cpu->instructions[i] = lfd;
+                break;
             /* paired single load/store */
             case MAIN_INSTR_HASH(PSQ_L_OPCODE):
                 cpu->instructions[i] = psq_l;
                 break;
             /* aggregate instructions */
+            case 0b000100:
+                cpu->instructions[i] = instr_000100;
+                break;
             case 0b010011:
                 cpu->instructions[i] = instr_010011;
                 break;
             case 0b011111:
                 cpu->instructions[i] = instr_011111;
+                break;
+            case 0b111111:
+                cpu->instructions[i] = instr_111111;
                 break;
             default:
                 cpu->instructions[i] = unimplemented;

@@ -6,8 +6,8 @@ GEKKO_INSTR(stw) {
 
     log_cpu("stw %x", instruction.raw);
 
-    u32 EA = (instruction.int_store.A ? cpu->GPR[instruction.int_store.A] : 0) + (i32)((i16)(instruction.int_store.d));
-    write32(&cpu->DMMU, EA, cpu->GPR[instruction.int_store.S]);
+    u32 EA = (instruction.general_SAd.A ? cpu->GPR[instruction.general_SAd.A] : 0) + (i32)((i16)(instruction.general_SAd.d));
+    write32(&cpu->DMMU, EA, cpu->GPR[instruction.general_SAd.S]);
 }
 
 GEKKO_INSTR(stwu) {
@@ -15,9 +15,9 @@ GEKKO_INSTR(stwu) {
 
     log_cpu("stwu %x", instruction.raw);
 
-    u32 EA = cpu->GPR[instruction.int_store.A] + (i32)((i16)(instruction.int_store.d));
-    write32(&cpu->DMMU, EA, cpu->GPR[instruction.int_store.S]);
-    cpu->GPR[instruction.int_store.A] = EA;
+    u32 EA = cpu->GPR[instruction.general_SAd.A] + (i32)((i16)(instruction.general_SAd.d));
+    write32(&cpu->DMMU, EA, cpu->GPR[instruction.general_SAd.S]);
+    cpu->GPR[instruction.general_SAd.A] = EA;
 }
 
 GEKKO_INSTR(lwz) {
@@ -25,6 +25,6 @@ GEKKO_INSTR(lwz) {
 
     log_cpu("lwz %x", instruction.raw);
 
-    u32 EA = (instruction.int_load.A ? cpu->GPR[instruction.int_load.A] : 0) + (i32)((i16)(instruction.int_load.d));
-    cpu->GPR[instruction.int_load.D] = read32(&cpu->DMMU, EA);
+    u32 EA = (instruction.general_DAd.A ? cpu->GPR[instruction.general_DAd.A] : 0) + (i32)((i16)(instruction.general_DAd.d));
+    cpu->GPR[instruction.general_DAd.D] = read32(&cpu->DMMU, EA);
 }

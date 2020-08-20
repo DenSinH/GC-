@@ -5,10 +5,10 @@
 
 #include "default.h"
 
-#define GET_GRn(CR, n, GRn) GRn.raw = (CR.raw >> ((7 - n) << 2))
-#define SET_GRn(CR, n, GRn) CR.raw = (CR.raw & ~(0xf << ((7 - n) << 2))) | CRn.raw
+#define GET_CRn(CR, n, CRn) CRn.raw = (CR.raw >> ((7 - n) << 2))
+#define SET_CRn(CR, n, CRn) CR.raw = (CR.raw & ~(0xf << ((7 - n) << 2))) | CRn.raw
 
-typedef union s_GRn {
+typedef union s_CRn {
     // integer:
     struct {
         unsigned SO: 1;  // Summary Overflow - copy of XER[SO] after instruction
@@ -35,7 +35,7 @@ typedef union s_CR {
         unsigned EQ: 1;  // Zero - result is 0
         unsigned GT: 1;  // Positive - result is strictly positive
         unsigned LT: 1;  // Negative - result is negative
-    } GR0;
+    } CR0;
 
     struct {
         unsigned:24;
@@ -43,7 +43,7 @@ typedef union s_CR {
         unsigned VX: 1;   // Invalid operation summary
         unsigned FEX: 1;  // Enabled exception summary
         unsigned FX: 1;   // Exception summary
-    } GR1;
+    } CR1;
 
     unsigned raw;
 } s_CR;

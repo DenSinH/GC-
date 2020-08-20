@@ -39,6 +39,20 @@ typedef union gekko_instruction {
     } general_SAB;
 
     struct {
+        unsigned d: 16;
+        unsigned A: 5;
+        unsigned S: 5;
+        unsigned opcode: 6;
+    } general_SAd;
+
+    struct {
+        unsigned d: 16;
+        unsigned A: 5;
+        unsigned D: 5;
+        unsigned opcode: 6;
+    } general_DAd;
+
+    struct {
         unsigned LK: 1;
         unsigned AA: 1;
         unsigned LI: 24;
@@ -77,20 +91,6 @@ typedef union gekko_instruction {
         unsigned S: 5;
         unsigned opcode: 6;
     } rotate;
-
-    struct {
-        unsigned d: 16;
-        unsigned A: 5;
-        unsigned S: 5;
-        unsigned opcode: 6;
-    } int_store;
-
-    struct {
-        unsigned d: 16;
-        unsigned A: 5;
-        unsigned D: 5;
-        unsigned opcode: 6;
-    } int_load;
 
     struct {
         unsigned d: 12;

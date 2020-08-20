@@ -10,10 +10,10 @@ GEKKO_INSTR(rlwinm) {
 
     if (instruction.rotate.Rc) {
         // alter condition codes
-        cpu->CR.GR0.LT = (cpu->GPR[instruction.rotate.A] & 0x80000000) != 0;
-        cpu->CR.GR0.GT = (i32)cpu->GPR[instruction.rotate.A] > 0;
-        cpu->CR.GR0.EQ = !cpu->GPR[instruction.rotate.A];
+        cpu->CR.CR0.LT = (cpu->GPR[instruction.rotate.A] & 0x80000000) != 0;
+        cpu->CR.CR0.GT = (i32)cpu->GPR[instruction.rotate.A] > 0;
+        cpu->CR.CR0.EQ = !cpu->GPR[instruction.rotate.A];
         // todo: can this cause overflow?
-        cpu->CR.GR0.SO = cpu->XER.SO = 0;
+        cpu->CR.CR0.SO = cpu->XER.SO = 0;
     }
 }

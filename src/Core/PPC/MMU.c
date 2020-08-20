@@ -1,3 +1,5 @@
+#include <inttypes.h>
+
 #include "MMU.h"
 
 #include "default.h"
@@ -43,6 +45,27 @@ u32 read32(s_MMU* mmu, u32 address) {
     }
 }
 
+u64 read64(s_MMU* mmu, u32 address) {
+    if (address < 0xc8000000) {
+        // remember: the GameCube is BIG ENDIAN!
+        address = MASK_24MB(address);
+        log_mmu("Read double word %016" PRIx64 " from %08x",
+                ((u64)mmu->RAM[address] << 56) | ((u64)mmu->RAM[address + 1] << 48) | ((u64)mmu->RAM[address + 2] << 40) | ((u64)mmu->RAM[address + 3] << 32) |
+                ((u64)mmu->RAM[address + 4] << 24) | ((u64)mmu->RAM[address + 5] << 16) | ((u64)mmu->RAM[address + 6] << 8) | (u64)mmu->RAM[address + 7], address);
+
+        return ((u64)mmu->RAM[address] << 56) |
+                ((u64)mmu->RAM[address + 1] << 48) |
+                ((u64)mmu->RAM[address + 2] << 40) |
+                ((u64)mmu->RAM[address + 3] << 32) |
+                ((u64)mmu->RAM[address + 4] << 24) |
+                ((u64)mmu->RAM[address + 5] << 16) |
+                ((u64)mmu->RAM[address + 6] << 8) |
+                 (u64)mmu->RAM[address + 7];
+    }
+    else {
+        log_fatal("Unimplemented memory address: %x", address);
+    }
+}
 
 void write8(s_MMU* mmu, u32 address, u8 value) {
     log_mmu("Write byte %02x to %08x", value, address);
@@ -77,6 +100,25 @@ void write32(s_MMU* mmu, u32 address, u32 value) {
         mmu->RAM[address + 1] = (value >> 16) & 0xff;
         mmu->RAM[address + 2] = (value >> 8) & 0xff;
         mmu->RAM[address + 3] = value & 0xff;
+    }
+    else {
+        log_fatal("Unimplemented memory address: %x", address);
+    }
+}
+
+void write64(s_MMU* mmu, u32 address, u64 value) {
+    log_mmu("Write word %016" PRIx64 " to %08x", value, address);
+    if (address < 0xc8000000) {
+        // remember: the GameCube is BIG ENDIAN!
+        address = MASK_24MB(address);
+        mmu->RAM[address] = value >> 56;
+        mmu->RAM[address + 1] = (value >> 48) & 0xff;
+        mmu->RAM[address + 2] = (value >> 40) & 0xff;
+        mmu->RAM[address + 3] = (value >> 32) & 0xff;
+        mmu->RAM[address + 4] = (value >> 24) & 0xff;
+        mmu->RAM[address + 5] = (value >> 16) & 0xff;
+        mmu->RAM[address + 6] = (value >> 8) & 0xff;
+        mmu->RAM[address + 7] = value & 0xff;
     }
     else {
         log_fatal("Unimplemented memory address: %x", address);
