@@ -2,6 +2,7 @@
 #define GC__GEKKO_H
 
 #include <stdbool.h>
+#include <memory.h>
 
 #include "MMU.h"
 #include "registers/condition_register.h"
@@ -117,6 +118,11 @@ typedef struct s_Gekko {
     /* Debugging stuff */
     char log_line[LOG_LINE_LENGTH];
 } s_Gekko;
+
+static inline void LOAD_PAIRED_SINGLE(void* FPR, void* PS0, void* PS1) {
+    memcpy(FPR, PS1, 4);
+    memcpy(FPR + 4, PS0, 4);
+}
 
 void init_Gekko(s_Gekko* cpu);
 void build_instr_table(s_Gekko* cpu);

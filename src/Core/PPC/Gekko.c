@@ -1,4 +1,5 @@
 #include <stdio.h>
+#include <inttypes.h>
 
 #include "Gekko.h"
 #include "../IPL/loader.h"
@@ -13,8 +14,8 @@ void load_IPL_to_Gekko(s_Gekko* cpu) {
     decrypt_IPL_to(IPL_FILE_NAME, cpu->memory + IPL_START_ADDRESS);
 }
 
-#define R32_FORMAT " %02d: %08x | "
-#define R64_FORMAT " %02d: %016x | "
+#define R32_FORMAT " %02d: %08"  PRIx32 " | "
+#define R64_FORMAT " %02d: %016" PRIx64 " | "
 void format_Gekko(s_Gekko* cpu) {
     int index = 0;
     char r32_format[sizeof(R32_FORMAT) + 1] = R32_FORMAT;

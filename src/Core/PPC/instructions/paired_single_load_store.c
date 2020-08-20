@@ -4,8 +4,6 @@
 #include "PPC/MMU.h"
 
 #define SINGLE_1 0x3f800000
-#define CAST_U32_SINGLE(val) (*(float*)&val)
-#define CAST_SINGLE_U32(val) (*(u32*)&val)
 
 GEKKO_INSTR(psq_l) {
     ASSERT_BITFIELD_SIZE
@@ -42,8 +40,8 @@ GEKKO_INSTR(psq_l) {
             if (!instruction.paired_single_load.W) PS1 = (float)((i16)read16(&cpu->DMMU, EA + 2)) * scale;
             break;
         default:
-            log_fatal("Invalid GQR_TYPE for single dequantization: %d", GQR.ST_TYPE);
+            log_fatal("Invalid GQR_TYPE for single dequantization: %d", GQR.LD_TYPE);
     }
 
-    cpu->FPR[instruction.paired_single_load.D] = (((u64)CAST_SINGLE_U32(PS0)) << 32) | CAST_SINGLE_U32(PS1);
+    LOAD_PAIRED_SINGLE(&cpu->FPR[instruction.paired_single_load.D], &PS0, &PS1);
 }
