@@ -19,6 +19,5 @@ void run_system(s_GameCube* GameCube) {
 
     while (true) {
         step_Gekko(&GameCube->cpu);
-        getchar();
     }
 }

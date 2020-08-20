@@ -10,8 +10,12 @@
 #define VERBOSITY_WARN 3
 #define VERBOSITY_ERROR 4
 
-// change to change verbosity:
+#define COMPONENT_CPU 0x01
+#define COMPONENT_MMU 0x02
+
+// change to change verbosity / component logging:
 #define VERBOSITY VERBOSITY_ALL
+#define COMPONENT_FLAGS COMPONENT_CPU | COMPONENT_MMU
 
 
 #ifdef _WIN32
@@ -35,14 +39,34 @@
 
 #endif
 
+#if COMPONENT_FLAGS & COMPONENT_CPU
+    #define log_cpu(message, ...) {                        \
+        CONSOLE_BLUE();                                \
+        fprintf(stdout, "[CPU]: " message "\n",  ##__VA_ARGS__); \
+        CONSOLE_RESTORE();                             \
+    }
+#else
+    #define log_cpu(message, ...) { }
+#endif
+
+#if COMPONENT_FLAGS & COMPONENT_MMU
+#define log_mmu(message, ...) {                        \
+        CONSOLE_BLUE();                                \
+        fprintf(stdout, "[MMU]: "message "\n",  ##__VA_ARGS__); \
+        CONSOLE_RESTORE();                             \
+    }
+#else
+#define log_mmu(message, ...) { }
+#endif
+
 #if VERBOSITY <= VERBOSITY_ALL
-    #define log(message, ...) {                        \
+#define log(message, ...) {                        \
         CONSOLE_BLUE();                                \
         fprintf(stdout, message "\n",  ##__VA_ARGS__); \
         CONSOLE_RESTORE();                             \
     }
 #else
-    #define log(message, ...) { }
+#define log(message, ...) { }
 #endif
 
 #if VERBOSITY <= VERBOSITY_DEBUG

@@ -1,5 +1,6 @@
 #include <stdio.h>
 
+#include "default.h"
 #include "src/Core/system.h"
 
 int main() {

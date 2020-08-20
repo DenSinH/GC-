@@ -1,10 +1,9 @@
 #include "PPC/instructions.h"
 
 GEKKO_INSTR(b_x) {
-    STATIC_ASSERT
-    log("b_x %08x", instruction.raw);
+    ASSERT_BITFIELD_SIZE
+    log_cpu("b_x %08x", instruction.raw);
     i32 LI = ((i32)(instruction.branch.LI << 6) >> 4);  // sign extend and ||0b00
-    log("%x, %x: %x", LI, instruction.branch.LI, instruction.raw);
     if (instruction.branch.LK) {
         cpu->LR = cpu->PC;
     }
@@ -17,10 +16,7 @@ GEKKO_INSTR(b_x) {
     }
 }
 
-INLINE_GEKKO_INSTR(bclr_x) {
-    STATIC_ASSERT
-    log("bclr_x %08x", instruction.raw);
-
+static inline bool conditional_branch_condition(s_Gekko* cpu, s_gekko_instruction instruction) {
     // bottom bit: branch likely
     if (!(instruction.branch_conditional.BO & 0b00100)) {
         // if !BO[2]: CTR <- CTR - 1
@@ -37,6 +33,7 @@ INLINE_GEKKO_INSTR(bclr_x) {
         case 0b00010:
         case 0b00011:
             do_branch = cpu->CTR == 0 && !condition;
+            break;
         case 0b00100 ... 0b00111:
             do_branch = !condition;
             break;
@@ -67,6 +64,32 @@ INLINE_GEKKO_INSTR(bclr_x) {
             do_branch = true;
             break;
     }
+    return do_branch;
+}
+
+GEKKO_INSTR(bc_x) {
+    ASSERT_BITFIELD_SIZE
+    log_cpu("bc_x %08x", instruction.raw);
+
+    bool do_branch = conditional_branch_condition(cpu, instruction);
+    if (do_branch) {
+        u32 CIA = cpu->PC - 4;  // Current Instruction Address
+        cpu->PC = (i32)((i16)instruction.branch_conditional.BO) << 2;
+        if (!instruction.branch_conditional.AA) {
+            cpu->PC += CIA;
+        }
+
+        if (instruction.branch_conditional.LK) {
+            cpu->LR = CIA;
+        }
+    }
+}
+
+INLINE_GEKKO_INSTR(bclr_x) {
+    ASSERT_BITFIELD_SIZE
+    log_cpu("bclr_x %08x", instruction.raw);
+
+    bool do_branch = conditional_branch_condition(cpu, instruction);
     if (do_branch) {
         u32 CIA = cpu->PC - 4;  // Current Instruction Address
         cpu->PC = cpu->LR & (~0x3);

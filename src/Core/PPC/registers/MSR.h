@@ -26,7 +26,7 @@ typedef union s_MSR {
         unsigned ILE: 1;  // Exception little endian mode
         unsigned: 1;      // RESERVED
         unsigned POW: 1;  // Power management enable
-        unsigned :13;       // RESERVED
+        unsigned :13;     // RESERVED
     };
     unsigned raw;
 } s_MSR;

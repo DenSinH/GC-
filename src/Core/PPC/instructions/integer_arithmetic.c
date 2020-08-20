@@ -1,8 +1,8 @@
 #include "PPC/instructions.h"
 
 GEKKO_INSTR(addi) {
-    STATIC_ASSERT
-    log("addi %08x", instruction.raw);
+    ASSERT_BITFIELD_SIZE
+    log_cpu("addi %08x", instruction.raw);
     if (!instruction.arithmetic_simm.A) {
         cpu->GPR[instruction.arithmetic_simm.D] = (u32)((i32)((i16)(instruction.arithmetic_simm.SIMM)));
     }
@@ -12,8 +12,8 @@ GEKKO_INSTR(addi) {
 }
 
 GEKKO_INSTR(addis) {
-    STATIC_ASSERT
-    log("addis %08x", instruction.raw);
+    ASSERT_BITFIELD_SIZE
+    log_cpu("addis %08x", instruction.raw);
     if (!instruction.arithmetic_simm.A) {
         cpu->GPR[instruction.arithmetic_simm.D] = (u32)(((i32)((i16)(instruction.arithmetic_simm.SIMM))) << 16);
     }

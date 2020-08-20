@@ -11,6 +11,7 @@
 
 u8 read8(s_MMU* mmu, u32 address) {
     if (address < 0xc8000000) {
+        log_mmu("Read byte %02x from %08x", mmu->RAM[MASK_24MB(address)], address);
         return mmu->RAM[MASK_24MB(address)];
     }
     else {
@@ -22,6 +23,7 @@ u16 read16(s_MMU* mmu, u32 address) {
     if (address < 0xc8000000) {
         // remember: the GameCube is BIG ENDIAN!
         address = MASK_24MB(address);
+        log_mmu("Read halfword %04x from %08x", (mmu->RAM[address] << 8) | mmu->RAM[address + 1], address);
         return (mmu->RAM[address] << 8) | mmu->RAM[address + 1];
     }
     else {
@@ -33,6 +35,7 @@ u32 read32(s_MMU* mmu, u32 address) {
     if (address < 0xc8000000) {
         // remember: the GameCube is BIG ENDIAN!
         address = MASK_24MB(address);
+        log_mmu("Read word %08x from %08x", (mmu->RAM[address] << 24) | (mmu->RAM[address + 1] << 16) | (mmu->RAM[address + 2] << 8) | mmu->RAM[address + 3], address);
         return (mmu->RAM[address] << 24) | (mmu->RAM[address + 1] << 16) | (mmu->RAM[address + 2] << 8) | mmu->RAM[address + 3];
     }
     else {
@@ -42,6 +45,7 @@ u32 read32(s_MMU* mmu, u32 address) {
 
 
 void write8(s_MMU* mmu, u32 address, u8 value) {
+    log_mmu("Write byte %02x to %08x", value, address);
     if (address < 0xc8000000) {
         // remember: the GameCube is BIG ENDIAN!
         mmu->RAM[MASK_24MB(address)] = value;
@@ -52,6 +56,7 @@ void write8(s_MMU* mmu, u32 address, u8 value) {
 }
 
 void write16(s_MMU* mmu, u32 address, u16 value) {
+    log_mmu("Write halfword %04x to %08x", value, address);
     if (address < 0xc8000000) {
         // remember: the GameCube is BIG ENDIAN!
         address = MASK_24MB(address);
@@ -64,6 +69,7 @@ void write16(s_MMU* mmu, u32 address, u16 value) {
 }
 
 void write32(s_MMU* mmu, u32 address, u32 value) {
+    log_mmu("Write word %08x to %08x", value, address);
     if (address < 0xc8000000) {
         // remember: the GameCube is BIG ENDIAN!
         address = MASK_24MB(address);
