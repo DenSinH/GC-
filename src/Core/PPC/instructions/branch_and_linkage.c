@@ -74,7 +74,7 @@ GEKKO_INSTR(bc_x) {
     bool do_branch = conditional_branch_condition(cpu, instruction);
     if (do_branch) {
         u32 CIA = cpu->PC - 4;  // Current Instruction Address
-        cpu->PC = (i32)((i16)instruction.branch_conditional.BO) << 2;
+        cpu->PC = (i32)((i16)instruction.branch_conditional.BD) << 2;
         if (!instruction.branch_conditional.AA) {
             cpu->PC += CIA;
         }
@@ -82,6 +82,7 @@ GEKKO_INSTR(bc_x) {
         if (instruction.branch_conditional.LK) {
             cpu->LR = CIA;
         }
+        log_cpu("branch taken -> %08x", cpu->PC);
     }
 }
 
@@ -91,6 +92,7 @@ INLINE_GEKKO_INSTR(bclr_x) {
 
     bool do_branch = conditional_branch_condition(cpu, instruction);
     if (do_branch) {
+        log_cpu("branch taken");
         u32 CIA = cpu->PC - 4;  // Current Instruction Address
         cpu->PC = cpu->LR & (~0x3);
         if (instruction.branch_conditional.LK) {

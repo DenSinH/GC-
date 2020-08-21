@@ -98,6 +98,7 @@ typedef struct s_Gekko {
     s_FPR FPR[32];    // Floating-point registers
     void* SPR[1024];  // pointers to SPRs (encoding in manual)
     u32 SPR_write_mask[1024]; // SPRs write masks
+    u32 garbage_SPR[1024];  // some SPRs we don't care about
 
     s_MMU IMMU;     // Instruction MMU
     s_MMU DMMU;     // Data MMU

@@ -83,6 +83,15 @@ typedef union gekko_instruction {
     } arithmetic_uimm;
 
     struct {
+        unsigned UIMM: 16;
+        unsigned A: 5;
+        unsigned L: 1;
+        unsigned: 1;
+        unsigned crfD: 3;
+        unsigned opcode: 6;
+    } cmp_uimm;
+
+    struct {
         unsigned Rc: 1;
         unsigned ME: 5;
         unsigned MB: 5;
@@ -119,6 +128,16 @@ typedef union gekko_instruction {
         unsigned S: 5;
         unsigned opcode:6;
     } SPR_S;
+
+    struct {
+        unsigned Rc: 1;
+        unsigned: 10;
+        unsigned B: 5;
+        unsigned:1;
+        unsigned FM: 8;
+        unsigned: 1;
+        unsigned opcode:6;
+    } mtfsf;
 
 } s_gekko_instruction;
 

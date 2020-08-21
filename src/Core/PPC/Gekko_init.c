@@ -25,6 +25,8 @@ void init_Gekko(s_Gekko* cpu, bool IPL) {
     cpu->SPR[SPR_HID2] = &cpu->HID2;
     cpu->SPR_write_mask[SPR_HID2] = HID2_WRITE_MASK;
 
+    cpu->SPR[SPR_L2CR] = &cpu->garbage_SPR[SPR_L2CR];
+
     build_instr_table(cpu);
 }
 
@@ -51,6 +53,10 @@ void build_instr_table(s_Gekko* cpu) {
                 break;
             case MAIN_INSTR_HASH(ORIS_OPCODE):
                 cpu->instructions[i] = oris;
+                break;
+            /* integer compare */
+            case MAIN_INSTR_HASH(CMPLI_OPCODE):
+                cpu->instructions[i] = cmpli;
                 break;
             /* integer rotate and shift */
             case MAIN_INSTR_HASH(RLWINM_OPCODE):
