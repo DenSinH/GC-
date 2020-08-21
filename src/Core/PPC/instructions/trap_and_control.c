@@ -22,10 +22,10 @@ INLINE_GEKKO_INSTR(mfspr) {
     // supervisor AND user instruction
     // todo: privileged instruction type program exception or an illegal instruction type program exception
 
-    log_cpu("mfspr %08x, SPR_D %d", instruction.raw, (instruction.SPR_D.SPR_hi << 5) | instruction.SPR_D.SPR_lo);
+    log_cpu("mfspr %08x, SPR_D %d, GPR%d", instruction.raw, (instruction.SPR_D.SPR_hi << 5) | instruction.SPR_D.SPR_lo, instruction.SPR_D.D);
 
     assert(cpu->SPR[(instruction.SPR_D.SPR_hi << 5) | instruction.SPR_D.SPR_lo] != NULL /* Attempted to access unimplemented SPR assignment */);
-    cpu->GPR[instruction.SPR_D.D] = *cpu->SPR[(instruction.SPR_D.SPR_hi << 5) | instruction.SPR_D.SPR_lo];
+    GET_SPR(cpu, (instruction.SPR_D.SPR_hi << 5) | instruction.SPR_D.SPR_lo, &cpu->GPR[instruction.SPR_D.D]);
 }
 
 INLINE_GEKKO_INSTR(mtspr) {
@@ -36,5 +36,5 @@ INLINE_GEKKO_INSTR(mtspr) {
     log_cpu("mtspr %08x, SPR_D %d", instruction.raw, (instruction.SPR_S.SPR_hi << 5) | instruction.SPR_S.SPR_lo);
 
     assert(cpu->SPR[(instruction.SPR_S.SPR_hi << 5) | instruction.SPR_S.SPR_lo] != NULL /* Attempted to access unimplemented SPR assignment */);
-    *cpu->SPR[(instruction.SPR_S.SPR_hi << 5) | instruction.SPR_S.SPR_lo] = cpu->GPR[instruction.SPR_S.S];
+    SET_SPR(cpu, (instruction.SPR_S.SPR_hi << 5) | instruction.SPR_S.SPR_lo, &cpu->GPR[instruction.SPR_S.S]);
 }

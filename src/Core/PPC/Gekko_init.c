@@ -1,26 +1,29 @@
 #include "Gekko.h"
 #include "instructions.h"
 
-void init_Gekko(s_Gekko* cpu) {
+void init_Gekko(s_Gekko* cpu, bool IPL) {
     cpu->IMMU.RAM = cpu->DMMU.RAM = cpu->memory;
 
-    cpu->PC = 0x81300000;
+    cpu->PC = IPL ? GEKKO_PC_INIT_IPL : GEKKO_PC_INIT_DOL;
+
+    memset(&cpu->SPR_write_mask, 0xff, sizeof(cpu->SPR_write_mask));
 
     // todo: full map
-    cpu->SPR[SPR_XER] = (u32*)&cpu->XER;
+    cpu->SPR[SPR_XER] = &cpu->XER;
     cpu->SPR[SPR_LR] = &cpu->LR;
     cpu->SPR[SPR_CTR] = &cpu->CTR;
-    cpu->SPR[SPR_GQR0] = (u32*)&cpu->GQR[0];
-    cpu->SPR[SPR_GQR1] = (u32*)&cpu->GQR[1];
-    cpu->SPR[SPR_GQR2] = (u32*)&cpu->GQR[2];
-    cpu->SPR[SPR_GQR3] = (u32*)&cpu->GQR[3];
-    cpu->SPR[SPR_GQR4] = (u32*)&cpu->GQR[4];
-    cpu->SPR[SPR_GQR5] = (u32*)&cpu->GQR[5];
-    cpu->SPR[SPR_GQR6] = (u32*)&cpu->GQR[6];
-    cpu->SPR[SPR_GQR7] = (u32*)&cpu->GQR[7];
+    cpu->SPR[SPR_GQR0] = &cpu->GQR[0];
+    cpu->SPR[SPR_GQR1] = &cpu->GQR[1];
+    cpu->SPR[SPR_GQR2] = &cpu->GQR[2];
+    cpu->SPR[SPR_GQR3] = &cpu->GQR[3];
+    cpu->SPR[SPR_GQR4] = &cpu->GQR[4];
+    cpu->SPR[SPR_GQR5] = &cpu->GQR[5];
+    cpu->SPR[SPR_GQR6] = &cpu->GQR[6];
+    cpu->SPR[SPR_GQR7] = &cpu->GQR[7];
     cpu->SPR[SPR_HID0] = &cpu->HID[0];
     cpu->SPR[SPR_HID1] = &cpu->HID[1];
-    cpu->SPR[SPR_HID2] = &cpu->HID[2];
+    cpu->SPR[SPR_HID2] = &cpu->HID2;
+    cpu->SPR_write_mask[SPR_HID2] = HID2_WRITE_MASK;
 
     build_instr_table(cpu);
 }

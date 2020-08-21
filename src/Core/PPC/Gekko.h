@@ -10,16 +10,19 @@
 #include "registers/MSR.h"
 #include "registers/XER.h"
 #include "registers/GQR.h"
+#include "registers/HID.h"
+#include "registers/FPR.h"
 #include "gekko_instruction.h"
 
 #include "default.h"
 #include "log.h"
 
+#define FULL_WRITE_MASK 0xffffffff
 
 #define LOG_LINE_LENGTH 0x800
 #define SP GPR[1]
 
-enum {
+typedef enum {
     SPR_XER = 1,
     SPR_WPAR = 2,
     SPR_LR = 8,
@@ -91,9 +94,10 @@ enum {
 typedef struct s_Gekko {
     u8 memory[0x1800000];
 
-    u32 GPR[32];    // General purpose registers
-    u64 FPR[32];    // Floating-point registers
-    u32* SPR[1024]; // pointers to SPRs (encoding in manual)
+    u32 GPR[32];      // General purpose registers
+    s_FPR FPR[32];    // Floating-point registers
+    void* SPR[1024];  // pointers to SPRs (encoding in manual)
+    u32 SPR_write_mask[1024]; // SPRs write masks
 
     s_MMU IMMU;     // Instruction MMU
     s_MMU DMMU;     // Data MMU
@@ -108,7 +112,8 @@ typedef struct s_Gekko {
     u32 SRR1;       // Save/restore register for machine status on interrupt  [SUPERVISOR]
 
     s_GQR GQR[8];
-    u32 HID[3];     // hardware dependent registers (todo: stubbed)
+    u32 HID[0];     // hardware dependent registers (todo: stubbed)
+    s_HID2 HID2;     // hardware dependent registers (todo: stubbed)
 
     u32 PC;         // Program counter
     u32 LR;         // Link register
@@ -119,14 +124,36 @@ typedef struct s_Gekko {
     char log_line[LOG_LINE_LENGTH];
 } s_Gekko;
 
-static inline void LOAD_PAIRED_SINGLE(void* FPR, void* PS0, void* PS1) {
-    memcpy(FPR, PS1, 4);
-    memcpy(FPR + 4, PS0, 4);
+static inline void LOAD_PAIRED_SINGLE(s_FPR* FPR, void* PS0, void* PS1) {
+    memcpy((void*)&(FPR->PS1), PS1, 4);
+    memcpy((void*)&(FPR->PS0), PS0, 4);
 }
 
-void init_Gekko(s_Gekko* cpu);
+static inline u64 GET_FPR(s_Gekko* cpu, unsigned int index) {
+    if (cpu->HID2.PSE && cpu->HID2.LSQE) {
+        return (cpu->FPR[index].PS0 << 32) | cpu->FPR[index].PS1;
+    }
+    return cpu->FPR[index].PS0;
+}
+
+#define SPR_SIZE_BYTES 4
+static inline void SET_SPR(s_Gekko* cpu, e_SPR SPR, u32* value) {
+    *value &= cpu->SPR_write_mask[SPR];
+    memcpy((void*)cpu->SPR[SPR], (void*)value, SPR_SIZE_BYTES);
+}
+
+static inline void GET_SPR(s_Gekko* cpu, e_SPR SPR, void* target) {
+    memcpy(target, (void*)cpu->SPR[SPR], SPR_SIZE_BYTES);
+}
+
+#define GEKKO_PC_INIT_IPL 0x81300000
+#define GEKKO_PC_INIT_DOL 0x80003000
+void init_Gekko(s_Gekko* cpu, bool IPL);
 void build_instr_table(s_Gekko* cpu);
 void load_IPL_to_Gekko(s_Gekko* cpu);
+
+#define DOL_FILE_OFFSET 0x3000  // DOL file loaded into 80003000
+void load_DOL_to_Gekko(const char file_name[], s_Gekko* cpu);
 void format_Gekko(s_Gekko* cpu);
 void step_Gekko(s_Gekko* cpu);
 

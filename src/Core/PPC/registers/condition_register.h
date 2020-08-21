@@ -7,6 +7,7 @@
 
 #define GET_CRn(CR, n, CRn) CRn.raw = (CR.raw >> ((7 - n) << 2))
 #define SET_CRn(CR, n, CRn) CR.raw = (CR.raw & ~(0xf << ((7 - n) << 2))) | CRn.raw
+#define UPDATE_CR_FROM_FPSCR(CR, FPSCR) CR.direct.CR1 = FPSCR.block.CR1
 
 typedef union s_CRn {
     // integer:
@@ -44,6 +45,17 @@ typedef union s_CR {
         unsigned FEX: 1;  // Enabled exception summary
         unsigned FX: 1;   // Exception summary
     } CR1;
+
+    struct {
+        unsigned CR7: 4;
+        unsigned CR6: 4;
+        unsigned CR5: 4;
+        unsigned CR4: 4;
+        unsigned CR3: 4;
+        unsigned CR2: 4;
+        unsigned CR1: 4;
+        unsigned CR0: 4;
+    } direct;
 
     unsigned raw;
 } s_CR;

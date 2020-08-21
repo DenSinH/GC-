@@ -111,3 +111,24 @@ void decrypt_IPL_to(const char file_name[], u8* target) {
     memcpy_s(target, IPL_DATA_LENGTH - IPL_CODE_START, IPL + IPL_CODE_START, IPL_DATA_LENGTH - IPL_CODE_START);
     free_IPL(IPL);
 }
+
+void load_DOL_to(const char file_name[], u8* target) {
+    FILE* file;
+    fopen_s(&file, file_name, "rb");
+    if (!file) log_fatal("Failed DOL file read");
+
+    fseek(file, 0, SEEK_END);
+    unsigned int file_size = ftell(file);
+    rewind(file);
+
+    fseek(file, 0, SEEK_END);
+
+    u8* DOL = malloc(file_size);
+
+    fread(DOL, 1, file_size, file);
+    fclose(file);
+    memcpy_s(target, file_size, DOL, file_size);
+    free(DOL);
+
+    log_info("[DOL] Loaded %x bytes", file_size);
+}

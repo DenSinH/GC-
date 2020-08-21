@@ -14,6 +14,10 @@ void load_IPL_to_Gekko(s_Gekko* cpu) {
     decrypt_IPL_to(IPL_FILE_NAME, cpu->memory + IPL_START_ADDRESS);
 }
 
+void load_DOL_to_Gekko(const char file_name[], s_Gekko* cpu) {
+    load_DOL_to(file_name, cpu->memory + DOL_FILE_OFFSET);
+}
+
 #define R32_FORMAT " %02d: %08"  PRIx32 " | "
 #define R64_FORMAT " %02d: %016" PRIx64 " | "
 void format_Gekko(s_Gekko* cpu) {
@@ -40,7 +44,7 @@ void format_Gekko(s_Gekko* cpu) {
             r64_format[0] = '\n';
         }
 
-        index += snprintf(&cpu->log_line[index], LOG_LINE_LENGTH - index, r64_format, i, cpu->FPR[i]);
+        index += snprintf(&cpu->log_line[index], LOG_LINE_LENGTH - index, r64_format, i, GET_FPR(cpu, i));
     }
 
     index += snprintf(&cpu->log_line[index], LOG_LINE_LENGTH - index, "\nLR: %08x | ", cpu->LR);

@@ -51,12 +51,11 @@ INLINE_GEKKO_INSTR(ps_mr) {
     ASSERT_FLOATING_POINT
     log_cpu("ps_mr %x", instruction.raw);
 
-    cpu->FPR[instruction.general_DAB.D] = cpu->FPR[instruction.general_DAB.B];
+    cpu->FPR[instruction.general_DAB.D].PS0 = cpu->FPR[instruction.general_DAB.B].PS0;
+    cpu->FPR[instruction.general_DAB.D].PS1 = cpu->FPR[instruction.general_DAB.B].PS1;
+
+    // todo: I don't think floating point exceptions can be caused from moving
     if (instruction.general_DAB.Rc) {
-        // no floating point exception from moving, so I think this should all be 0
-        cpu->CR.CR1.FX = cpu->FPSCR.FX = 0;
-        cpu->CR.CR1.FEX = cpu->FPSCR.FEX = 0;
-        cpu->CR.CR1.VX = cpu->FPSCR.VX = 0;
-        cpu->CR.CR1.OX = cpu->FPSCR.OX = 0;
+        UPDATE_CR_FROM_FPSCR(cpu->CR, cpu->FPSCR);
     }
 }

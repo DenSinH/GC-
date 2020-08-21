@@ -9,7 +9,7 @@
 s_GameCube* init_system() {
     s_GameCube* GameCube = malloc(sizeof(s_GameCube));
     memset(GameCube, 0x00, sizeof(struct s_GameCube));
-    init_Gekko(&GameCube->cpu);
+    init_Gekko(&GameCube->cpu, true);
 
     return GameCube;
 }
