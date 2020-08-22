@@ -1,7 +1,7 @@
 #include "PPC/instructions.h"
 
 INLINE_GEKKO_INSTR(crxor) {
-    ASSERT_BITFIELD_SIZE
+    GEKKO_INSTR_HEADER
     log_cpu("crxor %x", instruction.raw);
 
     u32 bitA = (cpu->CR.raw >> instruction.general_DAB.A) & 1;

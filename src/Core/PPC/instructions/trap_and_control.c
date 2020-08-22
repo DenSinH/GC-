@@ -1,7 +1,7 @@
 #include "PPC/instructions.h"
 
 INLINE_GEKKO_INSTR(mfmsr) {
-    ASSERT_BITFIELD_SIZE
+    GEKKO_INSTR_HEADER
     ASSERT_SUPERVISOR
 
     log_cpu("mfmsr %08x", instruction.raw);
@@ -9,7 +9,7 @@ INLINE_GEKKO_INSTR(mfmsr) {
 }
 
 INLINE_GEKKO_INSTR(mtmsr) {
-    ASSERT_BITFIELD_SIZE
+    GEKKO_INSTR_HEADER
     ASSERT_SUPERVISOR
 
     log_cpu("mtmsr %08x", instruction.raw);
@@ -18,7 +18,7 @@ INLINE_GEKKO_INSTR(mtmsr) {
 }
 
 INLINE_GEKKO_INSTR(mfspr) {
-    ASSERT_BITFIELD_SIZE
+    GEKKO_INSTR_HEADER
     // supervisor AND user instruction
     // todo: privileged instruction type program exception or an illegal instruction type program exception
 
@@ -29,7 +29,7 @@ INLINE_GEKKO_INSTR(mfspr) {
 }
 
 INLINE_GEKKO_INSTR(mtspr) {
-    ASSERT_BITFIELD_SIZE
+    GEKKO_INSTR_HEADER
     // supervisor AND user instruction
     // todo: privileged instruction type program exception or an illegal instruction type program exception
 

@@ -5,9 +5,9 @@ set(CMAKE_C_STANDARD 11)
 
 set(CMAKE_MODULE_PATH ${PROJECT_SOURCE_DIR}/cmake)
 
-add_executable(GC_ main.c)
+add_executable(GC_ main.c include/helpers.h)
 
-add_subdirectory(src/IPL)
+add_subdirectory(src/Loader)
 add_subdirectory(src/Core)
 
 # for logging / stuff I want to use in all files

@@ -2,20 +2,19 @@
 #include <inttypes.h>
 
 #include "Gekko.h"
-#include "../IPL/loader.h"
+#include "../Loader/loader.h"
 
 #include "log.h"
 
 
-#define IPL_START_ADDRESS 0x1300000
-#define IPL_FILE_NAME "./files/ipl.bin"
-
+#define IPL_FILE_NAME "files/ipl.bin"
 void load_IPL_to_Gekko(s_Gekko* cpu) {
     decrypt_IPL_to(IPL_FILE_NAME, cpu->memory + IPL_START_ADDRESS);
+    cpu->PC = GEKKO_PC_INIT_IPL;
 }
 
 void load_DOL_to_Gekko(const char file_name[], s_Gekko* cpu) {
-    load_DOL_to(file_name, cpu->memory + DOL_FILE_OFFSET);
+    cpu->PC = load_DOL_to(file_name, cpu->memory);
 }
 
 #define R32_FORMAT " %02d: %08"  PRIx32 " | "
@@ -53,6 +52,7 @@ void format_Gekko(s_Gekko* cpu) {
     index += snprintf(&cpu->log_line[index], LOG_LINE_LENGTH - index, "CR: %08x\n", cpu->CR.raw);
 
     index += snprintf(&cpu->log_line[index], LOG_LINE_LENGTH - index, "MSR: %08x ", cpu->MSR.raw);
+    index += snprintf(&cpu->log_line[index], LOG_LINE_LENGTH - index, "CTR: %08x ", cpu->CTR);
     index += snprintf(&cpu->log_line[index], LOG_LINE_LENGTH - index, "FPSCR: %08x ", cpu->FPSCR.raw);
 }
 

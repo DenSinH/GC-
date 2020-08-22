@@ -29,6 +29,9 @@ GEKKO_INSTR(instr_010011) {
         case ISYNC_OPCODE_EXTENDED:
             isync(cpu, instruction);
             return;
+        case RFI_OPCODE_EXTENDED:
+            rfi(cpu, instruction);
+            return;
         default:
             log_fatal("Unimplemented instruction: %08x @%08x", instruction.raw, cpu->PC - 4);
 
@@ -39,6 +42,15 @@ GEKKO_INSTR(instr_011111) {
     /* 0x7c000000 */
     switch (instruction.raw & 0x7fe) {
         // bottom 11 - 1 bits
+        case CMP_OPCODE_EXTENDED:
+            cmp(cpu, instruction);
+            return;
+        case SUBF_OPCODE_EXTENDED:
+            subf(cpu, instruction);
+            return;
+        case ORX_OPCODE_EXTENDED:
+            orx(cpu, instruction);
+            return;
         case MFMSR_OPCODE_EXTENDED:
             mfmsr(cpu, instruction);
             return;
@@ -50,6 +62,12 @@ GEKKO_INSTR(instr_011111) {
             return;
         case MTSPR_OPCODE_EXTENDED:
             mtspr(cpu, instruction);
+            return;
+        case MFSR_OPCODE_EXTENDED:
+            mfsr(cpu, instruction);
+            return;
+        case MTSR_OPCODE_EXTENDED:
+            mtsr(cpu, instruction);
             return;
         case SYNC_OPCODE_EXTENDED:
             sync(cpu, instruction);
@@ -72,6 +90,12 @@ GEKKO_INSTR(instr_111111) {
                     return;
                 case MTFSF_OPCODE_EXTENDED_10bit:
                     mtfsf(cpu, instruction);
+                    return;
+                case MTFSB0_OPCODE_EXTENDED_10bit:
+                    mtfsb0(cpu, instruction);
+                    return;
+                case MTFSB1_OPCODE_EXTENDED_10bit:
+                    mtfsb1(cpu, instruction);
                     return;
                 default:
                 log_fatal("Unimplemented instruction: %08x @%08x", instruction.raw, cpu->PC - 4);

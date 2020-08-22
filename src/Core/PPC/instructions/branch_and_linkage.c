@@ -1,7 +1,7 @@
 #include "PPC/instructions.h"
 
 GEKKO_INSTR(b_x) {
-    ASSERT_BITFIELD_SIZE
+    GEKKO_INSTR_HEADER
     log_cpu("b_x %08x", instruction.raw);
     i32 LI = ((i32)(instruction.branch.LI << 6) >> 4);  // sign extend and ||0b00
     if (instruction.branch.LK) {
@@ -68,13 +68,13 @@ static inline bool conditional_branch_condition(s_Gekko* cpu, s_gekko_instructio
 }
 
 GEKKO_INSTR(bc_x) {
-    ASSERT_BITFIELD_SIZE
+    GEKKO_INSTR_HEADER
     log_cpu("bc_x %08x", instruction.raw);
 
     bool do_branch = conditional_branch_condition(cpu, instruction);
     if (do_branch) {
         u32 CIA = cpu->PC - 4;  // Current Instruction Address
-        cpu->PC = (i32)((i16)instruction.branch_conditional.BD) << 2;
+        cpu->PC = (i32)((i16)(instruction.branch_conditional.BD << 2));
         if (!instruction.branch_conditional.AA) {
             cpu->PC += CIA;
         }
@@ -87,7 +87,7 @@ GEKKO_INSTR(bc_x) {
 }
 
 INLINE_GEKKO_INSTR(bclr_x) {
-    ASSERT_BITFIELD_SIZE
+    GEKKO_INSTR_HEADER
     log_cpu("bclr_x %08x", instruction.raw);
 
     bool do_branch = conditional_branch_condition(cpu, instruction);
@@ -99,4 +99,14 @@ INLINE_GEKKO_INSTR(bclr_x) {
             cpu->LR = CIA;
         }
     }
+}
+
+// bit 13 is forced to 0
+#define RFI_SRR1_MASK 0x87c0ff73
+#define RFI_MSR_MASK_INV 0x87c4ff73
+INLINE_GEKKO_INSTR(rfi) {
+    GEKKO_INSTR_HEADER
+    log_cpu("rfi %08x", instruction.raw);
+    cpu->MSR.raw = (cpu->MSR.raw & ~RFI_MSR_MASK_INV) | (cpu->SRR1 & RFI_SRR1_MASK);
+    cpu->PC = cpu->SRR0 & 0xfffffffc;
 }

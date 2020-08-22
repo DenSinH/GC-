@@ -4,6 +4,7 @@
 #include "PPC/Gekko.h"
 #include "gekko_instruction.h"
 #include "default.h"
+#include "helpers.h"
 #include "log.h"
 
 GEKKO_INSTR(unimplemented);
@@ -47,6 +48,12 @@ GEKKO_INSTR(stwu);
 #define LWZ_OPCODE 0x80000000
 GEKKO_INSTR(lwz);
 
+#define STMW_OPCODE 0xbc000000
+GEKKO_INSTR(stmw);
+
+#define LMW_OPCODE 0xb8000000
+GEKKO_INSTR(lmw);
+
 /* float load/store */
 #define LFD_OPCODE 0xc8000000
 GEKKO_INSTR(lfd);
@@ -72,7 +79,19 @@ INLINE_GEKKO_INSTR(isync);
 #define CRXOR_OPCODE_EXTENDED 0x182
 INLINE_GEKKO_INSTR(crxor);
 
+#define RFI_OPCODE_EXTENDED 0x064
+INLINE_GEKKO_INSTR(rfi);
+
 GEKKO_INSTR(instr_011111);
+
+#define SUBF_OPCODE_EXTENDED 0x050
+INLINE_GEKKO_INSTR(subf);
+
+#define CMP_OPCODE_EXTENDED 0x000
+INLINE_GEKKO_INSTR(cmp);
+
+#define ORX_OPCODE_EXTENDED 0x378
+INLINE_GEKKO_INSTR(orx);
 
 #define MFMSR_OPCODE_EXTENDED 0x0a6
 INLINE_GEKKO_INSTR(mfmsr);
@@ -86,6 +105,12 @@ INLINE_GEKKO_INSTR(mfspr);
 #define MTSPR_OPCODE_EXTENDED 0x3a6
 INLINE_GEKKO_INSTR(mtspr);
 
+#define MFSR_OPCODE_EXTENDED 0x4a6
+INLINE_GEKKO_INSTR(mfsr);
+
+#define MTSR_OPCODE_EXTENDED 0x1a4
+INLINE_GEKKO_INSTR(mtsr);
+
 #define SYNC_OPCODE_EXTENDED 0x4ac
 INLINE_GEKKO_INSTR(sync);
 
@@ -96,4 +121,10 @@ INLINE_GEKKO_INSTR(fmr);
 
 #define MTFSF_OPCODE_EXTENDED_10bit 0x58e
 INLINE_GEKKO_INSTR(mtfsf);
+
+#define MTFSB0_OPCODE_EXTENDED_10bit 0x08c
+INLINE_GEKKO_INSTR(mtfsb0);
+#define MTFSB1_OPCODE_EXTENDED_10bit 0x04c
+INLINE_GEKKO_INSTR(mtfsb1);
+
 #endif //GC__INSTRUCTIONS_H

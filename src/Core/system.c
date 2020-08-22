@@ -9,13 +9,15 @@
 s_GameCube* init_system() {
     s_GameCube* GameCube = malloc(sizeof(s_GameCube));
     memset(GameCube, 0x00, sizeof(struct s_GameCube));
-    init_Gekko(&GameCube->cpu, true);
+    init_Gekko(&GameCube->cpu);
 
     return GameCube;
 }
 
+#define test_DOL "D:\\CodeBlocks\\Projects\\GCHBTest\\GCHBTest.dol"
+
 void run_system(s_GameCube* GameCube) {
-    load_IPL_to_Gekko(&GameCube->cpu);
+    load_DOL_to_Gekko(test_DOL, &GameCube->cpu);
 
     while (true) {
         step_Gekko(&GameCube->cpu);

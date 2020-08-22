@@ -2,6 +2,7 @@
 #include <stdlib.h>
 
 #include "loader.h"
+#include "helpers.h"
 
 #include "default.h"
 #include "log.h"
@@ -10,14 +11,14 @@
 u8* load_IPL_file(const char *file_name) {
     FILE* file;
     fopen_s(&file, file_name, "rb");
-    if (!file) log_fatal("Failed IPL file read");
+    if (!file) log_fatal("Failed Loader file read");
 
     fseek(file, 0, SEEK_END);
-    int file_size = ftell(file);
+    size_t file_size = ftell(file);
     rewind(file);
 
     if (file_size < IPL_ROM_END) {
-        log_fatal("Invalid IPL file: too short");
+        log_fatal("Invalid Loader file: too short");
     }
 
     fseek(file, IPL_HEADER_END, SEEK_SET);
@@ -26,7 +27,7 @@ u8* load_IPL_file(const char *file_name) {
 
     fread(IPL, 1, IPL_ROM_END - IPL_HEADER_END, file);
     fclose(file);
-    log_info("[IPL] Loaded %x bytes", file_size);
+    log_info("[Loader] Loaded %x bytes", file_size);
 
     return IPL;
 }
@@ -112,23 +113,55 @@ void decrypt_IPL_to(const char file_name[], u8* target) {
     free_IPL(IPL);
 }
 
-void load_DOL_to(const char file_name[], u8* target) {
+
+u32 load_DOL_to(const char file_name[], u8* target) {
     FILE* file;
     fopen_s(&file, file_name, "rb");
     if (!file) log_fatal("Failed DOL file read");
 
     fseek(file, 0, SEEK_END);
-    unsigned int file_size = ftell(file);
+    size_t file_size = ftell(file);
     rewind(file);
-
-    fseek(file, 0, SEEK_END);
 
     u8* DOL = malloc(file_size);
 
     fread(DOL, 1, file_size, file);
     fclose(file);
-    memcpy_s(target, file_size, DOL, file_size);
-    free(DOL);
+    log_info("[DOL] read 0x%x bytes", file_size);
 
-    log_info("[DOL] Loaded %x bytes", file_size);
+    s_DOLData data = parse_DOL_header(DOL);
+
+    for (int i = 0; i < 7; i++) {
+        if (!data.TextSize[i]) continue;
+
+        if (data.TextAddress[i] < 0x80000000 || data.TextAddress[i] >= 0x81800000) {
+            log_fatal("[DOL] unimplemented text section offset: %08x (+ %08x)", data.TextAddress[i], data.TextSize[i]);
+        }
+        data.TextAddress[i] -= 0x80000000;
+        log_info("[DOL] copying text section from %08x to %08x of length %08x", data.TextOffset[i], data.TextAddress[i], data.TextSize[i])
+
+        memcpy(target + data.TextAddress[i], DOL + data.TextOffset[i], data.TextSize[i]);
+    }
+
+    for (int i = 0; i < 11; i++) {
+        if (!data.DataSize[i]) continue;
+
+        if (data.DataAddress[i] < 0x80000000 || data.DataAddress[i] + data.DataSize[i] >= 0x81800000) {
+            log_fatal("[DOL] unimplemented data section offset: %08x (+ %08x)", data.DataAddress[i], data.DataSize[i]);
+        }
+        data.DataAddress[i] -= 0x80000000;
+        log_info("[DOL] copying data section from %08x to %08x of length %08x", data.DataOffset[i], data.DataAddress[i], data.DataSize[i])
+
+        memcpy(target + data.DataAddress[i], DOL + data.DataOffset[i], data.DataSize[i]);
+    }
+
+    if (data.BSSAddress < 0x80000000 || data.BSSAddress + data.BSSSize >= 0x81800000) {
+        log_fatal("[DOL] unimplemented BSS section offset: %08x (+ %08x)", data.BSSAddress, data.BSSSize);
+    }
+    data.BSSAddress -= 0x80000000;
+    log_info("[DOL] zeroing at %08x with length %08x", data.BSSAddress, data.BSSSize);
+    memset(target + data.BSSAddress, 0, data.BSSSize);
+
+    log_info("[DOL] entry point %08x", data.EntryPoint);
+    return data.EntryPoint;
 }

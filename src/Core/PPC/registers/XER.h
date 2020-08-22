@@ -4,6 +4,7 @@
 #include "default.h"
 
 #define XER_MASK 0xff00000f
+#define UPDATE_XER_OV(xer, ov) xer.SO |= (xer.SO = ov)
 
 typedef union s_XER {
     struct {

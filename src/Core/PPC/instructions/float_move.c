@@ -1,7 +1,7 @@
 #include "PPC/instructions.h"
 
 INLINE_GEKKO_INSTR(fmr) {
-    ASSERT_BITFIELD_SIZE
+    GEKKO_INSTR_HEADER
     log_cpu("fmr %08x", instruction.raw);
 
     // todo: when is FPR a paired single? Dolphin always just moves PS0...

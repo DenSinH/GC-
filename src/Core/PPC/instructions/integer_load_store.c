@@ -2,18 +2,18 @@
 #include "../MMU.h"
 
 GEKKO_INSTR(stw) {
-    ASSERT_BITFIELD_SIZE
+    GEKKO_INSTR_HEADER
 
-    log_cpu("stw %x", instruction.raw);
+    log_cpu("stw %08x", instruction.raw);
 
     u32 EA = (instruction.general_SAd.A ? cpu->GPR[instruction.general_SAd.A] : 0) + (i32)((i16)(instruction.general_SAd.d));
     write32(&cpu->DMMU, EA, cpu->GPR[instruction.general_SAd.S]);
 }
 
 GEKKO_INSTR(stwu) {
-    ASSERT_BITFIELD_SIZE
+    GEKKO_INSTR_HEADER
 
-    log_cpu("stwu %x", instruction.raw);
+    log_cpu("stwu %08x", instruction.raw);
 
     u32 EA = cpu->GPR[instruction.general_SAd.A] + (i32)((i16)(instruction.general_SAd.d));
     write32(&cpu->DMMU, EA, cpu->GPR[instruction.general_SAd.S]);
@@ -21,10 +21,38 @@ GEKKO_INSTR(stwu) {
 }
 
 GEKKO_INSTR(lwz) {
-    ASSERT_BITFIELD_SIZE
+    GEKKO_INSTR_HEADER
 
-    log_cpu("lwz %x", instruction.raw);
+    log_cpu("lwz %08x", instruction.raw);
 
     u32 EA = (instruction.general_DAd.A ? cpu->GPR[instruction.general_DAd.A] : 0) + (i32)((i16)(instruction.general_DAd.d));
     cpu->GPR[instruction.general_DAd.D] = read32(&cpu->DMMU, EA);
+}
+
+GEKKO_INSTR(stmw) {
+    GEKKO_INSTR_HEADER
+
+    log_cpu("stmw %08x", instruction.raw);
+
+    u32 EA = (instruction.general_SAd.A ? cpu->GPR[instruction.general_SAd.A] : 0) + (i32)((i16)instruction.general_SAd.d);
+
+    for (u8 r = instruction.general_SAd.S; r < 32; r++, EA += 4) {
+        write32(&cpu->DMMU, EA, cpu->GPR[r]);
+    }
+
+    // todo: misaligned write exception
+}
+
+GEKKO_INSTR(lmw) {
+    GEKKO_INSTR_HEADER
+
+    log_cpu("lmw %08x", instruction.raw);
+
+    u32 EA = (instruction.general_SAd.A ? cpu->GPR[instruction.general_SAd.A] : 0) + (i32)((i16)instruction.general_SAd.d);
+
+    for (u8 r = instruction.general_SAd.S; r < 32; r++, EA += 4) {
+        cpu->GPR[r] = read32(&cpu->DMMU, EA);
+    }
+
+    // todo: misaligned write exception
 }

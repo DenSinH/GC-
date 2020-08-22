@@ -6,7 +6,7 @@
 #define SINGLE_1 0x3f800000
 
 GEKKO_INSTR(psq_l) {
-    ASSERT_BITFIELD_SIZE
+    GEKKO_INSTR_HEADER
     ASSERT_FLOATING_POINT
     log_cpu("psq_l %08x", instruction.raw);
 
@@ -47,7 +47,7 @@ GEKKO_INSTR(psq_l) {
 }
 
 INLINE_GEKKO_INSTR(ps_mr) {
-    ASSERT_BITFIELD_SIZE
+    GEKKO_INSTR_HEADER
     ASSERT_FLOATING_POINT
     log_cpu("ps_mr %x", instruction.raw);
 

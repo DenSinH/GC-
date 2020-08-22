@@ -1,11 +1,11 @@
 #include "PPC/instructions.h"
 
 GEKKO_INSTR(rlwinm) {
-    ASSERT_BITFIELD_SIZE
+    GEKKO_INSTR_HEADER
     log_cpu("rlwinm %08x", instruction.raw);
 
     cpu->GPR[instruction.rotate.A] =
-            (ROTL32(cpu->GPR[instruction.rotate.S], instruction.rotate.S)) &
+            (ROTL32(cpu->GPR[instruction.rotate.S], instruction.rotate.SH)) &
             (MASK(instruction.rotate.MB, instruction.rotate.ME));
 
     if (instruction.rotate.Rc) {

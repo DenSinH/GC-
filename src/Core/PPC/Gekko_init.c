@@ -1,10 +1,9 @@
 #include "Gekko.h"
 #include "instructions.h"
 
-void init_Gekko(s_Gekko* cpu, bool IPL) {
+void init_Gekko(s_Gekko* cpu) {
     cpu->IMMU.RAM = cpu->DMMU.RAM = cpu->memory;
-
-    cpu->PC = IPL ? GEKKO_PC_INIT_IPL : GEKKO_PC_INIT_DOL;
+    cpu->IMMU.SR = cpu->DMMU.SR = cpu->SR;
 
     memset(&cpu->SPR_write_mask, 0xff, sizeof(cpu->SPR_write_mask));
 
@@ -12,6 +11,8 @@ void init_Gekko(s_Gekko* cpu, bool IPL) {
     cpu->SPR[SPR_XER] = &cpu->XER;
     cpu->SPR[SPR_LR] = &cpu->LR;
     cpu->SPR[SPR_CTR] = &cpu->CTR;
+    cpu->SPR[SPR_SRR0] = &cpu->SRR0;
+    cpu->SPR[SPR_SRR1] = &cpu->SRR1;
     cpu->SPR[SPR_GQR0] = &cpu->GQR[0];
     cpu->SPR[SPR_GQR1] = &cpu->GQR[1];
     cpu->SPR[SPR_GQR2] = &cpu->GQR[2];
@@ -25,7 +26,33 @@ void init_Gekko(s_Gekko* cpu, bool IPL) {
     cpu->SPR[SPR_HID2] = &cpu->HID2;
     cpu->SPR_write_mask[SPR_HID2] = HID2_WRITE_MASK;
 
-    cpu->SPR[SPR_L2CR] = &cpu->garbage_SPR[SPR_L2CR];
+    cpu->SPR[SPR_IBAT0L] = &cpu->IMMU.BAT[BAT0L];
+    cpu->SPR[SPR_IBAT0U] = &cpu->IMMU.BAT[BAT0U];
+    cpu->SPR[SPR_IBAT1L] = &cpu->IMMU.BAT[BAT1L];
+    cpu->SPR[SPR_IBAT1U] = &cpu->IMMU.BAT[BAT1U];
+    cpu->SPR[SPR_IBAT2L] = &cpu->IMMU.BAT[BAT2L];
+    cpu->SPR[SPR_IBAT2U] = &cpu->IMMU.BAT[BAT2U];
+    cpu->SPR[SPR_IBAT3L] = &cpu->IMMU.BAT[BAT3L];
+    cpu->SPR[SPR_IBAT3U] = &cpu->IMMU.BAT[BAT3U];
+
+    cpu->SPR[SPR_DBAT0L] = &cpu->DMMU.BAT[BAT0L];
+    cpu->SPR[SPR_DBAT0U] = &cpu->DMMU.BAT[BAT0U];
+    cpu->SPR[SPR_DBAT1L] = &cpu->DMMU.BAT[BAT1L];
+    cpu->SPR[SPR_DBAT1U] = &cpu->DMMU.BAT[BAT1U];
+    cpu->SPR[SPR_DBAT2L] = &cpu->DMMU.BAT[BAT2L];
+    cpu->SPR[SPR_DBAT2U] = &cpu->DMMU.BAT[BAT2U];
+    cpu->SPR[SPR_DBAT3L] = &cpu->DMMU.BAT[BAT3L];
+    cpu->SPR[SPR_DBAT3U] = &cpu->DMMU.BAT[BAT3U];
+
+    cpu->SPR[SPR_L2CR] = &cpu->default_SPR[SPR_L2CR];
+
+    // todo: implement this
+    cpu->SPR[SPR_MMCR0] = &cpu->default_SPR[SPR_MMCR0];
+    cpu->SPR[SPR_MMCR1] = &cpu->default_SPR[SPR_MMCR1];
+    cpu->SPR[SPR_PMC1] = &cpu->default_SPR[SPR_PMC1];
+    cpu->SPR[SPR_PMC2] = &cpu->default_SPR[SPR_PMC2];
+    cpu->SPR[SPR_PMC3] = &cpu->default_SPR[SPR_PMC3];
+    cpu->SPR[SPR_PMC4] = &cpu->default_SPR[SPR_PMC4];
 
     build_instr_table(cpu);
 }
@@ -71,6 +98,12 @@ void build_instr_table(s_Gekko* cpu) {
                 break;
             case MAIN_INSTR_HASH(LWZ_OPCODE):
                 cpu->instructions[i] = lwz;
+                break;
+            case MAIN_INSTR_HASH(STMW_OPCODE):
+                cpu->instructions[i] = stmw;
+                break;
+            case MAIN_INSTR_HASH(LMW_OPCODE):
+                cpu->instructions[i] = lmw;
                 break;
             /* float single load/store */
             case MAIN_INSTR_HASH(LFD_OPCODE):

@@ -36,12 +36,32 @@ const u32 mtfsf_bit_mask[0x100] = {
 };
 
 INLINE_GEKKO_INSTR(mtfsf) {
-    ASSERT_BITFIELD_SIZE
+    GEKKO_INSTR_HEADER
     log_cpu("mtfsf %x", instruction.raw);
 
     cpu->FPSCR.raw = GET_FPR(cpu, instruction.mtfsf.B) & mtfsf_bit_mask[instruction.mtfsf.FM];
     // todo: GET_FPR? also, floating point exceptions?
     if (instruction.mtfsf.Rc) {
+        UPDATE_CR_FROM_FPSCR(cpu->CR, cpu->FPSCR);
+    }
+}
+
+INLINE_GEKKO_INSTR(mtfsb0) {
+    GEKKO_INSTR_HEADER
+    log_cpu("mtfsb0 %08x", instruction.raw);
+
+    cpu->FPSCR.raw &= ~(1 << instruction.general_DAB.D);
+    if (instruction.general_DAB.Rc) {
+        UPDATE_CR_FROM_FPSCR(cpu->CR, cpu->FPSCR);
+    }
+}
+
+INLINE_GEKKO_INSTR(mtfsb1) {
+    GEKKO_INSTR_HEADER
+    log_cpu("mtfsb0 %08x", instruction.raw);
+
+    cpu->FPSCR.raw |= 1 << instruction.general_DAB.D;
+    if (instruction.general_DAB.Rc) {
         UPDATE_CR_FROM_FPSCR(cpu->CR, cpu->FPSCR);
     }
 }
