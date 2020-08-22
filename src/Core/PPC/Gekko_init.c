@@ -2,8 +2,11 @@
 #include "instructions.h"
 
 void init_Gekko(s_Gekko* cpu) {
-    cpu->IMMU.RAM = cpu->DMMU.RAM = cpu->memory;
-    cpu->IMMU.SR = cpu->DMMU.SR = cpu->SR;
+    init_HW_regs(&cpu->HW_regs);
+
+    cpu->IMMU.RAM_ptr = cpu->DMMU.RAM_ptr = cpu->memory;
+    cpu->IMMU.SR_ptr = cpu->DMMU.SR_ptr = cpu->SR;
+    cpu->IMMU.HW_regs_ptr = cpu->DMMU.HW_regs_ptr = &cpu->HW_regs;
 
     memset(&cpu->SPR_write_mask, 0xff, sizeof(cpu->SPR_write_mask));
 

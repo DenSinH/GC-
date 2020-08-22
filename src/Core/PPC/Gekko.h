@@ -13,6 +13,7 @@
 #include "registers/HID.h"
 #include "registers/FPR.h"
 #include "registers/SPR_general.h"
+#include "registers/hardware_registers.h"
 #include "gekko_instruction.h"
 
 #include "default.h"
@@ -25,6 +26,7 @@
 
 typedef struct s_Gekko {
     u8 memory[0x1800000];
+    s_hardware_registers HW_regs;
 
     u32 GPR[32];      // General purpose registers
     s_FPR FPR[32];    // Floating-point registers
