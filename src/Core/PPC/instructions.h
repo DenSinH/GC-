@@ -30,9 +30,15 @@ GEKKO_INSTR(ori);
 #define ORIS_OPCODE 0x64000000
 GEKKO_INSTR(oris);
 
+#define ANDI_OPCODE 0x70000000
+GEKKO_INSTR(andi);
+
 /* integer compare */
 #define CMPLI_OPCODE 0x28000000
 GEKKO_INSTR(cmpli);
+
+#define CMPI_OPCODE 0x2c000000
+GEKKO_INSTR(cmpi);
 
 /* integer rotate and shift */
 #define RLWINM_OPCODE 0x54000000
@@ -83,6 +89,9 @@ INLINE_GEKKO_INSTR(crxor);
 INLINE_GEKKO_INSTR(rfi);
 
 GEKKO_INSTR(instr_011111);
+
+#define ADD_OPCODE_EXTENDED 0x214
+INLINE_GEKKO_INSTR(add);
 
 #define SUBF_OPCODE_EXTENDED 0x050
 INLINE_GEKKO_INSTR(subf);

@@ -81,9 +81,15 @@ void build_instr_table(s_Gekko* cpu) {
             case MAIN_INSTR_HASH(ORIS_OPCODE):
                 cpu->instructions[i] = oris;
                 break;
+            case MAIN_INSTR_HASH(ANDI_OPCODE):
+                cpu->instructions[i] = andi;
+                break;
             /* integer compare */
             case MAIN_INSTR_HASH(CMPLI_OPCODE):
                 cpu->instructions[i] = cmpli;
+                break;
+            case MAIN_INSTR_HASH(CMPI_OPCODE):
+                cpu->instructions[i] = cmpi;
                 break;
             /* integer rotate and shift */
             case MAIN_INSTR_HASH(RLWINM_OPCODE):

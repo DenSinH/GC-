@@ -42,6 +42,9 @@ GEKKO_INSTR(instr_011111) {
     /* 0x7c000000 */
     switch (instruction.raw & 0x7fe) {
         // bottom 11 - 1 bits
+        case ADD_OPCODE_EXTENDED:
+            add(cpu, instruction);
+            return;
         case CMP_OPCODE_EXTENDED:
             cmp(cpu, instruction);
             return;

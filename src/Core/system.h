@@ -4,9 +4,17 @@
 #include "PPC/Gekko.h"
 
 #include "default.h"
+#include "flags.h"
+
+#ifdef DO_BREAKPOINTS
+    #include "Breakpoints/breakpoints.h"
+#endif
 
 typedef struct s_GameCube {
     s_Gekko cpu;
+#ifdef DO_BREAKPOINTS
+    s_breakpoints breakpoints;
+#endif
 } s_GameCube ;
 
 s_GameCube* init_system();

@@ -3,7 +3,8 @@
 GEKKO_INSTR(b_x) {
     GEKKO_INSTR_HEADER
     log_cpu("b_x %08x", instruction.raw);
-    i32 LI = ((i32)(instruction.branch.LI << 6) >> 4);  // sign extend and ||0b00
+    i32 LI = ((i32)(instruction.branch.LI << 8) >> 6);  // sign extend and ||0b00
+
     if (instruction.branch.LK) {
         cpu->LR = cpu->PC;
     }

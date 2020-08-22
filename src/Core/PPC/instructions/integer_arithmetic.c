@@ -1,5 +1,22 @@
 #include "PPC/instructions.h"
 
+INLINE_GEKKO_INSTR(add) {
+    GEKKO_INSTR_HEADER
+    log_cpu("add %08x", instruction.raw);
+
+    u32 result = cpu->GPR[instruction.general_DAB.A] + cpu->GPR[instruction.general_DAB.B];
+
+    if (instruction.general_DAB.OE) {
+        UPDATE_XER_OV(cpu->XER, ADD_OVERFLOW32(cpu->GPR[instruction.general_DAB.A], cpu->GPR[instruction.general_DAB.B], result));
+    }
+
+    if (instruction.general_DAB.Rc) {
+        UPDATE_CR0_RESULT32(cpu, result);
+    }
+
+    cpu->GPR[instruction.general_DAB.D] = result;
+}
+
 GEKKO_INSTR(addi) {
     GEKKO_INSTR_HEADER
     log_cpu("addi %08x", instruction.raw);

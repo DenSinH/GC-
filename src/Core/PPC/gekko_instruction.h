@@ -94,6 +94,15 @@ typedef union gekko_instruction {
     } cmp_uimm;
 
     struct {
+        unsigned SIMM: 16;
+        unsigned A: 5;
+        unsigned L: 1;
+        unsigned: 1;
+        unsigned crfD: 3;
+        unsigned opcode: 6;
+    } cmp_simm;
+
+    struct {
         unsigned: 1;
         unsigned: 10;
         unsigned B: 5;
