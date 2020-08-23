@@ -64,6 +64,14 @@ GEKKO_INSTR(lhz) {
     cpu->GPR[instruction.general_DAd.D] = read16(&cpu->DMMU, EA);
 }
 
+INLINE_GEKKO_INSTR(lhzx) {
+    GEKKO_INSTR_HEADER
+    log_cpu("lhzx %08x", instruction.raw);
+
+    u32 EA = (instruction.general_DAB.A ? cpu->GPR[instruction.general_DAd.A] : 0) + cpu->GPR[instruction.general_DAB.B];
+    cpu->GPR[instruction.general_DAB.D] = read16(&cpu->DMMU, EA);
+}
+
 GEKKO_INSTR(lbz) {
     GEKKO_INSTR_HEADER
     log_cpu("lbz %08x", instruction.raw);

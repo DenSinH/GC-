@@ -65,3 +65,19 @@ INLINE_GEKKO_INSTR(mtcrf) {
     u32 mask = field_mask[cpu->GPR[instruction.mxcrf.CRM]];
     cpu->CR.raw = (cpu->GPR[instruction.mxcrf.DS] & mask) | (cpu->CR.raw & ~mask);
 }
+
+INLINE_GEKKO_INSTR(mftb) {
+    GEKKO_INSTR_HEADER
+
+    log_cpu("mtfb %08x", instruction.raw);
+    u16 tbr = (instruction.mtfb.tbrl_hi << 5) | instruction.mtfb.tbrl_lo;
+    if (tbr == SPR_TBL) {
+        cpu->GPR[instruction.mtfb.D] = GET_TBL(cpu);
+    }
+    else if (tbr == SPR_TBU) {
+        cpu->GPR[instruction.mtfb.D] = GET_TBU(cpu);
+    }
+    else {
+        log_fatal("invalid TBR field for mtfb instruction: %08x", instruction.raw);
+    }
+}

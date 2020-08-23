@@ -23,6 +23,8 @@
 
 #define LOG_LINE_LENGTH 0x800
 #define SP GPR[1]
+#define GET_TBL(cpu_ptr) (u32)cpu_ptr->TBR
+#define GET_TBU(cpu_ptr) (u32)(cpu_ptr->TBR >> 32)
 
 typedef struct s_Gekko {
     u8 memory[0x1800000];
@@ -46,6 +48,8 @@ typedef struct s_Gekko {
 
     u32 SRR0;       // Save/restore register for address on interrupt         [SUPERVISOR]
     u32 SRR1;       // Save/restore register for machine status on interrupt  [SUPERVISOR]
+
+    u64 TBR;
 
     s_GQR GQR[8];
     u32 HID[0];     // hardware dependent registers (todo: stubbed)

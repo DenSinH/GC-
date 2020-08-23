@@ -6,6 +6,7 @@ void init_Gekko(s_Gekko* cpu) {
 
     cpu->IMMU.RAM_ptr = cpu->DMMU.RAM_ptr = cpu->memory;
     cpu->IMMU.SR_ptr = cpu->DMMU.SR_ptr = cpu->SR;
+    cpu->IMMU.TBR_ptr = cpu->DMMU.TBR_ptr = &cpu->TBR;
     cpu->IMMU.HW_regs_ptr = cpu->DMMU.HW_regs_ptr = &cpu->HW_regs;
 
     memset(&cpu->SPR_write_mask, 0xff, sizeof(cpu->SPR_write_mask));
@@ -117,6 +118,9 @@ void build_instr_table(s_Gekko* cpu) {
             /* integer rotate and shift */
             case MAIN_INSTR_HASH(RLWINM_OPCODE):
                 cpu->instructions[i] = rlwinm;
+                break;
+            case MAIN_INSTR_HASH(RLWIMI_OPCODE):
+                cpu->instructions[i] = rlwimi;
                 break;
             /* integer load/store */
             case MAIN_INSTR_HASH(STW_OPCODE):

@@ -21,8 +21,13 @@ s_GameCube* init_system() {
 //    add_breakpoint(&GameCube->breakpoints, 0x8000e908);
 //    add_breakpoint(&GameCube->breakpoints, 0x8000e90c);
 
-//    add_breakpoint(&GameCube->breakpoints, 0x80007b28);
-//    add_breakpoint(&GameCube->breakpoints, 0x80007b2c);
+    add_breakpoint(&GameCube->breakpoints, 0x80006ed4);
+    add_breakpoint(&GameCube->breakpoints, 0x80006ed8);
+    add_breakpoint(&GameCube->breakpoints, 0x80006edc);
+    add_breakpoint(&GameCube->breakpoints, 0x80006ee0);
+    add_breakpoint(&GameCube->breakpoints, 0x80006ee4);
+    add_breakpoint(&GameCube->breakpoints, 0x80006ee8);
+    add_breakpoint(&GameCube->breakpoints, 0x80006eec);
 #endif
 
     return GameCube;

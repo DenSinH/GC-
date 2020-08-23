@@ -12,6 +12,8 @@ typedef enum {
     SPR_SDR1 = 25,
     SPR_SRR0 = 26,
     SPR_SRR1 = 27,
+    SPR_TBL= 268,
+    SPR_TBU = 269,
     SPR_SPRG0 = 272,
     SPR_SPRG1 = 273,
     SPR_SPRG2 = 274,

@@ -12,6 +12,7 @@
  * */
 
 u8 read8(s_MMU* mmu, u32 address) {
+    (*mmu->TBR_ptr)++;
     switch (address >> 20) {
         case 0x000 ... 0x017:
         case 0x800 ... 0x817:
@@ -33,6 +34,7 @@ u8 read8(s_MMU* mmu, u32 address) {
 }
 
 u16 read16(s_MMU* mmu, u32 address) {
+    (*mmu->TBR_ptr)++;
     switch (address >> 20) {
         case 0x000 ... 0x017:
         case 0x800 ... 0x817:
@@ -56,6 +58,7 @@ u16 read16(s_MMU* mmu, u32 address) {
 }
 
 u32 read32(s_MMU* mmu, u32 address) {
+    (*mmu->TBR_ptr)++;
     switch (address >> 20) {
         case 0x000 ... 0x017:
         case 0x800 ... 0x817:
@@ -84,6 +87,7 @@ u32 read32(s_MMU* mmu, u32 address) {
 }
 
 u64 read64(s_MMU* mmu, u32 address) {
+    (*mmu->TBR_ptr)++;
     switch (address >> 20) {
         case 0x000 ... 0x017:
         case 0x800 ... 0x817:
@@ -109,6 +113,7 @@ u64 read64(s_MMU* mmu, u32 address) {
 }
 
 void write8(s_MMU* mmu, u32 address, u8 value) {
+    (*mmu->TBR_ptr)++;
     log_mmu("Write byte %02x to %08x", value, address);
     switch (address >> 20) {
         case 0x000 ... 0x017:
@@ -132,6 +137,7 @@ void write8(s_MMU* mmu, u32 address, u8 value) {
 }
 
 void write16(s_MMU* mmu, u32 address, u16 value) {
+    (*mmu->TBR_ptr)++;
     log_mmu("Write halfword %04x to %08x", value, address);
     switch (address >> 20) {
         case 0x000 ... 0x017:
@@ -157,6 +163,7 @@ void write16(s_MMU* mmu, u32 address, u16 value) {
 }
 
 void write32(s_MMU* mmu, u32 address, u32 value) {
+    (*mmu->TBR_ptr)++;
     log_mmu("Write word %08x to %08x", value, address);
     switch (address >> 20) {
         case 0x000 ... 0x017:
@@ -182,6 +189,7 @@ void write32(s_MMU* mmu, u32 address, u32 value) {
 }
 
 void write64(s_MMU* mmu, u32 address, u64 value) {
+    (*mmu->TBR_ptr)++;
     log_mmu("Write word %016" PRIx64 " to %08x", value, address);
     switch (address >> 20) {
         case 0x000 ... 0x017:

@@ -181,6 +181,15 @@ typedef union gekko_instruction {
         unsigned opcode:6;
     } mxcrf;
 
+    struct {
+        unsigned: 1;
+        unsigned: 10;
+        unsigned tbrl_hi: 5;
+        unsigned tbrl_lo: 5;
+        unsigned D: 5;
+        unsigned opcode:6;
+    } mtfb;
+
 } s_gekko_instruction;
 
 static_assert(sizeof(s_gekko_instruction) == 4, "union was the wrong size!");

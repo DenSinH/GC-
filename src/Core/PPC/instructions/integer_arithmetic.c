@@ -28,6 +28,64 @@ GEKKO_INSTR(addi) {
     }
 }
 
+INLINE_GEKKO_INSTR(addc) {
+    GEKKO_INSTR_HEADER
+    log_cpu("addc %08x", instruction.raw);
+
+    cpu->XER.CA = ADD_CARRY(cpu->GPR[instruction.general_DAB.A], cpu->GPR[instruction.general_DAB.B]);
+    u32 result = cpu->GPR[instruction.general_DAB.A] + cpu->GPR[instruction.general_DAB.B];
+
+    if (instruction.general_DAB.OE) {
+        UPDATE_XER_OV(cpu->XER, ADD_OVERFLOW32(cpu->GPR[instruction.general_DAB.A], cpu->GPR[instruction.general_DAB.B], result));
+    }
+
+    if (instruction.general_DAB.Rc) {
+        UPDATE_CR0_RESULT32(cpu, result);
+    }
+
+    cpu->GPR[instruction.arithmetic_simm.D] = result;
+}
+
+INLINE_GEKKO_INSTR(adde) {
+    GEKKO_INSTR_HEADER
+    log_cpu("adde %08x", instruction.raw);
+
+    u32 carry = cpu->XER.CA;
+    u32 A = cpu->GPR[instruction.general_DAB.A];
+    u32 B = cpu->GPR[instruction.general_DAB.B];
+    cpu->XER.CA = ADD_CARRY(A, B) || ADD_CARRY(A + carry, B);
+    u32 result = A + B + carry;
+
+    if (instruction.general_DAB.OE) {
+        UPDATE_XER_OV(cpu->XER, ADD_OVERFLOW32(cpu->GPR[instruction.general_DAB.A], carry, result));
+    }
+
+    if (instruction.general_DAB.Rc) {
+        UPDATE_CR0_RESULT32(cpu, result);
+    }
+
+    cpu->GPR[instruction.general_DAB.D] = result;
+}
+
+INLINE_GEKKO_INSTR(addze) {
+    GEKKO_INSTR_HEADER
+    log_cpu("addze %08x", instruction.raw);
+
+    u32 carry = cpu->XER.CA;
+    cpu->XER.CA = ADD_CARRY(cpu->GPR[instruction.general_DAB.A], carry);
+    u32 result = cpu->GPR[instruction.general_DAB.A] + carry;
+
+    if (instruction.general_DAB.OE) {
+        UPDATE_XER_OV(cpu->XER, ADD_OVERFLOW32(cpu->GPR[instruction.general_DAB.A], carry, result));
+    }
+
+    if (instruction.general_DAB.Rc) {
+        UPDATE_CR0_RESULT32(cpu, result);
+    }
+
+    cpu->GPR[instruction.general_DAB.D] = result;
+}
+
 GEKKO_INSTR(addis) {
     GEKKO_INSTR_HEADER
     log_cpu("addis %08x", instruction.raw);
@@ -64,6 +122,47 @@ INLINE_GEKKO_INSTR(subf) {
 
     if (instruction.general_DAB.OE) {
         UPDATE_XER_OV(cpu->XER, ADD_OVERFLOW32(~cpu->GPR[instruction.general_DAB.A], cpu->GPR[instruction.general_DAB.B], result));
+    }
+
+    if (instruction.general_DAB.Rc) {
+        UPDATE_CR0_RESULT32(cpu, result);
+    }
+
+    cpu->GPR[instruction.general_DAB.D] = result;
+}
+
+INLINE_GEKKO_INSTR(subfe) {
+    GEKKO_INSTR_HEADER
+    log_cpu("subfe %08x", instruction.raw);
+
+    u32 carry = cpu->XER.CA;
+    u32 A = ~cpu->GPR[instruction.general_DAB.A];
+    u32 result = A + cpu->GPR[instruction.general_DAB.B] + carry;
+
+    cpu->XER.CA = ADD_CARRY(A, cpu->GPR[instruction.general_DAB.B]) || ADD_CARRY(A + cpu->GPR[instruction.general_DAB.B], carry);
+
+    if (instruction.general_DAB.OE) {
+        UPDATE_XER_OV(cpu->XER, ADD_OVERFLOW32(A, cpu->GPR[instruction.general_DAB.B], result));
+    }
+
+    if (instruction.general_DAB.Rc) {
+        UPDATE_CR0_RESULT32(cpu, result);
+    }
+
+    cpu->GPR[instruction.general_DAB.D] = result;
+}
+
+INLINE_GEKKO_INSTR(subfc) {
+    GEKKO_INSTR_HEADER
+    log_cpu("subfe %08x", instruction.raw);
+
+    u32 A = ~cpu->GPR[instruction.general_DAB.A];
+    u32 result = A + cpu->GPR[instruction.general_DAB.B] + 1;
+
+    cpu->XER.CA = A == 0xffffffff || ADD_CARRY(A + cpu->GPR[instruction.general_DAB.B], 1);
+
+    if (instruction.general_DAB.OE) {
+        UPDATE_XER_OV(cpu->XER, ADD_OVERFLOW32(A, cpu->GPR[instruction.general_DAB.B], result));
     }
 
     if (instruction.general_DAB.Rc) {

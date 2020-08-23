@@ -11,8 +11,8 @@
 #define ROTR32(uval, n) (((uval) >> n) | ((uval) << (32 - n)))
 #define EXTS32(val, len) (((i32)(val << (32 - len))) >> (32 - len))
 
-#define MIN(a, b) ((a < b) ? a : b)
-#define MAX(a, b) ((a > b) ? a : b)
+#define MIN(a, b) (((a) < (b)) ? (a) : (b))
+#define MAX(a, b) (((a) > (b)) ? (a) : (b))
 
 static inline uint8_t flip_byte(uint8_t b) {
     b = (b & 0xF0) >> 4 | (b & 0x0F) << 4;

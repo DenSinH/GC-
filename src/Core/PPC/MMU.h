@@ -33,8 +33,9 @@ typedef enum {
  * */
 typedef struct s_MMU {
     u32* SR_ptr;      // Segment registers          [SUPERVISOR]
-    u64 BAT[8];   // Batch Address Translation  [SUPERVISOR]
+    u64 BAT[8];       // Batch Address Translation  [SUPERVISOR]
     u8* RAM_ptr;
+    u64* TBR_ptr;
     s_hardware_registers* HW_regs_ptr;
 } s_MMU;
 

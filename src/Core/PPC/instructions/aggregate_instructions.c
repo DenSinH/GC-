@@ -45,14 +45,29 @@ GEKKO_INSTR(instr_011111) {
         case ADD_OPCODE_EXTENDED:
             add(cpu, instruction);
             return;
+        case ADDC_OPCODE_EXTENDED:
+            addc(cpu, instruction);
+            return;
+        case ADDE_OPCODE_EXTENDED:
+            adde(cpu, instruction);
+            return;
+        case ADDZE_OPCODE_EXTENDED:
+            addze(cpu, instruction);
+            return;
+        case SUBF_OPCODE_EXTENDED:
+            subf(cpu, instruction);
+            return;
+        case SUBFE_OPCODE_EXTENDED:
+            subfe(cpu, instruction);
+            return;
+        case SUBFC_OPCODE_EXTENDED:
+            subfc(cpu, instruction);
+            return;
         case CMP_OPCODE_EXTENDED:
             cmp(cpu, instruction);
             return;
         case CMPL_OPCODE_EXTENDED:
             cmpl(cpu, instruction);
-            return;
-        case SUBF_OPCODE_EXTENDED:
-            subf(cpu, instruction);
             return;
         case DIVW_OPCODE_EXTENDED:
             divw(cpu, instruction);
@@ -84,8 +99,14 @@ GEKKO_INSTR(instr_011111) {
         case SRW_OPCODE_EXTENDED:
             srw(cpu, instruction);
             return;
+        case SRAW_OPCODE_EXTENDED:
+            sraw(cpu, instruction);
+            return;
         case STWX_OPCODE_EXTENDED:
             stwx(cpu, instruction);
+            return;
+        case LHZX_OPCODE_EXTENDED:
+            lhzx(cpu, instruction);
             return;
         case LWZX_OPCODE_EXTENDED:
             lwzx(cpu, instruction);
@@ -113,6 +134,9 @@ GEKKO_INSTR(instr_011111) {
             return;
         case MTSR_OPCODE_EXTENDED:
             mtsr(cpu, instruction);
+            return;
+        case MFTB_OPCODE_EXTENDED:
+            mftb(cpu, instruction);
             return;
         case SYNC_OPCODE_EXTENDED:
             sync(cpu, instruction);
