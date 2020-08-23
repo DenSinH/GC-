@@ -55,3 +55,72 @@ INLINE_GEKKO_INSTR(subf) {
 
     cpu->GPR[instruction.general_DAB.D] = result;
 }
+
+INLINE_GEKKO_INSTR(divw) {
+    GEKKO_INSTR_HEADER
+    log_cpu("divw %08x", instruction.raw);
+
+    bool overflow = cpu->GPR[instruction.general_DAB.B] == 0 ||
+                   (cpu->GPR[instruction.general_DAB.A] == 0x80000000 && (i32)cpu->GPR[instruction.general_DAB.B] == -1);
+
+    i32 result;
+    if (overflow) {
+        result = (i32)cpu->GPR[instruction.general_DAB.A] < 0 ? MAXINT32 : 0;
+    }
+    else {
+        result = (i32)cpu->GPR[instruction.general_DAB.A] / (i32)cpu->GPR[instruction.general_DAB.B];
+    }
+
+
+    if (instruction.general_DAB.OE) {
+        UPDATE_XER_OV(cpu->XER, overflow);
+    }
+
+    if (instruction.general_DAB.Rc) {
+        UPDATE_CR0_RESULT32(cpu, result);
+    }
+
+    cpu->GPR[instruction.general_DAB.D] = result;
+}
+
+INLINE_GEKKO_INSTR(divwu) {
+    GEKKO_INSTR_HEADER
+    log_cpu("divwu %08x", instruction.raw);
+
+    bool overflow = cpu->GPR[instruction.general_DAB.B] == 0;
+
+    u32 result;
+    if (overflow) {
+        result = 0;
+    }
+    else {
+        result = cpu->GPR[instruction.general_DAB.A] / cpu->GPR[instruction.general_DAB.B];
+    }
+
+    if (instruction.general_DAB.OE) {
+        UPDATE_XER_OV(cpu->XER, overflow);
+    }
+
+    if (instruction.general_DAB.Rc) {
+        UPDATE_CR0_RESULT32(cpu, result);
+    }
+
+    cpu->GPR[instruction.general_DAB.D] = result;
+}
+
+INLINE_GEKKO_INSTR(mullw) {
+    GEKKO_INSTR_HEADER
+    log_cpu("mullw %08x", instruction.raw);
+
+    u64 result = (u64)cpu->GPR[instruction.general_DAB.A] * (u64)cpu->GPR[instruction.general_DAB.B];
+
+    if (instruction.general_DAB.OE) {
+        UPDATE_XER_OV(cpu->XER, (result >> 32) != 0);
+    }
+
+    if (instruction.general_DAB.Rc) {
+        UPDATE_CR0_RESULT32(cpu, (u32)result);
+    }
+
+    cpu->GPR[instruction.general_DAB.D] = (u32)result;
+}

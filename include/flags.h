@@ -12,8 +12,10 @@
 
 // change to change verbosity / component logging:
 #define VERBOSITY VERBOSITY_ALL
-#define COMPONENT_FLAGS COMPONENT_CPU | COMPONENT_MMU
+#define COMPONENT_FLAGS 0 // COMPONENT_CPU | COMPONENT_MMU
 
+#define CHECK_SPR_ACCESS
+#define CHECK_HR_ACCESS
 #define DO_BREAKPOINTS
 
 #endif //GC__FLAGS_H

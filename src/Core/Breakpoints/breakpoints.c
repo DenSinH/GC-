@@ -13,7 +13,7 @@ void add_breakpoint(s_breakpoints* breakpoints, u32 value) {
 bool check_breakpoints(s_breakpoints* breakpoints, u32 value) {
     for (int i = 0; i < breakpoints->number_of_breakpoints; i++) {
         if (value == breakpoints->breakpoints[i]) {
-            return value;
+            return true;
         }
     }
     return false;

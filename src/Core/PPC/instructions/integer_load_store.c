@@ -10,6 +10,25 @@ GEKKO_INSTR(stw) {
     write32(&cpu->DMMU, EA, cpu->GPR[instruction.general_SAd.S]);
 }
 
+INLINE_GEKKO_INSTR(stwx) {
+    GEKKO_INSTR_HEADER
+
+    log_cpu("stwx %08x", instruction.raw);
+
+    u32 EA = (instruction.general_SAd.A ? cpu->GPR[instruction.general_SAB.A] : 0) + cpu->GPR[instruction.general_SAB.B];
+    write32(&cpu->DMMU, EA, cpu->GPR[instruction.general_SAB.S]);
+}
+
+GEKKO_INSTR(sth) {
+    GEKKO_INSTR_HEADER
+
+    log_cpu("sth %08x", instruction.raw);
+
+    u32 EA = (instruction.general_SAd.A ? cpu->GPR[instruction.general_SAd.A] : 0) + (i32)((i16)(instruction.general_SAd.d));
+    write16(&cpu->DMMU, EA, (u16)cpu->GPR[instruction.general_SAd.S]);
+}
+
+
 GEKKO_INSTR(stwu) {
     GEKKO_INSTR_HEADER
 
@@ -22,11 +41,36 @@ GEKKO_INSTR(stwu) {
 
 GEKKO_INSTR(lwz) {
     GEKKO_INSTR_HEADER
-
     log_cpu("lwz %08x", instruction.raw);
 
     u32 EA = (instruction.general_DAd.A ? cpu->GPR[instruction.general_DAd.A] : 0) + (i32)((i16)(instruction.general_DAd.d));
     cpu->GPR[instruction.general_DAd.D] = read32(&cpu->DMMU, EA);
+}
+
+GEKKO_INSTR(lhz) {
+    GEKKO_INSTR_HEADER
+    log_cpu("lhz %08x", instruction.raw);
+
+    u32 EA = (instruction.general_DAd.A ? cpu->GPR[instruction.general_DAd.A] : 0) + (i32)((i16)(instruction.general_DAd.d));
+    cpu->GPR[instruction.general_DAd.D] = read16(&cpu->DMMU, EA);
+}
+
+GEKKO_INSTR(lwzu) {
+    GEKKO_INSTR_HEADER
+    log_cpu("lwzu %08x", instruction.raw);
+
+    u32 EA = cpu->GPR[instruction.general_DAd.A] + (i32)((i16)(instruction.general_DAd.d));
+    cpu->GPR[instruction.general_DAd.D] = read32(&cpu->DMMU, EA);
+    cpu->GPR[instruction.general_DAd.A] = EA;
+    // todo: what if rD == rA? (instruction form invalid)
+}
+
+INLINE_GEKKO_INSTR(lwzx) {
+    GEKKO_INSTR_HEADER
+    log_cpu("lwzx %08x", instruction.raw);
+
+    u32 EA = (instruction.general_DAB.A ? cpu->GPR[instruction.general_DAB.A] : 0) + cpu->GPR[instruction.general_DAB.B];
+    cpu->GPR[instruction.general_DAB.D] = read32(&cpu->DMMU, EA);
 }
 
 GEKKO_INSTR(stmw) {

@@ -14,8 +14,11 @@ s_GameCube* init_system() {
     init_Gekko(&GameCube->cpu);
 
 #ifdef DO_BREAKPOINTS
-    add_breakpoint(&GameCube->breakpoints, 0x80012d1c);
-    add_breakpoint(&GameCube->breakpoints, 0x80012d20);
+    // todo: overflow differs here:
+//    add_breakpoint(&GameCube->breakpoints, 0x8000bde0);
+//    add_breakpoint(&GameCube->breakpoints, 0x8000bde4);
+    add_breakpoint(&GameCube->breakpoints, 0x8000bed0);
+    add_breakpoint(&GameCube->breakpoints, 0x8000bed4);
 #endif
 
     return GameCube;
@@ -27,16 +30,18 @@ void run_system(s_GameCube* GameCube) {
     load_DOL_to_Gekko(test_DOL, &GameCube->cpu);
 
     while (true) {
-        step_Gekko(&GameCube->cpu);
-        if (GameCube->cpu.PC > 0x81800000) {
-            log_fatal("Jumped to invalid address: %08x", GameCube->cpu.PC);
-        }
-
 #ifdef DO_BREAKPOINTS
         if (check_breakpoints(&GameCube->breakpoints, GameCube->cpu.PC)) {
+            format_Gekko(&GameCube->cpu);
+            log_debug("%s", GameCube->cpu.log_line);
             log_debug("Hit breakpoint %08x", GameCube->cpu.PC);
             getchar();
         }
 #endif
+
+        step_Gekko(&GameCube->cpu);
+        if ((GameCube->cpu.PC & 0x0fffffff) > 0x01800000) {
+            log_fatal("Jumped to invalid address: %08x", GameCube->cpu.PC);
+        }
     }
 }

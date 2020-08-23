@@ -173,6 +173,6 @@ typedef union gekko_instruction {
 
 } s_gekko_instruction;
 
-_Static_assert(sizeof(s_gekko_instruction) == 4, "union was the wrong size!");
+static_assert(sizeof(s_gekko_instruction) == 4, "union was the wrong size!");
 
 #endif //GC_GEKKO_INSTRUCTION_H

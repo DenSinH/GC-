@@ -4,6 +4,18 @@
 #include "default.h"
 #include "registers/hardware_registers.h"
 
+#include "flags.h"
+
+#ifdef CHECK_HR_ACCESS
+
+    #define ASSERT_HR_ACCESS(section, index) \
+        if (mmu->HW_regs_ptr->pointers[section] == NULL || (index) > hardware_register_block_size[section]) {   \
+            log_fatal("Invalid hardware register access: %08x", address);                                     \
+        }
+#else
+    #define ASSERT_HR_ACCESS(section, index)
+#endif
+
 typedef enum {
     BAT0L = 0,
     BAT0U = 1,

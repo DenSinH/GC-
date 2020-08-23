@@ -47,6 +47,14 @@ void init_Gekko(s_Gekko* cpu) {
     cpu->SPR[SPR_DBAT3L] = &cpu->DMMU.BAT[BAT3L];
     cpu->SPR[SPR_DBAT3U] = &cpu->DMMU.BAT[BAT3U];
 
+    // require normal reads/writes
+    cpu->SPR[SPR_SPRG0] = &cpu->default_SPR[SPR_SPRG0];
+    cpu->SPR[SPR_SPRG1] = &cpu->default_SPR[SPR_SPRG1];
+    cpu->SPR[SPR_SPRG2] = &cpu->default_SPR[SPR_SPRG2];
+    cpu->SPR[SPR_SPRG3] = &cpu->default_SPR[SPR_SPRG3];
+
+
+    // todo: stubbed
     cpu->SPR[SPR_L2CR] = &cpu->default_SPR[SPR_L2CR];
 
     // todo: implement this
@@ -87,6 +95,9 @@ void build_instr_table(s_Gekko* cpu) {
             case MAIN_INSTR_HASH(ANDI_OPCODE):
                 cpu->instructions[i] = andi;
                 break;
+            case MAIN_INSTR_HASH(ANDIS_OPCODE):
+                cpu->instructions[i] = andis;
+                break;
             /* integer compare */
             case MAIN_INSTR_HASH(CMPLI_OPCODE):
                 cpu->instructions[i] = cmpli;
@@ -102,11 +113,20 @@ void build_instr_table(s_Gekko* cpu) {
             case MAIN_INSTR_HASH(STW_OPCODE):
                 cpu->instructions[i] = stw;
                 break;
+            case MAIN_INSTR_HASH(STH_OPCODE):
+                cpu->instructions[i] = sth;
+                break;
             case MAIN_INSTR_HASH(STWU_OPCODE):
                 cpu->instructions[i] = stwu;
                 break;
             case MAIN_INSTR_HASH(LWZ_OPCODE):
                 cpu->instructions[i] = lwz;
+                break;
+            case MAIN_INSTR_HASH(LHZ_OPCODE):
+                cpu->instructions[i] = lhz;
+                break;
+            case MAIN_INSTR_HASH(LWZU_OPCODE):
+                cpu->instructions[i] = lwzu;
                 break;
             case MAIN_INSTR_HASH(STMW_OPCODE):
                 cpu->instructions[i] = stmw;

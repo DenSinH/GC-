@@ -12,7 +12,7 @@ GEKKO_INSTR(instr_000100) {
                     ps_mr(cpu, instruction);
                     return;
                 default:
-                log_fatal("Unimplemented instruction: %08x @%08x", instruction.raw, cpu->PC - 4);
+                    unimplemented(cpu, instruction);
             }
     }
 }
@@ -33,7 +33,7 @@ GEKKO_INSTR(instr_010011) {
             rfi(cpu, instruction);
             return;
         default:
-            log_fatal("Unimplemented instruction: %08x @%08x", instruction.raw, cpu->PC - 4);
+            unimplemented(cpu, instruction);
 
     }
 }
@@ -48,11 +48,38 @@ GEKKO_INSTR(instr_011111) {
         case CMP_OPCODE_EXTENDED:
             cmp(cpu, instruction);
             return;
+        case CMPL_OPCODE_EXTENDED:
+            cmpl(cpu, instruction);
+            return;
         case SUBF_OPCODE_EXTENDED:
             subf(cpu, instruction);
             return;
+        case DIVW_OPCODE_EXTENDED:
+            divw(cpu, instruction);
+            return;
+        case DIVWU_OPCODE_EXTENDED:
+            divwu(cpu, instruction);
+            return;
+        case MULLW_OPCODE_EXTENDED:
+            mullw(cpu, instruction);
+            return;
+        case ANDX_OPCODE_EXTENDED:
+            andx(cpu, instruction);
+            return;
         case ORX_OPCODE_EXTENDED:
             orx(cpu, instruction);
+            return;
+        case NOR_OPCODE_EXTENDED:
+            nor(cpu, instruction);
+            return;
+        case CNTLZW_OPCODE_EXTENDED:
+            cntlzw(cpu, instruction);
+            return;
+        case STWX_OPCODE_EXTENDED:
+            stwx(cpu, instruction);
+            return;
+        case LWZX_OPCODE_EXTENDED:
+            lwzx(cpu, instruction);
             return;
         case MFMSR_OPCODE_EXTENDED:
             mfmsr(cpu, instruction);
@@ -75,8 +102,14 @@ GEKKO_INSTR(instr_011111) {
         case SYNC_OPCODE_EXTENDED:
             sync(cpu, instruction);
             return;
+        case DCBF_OPCODE_EXTENDED:
+            dcbf(cpu, instruction);
+            return;
+        case ICBI_OPCODE_EXTENDED:
+            icbi(cpu, instruction);
+            return;
         default:
-            log_fatal("Unimplemented instruction: %08x @%08x", instruction.raw, cpu->PC - 4);
+            unimplemented(cpu, instruction);
     }
 }
 
@@ -101,7 +134,7 @@ GEKKO_INSTR(instr_111111) {
                     mtfsb1(cpu, instruction);
                     return;
                 default:
-                log_fatal("Unimplemented instruction: %08x @%08x", instruction.raw, cpu->PC - 4);
+                    unimplemented(cpu, instruction);
             }
     }
 }

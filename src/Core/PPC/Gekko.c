@@ -56,12 +56,15 @@ void format_Gekko(s_Gekko* cpu) {
     index += snprintf(&cpu->log_line[index], LOG_LINE_LENGTH - index, "FPSCR: %08x ", cpu->FPSCR.raw);
 }
 
+void dump_Gekko(s_Gekko* cpu) {
+    format_Gekko(cpu);
+    log_warn("CPU dump:\n%s", cpu->log_line);
+}
+
 void step_Gekko(s_Gekko* cpu) {
     s_gekko_instruction instruction;
     instruction.raw = read32(&cpu->IMMU, cpu->PC);
     cpu->PC += 4;
 
     cpu->instructions[MAIN_INSTR_HASH(instruction.raw)](cpu, instruction);
-    format_Gekko(cpu);
-    log_debug("%s", cpu->log_line);
 }

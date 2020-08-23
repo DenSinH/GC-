@@ -94,6 +94,7 @@ static inline void GET_SPR(s_Gekko* cpu, e_SPR SPR, void* target) {
 void init_Gekko(s_Gekko* cpu);
 void build_instr_table(s_Gekko* cpu);
 
+void dump_Gekko(s_Gekko* cpu);
 #define IPL_START_ADDRESS 0x1300000
 void load_IPL_to_Gekko(s_Gekko* cpu);
 

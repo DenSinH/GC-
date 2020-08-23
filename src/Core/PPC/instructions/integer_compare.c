@@ -24,3 +24,11 @@ INLINE_GEKKO_INSTR(cmp) {
     u8 c = GET_CRn_CMP_I32(cpu, cpu->GPR[instruction.cmp.A], cpu->GPR[instruction.cmp.B]);
     SET_CRn_RAW(cpu->CR, instruction.cmp.crfD, c);
 }
+
+INLINE_GEKKO_INSTR(cmpl) {
+    GEKKO_INSTR_HEADER
+    log_cpu("cmpl %x", instruction.raw);
+
+    u8 c = GET_CRn_CMP_U32(cpu, cpu->GPR[instruction.cmp.A], cpu->GPR[instruction.cmp.B]);
+    SET_CRn_RAW(cpu->CR, instruction.cmp.crfD, c);
+}
