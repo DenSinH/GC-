@@ -23,7 +23,7 @@ const static size_t hardware_register_block_size[9] = {
         0x100,
         0x80,
         0x200,
-        0,
+        0x1000,
         0,
         4
 };
@@ -35,6 +35,7 @@ typedef struct s_hardware_registers {
     u8 PI[0x100];
     u8 MI[0x80];
     u8 AI[0x200];
+    u8 DI_SI_EXI_Streaming[0x1000];
     u8 GX_FIFO[0x4];
 
     u8* pointers[9];

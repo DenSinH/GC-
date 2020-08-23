@@ -8,12 +8,41 @@ GEKKO_INSTR(rlwinm) {
             (ROTL32(cpu->GPR[instruction.rotate.S], instruction.rotate.SH)) &
             (MASK(instruction.rotate.MB, instruction.rotate.ME));
 
-    if (instruction.rotate.Rc) {
-        // alter condition codes
-        cpu->CR.CR0.LT = (cpu->GPR[instruction.rotate.A] & 0x80000000) != 0;
-        cpu->CR.CR0.GT = (i32)cpu->GPR[instruction.rotate.A] > 0;
-        cpu->CR.CR0.EQ = !cpu->GPR[instruction.rotate.A];
-        // todo: can this cause overflow?
-        cpu->CR.CR0.SO = cpu->XER.SO = 0;
+    if (instruction.general_DAB.Rc) {
+        UPDATE_CR0_RESULT32(cpu, cpu->GPR[instruction.rotate.A]);
+    }
+}
+
+INLINE_GEKKO_INSTR(slw) {
+    GEKKO_INSTR_HEADER
+    log_cpu("slw %08x", instruction.raw);
+
+    u8 n = cpu->GPR[instruction.general_SAB.B] & 0x1f;
+    if (n > 31) {
+        cpu->GPR[instruction.general_SAB.A] = 0;
+    }
+    else {
+        cpu->GPR[instruction.general_SAB.A] = cpu->GPR[instruction.general_SAB.S] << n;
+    }
+
+    if (instruction.general_DAB.Rc) {
+        UPDATE_CR0_RESULT32(cpu, cpu->GPR[instruction.general_SAB.A]);
+    }
+}
+
+INLINE_GEKKO_INSTR(srw) {
+    GEKKO_INSTR_HEADER
+    log_cpu("srw %08x", instruction.raw);
+
+    u8 n = cpu->GPR[instruction.general_SAB.B] & 0x1f;
+    if (n > 31) {
+        cpu->GPR[instruction.general_SAB.A] = 0;
+    }
+    else {
+        cpu->GPR[instruction.general_SAB.A] = cpu->GPR[instruction.general_SAB.S] >> n;
+    }
+
+    if (instruction.general_DAB.Rc) {
+        UPDATE_CR0_RESULT32(cpu, cpu->GPR[instruction.general_SAB.A]);
     }
 }

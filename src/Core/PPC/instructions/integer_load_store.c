@@ -28,6 +28,15 @@ GEKKO_INSTR(sth) {
     write16(&cpu->DMMU, EA, (u16)cpu->GPR[instruction.general_SAd.S]);
 }
 
+GEKKO_INSTR(stb) {
+    GEKKO_INSTR_HEADER
+
+    log_cpu("stb %08x", instruction.raw);
+
+    u32 EA = (instruction.general_SAd.A ? cpu->GPR[instruction.general_SAd.A] : 0) + (i32)((i16)(instruction.general_SAd.d));
+    write8(&cpu->DMMU, EA, (u8)cpu->GPR[instruction.general_SAd.S]);
+}
+
 
 GEKKO_INSTR(stwu) {
     GEKKO_INSTR_HEADER
@@ -53,6 +62,14 @@ GEKKO_INSTR(lhz) {
 
     u32 EA = (instruction.general_DAd.A ? cpu->GPR[instruction.general_DAd.A] : 0) + (i32)((i16)(instruction.general_DAd.d));
     cpu->GPR[instruction.general_DAd.D] = read16(&cpu->DMMU, EA);
+}
+
+GEKKO_INSTR(lbz) {
+    GEKKO_INSTR_HEADER
+    log_cpu("lbz %08x", instruction.raw);
+
+    u32 EA = (instruction.general_DAd.A ? cpu->GPR[instruction.general_DAd.A] : 0) + (i32)((i16)(instruction.general_DAd.d));
+    cpu->GPR[instruction.general_DAd.D] = read8(&cpu->DMMU, EA);
 }
 
 GEKKO_INSTR(lwzu) {

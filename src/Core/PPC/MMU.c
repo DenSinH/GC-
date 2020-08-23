@@ -19,7 +19,7 @@ u8 read8(s_MMU* mmu, u32 address) {
             log_mmu("Read byte %02x from %08x", READ8(mmu->RAM_ptr, MASK_24MB(address)), address);
             return READ8(mmu->RAM_ptr, MASK_24MB(address));
         case 0xcc0:
-            log_warn("Hardware register access: %x", address);
+            log_warn("Hardware register byte read access: %x", address);
             ASSERT_HR_ACCESS(HR_INDEX_FROM_ADDRESS(address), address & 0xfff)
             u8* HW_regs_section = mmu->HW_regs_ptr->pointers[HR_INDEX_FROM_ADDRESS(address)];
             return READ8(HW_regs_section, address & 0xfff);
@@ -42,7 +42,7 @@ u16 read16(s_MMU* mmu, u32 address) {
             log_mmu("Read halfword %04x from %08x", READ16(mmu->RAM_ptr, address), address);
             return READ16(mmu->RAM_ptr, address);
         case 0xcc0:
-            log_warn("Hardware register access: %x", address);
+            log_warn("Hardware register halfword read access: %x", address);
             ASSERT_HR_ACCESS(HR_INDEX_FROM_ADDRESS(address), address & 0xfff)
             u8* HW_regs_section = mmu->HW_regs_ptr->pointers[HR_INDEX_FROM_ADDRESS(address)];
             return READ16(HW_regs_section, address & 0xfff);
@@ -65,7 +65,12 @@ u32 read32(s_MMU* mmu, u32 address) {
             log_mmu("Read word %08x from %08x", READ32(mmu->RAM_ptr, address), address);
             return READ32(mmu->RAM_ptr, address);
         case 0xcc0:
-            log_warn("Hardware register access: %x", address);
+            log_warn("Hardware register word read access: %x", address);
+            if (address == 0xcc00680c) {
+                // todo: add EXI devices
+                // exit(1);
+                return READ32(mmu->HW_regs_ptr->DI_SI_EXI_Streaming, 0x80c) & 0xfffffffe;
+            }
             ASSERT_HR_ACCESS(HR_INDEX_FROM_ADDRESS(address), address & 0xfff)
             u8* HW_regs_section = mmu->HW_regs_ptr->pointers[HR_INDEX_FROM_ADDRESS(address)];
             return READ32(HW_regs_section, address & 0xfff);
@@ -90,7 +95,7 @@ u64 read64(s_MMU* mmu, u32 address) {
 
             return READ64(mmu->RAM_ptr, address);
         case 0xcc0:
-            log_warn("Hardware register access: %x", address);
+            log_warn("Hardware register double word read access: %x", address);
             ASSERT_HR_ACCESS(HR_INDEX_FROM_ADDRESS(address), address & 0xfff)
             u8* HW_regs_section = mmu->HW_regs_ptr->pointers[HR_INDEX_FROM_ADDRESS(address)];
             return READ64(HW_regs_section, address & 0xfff);
@@ -109,10 +114,10 @@ void write8(s_MMU* mmu, u32 address, u8 value) {
         case 0x000 ... 0x017:
         case 0x800 ... 0x817:
         case 0xc00 ... 0xc17:
-            WRITE8(mmu->RAM_ptr, address, value);
+            WRITE8(mmu->RAM_ptr, MASK_24MB(address), value);
             return;
         case 0xcc0:
-            log_warn("Hardware register access: %x", address);
+            log_warn("Hardware register byte write access: %x (%02x)", address, value);
             ASSERT_HR_ACCESS(HR_INDEX_FROM_ADDRESS(address), address & 0xfff)
             u8* HW_regs_section = mmu->HW_regs_ptr->pointers[HR_INDEX_FROM_ADDRESS(address)];
             WRITE8(HW_regs_section, address & 0xfff, value);
@@ -137,7 +142,7 @@ void write16(s_MMU* mmu, u32 address, u16 value) {
             WRITE16(mmu->RAM_ptr, address, value);
             return;
         case 0xcc0:
-            log_warn("Hardware register access: %x", address);
+            log_warn("Hardware register halfword write access: %x (%04x)", address, value);
             ASSERT_HR_ACCESS(HR_INDEX_FROM_ADDRESS(address), address & 0xfff)
             u8* HW_regs_section = mmu->HW_regs_ptr->pointers[HR_INDEX_FROM_ADDRESS(address)];
             WRITE16(HW_regs_section, address & 0xfff, value);
@@ -162,7 +167,7 @@ void write32(s_MMU* mmu, u32 address, u32 value) {
             WRITE32(mmu->RAM_ptr, address, value);
             return;
         case 0xcc0:
-            log_warn("Hardware register access: %x", address);
+            log_warn("Hardware register word write access: %x (%08x)", address, value);
             ASSERT_HR_ACCESS(HR_INDEX_FROM_ADDRESS(address), address & 0xfff)
             u8* HW_regs_section = mmu->HW_regs_ptr->pointers[HR_INDEX_FROM_ADDRESS(address)];
             WRITE32(HW_regs_section, address & 0xfff, value);
@@ -187,7 +192,7 @@ void write64(s_MMU* mmu, u32 address, u64 value) {
             WRITE64(mmu->RAM_ptr, address, value);
             return;
         case 0xcc0:
-            log_warn("Hardware register access: %x", address);
+            log_warn("Hardware register double word write access: %x (%016llx)", address, value);
             ASSERT_HR_ACCESS(HR_INDEX_FROM_ADDRESS(address), address & 0xfff)
             u8* HW_regs_section = mmu->HW_regs_ptr->pointers[HR_INDEX_FROM_ADDRESS(address)];
             WRITE64(HW_regs_section, address & 0xfff, value);

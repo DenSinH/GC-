@@ -17,8 +17,12 @@ s_GameCube* init_system() {
     // todo: overflow differs here:
 //    add_breakpoint(&GameCube->breakpoints, 0x8000bde0);
 //    add_breakpoint(&GameCube->breakpoints, 0x8000bde4);
-    add_breakpoint(&GameCube->breakpoints, 0x8000bed0);
-    add_breakpoint(&GameCube->breakpoints, 0x8000bed4);
+    // todo: overflow differs here (CR2):
+//    add_breakpoint(&GameCube->breakpoints, 0x8000e908);
+//    add_breakpoint(&GameCube->breakpoints, 0x8000e90c);
+
+//    add_breakpoint(&GameCube->breakpoints, 0x80007b28);
+//    add_breakpoint(&GameCube->breakpoints, 0x80007b2c);
 #endif
 
     return GameCube;
@@ -30,6 +34,11 @@ void run_system(s_GameCube* GameCube) {
     load_DOL_to_Gekko(test_DOL, &GameCube->cpu);
 
     while (true) {
+        if (GameCube->cpu.GPR[3] == 0x00313131) {
+            dump_Gekko(&GameCube->cpu);
+            getchar();
+        }
+
 #ifdef DO_BREAKPOINTS
         if (check_breakpoints(&GameCube->breakpoints, GameCube->cpu.PC)) {
             format_Gekko(&GameCube->cpu);

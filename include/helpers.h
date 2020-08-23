@@ -5,6 +5,7 @@
 #include <stdbool.h>
 
 #define ADD_OVERFLOW32(x, y, result) ((((x) ^ (result)) & ((y) ^ (result))) >> 31) != 0
+#define ADD_CARRY(x, y) (u32)(x) > ~((u32)(y))
 
 #define ROTL32(uval, n) (((uval) << n) | ((uval) >> (32 - n)))
 #define ROTR32(uval, n) (((uval) >> n) | ((uval) << (32 - n)))

@@ -88,13 +88,12 @@
     #define log_warn(message, ...) { }
 #endif
 
-
 #if VERBOSITY <= VERBOSITY_ERROR
     #define log_fatal(message, ...) {                                \
         CONSOLE_RED();                                               \
         fprintf(stderr, "[FATAL] at %s:%d: ", __FILE__, __LINE__);   \
         fprintf(stderr, message "\n", ##__VA_ARGS__);                \
-        CONSOLE_RESTORE();                                           \
+        /* we're not restoring the color here for any handlers */    \
         exit(1);                                                     \
     }
 #else

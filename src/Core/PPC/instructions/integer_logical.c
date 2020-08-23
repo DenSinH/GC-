@@ -54,6 +54,15 @@ INLINE_GEKKO_INSTR(nor) {
     }
 }
 
+INLINE_GEKKO_INSTR(andc) {
+    GEKKO_INSTR_HEADER
+    log_cpu("andc %08x", instruction.raw);
+    cpu->GPR[instruction.general_SAB.A] = cpu->GPR[instruction.general_SAB.S] & ~cpu->GPR[instruction.general_SAB.B];
+    if (instruction.general_SAB.Rc) {
+        UPDATE_CR0_RESULT32(cpu, cpu->GPR[instruction.general_SAB.A]);
+    }
+}
+
 INLINE_GEKKO_INSTR(cntlzw) {
     GEKKO_INSTR_HEADER
     log_cpu("cntlzw %08x", instruction.raw);

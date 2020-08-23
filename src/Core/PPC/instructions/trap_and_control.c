@@ -50,3 +50,18 @@ INLINE_GEKKO_INSTR(mtspr) {
 
     SET_SPR(cpu, (instruction.SPR_S.SPR_hi << 5) | instruction.SPR_S.SPR_lo, &cpu->GPR[instruction.SPR_S.S]);
 }
+
+INLINE_GEKKO_INSTR(mfcr) {
+    GEKKO_INSTR_HEADER
+
+    log_cpu("mfcr %08x", instruction.raw);
+    cpu->GPR[instruction.general_DAB.D] = cpu->CR.raw;
+}
+
+INLINE_GEKKO_INSTR(mtcrf) {
+    GEKKO_INSTR_HEADER
+
+    log_cpu("mfcrf %08x", instruction.raw);
+    u32 mask = field_mask[cpu->GPR[instruction.mxcrf.CRM]];
+    cpu->CR.raw = (cpu->GPR[instruction.mxcrf.DS] & mask) | (cpu->CR.raw & ~mask);
+}

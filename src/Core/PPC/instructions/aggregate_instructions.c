@@ -72,8 +72,17 @@ GEKKO_INSTR(instr_011111) {
         case NOR_OPCODE_EXTENDED:
             nor(cpu, instruction);
             return;
+        case ANDC_OPCODE_EXTENDED:
+            andc(cpu, instruction);
+            return;
         case CNTLZW_OPCODE_EXTENDED:
             cntlzw(cpu, instruction);
+            return;
+        case SLW_OPCODE_EXTENDED:
+            slw(cpu, instruction);
+            return;
+        case SRW_OPCODE_EXTENDED:
+            srw(cpu, instruction);
             return;
         case STWX_OPCODE_EXTENDED:
             stwx(cpu, instruction);
@@ -93,6 +102,12 @@ GEKKO_INSTR(instr_011111) {
         case MTSPR_OPCODE_EXTENDED:
             mtspr(cpu, instruction);
             return;
+        case MFCR_OPCODE_EXTENDED:
+            mfcr(cpu, instruction);
+            return;
+        case MTCRF_OPCODE_EXTENDED:
+            mtcrf(cpu, instruction);
+            return;
         case MFSR_OPCODE_EXTENDED:
             mfsr(cpu, instruction);
             return;
@@ -104,6 +119,9 @@ GEKKO_INSTR(instr_011111) {
             return;
         case DCBF_OPCODE_EXTENDED:
             dcbf(cpu, instruction);
+            return;
+        case DCBI_OPCODE_EXTENDED:
+            dcbi(cpu, instruction);
             return;
         case ICBI_OPCODE_EXTENDED:
             icbi(cpu, instruction);
