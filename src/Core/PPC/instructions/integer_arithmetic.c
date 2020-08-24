@@ -131,6 +131,17 @@ INLINE_GEKKO_INSTR(subf) {
     cpu->GPR[instruction.general_DAB.D] = result;
 }
 
+GEKKO_INSTR(subfic) {
+    GEKKO_INSTR_HEADER
+    log_cpu("subfic %08x", instruction.raw);
+    i32 SIMM = (i32)((i16)instruction.arithmetic_simm.SIMM);
+    u32 A = ~cpu->GPR[instruction.arithmetic_simm.A];
+
+    cpu->XER.CA = ADD_CARRY(A, SIMM) || ((A + SIMM) == 0xffffffff);
+
+    cpu->GPR[instruction.arithmetic_simm.D] = A + SIMM + 1;
+}
+
 INLINE_GEKKO_INSTR(subfe) {
     GEKKO_INSTR_HEADER
     log_cpu("subfe %08x", instruction.raw);
@@ -157,9 +168,10 @@ INLINE_GEKKO_INSTR(subfc) {
     log_cpu("subfe %08x", instruction.raw);
 
     u32 A = ~cpu->GPR[instruction.general_DAB.A];
+    u32 B = cpu->GPR[instruction.general_DAB.B];
     u32 result = A + cpu->GPR[instruction.general_DAB.B] + 1;
 
-    cpu->XER.CA = A == 0xffffffff || ADD_CARRY(A + cpu->GPR[instruction.general_DAB.B], 1);
+    cpu->XER.CA = ADD_CARRY(A, B) || (A + B == 0xffffffff);
 
     if (instruction.general_DAB.OE) {
         UPDATE_XER_OV(cpu->XER, ADD_OVERFLOW32(A, cpu->GPR[instruction.general_DAB.B], result));

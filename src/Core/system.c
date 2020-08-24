@@ -20,32 +20,50 @@ s_GameCube* init_system() {
     // todo: overflow differs here (CR2):
 //    add_breakpoint(&GameCube->breakpoints, 0x8000e908);
 //    add_breakpoint(&GameCube->breakpoints, 0x8000e90c);
+    // todo: different word loaded from memory
+//    add_breakpoint(&GameCube->breakpoints, 0x80011f90);
+//    add_breakpoint(&GameCube->breakpoints, 0x80011f94);
 
-    add_breakpoint(&GameCube->breakpoints, 0x80006ed4);
-    add_breakpoint(&GameCube->breakpoints, 0x80006ed8);
-    add_breakpoint(&GameCube->breakpoints, 0x80006edc);
-    add_breakpoint(&GameCube->breakpoints, 0x80006ee0);
-    add_breakpoint(&GameCube->breakpoints, 0x80006ee4);
-    add_breakpoint(&GameCube->breakpoints, 0x80006ee8);
-    add_breakpoint(&GameCube->breakpoints, 0x80006eec);
+    add_breakpoint(&GameCube->breakpoints, 0x80009e8c);
+    add_breakpoint(&GameCube->breakpoints, 0x800048ac);
+
+    add_breakpoint(&GameCube->breakpoints, 0x800048ac);
+    add_breakpoint(&GameCube->breakpoints, 0x800048b0);
+    add_breakpoint(&GameCube->breakpoints, 0x800048b4);
+    add_breakpoint(&GameCube->breakpoints, 0x800048b8);
+    add_breakpoint(&GameCube->breakpoints, 0x800048bc);
+    add_breakpoint(&GameCube->breakpoints, 0x800048c0);
 #endif
 
     return GameCube;
 }
 
 #define test_DOL "D:\\CodeBlocks\\Projects\\GCHBTest\\GCHBTest.dol"
+#define STEP_ON_BREAK
 
 void run_system(s_GameCube* GameCube) {
     load_DOL_to_Gekko(test_DOL, &GameCube->cpu);
 
+#ifdef STEP_ON_BREAK
+    bool step = false;
+#endif
+
     while (true) {
-        if (GameCube->cpu.GPR[3] == 0x00313131) {
-            dump_Gekko(&GameCube->cpu);
+        if (GameCube->cpu.GPR[30] == 0xcc00475c) {
+            format_Gekko(&GameCube->cpu);
+            log_debug("%s", GameCube->cpu.log_line);
+            log_debug("Hit breakpoint %08x", GameCube->cpu.PC);
             getchar();
         }
 
 #ifdef DO_BREAKPOINTS
-        if (check_breakpoints(&GameCube->breakpoints, GameCube->cpu.PC)) {
+        if (check_breakpoints(&GameCube->breakpoints, GameCube->cpu.PC) ||
+#ifdef STEP_ON_BREAK
+                                                                            step) {
+            step = true;
+#else
+        )) {
+#endif
             format_Gekko(&GameCube->cpu);
             log_debug("%s", GameCube->cpu.log_line);
             log_debug("Hit breakpoint %08x", GameCube->cpu.PC);

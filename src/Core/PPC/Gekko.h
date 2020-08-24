@@ -22,6 +22,8 @@
 #define FULL_WRITE_MASK 0xffffffff
 
 #define LOG_LINE_LENGTH 0x800
+#define CALL_STACK_LENGTH 0x100
+
 #define SP GPR[1]
 #define GET_TBL(cpu_ptr) (u32)cpu_ptr->TBR
 #define GET_TBU(cpu_ptr) (u32)(cpu_ptr->TBR >> 32)
@@ -49,7 +51,8 @@ typedef struct s_Gekko {
     u32 SRR0;       // Save/restore register for address on interrupt         [SUPERVISOR]
     u32 SRR1;       // Save/restore register for machine status on interrupt  [SUPERVISOR]
 
-    u64 TBR;
+    u32 DEC;        // Decrement register
+    u64 TBR;        // Time base register
 
     s_GQR GQR[8];
     u32 HID[0];     // hardware dependent registers (todo: stubbed)
@@ -64,6 +67,11 @@ typedef struct s_Gekko {
 
     /* Debugging stuff */
     char log_line[LOG_LINE_LENGTH];
+#ifdef DO_CALL_STACK
+    u32 call_stack[CALL_STACK_LENGTH];
+    u8 call_stack_pointer;
+#endif
+
 } s_Gekko;
 
 //                                 LT    , EQ    , GT
@@ -99,6 +107,9 @@ void init_Gekko(s_Gekko* cpu);
 void build_instr_table(s_Gekko* cpu);
 
 void dump_Gekko(s_Gekko* cpu);
+void dump_Gekko_stack_trace(s_Gekko* cpu);
+#define GEKKO_DUMP_FILE_NAME "./files/gekko.dump"
+void dump_Gekko_mem_range(s_Gekko* cpu, u32 start, u32 end);
 #define IPL_START_ADDRESS 0x1300000
 void load_IPL_to_Gekko(s_Gekko* cpu);
 

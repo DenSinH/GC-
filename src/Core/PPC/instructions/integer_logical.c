@@ -63,6 +63,29 @@ INLINE_GEKKO_INSTR(andc) {
     }
 }
 
+GEKKO_INSTR(xori) {
+    GEKKO_INSTR_HEADER
+    log_cpu("xori %08x", instruction.raw);
+    cpu->GPR[instruction.arithmetic_uimm.A] = cpu->GPR[instruction.arithmetic_uimm.S] ^ (u32)instruction.arithmetic_uimm.UIMM;
+}
+
+INLINE_GEKKO_INSTR(neg) {
+    GEKKO_INSTR_HEADER
+    log_cpu("neg %08x", instruction.raw);
+    u32 A = cpu->GPR[instruction.arithmetic_uimm.A];
+
+    if (instruction.general_DAB.OE) {
+        // only way this overflows is if A == 0x88000000 -> (0x7fffffff + 1)
+        UPDATE_XER_OV(cpu->XER, A == 0x80000000);
+    }
+
+    cpu->GPR[instruction.general_DAB.D] = (~A) + 1;
+
+    if (instruction.general_DAB.Rc) {
+        UPDATE_CR0_RESULT32(cpu, cpu->GPR[instruction.general_DAB.D]);
+    }
+}
+
 INLINE_GEKKO_INSTR(cntlzw) {
     GEKKO_INSTR_HEADER
     log_cpu("cntlzw %08x", instruction.raw);

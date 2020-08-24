@@ -10,6 +10,7 @@
  * I assume the basic "Theory 1" from https://dolphin-emu.org/blog/2016/09/06/booting-the-final-gc-game/
  * With this basic assumption, I only need to check if the address < 0xc800 0000 and I just mirror it down
  * */
+u32 stubber = 0xffffffff;
 
 u8 read8(s_MMU* mmu, u32 address) {
     (*mmu->TBR_ptr)++;
@@ -45,6 +46,18 @@ u16 read16(s_MMU* mmu, u32 address) {
             return READ16(mmu->RAM_ptr, address);
         case 0xcc0:
             log_warn("Hardware register halfword read access: %x", address);
+            if (address == 0xcc00500a) {
+                // todo: implement
+                // for now: prevent infinite poll (reset "reset" bit)
+                u8* HW_regs_section = mmu->HW_regs_ptr->pointers[HR_INDEX_FROM_ADDRESS(address)];
+                return (READ16(HW_regs_section, address & 0xfff)) & 0xffe;
+            }
+            else if (address == 0xcc005004 || address == 0xcc005006) {
+                // todo: implement
+                // return finished status (bit 0 (31 LE)) to prevent polling
+                stubber ^= 0xffffffff;
+                return (u16)stubber;
+            }
             ASSERT_HR_ACCESS(HR_INDEX_FROM_ADDRESS(address), address & 0xfff)
             u8* HW_regs_section = mmu->HW_regs_ptr->pointers[HR_INDEX_FROM_ADDRESS(address)];
             return READ16(HW_regs_section, address & 0xfff);

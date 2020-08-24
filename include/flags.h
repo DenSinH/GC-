@@ -17,5 +17,6 @@
 #define CHECK_SPR_ACCESS
 #define CHECK_HR_ACCESS
 #define DO_BREAKPOINTS
+#define DO_CALL_STACK
 
 #endif //GC__FLAGS_H

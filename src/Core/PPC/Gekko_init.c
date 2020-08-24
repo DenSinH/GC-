@@ -57,6 +57,7 @@ void init_Gekko(s_Gekko* cpu) {
 
     // todo: stubbed
     cpu->SPR[SPR_L2CR] = &cpu->default_SPR[SPR_L2CR];
+    cpu->SPR[SPR_DEC] = &cpu->DEC;
 
     // todo: implement this
     cpu->SPR[SPR_MMCR0] = &cpu->default_SPR[SPR_MMCR0];
@@ -79,6 +80,9 @@ void build_instr_table(s_Gekko* cpu) {
             case MAIN_INSTR_HASH(BC_X_OPCODE):
                 cpu->instructions[i] = bc_x;
                 break;
+            case MAIN_INSTR_HASH(SC_OPCODE):
+                cpu->instructions[i] = sc;
+                break;
             /* integer arithmetic */
             case MAIN_INSTR_HASH(ADDI_OPCODE):
                 cpu->instructions[i] = addi;
@@ -91,6 +95,9 @@ void build_instr_table(s_Gekko* cpu) {
                 break;
             case MAIN_INSTR_HASH(ADDIC__OPCODE):
                 cpu->instructions[i] = addic_;
+                break;
+            case MAIN_INSTR_HASH(SUBFIC_OPCODE):
+                cpu->instructions[i] = subfic;
                 break;
             case MAIN_INSTR_HASH(MULLI_OPCODE):
                 cpu->instructions[i] = mulli;
@@ -107,6 +114,9 @@ void build_instr_table(s_Gekko* cpu) {
                 break;
             case MAIN_INSTR_HASH(ANDIS_OPCODE):
                 cpu->instructions[i] = andis;
+                break;
+            case MAIN_INSTR_HASH(XORI_OPCODE):
+                cpu->instructions[i] = xori;
                 break;
             /* integer compare */
             case MAIN_INSTR_HASH(CMPLI_OPCODE):
@@ -140,6 +150,9 @@ void build_instr_table(s_Gekko* cpu) {
                 break;
             case MAIN_INSTR_HASH(LHZ_OPCODE):
                 cpu->instructions[i] = lhz;
+                break;
+            case MAIN_INSTR_HASH(LHA_OPCODE):
+                cpu->instructions[i] = lha;
                 break;
             case MAIN_INSTR_HASH(LBZ_OPCODE):
                 cpu->instructions[i] = lbz;
