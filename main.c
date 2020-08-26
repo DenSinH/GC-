@@ -1,10 +1,9 @@
+#include "debugthread.h"
+
 #include <stdio.h>
 #include <stdlib.h>
 
-#include "default.h"
-#include "src/Core/system.h"
-
-s_GameCube* global_system;
+#include "init.c"
 
 void exception_handler() {
     format_Gekko(&global_system->cpu);
@@ -18,9 +17,12 @@ void exception_handler() {
 }
 
 int main() {
+    init();
+
     atexit(exception_handler);
 
-    global_system = init_system();
+    START_DEBUG
+
     run_system(global_system);
 
     return 0;
