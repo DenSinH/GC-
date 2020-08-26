@@ -5,6 +5,7 @@
 
 #include "system.h"
 #include "PPC/Gekko.h"
+#include "debugging.h"
 
 #include "flags.h"
 
@@ -23,16 +24,6 @@ s_GameCube* init_system() {
     // todo: different word loaded from memory
 //    add_breakpoint(&GameCube->breakpoints, 0x80011f90);
 //    add_breakpoint(&GameCube->breakpoints, 0x80011f94);
-
-    add_breakpoint(&GameCube->breakpoints, 0x80009e8c);
-    add_breakpoint(&GameCube->breakpoints, 0x800048ac);
-
-    add_breakpoint(&GameCube->breakpoints, 0x800048ac);
-    add_breakpoint(&GameCube->breakpoints, 0x800048b0);
-    add_breakpoint(&GameCube->breakpoints, 0x800048b4);
-    add_breakpoint(&GameCube->breakpoints, 0x800048b8);
-    add_breakpoint(&GameCube->breakpoints, 0x800048bc);
-    add_breakpoint(&GameCube->breakpoints, 0x800048c0);
 #endif
 
     return GameCube;
@@ -48,14 +39,7 @@ void run_system(s_GameCube* GameCube) {
     bool step = false;
 #endif
 
-    while (true) {
-        if (GameCube->cpu.GPR[30] == 0xcc00475c) {
-            format_Gekko(&GameCube->cpu);
-            log_debug("%s", GameCube->cpu.log_line);
-            log_debug("Hit breakpoint %08x", GameCube->cpu.PC);
-            getchar();
-        }
-
+    while (!GameCube->shutdown) {
 #ifdef DO_BREAKPOINTS
         if (check_breakpoints(&GameCube->breakpoints, GameCube->cpu.PC) ||
 #ifdef STEP_ON_BREAK
@@ -75,5 +59,11 @@ void run_system(s_GameCube* GameCube) {
         if ((GameCube->cpu.PC & 0x0fffffff) > 0x01800000) {
             log_fatal("Jumped to invalid address: %08x", GameCube->cpu.PC);
         }
+
+#ifdef DO_DEBUGGER
+      while (GameCube->paused) {
+            sleep_ms(16);
+        }
+#endif
     }
 }

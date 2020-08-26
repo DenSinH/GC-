@@ -12,9 +12,17 @@
 
 typedef struct s_GameCube {
     s_Gekko cpu;
+
+    bool shutdown;
+
 #ifdef DO_BREAKPOINTS
     s_breakpoints breakpoints;
 #endif
+
+#ifdef DO_DEBUGGER
+    bool paused;
+#endif
+
 } s_GameCube ;
 
 s_GameCube* init_system();
