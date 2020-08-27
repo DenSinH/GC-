@@ -14,8 +14,9 @@ void load_IPL_to_Gekko(s_Gekko* cpu) {
     cpu->PC = GEKKO_PC_INIT_IPL;
 }
 
-void load_DOL_to_Gekko(const char file_name[], s_Gekko* cpu) {
+void load_DOL_to_Gekko(s_Gekko* cpu, const char file_name[]) {
     cpu->PC = load_DOL_to(file_name, cpu->memory);
+    strcpy_s(cpu->dol_file_name, DOL_FILE_NAME_LENGTH, file_name);
 }
 
 #define R32_FORMAT " %02d: %08"  PRIx32 " | "
@@ -61,7 +62,7 @@ void format_Gekko(s_Gekko* cpu) {
 
 void dump_Gekko(s_Gekko* cpu) {
     format_Gekko(cpu);
-    log_warn("CPU dump:\n%s", cpu->log_line);
+    printf("[CPU dump]:\n%s", cpu->log_line);
 }
 
 void dump_Gekko_mem_range(s_Gekko* cpu, u32 start, u32 end) {

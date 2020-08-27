@@ -13,6 +13,7 @@ typedef struct s_breakpoints {
 } s_breakpoints;
 
 void add_breakpoint(s_breakpoints* breakpoints, u32 value);
+void remove_breakpoint(s_breakpoints* breakpoints, u32 value);
 bool check_breakpoints(s_breakpoints* breakpoints, u32 value);
 
 #endif //GC__BREAKPOINTS_H

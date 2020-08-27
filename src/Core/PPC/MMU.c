@@ -226,3 +226,16 @@ void write64(s_MMU* mmu, u32 address, u64 value) {
             log_fatal("Unimplemented memory address: %x", address);
     }
 }
+
+u32 get_word(s_MMU* mmu, u32 address) {
+    return READ32(mmu->RAM_ptr, MASK_24MB(address));
+}
+
+void dump_range(s_MMU* mmu, u32 start, u32 end) {
+    for (u32 i = start; i < end; i += 4) {
+        if (!(i & 0xf)) {
+            printf("\n[%08x] ", i);
+        }
+        printf("%08x ", READ32(mmu->RAM_ptr, MASK_24MB(i)));
+    }
+}

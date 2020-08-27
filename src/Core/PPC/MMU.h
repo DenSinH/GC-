@@ -86,4 +86,7 @@ void write16(s_MMU* mmu, u32 address, u16 value);
 void write32(s_MMU* mmu, u32 address, u32 value);
 void write64(s_MMU* mmu, u32 address, u64 value);
 
+u32 get_word(s_MMU* mmu, u32 address);
+void dump_range(s_MMU* mmu, u32 start, u32 end);
+
 #endif //GC__MMU_H

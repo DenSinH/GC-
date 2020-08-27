@@ -5,7 +5,7 @@
 
 #include "system.h"
 #include "PPC/Gekko.h"
-#include "debugging.h"
+#include "core_debugging.h"
 
 #include "flags.h"
 
@@ -29,40 +29,40 @@ s_GameCube* init_system() {
     return GameCube;
 }
 
-#define test_DOL "D:\\CodeBlocks\\Projects\\GCHBTest\\GCHBTest.dol"
+#define TEST_DOL "D:\\CodeBlocks\\Projects\\GCHBTest\\GCHBTest.dol"
 #define STEP_ON_BREAK
 
 void run_system(s_GameCube* GameCube) {
-    load_DOL_to_Gekko(test_DOL, &GameCube->cpu);
+    load_DOL_to_Gekko(&GameCube->cpu, TEST_DOL);
 
 #ifdef STEP_ON_BREAK
     bool step = false;
 #endif
 
     while (!GameCube->shutdown) {
-#ifdef DO_BREAKPOINTS
-        if (check_breakpoints(&GameCube->breakpoints, GameCube->cpu.PC) ||
-#ifdef STEP_ON_BREAK
-                                                                            step) {
-            step = true;
-#else
-        )) {
-#endif
-            format_Gekko(&GameCube->cpu);
-            log_debug("%s", GameCube->cpu.log_line);
-            log_debug("Hit breakpoint %08x", GameCube->cpu.PC);
-            getchar();
-        }
-#endif
 
         step_Gekko(&GameCube->cpu);
         if ((GameCube->cpu.PC & 0x0fffffff) > 0x01800000) {
             log_fatal("Jumped to invalid address: %08x", GameCube->cpu.PC);
         }
 
+#ifdef DO_BREAKPOINTS
+        if (check_breakpoints(&GameCube->breakpoints, GameCube->cpu.PC)) {
+            dump_Gekko(&GameCube->cpu);
+            log_debug("Hit breakpoint %08x", GameCube->cpu.PC);
+            GameCube->paused = true;
+        }
+#endif
+
 #ifdef DO_DEBUGGER
-      while (GameCube->paused) {
+        while (GameCube->paused && (GameCube->stepcount == 0)) {
             sleep_ms(16);
+        }
+
+        if (GameCube->stepcount > 0) {
+            if (--GameCube->stepcount == 0) {
+                dump_Gekko(&GameCube->cpu);
+            }
         }
 #endif
     }

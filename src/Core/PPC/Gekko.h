@@ -23,6 +23,7 @@
 
 #define LOG_LINE_LENGTH 0x800
 #define CALL_STACK_LENGTH 0x100
+#define DOL_FILE_NAME_LENGTH 0x100
 
 #define SP GPR[1]
 #define GET_TBL(cpu_ptr) (u32)cpu_ptr->TBR
@@ -70,6 +71,7 @@ typedef struct s_Gekko {
 #ifdef DO_CALL_STACK
     u32 call_stack[CALL_STACK_LENGTH];
     u8 call_stack_pointer;
+    char dol_file_name[DOL_FILE_NAME_LENGTH];
 #endif
 
 } s_Gekko;
@@ -113,8 +115,7 @@ void dump_Gekko_mem_range(s_Gekko* cpu, u32 start, u32 end);
 #define IPL_START_ADDRESS 0x1300000
 void load_IPL_to_Gekko(s_Gekko* cpu);
 
-#define DOL_FILE_OFFSET 0x3000  // DOL file loaded into 80003000
-void load_DOL_to_Gekko(const char file_name[], s_Gekko* cpu);
+void load_DOL_to_Gekko(s_Gekko* cpu, const char file_name[]);
 void format_Gekko(s_Gekko* cpu);
 void step_Gekko(s_Gekko* cpu);
 

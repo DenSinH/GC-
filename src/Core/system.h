@@ -21,6 +21,7 @@ typedef struct s_GameCube {
 
 #ifdef DO_DEBUGGER
     bool paused;
+    u32 stepcount;
 #endif
 
 } s_GameCube ;

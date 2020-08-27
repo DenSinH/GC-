@@ -1,5 +1,7 @@
 #pragma once
 
+#include "debugger.h"
+
 #include "imgui.h"
 
 #include <memory>
@@ -12,13 +14,14 @@
 typedef struct s_console_command {
     const char* command;
     const char* description;
-    const char* (*callback)(char** args, int argc);
+    CONSOLE_COMMAND((*callback));
 } s_console_command;
 
 
 struct ConsoleWidget
 {
     char                         InputBuf[256]{};
+    char                         OutputBuf[MAX_OUTPUT_LENGTH];
     ImVector<char*>              Items;
     std::list<s_console_command> Commands;
     ImVector<char*>              History;
@@ -67,6 +70,7 @@ struct ConsoleWidget
     }
 
     // Portable helpers
+    static void  ToLower(char* string)                           { for ( ; *string; ++string) *string = tolower(*string); }
     static int   Stricmp(const char* s1, const char* s2)         { int d; while ((d = toupper(*s2) - toupper(*s1)) == 0 && *s1) { s1++; s2++; } return d; }
     static int   Strnicmp(const char* s1, const char* s2, int n) { int d = 0; while (n > 0 && (d = toupper(*s2) - toupper(*s1)) == 0 && *s1) { s1++; s2++; n--; } return d; }
     static char* Strdup(const char* s)                           { size_t len = strlen(s) + 1; void* buf = malloc(len); IM_ASSERT(buf); return (char*)memcpy(buf, (const void*)s, len); }
@@ -173,8 +177,15 @@ struct ConsoleWidget
         {
             char* s = InputBuf;
             Strtrim(s);
-            if (s[0])
+            ToLower(s);
+            printf("%s\n", s);
+            if (s[0]) {
                 ExecCommand(s);
+            }
+            else if (History.Size) {
+                strcpy(InputBuf, History[History.Size - 1]);
+                ExecCommand(s);
+            }
             strcpy(s, "");
             reclaim_focus = true;
         }
@@ -187,26 +198,22 @@ struct ConsoleWidget
         ImGui::End();
     }
 
-    const char* Help() {
+    void Help() {
         AddLog("Commands:");
         std::list<s_console_command> :: iterator command_iter;
         for (command_iter = this->Commands.begin(); command_iter != this->Commands.end(); ++command_iter) {
             AddLog("- %s: %s", SANITIZE(command_iter->command), SANITIZE(command_iter->description));
         }
-
-        return NULL;
     }
 
-    const char* Clear() {
+    void Clear() {
         ClearLog();
-        return NULL;
     }
 
-    const char* GetHistory() {
+    void GetHistory() {
         int first = History.Size - 10;
         for (int i = first > 0 ? first : 0; i < History.Size; i++)
             AddLog("%3d: %s\n", i, History[i]);
-        return NULL;
     }
 
     static int SplitCommand(char* command, char** dest) {
@@ -239,8 +246,6 @@ struct ConsoleWidget
             }
         History.push_back(Strdup(command_line));
 
-        // Process command
-        // Process command
         if (Stricmp(command_line, "CLEAR") == 0)
         {
             this->Clear();
@@ -259,6 +264,12 @@ struct ConsoleWidget
             ScrollToBottom = true;
             return;
         }
+        else if (Stricmp(command_line, "ENCOURAGE") == 0)
+        {
+            AddLog("You can do it!");
+            ScrollToBottom = true;
+            return;
+        }
 
         char command[strlen(command_line)];
         strcpy(command, command_line);
@@ -270,14 +281,8 @@ struct ConsoleWidget
         for (command_iter = this->Commands.begin(); command_iter != this->Commands.end(); ++command_iter) {
             if (Stricmp(args[0], command_iter->command) == 0) {
 
-
-                const char* output = command_iter->callback(args, argc);
-                if (output != NULL) {
-                    AddLog("%s", output);
-                }
-                else {
-                    AddLog("NULL");
-                }
+                command_iter->callback(args, argc, this->OutputBuf);
+                AddLog("%s", this->OutputBuf);
 
                 // On command input, we scroll to bottom even if AutoScroll==false
                 ScrollToBottom = true;

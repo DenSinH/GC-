@@ -11,7 +11,7 @@
 #define COMPONENT_MMU 0x02
 
 // change to change verbosity / component logging:
-#define VERBOSITY VERBOSITY_ERROR
+#define VERBOSITY VERBOSITY_DEBUG
 #define COMPONENT_FLAGS 0 // COMPONENT_CPU | COMPONENT_MMU
 
 #define CHECK_SPR_ACCESS

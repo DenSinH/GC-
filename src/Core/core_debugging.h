@@ -1,5 +1,5 @@
-#ifndef GC__DEBUGGING_H
-#define GC__DEBUGGING_H
+#ifndef GC__CORE_DEBUGGING_H
+#define GC__CORE_DEBUGGING_H
 
 #include "flags.h"
 
@@ -26,4 +26,4 @@ static void sleep_ms(int milliseconds){ // cross-platform sleep function
 #endif
 }
 
-#endif //GC__DEBUGGING_H
+#endif //GC__CORE_DEBUGGING_H
