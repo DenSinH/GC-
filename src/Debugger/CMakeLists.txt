@@ -20,7 +20,7 @@ set(IMGUI_HDRS imgui/imconfig.h
                imgui/imstb_truetype.h
                debugger.h
         widgets/console.h
-        widgets/menubar.h widgets/menubar.cpp widgets/log.h widgets/log.cpp)
+        widgets/menubar.h widgets/menubar.cpp widgets/register_viewer.h)
 
 add_library(Debugger ${IMGUI_SRCS} ${IMGUI_HDRS})
 

@@ -9,6 +9,7 @@
 #include "debugger.h"
 #include "widgets/menubar.h"
 #include "widgets/console.h"
+#include "widgets/register_viewer.h"
 #include <stdio.h>
 #include <SDL.h>
 #include <thread>
@@ -39,17 +40,22 @@ using namespace gl;
 #include IMGUI_IMPL_OPENGL_LOADER_CUSTOM
 #endif
 
-struct {
+static struct {
     ConsoleWidget console;
+    RegisterViewer register_viewer;
     bool* shutdown;
 } Debugger;
 
-void add_command(const char* name, const char* description, CONSOLE_COMMAND((*callback))) {
+void add_command(const char* command, const char* description, CONSOLE_COMMAND((*callback))) {
     Debugger.console.AddCommand(s_console_command {
-            .command = name,
+            .command = command,
             .description = description,
             .callback = callback
     });
+}
+
+void add_register_data(char* name, const void* value, bool islong) {
+    Debugger.register_viewer.AddRegister(name, value, islong);
 }
 
 void debugger_init(
@@ -138,6 +144,7 @@ int debugger_run()
 
     // Our state
     bool show_console = true;
+    bool show_register_viewer = true;
     ImVec4 clear_color = ImVec4(0.45f, 0.55f, 0.60f, 1.00f);
 
     // Main loop
@@ -160,9 +167,11 @@ int debugger_run()
         ImGui::NewFrame();
 
         // render the widgets
-        ShowMenuBar(&show_console);
+        ShowMenuBar(&show_console, &show_register_viewer);
         if (show_console)
             Debugger.console.Draw(&show_console);
+        if (show_register_viewer)
+            Debugger.register_viewer.Draw(&show_register_viewer);
 
 #ifdef SHOW_EXAMPLE_MENU
         ImGui::ShowDemoWindow(NULL);

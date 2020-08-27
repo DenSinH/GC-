@@ -89,6 +89,41 @@ void init() {
 
     debugger_init(&global_system->shutdown);
 
+    char name[32];
+
+    add_register_data("PC", &global_system->cpu.PC, false);
+    add_register_data("LR", &global_system->cpu.LR, false);
+    add_register_data("SP", &global_system->cpu.SP, false);
+    add_register_data("CR", &global_system->cpu.CR, false);
+
+    add_register_data("MSR", &global_system->cpu.MSR, false);
+    add_register_data("XER", &global_system->cpu.XER, false);
+    add_register_data("CTR", &global_system->cpu.CTR, false);
+    add_register_data("FPSCR", &global_system->cpu.FPSCR, false);
+
+    add_register_data("", NULL, false);
+
+    for (int i = 0; i < 32; i++) {
+        sprintf(name, "GPR%02d", i);
+        add_register_data(name, &global_system->cpu.GPR[i], false);
+    }
+
+    add_register_data("", NULL, false);
+
+    for (int i = 0; i < 8; i++) {
+        sprintf(name, "GQR%02d", i);
+        add_register_data(name, &global_system->cpu.GQR[i], false);
+    }
+
+    add_register_data("", NULL, false);
+
+    for (int i = 0; i < 32; i++) {
+        sprintf(name, "FPR%02d:SPR0", i);
+        add_register_data(name, &global_system->cpu.FPR[i].PS0, true);
+        sprintf(name, "FPR%02d:SPR1", i);
+        add_register_data(name, &global_system->cpu.FPR[i].PS1, true);
+    }
+
     add_command("RESET", "Resets the system. Add 'pause/freeze/break' to freeze on reload.", reset_system);
     add_command("PAUSE", "Pauses the system.", pause_system);
     add_command("CONTINUE", "Unpauses the system.", unpause_system);

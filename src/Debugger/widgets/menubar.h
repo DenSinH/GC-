@@ -1,3 +1,3 @@
 #pragma once
 
-void ShowMenuBar(bool* show_console);
+void ShowMenuBar(bool* console_enabled, bool* register_viewer_enabled);
