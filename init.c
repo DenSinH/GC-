@@ -1,4 +1,5 @@
 #include "src/Core/system.h"
+#include "src/Core/PPC/MMU.h"
 #include "src/Debugger/debugger.h"
 
 #include "debugging.h"
@@ -83,11 +84,28 @@ CONSOLE_COMMAND(get_state) {
     dump_Gekko(&global_system->cpu);
 }
 
+u32 valid_address_check(u32 address) {
+    switch (address >> 20) {
+        case 0x000 ... 0x017:
+        case 0x800 ... 0x817:
+        case 0xc00 ... 0xc17:
+            return MASK_24MB(address);
+        default:
+            return 0;
+    }
+}
+
 
 void init() {
     global_system = init_system();
 
-    debugger_init(&global_system->shutdown);
+    debugger_init(
+            &global_system->shutdown,
+            &global_system->cpu.PC,
+            global_system->cpu.memory,
+            valid_address_check,
+            &global_system->cpu.TBR
+            );
 
     char name[32];
 

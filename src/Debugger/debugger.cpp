@@ -8,8 +8,10 @@
 #include "imgui_impl_opengl3.h"
 #include "debugger.h"
 #include "widgets/menubar.h"
+#include "widgets/overlay.h"
 #include "widgets/console.h"
 #include "widgets/register_viewer.h"
+#include "widgets/disassembly_viewer.h"
 #include <stdio.h>
 #include <SDL.h>
 #include <thread>
@@ -43,6 +45,8 @@ using namespace gl;
 static struct {
     ConsoleWidget console;
     RegisterViewer register_viewer;
+    DisassemblyViewer disassembly_viewer;
+    Overlay overlay;
     bool* shutdown;
 } Debugger;
 
@@ -59,9 +63,17 @@ void add_register_data(char* name, const void* value, bool islong) {
 }
 
 void debugger_init(
-        bool* shutdown
+        bool* shutdown,
+        uint32_t* PC,
+        uint8_t * memory,
+        uint32_t (*valid_address_mask)(uint32_t),
+        uint64_t* timer
         ) {
     Debugger.shutdown = shutdown;
+    Debugger.disassembly_viewer.PC = PC;
+    Debugger.disassembly_viewer.memory = memory;
+    Debugger.disassembly_viewer.valid_address_mask = valid_address_mask;
+    Debugger.overlay.timer = timer;
 }
 
 // Main code
@@ -98,7 +110,7 @@ int debugger_run()
     SDL_GL_SetAttribute(SDL_GL_DEPTH_SIZE, 24);
     SDL_GL_SetAttribute(SDL_GL_STENCIL_SIZE, 8);
     SDL_WindowFlags window_flags = (SDL_WindowFlags)(SDL_WINDOW_OPENGL | SDL_WINDOW_RESIZABLE | SDL_WINDOW_ALLOW_HIGHDPI);
-    SDL_Window* window = SDL_CreateWindow("Dear ImGui SDL2+OpenGL3 example", SDL_WINDOWPOS_CENTERED, SDL_WINDOWPOS_CENTERED, 1280, 720, window_flags);
+    SDL_Window* window = SDL_CreateWindow("GC-", SDL_WINDOWPOS_CENTERED, SDL_WINDOWPOS_CENTERED, 1280, 720, window_flags);
     SDL_GLContext gl_context = SDL_GL_CreateContext(window);
     SDL_GL_MakeCurrent(window, gl_context);
     SDL_GL_SetSwapInterval(1); // Enable vsync
@@ -131,6 +143,8 @@ int debugger_run()
     IMGUI_CHECKVERSION();
     ImGui::CreateContext();
     ImGuiIO& io = ImGui::GetIO(); (void)io;
+
+    Debugger.overlay.io = &io;
     //io.ConfigFlags |= ImGuiConfigFlags_NavEnableKeyboard;     // Enable Keyboard Controls
     //io.ConfigFlags |= ImGuiConfigFlags_NavEnableGamepad;      // Enable Gamepad Controls
 
@@ -145,6 +159,8 @@ int debugger_run()
     // Our state
     bool show_console = true;
     bool show_register_viewer = true;
+    bool show_disassembly_viewer = true;
+    bool show_overlay = true;
     ImVec4 clear_color = ImVec4(0.45f, 0.55f, 0.60f, 1.00f);
 
     // Main loop
@@ -167,11 +183,21 @@ int debugger_run()
         ImGui::NewFrame();
 
         // render the widgets
-        ShowMenuBar(&show_console, &show_register_viewer);
+        ShowMenuBar(
+                &show_console,
+                &show_register_viewer,
+                &show_disassembly_viewer,
+                &show_overlay
+                );
         if (show_console)
             Debugger.console.Draw(&show_console);
         if (show_register_viewer)
             Debugger.register_viewer.Draw(&show_register_viewer);
+        if (show_disassembly_viewer)
+            Debugger.disassembly_viewer.Draw(&show_disassembly_viewer);
+        if (show_overlay) {
+            Debugger.overlay.Draw(&show_overlay);
+        }
 
 #ifdef SHOW_EXAMPLE_MENU
         ImGui::ShowDemoWindow(NULL);

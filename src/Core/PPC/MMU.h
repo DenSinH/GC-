@@ -6,6 +6,8 @@
 
 #include "flags.h"
 
+#define MASK_24MB(_address) ((_address & 0x01000000) | (_address & 0x7fffff))
+
 #ifdef CHECK_HR_ACCESS
 
     #define ASSERT_HR_ACCESS(section, index) \

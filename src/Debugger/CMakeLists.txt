@@ -1,14 +1,20 @@
 find_package(SDL2 CONFIG REQUIRED)
 find_package(gl3w CONFIG REQUIRED)
 
+find_library(Capstone capstone_dll REQUIRED)
+find_path(Capstone_INCLUDE_DIR capstone.h PATH_SUFFIXES capstone)
+set(Capstone_INCLUDE_DIR ${Capstone_INCLUDE_DIR}/../)
+
 set(IMGUI_SRCS imgui/imgui.cpp
                imgui/imgui_demo.cpp
                imgui/imgui_draw.cpp
                imgui/imgui_impl_opengl3.cpp
                imgui/imgui_impl_sdl.cpp
                imgui/imgui_widgets.cpp
-               debugger.cpp
-    )
+        debugger.cpp
+        widgets/menubar.cpp
+        widgets/disassemble.c
+        )
 
 set(IMGUI_HDRS imgui/imconfig.h
                imgui/imgui.h
@@ -18,9 +24,14 @@ set(IMGUI_HDRS imgui/imconfig.h
                imgui/imstb_rectpack.h
                imgui/imstb_textedit.h
                imgui/imstb_truetype.h
-               debugger.h
+        debugger.h
         widgets/console.h
-        widgets/menubar.h widgets/menubar.cpp widgets/register_viewer.h)
+        widgets/menubar.h
+        widgets/register_viewer.h
+        widgets/disassembly_viewer.h
+        widgets/overlay.h
+        widgets/disassemble.h
+        )
 
 add_library(Debugger ${IMGUI_SRCS} ${IMGUI_HDRS})
 
@@ -31,4 +42,5 @@ set_target_properties(Debugger PROPERTIES
                       CXX_EXTENSIONS ON)
 
 target_link_libraries(Debugger PRIVATE SDL2::SDL2 SDL2::SDL2main unofficial::gl3w::gl3w)
+target_link_libraries(Debugger PRIVATE ${Capstone})
 target_include_directories(Debugger PRIVATE imgui)

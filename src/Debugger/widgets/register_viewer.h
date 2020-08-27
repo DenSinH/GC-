@@ -3,8 +3,6 @@
 #include <stdint.h>
 #include <inttypes.h>
 
-#include "register_viewer.h"
-
 #include "imgui.h"
 
 #define MAX_REGISTER_NAME_LENGTH 16
@@ -44,9 +42,9 @@ struct RegisterViewer
     void Draw(bool* p_open)
     {
         ImGui::SetNextWindowSizeConstraints(ImVec2(-1, 0),    ImVec2(-1, FLT_MAX));
-        ImGui::SetNextWindowSize(ImVec2(columns * 15, 600), ImGuiCond_FirstUseEver);
+        ImGui::SetNextWindowSize(ImVec2(600, 600), ImGuiCond_Once);
 
-        if (!ImGui::Begin("Register viewer", p_open))
+        if (!ImGui::Begin("Register Viewer", p_open))
         {
             ImGui::End();
             return;

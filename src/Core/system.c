@@ -55,7 +55,7 @@ void run_system(s_GameCube* GameCube) {
 #endif
 
 #ifdef DO_DEBUGGER
-        while (GameCube->paused && (GameCube->stepcount == 0)) {
+        while (GameCube->paused && (GameCube->stepcount == 0) && !GameCube->shutdown) {
             sleep_ms(16);
         }
 

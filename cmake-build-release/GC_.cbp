@@ -1,0 +1,403 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<CodeBlocks_project_file>
+	<FileVersion major="1" minor="6"/>
+	<Project>
+		<Option title="GC_"/>
+		<Option makefile_is_custom="1"/>
+		<Option compiler="clang"/>
+		<Option virtualFolders="CMake Files\;CMake Files\..\;CMake Files\..\..\;CMake Files\..\..\vcpkg\;CMake Files\..\..\vcpkg\vcpkg\;CMake Files\..\..\vcpkg\vcpkg\scripts\;CMake Files\..\..\vcpkg\vcpkg\scripts\buildsystems\;CMake Files\..\..\vcpkg\vcpkg\installed\;CMake Files\..\..\vcpkg\vcpkg\installed\x86-windows\;CMake Files\..\..\vcpkg\vcpkg\installed\x86-windows\share\;CMake Files\..\..\vcpkg\vcpkg\installed\x86-windows\share\sdl2\;CMake Files\..\..\vcpkg\vcpkg\installed\x86-windows\share\gl3w\;CMake Files\src\;CMake Files\src\Loader\;CMake Files\src\Core\;CMake Files\src\Debugger\;"/>
+		<Build>
+			<Target title="all">
+				<Option working_dir="D:/CProjects/GC-/cmake-build-release"/>
+				<Option type="4"/>
+				<MakeCommands>
+					<Build command="nmake /NOLOGO /f D:\CProjects\GC-\cmake-build-release\Makefile VERBOSE=1 all"/>
+					<CompileFile command="nmake /NOLOGO /f D:\CProjects\GC-\cmake-build-release\Makefile VERBOSE=1 &quot;$file&quot;"/>
+					<Clean command="nmake /NOLOGO /f D:\CProjects\GC-\cmake-build-release\Makefile VERBOSE=1 clean"/>
+					<DistClean command="nmake /NOLOGO /f D:\CProjects\GC-\cmake-build-release\Makefile VERBOSE=1 clean"/>
+				</MakeCommands>
+			</Target>
+			<Target title="edit_cache">
+				<Option working_dir="D:/CProjects/GC-/cmake-build-release"/>
+				<Option type="4"/>
+				<MakeCommands>
+					<Build command="nmake /NOLOGO /f D:\CProjects\GC-\cmake-build-release\Makefile VERBOSE=1 edit_cache"/>
+					<CompileFile command="nmake /NOLOGO /f D:\CProjects\GC-\cmake-build-release\Makefile VERBOSE=1 &quot;$file&quot;"/>
+					<Clean command="nmake /NOLOGO /f D:\CProjects\GC-\cmake-build-release\Makefile VERBOSE=1 clean"/>
+					<DistClean command="nmake /NOLOGO /f D:\CProjects\GC-\cmake-build-release\Makefile VERBOSE=1 clean"/>
+				</MakeCommands>
+			</Target>
+			<Target title="GC_">
+				<Option output="D:/CProjects/GC-/cmake-build-release/GC_.exe" prefix_auto="0" extension_auto="0"/>
+				<Option working_dir="D:/CProjects/GC-/cmake-build-release"/>
+				<Option object_output="./"/>
+				<Option type="1"/>
+				<Option compiler="clang"/>
+				<Compiler>
+					<Add directory="D:/CProjects/GC-/./include"/>
+					<Add directory="D:/CProjects/GC-/src/Core"/>
+					<Add directory="D:/CProjects/GC-/src/Loader"/>
+				</Compiler>
+				<MakeCommands>
+					<Build command="nmake /NOLOGO /f D:\CProjects\GC-\cmake-build-release\Makefile VERBOSE=1 GC_"/>
+					<CompileFile command="nmake /NOLOGO /f D:\CProjects\GC-\cmake-build-release\Makefile VERBOSE=1 &quot;$file&quot;"/>
+					<Clean command="nmake /NOLOGO /f D:\CProjects\GC-\cmake-build-release\Makefile VERBOSE=1 clean"/>
+					<DistClean command="nmake /NOLOGO /f D:\CProjects\GC-\cmake-build-release\Makefile VERBOSE=1 clean"/>
+				</MakeCommands>
+			</Target>
+			<Target title="GC_/fast">
+				<Option output="D:/CProjects/GC-/cmake-build-release/GC_.exe" prefix_auto="0" extension_auto="0"/>
+				<Option working_dir="D:/CProjects/GC-/cmake-build-release"/>
+				<Option object_output="./"/>
+				<Option type="1"/>
+				<Option compiler="clang"/>
+				<Compiler>
+					<Add directory="D:/CProjects/GC-/./include"/>
+					<Add directory="D:/CProjects/GC-/src/Core"/>
+					<Add directory="D:/CProjects/GC-/src/Loader"/>
+				</Compiler>
+				<MakeCommands>
+					<Build command="nmake /NOLOGO /f D:\CProjects\GC-\cmake-build-release\Makefile VERBOSE=1 GC_/fast"/>
+					<CompileFile command="nmake /NOLOGO /f D:\CProjects\GC-\cmake-build-release\Makefile VERBOSE=1 &quot;$file&quot;"/>
+					<Clean command="nmake /NOLOGO /f D:\CProjects\GC-\cmake-build-release\Makefile VERBOSE=1 clean"/>
+					<DistClean command="nmake /NOLOGO /f D:\CProjects\GC-\cmake-build-release\Makefile VERBOSE=1 clean"/>
+				</MakeCommands>
+			</Target>
+			<Target title="rebuild_cache">
+				<Option working_dir="D:/CProjects/GC-/cmake-build-release"/>
+				<Option type="4"/>
+				<MakeCommands>
+					<Build command="nmake /NOLOGO /f D:\CProjects\GC-\cmake-build-release\Makefile VERBOSE=1 rebuild_cache"/>
+					<CompileFile command="nmake /NOLOGO /f D:\CProjects\GC-\cmake-build-release\Makefile VERBOSE=1 &quot;$file&quot;"/>
+					<Clean command="nmake /NOLOGO /f D:\CProjects\GC-\cmake-build-release\Makefile VERBOSE=1 clean"/>
+					<DistClean command="nmake /NOLOGO /f D:\CProjects\GC-\cmake-build-release\Makefile VERBOSE=1 clean"/>
+				</MakeCommands>
+			</Target>
+			<Target title="Loader">
+				<Option output="D:/CProjects/GC-/cmake-build-release/src/Loader/Loader.lib" prefix_auto="0" extension_auto="0"/>
+				<Option working_dir="D:/CProjects/GC-/cmake-build-release/src/Loader"/>
+				<Option object_output="./"/>
+				<Option type="2"/>
+				<Option compiler="clang"/>
+				<Compiler>
+					<Add directory="D:/CProjects/GC-/src/Loader/../../include"/>
+					<Add directory="D:/CProjects/GC-/src/Loader"/>
+				</Compiler>
+				<MakeCommands>
+					<Build command="nmake /NOLOGO /f D:\CProjects\GC-\cmake-build-release\src\Loader\Makefile VERBOSE=1 Loader"/>
+					<CompileFile command="nmake /NOLOGO /f D:\CProjects\GC-\cmake-build-release\src\Loader\Makefile VERBOSE=1 &quot;$file&quot;"/>
+					<Clean command="nmake /NOLOGO /f D:\CProjects\GC-\cmake-build-release\src\Loader\Makefile VERBOSE=1 clean"/>
+					<DistClean command="nmake /NOLOGO /f D:\CProjects\GC-\cmake-build-release\src\Loader\Makefile VERBOSE=1 clean"/>
+				</MakeCommands>
+			</Target>
+			<Target title="Loader/fast">
+				<Option output="D:/CProjects/GC-/cmake-build-release/src/Loader/Loader.lib" prefix_auto="0" extension_auto="0"/>
+				<Option working_dir="D:/CProjects/GC-/cmake-build-release/src/Loader"/>
+				<Option object_output="./"/>
+				<Option type="2"/>
+				<Option compiler="clang"/>
+				<Compiler>
+					<Add directory="D:/CProjects/GC-/src/Loader/../../include"/>
+					<Add directory="D:/CProjects/GC-/src/Loader"/>
+				</Compiler>
+				<MakeCommands>
+					<Build command="nmake /NOLOGO /f D:\CProjects\GC-\cmake-build-release\src\Loader\Makefile VERBOSE=1 Loader/fast"/>
+					<CompileFile command="nmake /NOLOGO /f D:\CProjects\GC-\cmake-build-release\src\Loader\Makefile VERBOSE=1 &quot;$file&quot;"/>
+					<Clean command="nmake /NOLOGO /f D:\CProjects\GC-\cmake-build-release\src\Loader\Makefile VERBOSE=1 clean"/>
+					<DistClean command="nmake /NOLOGO /f D:\CProjects\GC-\cmake-build-release\src\Loader\Makefile VERBOSE=1 clean"/>
+				</MakeCommands>
+			</Target>
+			<Target title="Core">
+				<Option output="D:/CProjects/GC-/cmake-build-release/src/Core/Core.lib" prefix_auto="0" extension_auto="0"/>
+				<Option working_dir="D:/CProjects/GC-/cmake-build-release/src/Core"/>
+				<Option object_output="./"/>
+				<Option type="2"/>
+				<Option compiler="clang"/>
+				<Compiler>
+					<Add directory="D:/CProjects/GC-/src/Core/../../include"/>
+					<Add directory="D:/CProjects/GC-/src/Core"/>
+					<Add directory="D:/CProjects/GC-/src/Loader"/>
+				</Compiler>
+				<MakeCommands>
+					<Build command="nmake /NOLOGO /f D:\CProjects\GC-\cmake-build-release\src\Core\Makefile VERBOSE=1 Core"/>
+					<CompileFile command="nmake /NOLOGO /f D:\CProjects\GC-\cmake-build-release\src\Core\Makefile VERBOSE=1 &quot;$file&quot;"/>
+					<Clean command="nmake /NOLOGO /f D:\CProjects\GC-\cmake-build-release\src\Core\Makefile VERBOSE=1 clean"/>
+					<DistClean command="nmake /NOLOGO /f D:\CProjects\GC-\cmake-build-release\src\Core\Makefile VERBOSE=1 clean"/>
+				</MakeCommands>
+			</Target>
+			<Target title="Core/fast">
+				<Option output="D:/CProjects/GC-/cmake-build-release/src/Core/Core.lib" prefix_auto="0" extension_auto="0"/>
+				<Option working_dir="D:/CProjects/GC-/cmake-build-release/src/Core"/>
+				<Option object_output="./"/>
+				<Option type="2"/>
+				<Option compiler="clang"/>
+				<Compiler>
+					<Add directory="D:/CProjects/GC-/src/Core/../../include"/>
+					<Add directory="D:/CProjects/GC-/src/Core"/>
+					<Add directory="D:/CProjects/GC-/src/Loader"/>
+				</Compiler>
+				<MakeCommands>
+					<Build command="nmake /NOLOGO /f D:\CProjects\GC-\cmake-build-release\src\Core\Makefile VERBOSE=1 Core/fast"/>
+					<CompileFile command="nmake /NOLOGO /f D:\CProjects\GC-\cmake-build-release\src\Core\Makefile VERBOSE=1 &quot;$file&quot;"/>
+					<Clean command="nmake /NOLOGO /f D:\CProjects\GC-\cmake-build-release\src\Core\Makefile VERBOSE=1 clean"/>
+					<DistClean command="nmake /NOLOGO /f D:\CProjects\GC-\cmake-build-release\src\Core\Makefile VERBOSE=1 clean"/>
+				</MakeCommands>
+			</Target>
+			<Target title="Debugger">
+				<Option output="D:/CProjects/GC-/cmake-build-release/src/Debugger/Debugger.lib" prefix_auto="0" extension_auto="0"/>
+				<Option working_dir="D:/CProjects/GC-/cmake-build-release/src/Debugger"/>
+				<Option object_output="./"/>
+				<Option type="2"/>
+				<Option compiler="clang"/>
+				<Compiler>
+					<Add directory="D:/CProjects/GC-/src/Debugger/imgui"/>
+					<Add directory="D:/vcpkg/vcpkg/installed/x86-windows/include"/>
+					<Add directory="D:/vcpkg/vcpkg/installed/x86-windows/include/SDL2"/>
+				</Compiler>
+				<MakeCommands>
+					<Build command="nmake /NOLOGO /f D:\CProjects\GC-\cmake-build-release\src\Debugger\Makefile VERBOSE=1 Debugger"/>
+					<CompileFile command="nmake /NOLOGO /f D:\CProjects\GC-\cmake-build-release\src\Debugger\Makefile VERBOSE=1 &quot;$file&quot;"/>
+					<Clean command="nmake /NOLOGO /f D:\CProjects\GC-\cmake-build-release\src\Debugger\Makefile VERBOSE=1 clean"/>
+					<DistClean command="nmake /NOLOGO /f D:\CProjects\GC-\cmake-build-release\src\Debugger\Makefile VERBOSE=1 clean"/>
+				</MakeCommands>
+			</Target>
+			<Target title="Debugger/fast">
+				<Option output="D:/CProjects/GC-/cmake-build-release/src/Debugger/Debugger.lib" prefix_auto="0" extension_auto="0"/>
+				<Option working_dir="D:/CProjects/GC-/cmake-build-release/src/Debugger"/>
+				<Option object_output="./"/>
+				<Option type="2"/>
+				<Option compiler="clang"/>
+				<Compiler>
+					<Add directory="D:/CProjects/GC-/src/Debugger/imgui"/>
+					<Add directory="D:/vcpkg/vcpkg/installed/x86-windows/include"/>
+					<Add directory="D:/vcpkg/vcpkg/installed/x86-windows/include/SDL2"/>
+				</Compiler>
+				<MakeCommands>
+					<Build command="nmake /NOLOGO /f D:\CProjects\GC-\cmake-build-release\src\Debugger\Makefile VERBOSE=1 Debugger/fast"/>
+					<CompileFile command="nmake /NOLOGO /f D:\CProjects\GC-\cmake-build-release\src\Debugger\Makefile VERBOSE=1 &quot;$file&quot;"/>
+					<Clean command="nmake /NOLOGO /f D:\CProjects\GC-\cmake-build-release\src\Debugger\Makefile VERBOSE=1 clean"/>
+					<DistClean command="nmake /NOLOGO /f D:\CProjects\GC-\cmake-build-release\src\Debugger\Makefile VERBOSE=1 clean"/>
+				</MakeCommands>
+			</Target>
+		</Build>
+		<Unit filename="D:/CProjects/GC-/debugging.h">
+			<Option target="GC_"/>
+		</Unit>
+		<Unit filename="D:/CProjects/GC-/debugthread.c">
+			<Option target="GC_"/>
+		</Unit>
+		<Unit filename="D:/CProjects/GC-/debugthread.h">
+			<Option target="GC_"/>
+		</Unit>
+		<Unit filename="D:/CProjects/GC-/include/default.h">
+			<Option target="GC_"/>
+		</Unit>
+		<Unit filename="D:/CProjects/GC-/include/flags.h">
+			<Option target="GC_"/>
+		</Unit>
+		<Unit filename="D:/CProjects/GC-/include/helpers.h">
+			<Option target="GC_"/>
+		</Unit>
+		<Unit filename="D:/CProjects/GC-/include/log.h">
+			<Option target="GC_"/>
+		</Unit>
+		<Unit filename="D:/CProjects/GC-/main.c">
+			<Option target="GC_"/>
+		</Unit>
+		<Unit filename="D:/CProjects/GC-/src/Core/Breakpoints/breakpoints.c">
+			<Option target="Core"/>
+		</Unit>
+		<Unit filename="D:/CProjects/GC-/src/Core/Breakpoints/breakpoints.h">
+			<Option target="Core"/>
+		</Unit>
+		<Unit filename="D:/CProjects/GC-/src/Core/PPC/Gekko.c">
+			<Option target="Core"/>
+		</Unit>
+		<Unit filename="D:/CProjects/GC-/src/Core/PPC/Gekko.h">
+			<Option target="Core"/>
+		</Unit>
+		<Unit filename="D:/CProjects/GC-/src/Core/PPC/Gekko_init.c">
+			<Option target="Core"/>
+		</Unit>
+		<Unit filename="D:/CProjects/GC-/src/Core/PPC/MMU.c">
+			<Option target="Core"/>
+		</Unit>
+		<Unit filename="D:/CProjects/GC-/src/Core/PPC/MMU.h">
+			<Option target="Core"/>
+		</Unit>
+		<Unit filename="D:/CProjects/GC-/src/Core/PPC/gekko_instruction.h">
+			<Option target="Core"/>
+		</Unit>
+		<Unit filename="D:/CProjects/GC-/src/Core/PPC/instructions.c">
+			<Option target="Core"/>
+		</Unit>
+		<Unit filename="D:/CProjects/GC-/src/Core/PPC/instructions.h">
+			<Option target="Core"/>
+		</Unit>
+		<Unit filename="D:/CProjects/GC-/src/Core/PPC/registers/FPR.h">
+			<Option target="Core"/>
+		</Unit>
+		<Unit filename="D:/CProjects/GC-/src/Core/PPC/registers/GQR.h">
+			<Option target="Core"/>
+		</Unit>
+		<Unit filename="D:/CProjects/GC-/src/Core/PPC/registers/HID.h">
+			<Option target="Core"/>
+		</Unit>
+		<Unit filename="D:/CProjects/GC-/src/Core/PPC/registers/MSR.h">
+			<Option target="Core"/>
+		</Unit>
+		<Unit filename="D:/CProjects/GC-/src/Core/PPC/registers/SPR_general.h">
+			<Option target="Core"/>
+		</Unit>
+		<Unit filename="D:/CProjects/GC-/src/Core/PPC/registers/XER.h">
+			<Option target="Core"/>
+		</Unit>
+		<Unit filename="D:/CProjects/GC-/src/Core/PPC/registers/condition_register.h">
+			<Option target="Core"/>
+		</Unit>
+		<Unit filename="D:/CProjects/GC-/src/Core/PPC/registers/floating_point_status_condition_register.h">
+			<Option target="Core"/>
+		</Unit>
+		<Unit filename="D:/CProjects/GC-/src/Core/PPC/registers/hardware_registers.c">
+			<Option target="Core"/>
+		</Unit>
+		<Unit filename="D:/CProjects/GC-/src/Core/PPC/registers/hardware_registers.h">
+			<Option target="Core"/>
+		</Unit>
+		<Unit filename="D:/CProjects/GC-/src/Core/core_debugging.h">
+			<Option target="Core"/>
+		</Unit>
+		<Unit filename="D:/CProjects/GC-/src/Core/system.c">
+			<Option target="Core"/>
+		</Unit>
+		<Unit filename="D:/CProjects/GC-/src/Core/system.h">
+			<Option target="Core"/>
+		</Unit>
+		<Unit filename="D:/CProjects/GC-/src/Debugger/debugger.cpp">
+			<Option target="Debugger"/>
+		</Unit>
+		<Unit filename="D:/CProjects/GC-/src/Debugger/debugger.h">
+			<Option target="Debugger"/>
+		</Unit>
+		<Unit filename="D:/CProjects/GC-/src/Debugger/imgui/imconfig.h">
+			<Option target="Debugger"/>
+		</Unit>
+		<Unit filename="D:/CProjects/GC-/src/Debugger/imgui/imgui.cpp">
+			<Option target="Debugger"/>
+		</Unit>
+		<Unit filename="D:/CProjects/GC-/src/Debugger/imgui/imgui.h">
+			<Option target="Debugger"/>
+		</Unit>
+		<Unit filename="D:/CProjects/GC-/src/Debugger/imgui/imgui_demo.cpp">
+			<Option target="Debugger"/>
+		</Unit>
+		<Unit filename="D:/CProjects/GC-/src/Debugger/imgui/imgui_draw.cpp">
+			<Option target="Debugger"/>
+		</Unit>
+		<Unit filename="D:/CProjects/GC-/src/Debugger/imgui/imgui_impl_opengl3.cpp">
+			<Option target="Debugger"/>
+		</Unit>
+		<Unit filename="D:/CProjects/GC-/src/Debugger/imgui/imgui_impl_opengl3.h">
+			<Option target="Debugger"/>
+		</Unit>
+		<Unit filename="D:/CProjects/GC-/src/Debugger/imgui/imgui_impl_sdl.cpp">
+			<Option target="Debugger"/>
+		</Unit>
+		<Unit filename="D:/CProjects/GC-/src/Debugger/imgui/imgui_impl_sdl.h">
+			<Option target="Debugger"/>
+		</Unit>
+		<Unit filename="D:/CProjects/GC-/src/Debugger/imgui/imgui_internal.h">
+			<Option target="Debugger"/>
+		</Unit>
+		<Unit filename="D:/CProjects/GC-/src/Debugger/imgui/imgui_widgets.cpp">
+			<Option target="Debugger"/>
+		</Unit>
+		<Unit filename="D:/CProjects/GC-/src/Debugger/imgui/imstb_rectpack.h">
+			<Option target="Debugger"/>
+		</Unit>
+		<Unit filename="D:/CProjects/GC-/src/Debugger/imgui/imstb_textedit.h">
+			<Option target="Debugger"/>
+		</Unit>
+		<Unit filename="D:/CProjects/GC-/src/Debugger/imgui/imstb_truetype.h">
+			<Option target="Debugger"/>
+		</Unit>
+		<Unit filename="D:/CProjects/GC-/src/Debugger/widgets/console.h">
+			<Option target="Debugger"/>
+		</Unit>
+		<Unit filename="D:/CProjects/GC-/src/Debugger/widgets/disassemble.c">
+			<Option target="Debugger"/>
+		</Unit>
+		<Unit filename="D:/CProjects/GC-/src/Debugger/widgets/disassemble.h">
+			<Option target="Debugger"/>
+		</Unit>
+		<Unit filename="D:/CProjects/GC-/src/Debugger/widgets/disassembly_viewer.h">
+			<Option target="Debugger"/>
+		</Unit>
+		<Unit filename="D:/CProjects/GC-/src/Debugger/widgets/menubar.cpp">
+			<Option target="Debugger"/>
+		</Unit>
+		<Unit filename="D:/CProjects/GC-/src/Debugger/widgets/menubar.h">
+			<Option target="Debugger"/>
+		</Unit>
+		<Unit filename="D:/CProjects/GC-/src/Debugger/widgets/overlay.h">
+			<Option target="Debugger"/>
+		</Unit>
+		<Unit filename="D:/CProjects/GC-/src/Debugger/widgets/register_viewer.h">
+			<Option target="Debugger"/>
+		</Unit>
+		<Unit filename="D:/CProjects/GC-/src/Loader/helpers.c">
+			<Option target="Loader"/>
+		</Unit>
+		<Unit filename="D:/CProjects/GC-/src/Loader/helpers.h">
+			<Option target="Loader"/>
+		</Unit>
+		<Unit filename="D:/CProjects/GC-/src/Loader/loader.c">
+			<Option target="Loader"/>
+		</Unit>
+		<Unit filename="D:/CProjects/GC-/src/Loader/loader.h">
+			<Option target="Loader"/>
+		</Unit>
+		<Unit filename="D:/CProjects/GC-/CMakeLists.txt">
+			<Option virtualFolder="CMake Files\"/>
+		</Unit>
+		<Unit filename="D:/CProjects/GC-/../../vcpkg/vcpkg/scripts/buildsystems/vcpkg.cmake">
+			<Option virtualFolder="CMake Files\..\..\vcpkg\vcpkg\scripts\buildsystems\"/>
+		</Unit>
+		<Unit filename="D:/CProjects/GC-/../../vcpkg/vcpkg/installed/x86-windows/share/sdl2/SDL2Config.cmake">
+			<Option virtualFolder="CMake Files\..\..\vcpkg\vcpkg\installed\x86-windows\share\sdl2\"/>
+		</Unit>
+		<Unit filename="D:/CProjects/GC-/../../vcpkg/vcpkg/installed/x86-windows/share/sdl2/SDL2ConfigVersion.cmake">
+			<Option virtualFolder="CMake Files\..\..\vcpkg\vcpkg\installed\x86-windows\share\sdl2\"/>
+		</Unit>
+		<Unit filename="D:/CProjects/GC-/../../vcpkg/vcpkg/installed/x86-windows/share/sdl2/SDL2Targets-debug.cmake">
+			<Option virtualFolder="CMake Files\..\..\vcpkg\vcpkg\installed\x86-windows\share\sdl2\"/>
+		</Unit>
+		<Unit filename="D:/CProjects/GC-/../../vcpkg/vcpkg/installed/x86-windows/share/sdl2/SDL2Targets-release.cmake">
+			<Option virtualFolder="CMake Files\..\..\vcpkg\vcpkg\installed\x86-windows\share\sdl2\"/>
+		</Unit>
+		<Unit filename="D:/CProjects/GC-/../../vcpkg/vcpkg/installed/x86-windows/share/sdl2/SDL2Targets.cmake">
+			<Option virtualFolder="CMake Files\..\..\vcpkg\vcpkg\installed\x86-windows\share\sdl2\"/>
+		</Unit>
+		<Unit filename="D:/CProjects/GC-/../../vcpkg/vcpkg/installed/x86-windows/share/sdl2/vcpkg-cmake-wrapper.cmake">
+			<Option virtualFolder="CMake Files\..\..\vcpkg\vcpkg\installed\x86-windows\share\sdl2\"/>
+		</Unit>
+		<Unit filename="D:/CProjects/GC-/../../vcpkg/vcpkg/installed/x86-windows/share/gl3w/gl3wConfig-debug.cmake">
+			<Option virtualFolder="CMake Files\..\..\vcpkg\vcpkg\installed\x86-windows\share\gl3w\"/>
+		</Unit>
+		<Unit filename="D:/CProjects/GC-/../../vcpkg/vcpkg/installed/x86-windows/share/gl3w/gl3wConfig-release.cmake">
+			<Option virtualFolder="CMake Files\..\..\vcpkg\vcpkg\installed\x86-windows\share\gl3w\"/>
+		</Unit>
+		<Unit filename="D:/CProjects/GC-/../../vcpkg/vcpkg/installed/x86-windows/share/gl3w/gl3wConfig.cmake">
+			<Option virtualFolder="CMake Files\..\..\vcpkg\vcpkg\installed\x86-windows\share\gl3w\"/>
+		</Unit>
+		<Unit filename="D:/CProjects/GC-/src/Loader/CMakeLists.txt">
+			<Option virtualFolder="CMake Files\src\Loader\"/>
+		</Unit>
+		<Unit filename="D:/CProjects/GC-/src/Core/CMakeLists.txt">
+			<Option virtualFolder="CMake Files\src\Core\"/>
+		</Unit>
+		<Unit filename="D:/CProjects/GC-/src/Debugger/CMakeLists.txt">
+			<Option virtualFolder="CMake Files\src\Debugger\"/>
+		</Unit>
+	</Project>
+</CodeBlocks_project_file>

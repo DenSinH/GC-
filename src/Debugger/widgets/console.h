@@ -271,17 +271,17 @@ struct ConsoleWidget
             return;
         }
 
-        char command[strlen(command_line)];
+        char command[strlen(command_line) + 1];
         strcpy(command, command_line);
 
         char* args[MAX_ARGS + 1];
         int argc = ConsoleWidget::SplitCommand(command, args);
 
-        std::list<s_console_command> :: iterator command_iter;
-        for (command_iter = this->Commands.begin(); command_iter != this->Commands.end(); ++command_iter) {
-            if (Stricmp(args[0], command_iter->command) == 0) {
+        for (auto& cmd : this->Commands) {
+            printf("%s : %s\n", args[0], cmd.command);
+            if (Stricmp(args[0], cmd.command) == 0) {
 
-                command_iter->callback(args, argc, this->OutputBuf);
+                cmd.callback(args, argc, this->OutputBuf);
                 AddLog("%s", this->OutputBuf);
 
                 // On command input, we scroll to bottom even if AutoScroll==false

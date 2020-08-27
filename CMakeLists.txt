@@ -1,8 +1,6 @@
 cmake_minimum_required(VERSION 3.17)
 project(GC_ LANGUAGES CXX C)
 
-find_package(Threads)
-
 set(CMAKE_C_STANDARD 11)
 
 set(CMAKE_MODULE_PATH ${PROJECT_SOURCE_DIR}/cmake)
