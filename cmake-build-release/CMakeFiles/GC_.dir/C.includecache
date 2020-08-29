@@ -30,12 +30,6 @@ stdlib.h
 default.h
 D:/CProjects/GC-/default.h
 
-D:/CProjects/GC-/debugthread.c
-debugthread.h
-D:/CProjects/GC-/debugthread.h
-src/Debugger/debugger.h
-D:/CProjects/GC-/src/Debugger/debugger.h
-
 D:/CProjects/GC-/debugthread.h
 windows.h
 -

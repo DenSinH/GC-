@@ -27,6 +27,7 @@ src\Debugger\CMakeFiles\Debugger.dir\debugger.cpp.obj: ..\src\Debugger\debugger.
 src\Debugger\CMakeFiles\Debugger.dir\debugger.cpp.obj: ..\src\Debugger\widgets\console.h
 src\Debugger\CMakeFiles\Debugger.dir\debugger.cpp.obj: ..\src\Debugger\widgets\disassemble.h
 src\Debugger\CMakeFiles\Debugger.dir\debugger.cpp.obj: ..\src\Debugger\widgets\disassembly_viewer.h
+src\Debugger\CMakeFiles\Debugger.dir\debugger.cpp.obj: ..\src\Debugger\widgets\memory_viewer.h
 src\Debugger\CMakeFiles\Debugger.dir\debugger.cpp.obj: ..\src\Debugger\widgets\menubar.h
 src\Debugger\CMakeFiles\Debugger.dir\debugger.cpp.obj: ..\src\Debugger\widgets\overlay.h
 src\Debugger\CMakeFiles\Debugger.dir\debugger.cpp.obj: ..\src\Debugger\widgets\register_viewer.h

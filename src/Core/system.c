@@ -46,7 +46,7 @@ void run_system(s_GameCube* GameCube) {
             log_fatal("Jumped to invalid address: %08x", GameCube->cpu.PC);
         }
 
-#ifdef DO_BREAKPOINTS
+#if defined(DO_BREAKPOINTS) || defined(DO_DEBUGGER)
         if (check_breakpoints(&GameCube->breakpoints, GameCube->cpu.PC)) {
             dump_Gekko(&GameCube->cpu);
             log_debug("Hit breakpoint %08x", GameCube->cpu.PC);
@@ -60,9 +60,7 @@ void run_system(s_GameCube* GameCube) {
         }
 
         if (GameCube->stepcount > 0) {
-            if (--GameCube->stepcount == 0) {
-                dump_Gekko(&GameCube->cpu);
-            }
+            GameCube->stepcount--;
         }
 #endif
     }

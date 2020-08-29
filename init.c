@@ -9,27 +9,34 @@
 s_GameCube* global_system;
 
 CONSOLE_COMMAND(reset_system) {
+#ifdef DO_DEBUGGER
     if (argc > 1 && (strcmp(args[1], "freeze") || strcmp(args[1], "pause")|| strcmp(args[1], "break"))) {
         global_system->paused = true;
     }
 
     load_DOL_to_Gekko(&global_system->cpu, global_system->cpu.dol_file_name);
     strcpy_s(output, MAX_OUTPUT_LENGTH, "Reloaded DOL file");
+#endif
 }
 
 CONSOLE_COMMAND(pause_system) {
+#ifdef DO_DEBUGGER
     global_system->paused = true;
 
     strcpy_s(output, MAX_OUTPUT_LENGTH, "System paused");
+#endif
 }
 
 CONSOLE_COMMAND(unpause_system) {
+#ifdef DO_DEBUGGER
     global_system->paused = false;
 
     strcpy_s(output, MAX_OUTPUT_LENGTH, "System unpaused");
+#endif
 }
 
 CONSOLE_COMMAND(break_system) {
+#ifdef DO_DEBUGGER
     if (argc < 2) {
         pause_system(args, argc, output);
         return;
@@ -38,9 +45,11 @@ CONSOLE_COMMAND(break_system) {
     u32 breakpoint = parsehex(args[1]);
     add_breakpoint(&global_system->breakpoints, breakpoint);
     sprintf_s(output, MAX_OUTPUT_LENGTH, "Added breakpoint at %08x", breakpoint);
+#endif
 }
 
 CONSOLE_COMMAND(unbreak_system) {
+#ifdef DO_DEBUGGER
     if (argc < 2) {
         unpause_system(args, argc, output);
         return;
@@ -49,9 +58,11 @@ CONSOLE_COMMAND(unbreak_system) {
     u32 breakpoint = parsehex(args[1]);
     remove_breakpoint(&global_system->breakpoints, breakpoint);
     sprintf_s(output, MAX_OUTPUT_LENGTH, "Removed breakpoint at %08x", breakpoint);
+#endif
 }
 
 CONSOLE_COMMAND(step_system) {
+#ifdef DO_DEBUGGER
     global_system->paused = true;
     if (argc < 2) {
         global_system->stepcount = 1;
@@ -62,6 +73,7 @@ CONSOLE_COMMAND(step_system) {
         global_system->stepcount = steps;
         sprintf_s(output, MAX_OUTPUT_LENGTH, "Stepping system for %d steps", steps);
     }
+#endif
 }
 
 CONSOLE_COMMAND(dump_memory_range) {
@@ -84,6 +96,17 @@ CONSOLE_COMMAND(get_state) {
     dump_Gekko(&global_system->cpu);
 }
 
+u8 view_byte(const u8* memory, uint64_t off) {
+    switch (off >> 20) {
+        case 0x000 ... 0x017:
+        case 0x800 ... 0x817:
+        case 0xc00 ... 0xc17:
+            return memory[MASK_24MB(off)];
+        default:
+            return 0;
+    }
+}
+
 u32 valid_address_check(u32 address) {
     switch (address >> 20) {
         case 0x000 ... 0x017:
@@ -103,8 +126,10 @@ void init() {
             &global_system->shutdown,
             &global_system->cpu.PC,
             global_system->cpu.memory,
+            0x100000000,
             valid_address_check,
-            &global_system->cpu.TBR
+            &global_system->cpu.TBR,
+            view_byte
             );
 
     char name[32];

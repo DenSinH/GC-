@@ -137,9 +137,9 @@ src\Loader\clean: src\Loader\CMakeFiles\Loader.dir\clean
 # Target rules for target CMakeFiles/GC_.dir
 
 # All Build rule for target.
+CMakeFiles\GC_.dir\all: src\Debugger\CMakeFiles\Debugger.dir\all
 CMakeFiles\GC_.dir\all: src\Loader\CMakeFiles\Loader.dir\all
 CMakeFiles\GC_.dir\all: src\Core\CMakeFiles\Core.dir\all
-CMakeFiles\GC_.dir\all: src\Debugger\CMakeFiles\Debugger.dir\all
 	$(MAKE) $(MAKESILENT) -f CMakeFiles\GC_.dir\build.make /nologo -$(MAKEFLAGS) CMakeFiles\GC_.dir\depend
 	$(MAKE) $(MAKESILENT) -f CMakeFiles\GC_.dir\build.make /nologo -$(MAKEFLAGS) CMakeFiles\GC_.dir\build
 	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --progress-dir=D:\CProjects\GC-\cmake-build-release\CMakeFiles --progress-num=19,20,21 "Built target GC_"

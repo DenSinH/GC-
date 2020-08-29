@@ -12,6 +12,7 @@
 #include "widgets/console.h"
 #include "widgets/register_viewer.h"
 #include "widgets/disassembly_viewer.h"
+#include "widgets/memory_viewer.h"
 #include <stdio.h>
 #include <SDL.h>
 #include <thread>
@@ -42,11 +43,12 @@ using namespace gl;
 #include IMGUI_IMPL_OPENGL_LOADER_CUSTOM
 #endif
 
-static struct {
+static struct s_debugger {
     ConsoleWidget console;
     RegisterViewer register_viewer;
     DisassemblyViewer disassembly_viewer;
     Overlay overlay;
+    MemoryViewer memory_viewer;
     bool* shutdown;
 } Debugger;
 
@@ -65,15 +67,20 @@ void add_register_data(char* name, const void* value, bool islong) {
 void debugger_init(
         bool* shutdown,
         uint32_t* PC,
-        uint8_t * memory,
+        uint8_t* memory,
+        uint64_t mem_size,
         uint32_t (*valid_address_mask)(uint32_t),
-        uint64_t* timer
+        uint64_t* timer,
+        uint8_t (*mem_read)(const uint8_t* data, uint64_t off)
         ) {
     Debugger.shutdown = shutdown;
     Debugger.disassembly_viewer.PC = PC;
     Debugger.disassembly_viewer.memory = memory;
     Debugger.disassembly_viewer.valid_address_mask = valid_address_mask;
     Debugger.overlay.timer = timer;
+    Debugger.memory_viewer.mem_data = memory;
+    Debugger.memory_viewer.mem_size = mem_size;
+    Debugger.memory_viewer.ReadFn = mem_read;
 }
 
 // Main code
@@ -161,6 +168,7 @@ int debugger_run()
     bool show_register_viewer = true;
     bool show_disassembly_viewer = true;
     bool show_overlay = true;
+    bool show_memory_viewer = true;
     ImVec4 clear_color = ImVec4(0.45f, 0.55f, 0.60f, 1.00f);
 
     // Main loop
@@ -187,6 +195,7 @@ int debugger_run()
                 &show_console,
                 &show_register_viewer,
                 &show_disassembly_viewer,
+                &show_memory_viewer,
                 &show_overlay
                 );
         if (show_console)
@@ -195,9 +204,10 @@ int debugger_run()
             Debugger.register_viewer.Draw(&show_register_viewer);
         if (show_disassembly_viewer)
             Debugger.disassembly_viewer.Draw(&show_disassembly_viewer);
-        if (show_overlay) {
+        if (show_overlay)
             Debugger.overlay.Draw(&show_overlay);
-        }
+        if (show_memory_viewer)
+            Debugger.memory_viewer.Draw(&show_memory_viewer);
 
 #ifdef SHOW_EXAMPLE_MENU
         ImGui::ShowDemoWindow(NULL);

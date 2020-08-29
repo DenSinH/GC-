@@ -122,8 +122,6 @@ struct ConsoleWidget
                 "Debugger console.");
         ImGui::TextWrapped("Enter 'HELP' for help, press TAB to use text completion.");
 
-        if (ImGui::SmallButton("Add Debug Text"))  { AddLog("%d some text", Items.Size); AddLog("some more text"); AddLog("display very important message here!"); } ImGui::SameLine();
-        if (ImGui::SmallButton("Add Debug Error")) { AddLog("[error] something went wrong"); } ImGui::SameLine();
         if (ImGui::SmallButton("Clear"))           { ClearLog(); } ImGui::SameLine();
         bool copy_to_clipboard = ImGui::SmallButton("Copy");
 
@@ -178,7 +176,6 @@ struct ConsoleWidget
             char* s = InputBuf;
             Strtrim(s);
             ToLower(s);
-            printf("%s\n", s);
             if (s[0]) {
                 ExecCommand(s);
             }
@@ -278,7 +275,6 @@ struct ConsoleWidget
         int argc = ConsoleWidget::SplitCommand(command, args);
 
         for (auto& cmd : this->Commands) {
-            printf("%s : %s\n", args[0], cmd.command);
             if (Stricmp(args[0], cmd.command) == 0) {
 
                 cmd.callback(args, argc, this->OutputBuf);

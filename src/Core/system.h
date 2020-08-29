@@ -6,16 +6,14 @@
 #include "default.h"
 #include "flags.h"
 
-#ifdef DO_BREAKPOINTS
-    #include "Breakpoints/breakpoints.h"
-#endif
+#include "Breakpoints/breakpoints.h"
 
 typedef struct s_GameCube {
     s_Gekko cpu;
 
     bool shutdown;
 
-#ifdef DO_BREAKPOINTS
+#if defined(DO_BREAKPOINTS) || defined(DO_DEBUGGER)
     s_breakpoints breakpoints;
 #endif
 

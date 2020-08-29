@@ -71,9 +71,8 @@ typedef struct s_Gekko {
 #ifdef DO_CALL_STACK
     u32 call_stack[CALL_STACK_LENGTH];
     u8 call_stack_pointer;
-    char dol_file_name[DOL_FILE_NAME_LENGTH];
 #endif
-
+    char dol_file_name[DOL_FILE_NAME_LENGTH];
 } s_Gekko;
 
 //                                 LT    , EQ    , GT

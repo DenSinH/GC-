@@ -28,6 +28,7 @@ src/Debugger/CMakeFiles/Debugger.dir/debugger.cpp.obj
  D:/CProjects/GC-/src/Debugger/widgets/console.h
  D:/CProjects/GC-/src/Debugger/widgets/disassemble.h
  D:/CProjects/GC-/src/Debugger/widgets/disassembly_viewer.h
+ D:/CProjects/GC-/src/Debugger/widgets/memory_viewer.h
  D:/CProjects/GC-/src/Debugger/widgets/menubar.h
  D:/CProjects/GC-/src/Debugger/widgets/overlay.h
  D:/CProjects/GC-/src/Debugger/widgets/register_viewer.h

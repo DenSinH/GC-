@@ -25,6 +25,7 @@ set(IMGUI_HDRS imgui/imconfig.h
                imgui/imstb_textedit.h
                imgui/imstb_truetype.h
         debugger.h
+        widgets/memory_viewer.h
         widgets/console.h
         widgets/menubar.h
         widgets/register_viewer.h
