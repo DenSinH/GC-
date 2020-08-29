@@ -93,7 +93,7 @@ void step_Gekko(s_Gekko* cpu) {
     s_gekko_instruction instruction;
     instruction.raw = read32(&cpu->IMMU, cpu->PC);
     cpu->PC += 4;
-    cpu->TBR++;
+    cpu->TBR.raw++;
 
     cpu->instructions[MAIN_INSTR_HASH(instruction.raw)](cpu, instruction);
 }

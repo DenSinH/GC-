@@ -12,7 +12,7 @@
 u32 stubber = 0xffffffff;
 
 u8 read8(s_MMU* mmu, u32 address) {
-    (*mmu->TBR_ptr)++;
+    mmu->TBR_ptr->raw++;
 
     if (address < 0xc1800000) {
         log_mmu("Read byte %02x from %08x", READ8(mmu->RAM_ptr, MASK_24MB(address)), address);
@@ -35,7 +35,7 @@ u8 read8(s_MMU* mmu, u32 address) {
 }
 
 u16 read16(s_MMU* mmu, u32 address) {
-    (*mmu->TBR_ptr)++;
+    mmu->TBR_ptr->raw++;
 
     if (address < 0xc1800000) {
         // remember: the GameCube is BIG ENDIAN!
@@ -72,7 +72,7 @@ u16 read16(s_MMU* mmu, u32 address) {
 }
 
 u32 read32(s_MMU* mmu, u32 address) {
-    (*mmu->TBR_ptr)++;
+    mmu->TBR_ptr->raw++;
 
     if (address < 0xc1800000) {
         // remember: the GameCube is BIG ENDIAN!
@@ -84,10 +84,10 @@ u32 read32(s_MMU* mmu, u32 address) {
     switch (address >> 20) {
         case 0xcc0:
             log_warn("Hardware register word read access: %x", address);
-            if (address == 0xcc00680c) {
+            if (address == 0xcc00680c || address == 0xcc006434) {
                 // todo: add EXI devices
                 // exit(1);
-                return READ32(mmu->HW_regs_ptr->DI_SI_EXI_Streaming, 0x80c) & 0xfffffffe;
+                return READ32(mmu->HW_regs_ptr->DI_SI_EXI_Streaming, address & 0xfff) & 0xfffffffe;
             }
             ASSERT_HR_ACCESS(HR_INDEX_FROM_ADDRESS(address), address & 0xfff)
             u8* HW_regs_section = mmu->HW_regs_ptr->pointers[HR_INDEX_FROM_ADDRESS(address)];
@@ -102,7 +102,7 @@ u32 read32(s_MMU* mmu, u32 address) {
 }
 
 u64 read64(s_MMU* mmu, u32 address) {
-    (*mmu->TBR_ptr)++;
+    mmu->TBR_ptr->raw++;
 
     if (address < 0xc1800000) {
         // remember: the GameCube is BIG ENDIAN!
@@ -128,7 +128,7 @@ u64 read64(s_MMU* mmu, u32 address) {
 }
 
 void write8(s_MMU* mmu, u32 address, u8 value) {
-    (*mmu->TBR_ptr)++;
+    mmu->TBR_ptr->raw++;
     log_mmu("Write byte %02x to %08x", value, address);
 
     if (address < 0xc1800000) {
@@ -153,7 +153,7 @@ void write8(s_MMU* mmu, u32 address, u8 value) {
 }
 
 void write16(s_MMU* mmu, u32 address, u16 value) {
-    (*mmu->TBR_ptr)++;
+    mmu->TBR_ptr->raw++;
     log_mmu("Write halfword %04x to %08x", value, address);
 
     if (address < 0xc1800000) {
@@ -180,7 +180,7 @@ void write16(s_MMU* mmu, u32 address, u16 value) {
 }
 
 void write32(s_MMU* mmu, u32 address, u32 value) {
-    (*mmu->TBR_ptr)++;
+    mmu->TBR_ptr->raw++;
     log_mmu("Write word %08x to %08x", value, address);
 
     if (address < 0xc1800000) {
@@ -207,7 +207,7 @@ void write32(s_MMU* mmu, u32 address, u32 value) {
 }
 
 void write64(s_MMU* mmu, u32 address, u64 value) {
-    (*mmu->TBR_ptr)++;
+    mmu->TBR_ptr->raw++;
     log_mmu("Write word %016" PRIx64 " to %08x", value, address);
 
     if (address < 0xc1800000) {

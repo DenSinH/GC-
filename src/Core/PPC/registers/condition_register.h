@@ -40,9 +40,10 @@ const static u32 field_mask[0x100] = {
         0xfffff000,0xfffff00f,0xfffff0f0,0xfffff0ff,0xffffff00,0xffffff0f,0xfffffff0,0xffffffff
 };
 
-#define GET_CRn(CR, n, CRn) CRn.raw = (CR.raw >> ((7 - n) << 2))
-#define SET_CRn(CR, n, CRn) CR.raw = (CR.raw & ~(0xf << ((7 - n) << 2))) | (CRn.raw << ((7 - n) << 2))
-#define SET_CRn_RAW(CR, n, val) CR.raw = (CR.raw & ~(0xf << ((7 - n) << 2))) | (val << ((7 - n) << 2))
+#define GET_CRn(CR, n, CRn) CRn.raw = (CR.raw >> ((7 - (n)) << 2))
+#define GET_CRn_RAW(CR, n) (CR.raw >> ((7 - (n)) << 2))
+#define SET_CRn(CR, n, CRn) CR.raw = ((CR.raw & ~(0xf << ((7 - (n)) << 2))) | (CRn.raw << ((7 - (n)) << 2)))
+#define SET_CRn_RAW(CR, n, val) CR.raw = ((CR.raw & ~(0xf << ((7 - (n)) << 2))) | ((val) << ((7 - (n)) << 2)))
 #define UPDATE_CR_FROM_FPSCR(CR, FPSCR) CR.direct.CR1 = FPSCR.block.CR1
 
 typedef union s_CRn {

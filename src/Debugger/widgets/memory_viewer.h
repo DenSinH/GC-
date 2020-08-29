@@ -188,6 +188,11 @@ struct MemoryViewer
         ImGuiListClipper clipper(line_total_count, s.LineHeight);
         const int lines_to_show = clipper.DisplayEnd - clipper.DisplayStart;
 
+        if (ImGui::IsKeyPressed(ImGui::GetKeyIndex(ImGuiKey_UpArrow)))         { CenterAddr -= Cols; }
+        else if (ImGui::IsKeyPressed(ImGui::GetKeyIndex(ImGuiKey_DownArrow)))  { CenterAddr += Cols; }
+        else if (ImGui::IsKeyPressed(ImGui::GetKeyIndex(ImGuiKey_LeftArrow)))  { CenterAddr -= Cols * lines_to_show; }
+        else if (ImGui::IsKeyPressed(ImGui::GetKeyIndex(ImGuiKey_RightArrow))) { CenterAddr += Cols * lines_to_show; }
+
         bool data_next = false;
 
         uint64_t preview_data_type_size = OptShowDataPreview ? DataTypeGetSize(PreviewDataType) : 0;
@@ -318,7 +323,7 @@ struct MemoryViewer
                 // Draw ASCII values
                 ImGui::SameLine(s.PosAsciiStart);
                 ImVec2 pos = ImGui::GetCursorScreenPos();
-                addr = line_i * Cols;
+                addr = (CenterAddr / Cols) * Cols + (uint64_t)((line_i - (lines_to_show >> 1))* Cols);
                 ImGui::PushID(line_i);
                 if (ImGui::InvisibleButton("ascii", ImVec2(s.PosAsciiEnd - s.PosAsciiStart, s.LineHeight)))
                 {

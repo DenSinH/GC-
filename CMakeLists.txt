@@ -5,7 +5,7 @@ set(CMAKE_C_STANDARD 11)
 
 set(CMAKE_MODULE_PATH ${PROJECT_SOURCE_DIR}/cmake)
 
-add_executable(GC_ main.c include/default.h include/helpers.h include/flags.h include/log.h debugthread.h debugthread.c debugging.h)
+add_executable(GC_ main.c include/default.h include/helpers.h include/flags.h include/log.h debugthread.h debugthread.c debugging.h include/sleeping.h)
 
 add_subdirectory(src/Loader)
 add_subdirectory(src/Core)

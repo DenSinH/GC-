@@ -31,6 +31,15 @@ INLINE_GEKKO_INSTR(andx) {
     }
 }
 
+INLINE_GEKKO_INSTR(xorx) {
+    GEKKO_INSTR_HEADER
+    log_cpu("xorx %08x", instruction.raw);
+    cpu->GPR[instruction.general_SAB.A] = cpu->GPR[instruction.general_SAB.S] ^ cpu->GPR[instruction.general_SAB.B];
+    if (instruction.general_SAB.Rc) {
+        UPDATE_CR0_RESULT32(cpu, cpu->GPR[instruction.general_SAB.A]);
+    }
+}
+
 GEKKO_INSTR(andi) {
     GEKKO_INSTR_HEADER
     log_cpu("andi %08x", instruction.raw);
@@ -83,6 +92,15 @@ INLINE_GEKKO_INSTR(neg) {
 
     if (instruction.general_DAB.Rc) {
         UPDATE_CR0_RESULT32(cpu, cpu->GPR[instruction.general_DAB.D]);
+    }
+}
+
+INLINE_GEKKO_INSTR(extsh) {
+    GEKKO_INSTR_HEADER
+    log_cpu("extsh %08x", instruction.raw);
+    cpu->GPR[instruction.general_SAB.A] = (i32)((i16)cpu->GPR[instruction.general_SAB.S]);
+    if (instruction.general_SAB.Rc) {
+        UPDATE_CR0_RESULT32(cpu, cpu->GPR[instruction.general_SAB.A]);
     }
 }
 

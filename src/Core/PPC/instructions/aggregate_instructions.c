@@ -26,6 +26,9 @@ GEKKO_INSTR(instr_010011) {
         case BCCTR_X_OPCODE_EXTENDED:
             bcctr_x(cpu, instruction);
             return;
+        case MCRF_OPCODE_EXTENDED:
+            mcrf(cpu, instruction);
+            return;
         case CRXOR_OPCODE_EXTENDED:
             crxor(cpu, instruction);
             return;
@@ -87,6 +90,9 @@ GEKKO_INSTR(instr_011111) {
         case ORX_OPCODE_EXTENDED:
             orx(cpu, instruction);
             return;
+        case XORX_OPCODE_EXTENDED:
+            xorx(cpu, instruction);
+            return;
         case NOR_OPCODE_EXTENDED:
             nor(cpu, instruction);
             return;
@@ -95,6 +101,9 @@ GEKKO_INSTR(instr_011111) {
             return;
         case NEG_OPCODE_EXTENDED:
             neg(cpu, instruction);
+            return;
+        case EXTSH_OPCODE_EXTENDED:
+            extsh(cpu, instruction);
             return;
         case CNTLZW_OPCODE_EXTENDED:
             cntlzw(cpu, instruction);

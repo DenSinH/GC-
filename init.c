@@ -128,7 +128,7 @@ void init() {
             global_system->cpu.memory,
             0x100000000,
             valid_address_check,
-            &global_system->cpu.TBR,
+            (u64*)&global_system->cpu.TBR,
             view_byte
             );
 
@@ -161,9 +161,9 @@ void init() {
     add_register_data("", NULL, false);
 
     for (int i = 0; i < 32; i++) {
-        sprintf(name, "FPR%02d:SPR0", i);
+        sprintf(name, "FPR%02d:PS0", i);
         add_register_data(name, &global_system->cpu.FPR[i].PS0, true);
-        sprintf(name, "FPR%02d:SPR1", i);
+        sprintf(name, "FPR%02d:PS1", i);
         add_register_data(name, &global_system->cpu.FPR[i].PS1, true);
     }
 

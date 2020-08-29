@@ -1,4 +1,5 @@
 #include "debugthread.h"
+#include "sleeping.h"
 
 #include <stdio.h>
 #include <stdlib.h>
@@ -13,11 +14,16 @@ void exception_handler() {
     printf("[CALL STACK]: (%d calls)\n%s", global_system->cpu.call_stack_pointer, global_system->cpu.log_line);
 #endif
 
-    dump_Gekko_mem_range(&global_system->cpu, 0, 0x8000);
+    dump_Gekko_mem_range(&global_system->cpu, 0, 0x1700000);
+
+    while (!global_system->shutdown) {
+        sleep_ms(16);
+    }
 }
 
 int main() {
     init();
+    global_system->paused = true;
 
     atexit(exception_handler);
 

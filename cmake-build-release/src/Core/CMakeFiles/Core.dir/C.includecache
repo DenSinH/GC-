@@ -24,6 +24,14 @@ flags.h
 windows.h
 -
 
+../include/sleeping.h
+windows.h
+-
+time.h
+-
+unistd.h
+-
+
 D:/CProjects/GC-/src/Core/Breakpoints/breakpoints.h
 default.h
 D:/CProjects/GC-/src/Core/Breakpoints/default.h
@@ -51,6 +59,8 @@ registers/HID.h
 D:/CProjects/GC-/src/Core/PPC/registers/HID.h
 registers/FPR.h
 D:/CProjects/GC-/src/Core/PPC/registers/FPR.h
+registers/TBR.h
+D:/CProjects/GC-/src/Core/PPC/registers/TBR.h
 registers/SPR_general.h
 D:/CProjects/GC-/src/Core/PPC/registers/SPR_general.h
 registers/hardware_registers.h
@@ -67,6 +77,8 @@ default.h
 D:/CProjects/GC-/src/Core/PPC/default.h
 registers/hardware_registers.h
 D:/CProjects/GC-/src/Core/PPC/registers/hardware_registers.h
+registers/TBR.h
+D:/CProjects/GC-/src/Core/PPC/registers/TBR.h
 flags.h
 D:/CProjects/GC-/src/Core/PPC/flags.h
 
@@ -92,6 +104,10 @@ D:/CProjects/GC-/src/Core/PPC/registers/default.h
 
 D:/CProjects/GC-/src/Core/PPC/registers/SPR_general.h
 
+D:/CProjects/GC-/src/Core/PPC/registers/TBR.h
+default.h
+D:/CProjects/GC-/src/Core/PPC/registers/default.h
+
 D:/CProjects/GC-/src/Core/PPC/registers/XER.h
 default.h
 D:/CProjects/GC-/src/Core/PPC/registers/default.h
@@ -110,16 +126,6 @@ D:/CProjects/GC-/src/Core/PPC/registers/hardware_registers.h
 default.h
 D:/CProjects/GC-/src/Core/PPC/registers/default.h
 
-D:/CProjects/GC-/src/Core/core_debugging.h
-flags.h
-D:/CProjects/GC-/src/Core/flags.h
-windows.h
--
-time.h
--
-unistd.h
--
-
 D:/CProjects/GC-/src/Core/system.c
 stdio.h
 -
@@ -133,8 +139,8 @@ system.h
 D:/CProjects/GC-/src/Core/system.h
 PPC/Gekko.h
 D:/CProjects/GC-/src/Core/PPC/Gekko.h
-core_debugging.h
-D:/CProjects/GC-/src/Core/core_debugging.h
+sleeping.h
+D:/CProjects/GC-/src/Core/sleeping.h
 flags.h
 D:/CProjects/GC-/src/Core/flags.h
 

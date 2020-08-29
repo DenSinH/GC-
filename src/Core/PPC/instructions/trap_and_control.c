@@ -62,7 +62,7 @@ INLINE_GEKKO_INSTR(mtcrf) {
     GEKKO_INSTR_HEADER
 
     log_cpu("mfcrf %08x", instruction.raw);
-    u32 mask = field_mask[cpu->GPR[instruction.mxcrf.CRM]];
+    u32 mask = field_mask[instruction.mxcrf.CRM];
     cpu->CR.raw = (cpu->GPR[instruction.mxcrf.DS] & mask) | (cpu->CR.raw & ~mask);
 }
 

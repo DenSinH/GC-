@@ -167,8 +167,8 @@ int debugger_run()
     bool show_console = true;
     bool show_register_viewer = true;
     bool show_disassembly_viewer = true;
-    bool show_overlay = true;
-    bool show_memory_viewer = true;
+    bool show_overlay = false;
+    bool show_memory_viewer = false;
     ImVec4 clear_color = ImVec4(0.45f, 0.55f, 0.60f, 1.00f);
 
     // Main loop

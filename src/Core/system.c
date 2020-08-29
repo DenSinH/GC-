@@ -5,7 +5,7 @@
 
 #include "system.h"
 #include "PPC/Gekko.h"
-#include "core_debugging.h"
+#include "sleeping.h"
 
 #include "flags.h"
 
@@ -26,10 +26,11 @@ s_GameCube* init_system() {
 //    add_breakpoint(&GameCube->breakpoints, 0x80011f94);
 #endif
 
+//    add_breakpoint(&GameCube->breakpoints, 0x80018db4);
     return GameCube;
 }
 
-#define TEST_DOL "D:\\CodeBlocks\\Projects\\GCHBTest\\GCHBTest.dol"
+#define TEST_DOL "D:\\CProjects\\GCResources\\GameCubeResources\\Tests\\GCTests\\GCTests.dol"
 #define STEP_ON_BREAK
 
 void run_system(s_GameCube* GameCube) {

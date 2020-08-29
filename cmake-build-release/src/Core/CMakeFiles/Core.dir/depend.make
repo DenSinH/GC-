@@ -20,6 +20,7 @@ src\Core\CMakeFiles\Core.dir\PPC\Gekko.c.obj: ..\src\Core\PPC\registers\GQR.h
 src\Core\CMakeFiles\Core.dir\PPC\Gekko.c.obj: ..\src\Core\PPC\registers\HID.h
 src\Core\CMakeFiles\Core.dir\PPC\Gekko.c.obj: ..\src\Core\PPC\registers\MSR.h
 src\Core\CMakeFiles\Core.dir\PPC\Gekko.c.obj: ..\src\Core\PPC\registers\SPR_general.h
+src\Core\CMakeFiles\Core.dir\PPC\Gekko.c.obj: ..\src\Core\PPC\registers\TBR.h
 src\Core\CMakeFiles\Core.dir\PPC\Gekko.c.obj: ..\src\Core\PPC\registers\XER.h
 src\Core\CMakeFiles\Core.dir\PPC\Gekko.c.obj: ..\src\Core\PPC\registers\condition_register.h
 src\Core\CMakeFiles\Core.dir\PPC\Gekko.c.obj: ..\src\Core\PPC\registers\floating_point_status_condition_register.h
@@ -40,6 +41,7 @@ src\Core\CMakeFiles\Core.dir\PPC\Gekko_init.c.obj: ..\src\Core\PPC\registers\GQR
 src\Core\CMakeFiles\Core.dir\PPC\Gekko_init.c.obj: ..\src\Core\PPC\registers\HID.h
 src\Core\CMakeFiles\Core.dir\PPC\Gekko_init.c.obj: ..\src\Core\PPC\registers\MSR.h
 src\Core\CMakeFiles\Core.dir\PPC\Gekko_init.c.obj: ..\src\Core\PPC\registers\SPR_general.h
+src\Core\CMakeFiles\Core.dir\PPC\Gekko_init.c.obj: ..\src\Core\PPC\registers\TBR.h
 src\Core\CMakeFiles\Core.dir\PPC\Gekko_init.c.obj: ..\src\Core\PPC\registers\XER.h
 src\Core\CMakeFiles\Core.dir\PPC\Gekko_init.c.obj: ..\src\Core\PPC\registers\condition_register.h
 src\Core\CMakeFiles\Core.dir\PPC\Gekko_init.c.obj: ..\src\Core\PPC\registers\floating_point_status_condition_register.h
@@ -50,6 +52,7 @@ src\Core\CMakeFiles\Core.dir\PPC\MMU.c.obj: ..\include\flags.h
 src\Core\CMakeFiles\Core.dir\PPC\MMU.c.obj: ..\include\log.h
 src\Core\CMakeFiles\Core.dir\PPC\MMU.c.obj: ..\src\Core\PPC\MMU.c
 src\Core\CMakeFiles\Core.dir\PPC\MMU.c.obj: ..\src\Core\PPC\MMU.h
+src\Core\CMakeFiles\Core.dir\PPC\MMU.c.obj: ..\src\Core\PPC\registers\TBR.h
 src\Core\CMakeFiles\Core.dir\PPC\MMU.c.obj: ..\src\Core\PPC\registers\hardware_registers.h
 
 src\Core\CMakeFiles\Core.dir\PPC\instructions.c.obj: ..\include\default.h
@@ -64,6 +67,7 @@ src\Core\CMakeFiles\Core.dir\PPC\instructions.c.obj: ..\src\Core\PPC\registers\G
 src\Core\CMakeFiles\Core.dir\PPC\instructions.c.obj: ..\src\Core\PPC\registers\HID.h
 src\Core\CMakeFiles\Core.dir\PPC\instructions.c.obj: ..\src\Core\PPC\registers\MSR.h
 src\Core\CMakeFiles\Core.dir\PPC\instructions.c.obj: ..\src\Core\PPC\registers\SPR_general.h
+src\Core\CMakeFiles\Core.dir\PPC\instructions.c.obj: ..\src\Core\PPC\registers\TBR.h
 src\Core\CMakeFiles\Core.dir\PPC\instructions.c.obj: ..\src\Core\PPC\registers\XER.h
 src\Core\CMakeFiles\Core.dir\PPC\instructions.c.obj: ..\src\Core\PPC\registers\condition_register.h
 src\Core\CMakeFiles\Core.dir\PPC\instructions.c.obj: ..\src\Core\PPC\registers\floating_point_status_condition_register.h
@@ -101,6 +105,7 @@ src\Core\CMakeFiles\Core.dir\PPC\registers\hardware_registers.c.obj: ..\src\Core
 src\Core\CMakeFiles\Core.dir\system.c.obj: ..\include\default.h
 src\Core\CMakeFiles\Core.dir\system.c.obj: ..\include\flags.h
 src\Core\CMakeFiles\Core.dir\system.c.obj: ..\include\log.h
+src\Core\CMakeFiles\Core.dir\system.c.obj: ..\include\sleeping.h
 src\Core\CMakeFiles\Core.dir\system.c.obj: ..\src\Core\Breakpoints\breakpoints.h
 src\Core\CMakeFiles\Core.dir\system.c.obj: ..\src\Core\PPC\Gekko.h
 src\Core\CMakeFiles\Core.dir\system.c.obj: ..\src\Core\PPC\MMU.h
@@ -110,11 +115,11 @@ src\Core\CMakeFiles\Core.dir\system.c.obj: ..\src\Core\PPC\registers\GQR.h
 src\Core\CMakeFiles\Core.dir\system.c.obj: ..\src\Core\PPC\registers\HID.h
 src\Core\CMakeFiles\Core.dir\system.c.obj: ..\src\Core\PPC\registers\MSR.h
 src\Core\CMakeFiles\Core.dir\system.c.obj: ..\src\Core\PPC\registers\SPR_general.h
+src\Core\CMakeFiles\Core.dir\system.c.obj: ..\src\Core\PPC\registers\TBR.h
 src\Core\CMakeFiles\Core.dir\system.c.obj: ..\src\Core\PPC\registers\XER.h
 src\Core\CMakeFiles\Core.dir\system.c.obj: ..\src\Core\PPC\registers\condition_register.h
 src\Core\CMakeFiles\Core.dir\system.c.obj: ..\src\Core\PPC\registers\floating_point_status_condition_register.h
 src\Core\CMakeFiles\Core.dir\system.c.obj: ..\src\Core\PPC\registers\hardware_registers.h
-src\Core\CMakeFiles\Core.dir\system.c.obj: ..\src\Core\core_debugging.h
 src\Core\CMakeFiles\Core.dir\system.c.obj: ..\src\Core\system.c
 src\Core\CMakeFiles\Core.dir\system.c.obj: ..\src\Core\system.h
 

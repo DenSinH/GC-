@@ -9,6 +9,7 @@ CMakeFiles/GC_.dir/main.c.obj
  ../include/default.h
  ../include/flags.h
  ../include/log.h
+ ../include/sleeping.h
  D:/CProjects/GC-/debugging.h
  D:/CProjects/GC-/debugthread.h
  D:/CProjects/GC-/init.c
@@ -22,6 +23,7 @@ CMakeFiles/GC_.dir/main.c.obj
  D:/CProjects/GC-/src/Core/PPC/registers/HID.h
  D:/CProjects/GC-/src/Core/PPC/registers/MSR.h
  D:/CProjects/GC-/src/Core/PPC/registers/SPR_general.h
+ D:/CProjects/GC-/src/Core/PPC/registers/TBR.h
  D:/CProjects/GC-/src/Core/PPC/registers/XER.h
  D:/CProjects/GC-/src/Core/PPC/registers/condition_register.h
  D:/CProjects/GC-/src/Core/PPC/registers/floating_point_status_condition_register.h

@@ -201,6 +201,9 @@
 		<Unit filename="D:/CProjects/GC-/include/log.h">
 			<Option target="GC_"/>
 		</Unit>
+		<Unit filename="D:/CProjects/GC-/include/sleeping.h">
+			<Option target="GC_"/>
+		</Unit>
 		<Unit filename="D:/CProjects/GC-/main.c">
 			<Option target="GC_"/>
 		</Unit>
@@ -249,6 +252,9 @@
 		<Unit filename="D:/CProjects/GC-/src/Core/PPC/registers/SPR_general.h">
 			<Option target="Core"/>
 		</Unit>
+		<Unit filename="D:/CProjects/GC-/src/Core/PPC/registers/TBR.h">
+			<Option target="Core"/>
+		</Unit>
 		<Unit filename="D:/CProjects/GC-/src/Core/PPC/registers/XER.h">
 			<Option target="Core"/>
 		</Unit>
@@ -262,9 +268,6 @@
 			<Option target="Core"/>
 		</Unit>
 		<Unit filename="D:/CProjects/GC-/src/Core/PPC/registers/hardware_registers.h">
-			<Option target="Core"/>
-		</Unit>
-		<Unit filename="D:/CProjects/GC-/src/Core/core_debugging.h">
 			<Option target="Core"/>
 		</Unit>
 		<Unit filename="D:/CProjects/GC-/src/Core/system.c">

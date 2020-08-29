@@ -184,6 +184,16 @@ typedef union gekko_instruction {
     struct {
         unsigned: 1;
         unsigned: 10;
+        unsigned: 7;
+        unsigned crfS: 3;
+        unsigned: 2;
+        unsigned crfD: 3;
+        unsigned opcode:6;
+    } mcrf;
+
+    struct {
+        unsigned: 1;
+        unsigned: 10;
         unsigned tbrl_hi: 5;
         unsigned tbrl_lo: 5;
         unsigned D: 5;

@@ -8,6 +8,7 @@ CMakeFiles\GC_.dir\debugthread.c.obj: ..\src\Debugger\debugger.h
 CMakeFiles\GC_.dir\main.c.obj: ..\include\default.h
 CMakeFiles\GC_.dir\main.c.obj: ..\include\flags.h
 CMakeFiles\GC_.dir\main.c.obj: ..\include\log.h
+CMakeFiles\GC_.dir\main.c.obj: ..\include\sleeping.h
 CMakeFiles\GC_.dir\main.c.obj: ..\debugging.h
 CMakeFiles\GC_.dir\main.c.obj: ..\debugthread.h
 CMakeFiles\GC_.dir\main.c.obj: ..\init.c
@@ -21,6 +22,7 @@ CMakeFiles\GC_.dir\main.c.obj: ..\src\Core\PPC\registers\GQR.h
 CMakeFiles\GC_.dir\main.c.obj: ..\src\Core\PPC\registers\HID.h
 CMakeFiles\GC_.dir\main.c.obj: ..\src\Core\PPC\registers\MSR.h
 CMakeFiles\GC_.dir\main.c.obj: ..\src\Core\PPC\registers\SPR_general.h
+CMakeFiles\GC_.dir\main.c.obj: ..\src\Core\PPC\registers\TBR.h
 CMakeFiles\GC_.dir\main.c.obj: ..\src\Core\PPC\registers\XER.h
 CMakeFiles\GC_.dir\main.c.obj: ..\src\Core\PPC\registers\condition_register.h
 CMakeFiles\GC_.dir\main.c.obj: ..\src\Core\PPC\registers\floating_point_status_condition_register.h

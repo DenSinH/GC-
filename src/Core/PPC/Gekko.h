@@ -12,6 +12,7 @@
 #include "registers/GQR.h"
 #include "registers/HID.h"
 #include "registers/FPR.h"
+#include "registers/TBR.h"
 #include "registers/SPR_general.h"
 #include "registers/hardware_registers.h"
 #include "gekko_instruction.h"
@@ -26,8 +27,8 @@
 #define DOL_FILE_NAME_LENGTH 0x100
 
 #define SP GPR[1]
-#define GET_TBL(cpu_ptr) (u32)cpu_ptr->TBR
-#define GET_TBU(cpu_ptr) (u32)(cpu_ptr->TBR >> 32)
+#define GET_TBL(cpu_ptr) (u32)(cpu_ptr)->TBR.time
+#define GET_TBU(cpu_ptr) (u32)((cpu_ptr)->TBR.time >> 32)
 
 typedef struct s_Gekko {
     u8 memory[0x1800000];
@@ -53,7 +54,7 @@ typedef struct s_Gekko {
     u32 SRR1;       // Save/restore register for machine status on interrupt  [SUPERVISOR]
 
     u32 DEC;        // Decrement register
-    u64 TBR;        // Time base register
+    s_TBR TBR;      // Time base register
 
     s_GQR GQR[8];
     u32 HID[0];     // hardware dependent registers (todo: stubbed)
@@ -84,6 +85,10 @@ const static u8 CR_settings[3] = { 0b1000, 0b0010, 0b0100 };
 static inline void LOAD_PAIRED_SINGLE(s_FPR* FPR, void* PS0, void* PS1) {
     memcpy((void*)&(FPR->PS1), PS1, 4);
     memcpy((void*)&(FPR->PS0), PS0, 4);
+}
+
+static inline void LOAD_DOUBLE(s_FPR* FPR, void* value) {
+    memcpy((void*)&(FPR->PS0), value, 8);
 }
 
 static inline u64 GET_FPR(s_Gekko* cpu, unsigned int index) {

@@ -142,6 +142,9 @@ void build_instr_table(s_Gekko* cpu) {
             case MAIN_INSTR_HASH(STB_OPCODE):
                 cpu->instructions[i] = stb;
                 break;
+            case MAIN_INSTR_HASH(STBU_OPCODE):
+                cpu->instructions[i] = stbu;
+                break;
             case MAIN_INSTR_HASH(STWU_OPCODE):
                 cpu->instructions[i] = stwu;
                 break;
@@ -157,6 +160,9 @@ void build_instr_table(s_Gekko* cpu) {
             case MAIN_INSTR_HASH(LBZ_OPCODE):
                 cpu->instructions[i] = lbz;
                 break;
+            case MAIN_INSTR_HASH(LBZU_OPCODE):
+                cpu->instructions[i] = lbzu;
+                break;
             case MAIN_INSTR_HASH(LWZU_OPCODE):
                 cpu->instructions[i] = lwzu;
                 break;
@@ -166,9 +172,15 @@ void build_instr_table(s_Gekko* cpu) {
             case MAIN_INSTR_HASH(LMW_OPCODE):
                 cpu->instructions[i] = lmw;
                 break;
-            /* float single load/store */
+            /* float load/store */
+            case MAIN_INSTR_HASH(STFD_OPCODE):
+                cpu->instructions[i] = stfd;
+                break;
             case MAIN_INSTR_HASH(LFD_OPCODE):
                 cpu->instructions[i] = lfd;
+                break;
+            case MAIN_INSTR_HASH(LFS_OPCODE):
+                cpu->instructions[i] = lfs;
                 break;
             /* paired single load/store */
             case MAIN_INSTR_HASH(PSQ_L_OPCODE):
