@@ -3,8 +3,6 @@
 #include "PPC/registers/HID.h"
 #include "PPC/MMU.h"
 
-#define SINGLE_1 0x3f800000
-
 GEKKO_INSTR(psq_l) {
     GEKKO_INSTR_HEADER
     ASSERT_FLOATING_POINT
@@ -15,35 +13,36 @@ GEKKO_INSTR(psq_l) {
 
     s_GQR GQR = cpu->GQR[instruction.paired_single_load.I];
     float scale = dequantize_scale[GQR.LD_SCALE];
-    float PS0;
-    float PS1 = 1.0f;
+    bit_float PS0, PS1;
+    PS1.f = 1.0f;
 
     switch (GQR.LD_TYPE) {
         case GQR_TYPE_single_precision:
-            PS0 = read32(&cpu->DMMU, EA);
-            if (!instruction.paired_single_load.W) PS1 = read32(&cpu->DMMU, EA + 4);
+            PS0.u = read32(&cpu->DMMU, EA);
+            if (!instruction.paired_single_load.W) PS1.u = read32(&cpu->DMMU, EA + 4);
             break;
         case GQR_TYPE_unsigned_8bit_int:
-            PS0 = (float)read8(&cpu->DMMU, EA) * scale;
-            if (!instruction.paired_single_load.W) PS1 = (float)read8(&cpu->DMMU, EA + 1) * scale;
+            PS0.f = (float)read8(&cpu->DMMU, EA) * scale;
+            if (!instruction.paired_single_load.W) PS1.f = (float)read8(&cpu->DMMU, EA + 1) * scale;
             break;
         case GQR_TYPE_unsigned_16_bit_int:
-            PS0 = (float)read16(&cpu->DMMU, EA) * scale;
-            if (!instruction.paired_single_load.W) PS1 = (float)read16(&cpu->DMMU, EA + 2) * scale;
+            PS0.f = (float)read16(&cpu->DMMU, EA) * scale;
+            if (!instruction.paired_single_load.W) PS1.f = (float)read16(&cpu->DMMU, EA + 2) * scale;
             break;
         case GQR_TYPE_signed_8bit_int:
-            PS0 = (float)((i8)read8(&cpu->DMMU, EA)) * scale;
-            if (!instruction.paired_single_load.W) PS1 = (float)((i8)read8(&cpu->DMMU, EA + 1)) * scale;
+            PS0.f = (float)((i8)read8(&cpu->DMMU, EA)) * scale;
+            if (!instruction.paired_single_load.W) PS1.f = (float)((i8)read8(&cpu->DMMU, EA + 1)) * scale;
             break;
         case GQR_TYPE_signed_16bit_int:
-            PS0 = (float)((i16)read16(&cpu->DMMU, EA)) * scale;
-            if (!instruction.paired_single_load.W) PS1 = (float)((i16)read16(&cpu->DMMU, EA + 2)) * scale;
+            PS0.f = (float)((i16)read16(&cpu->DMMU, EA)) * scale;
+            if (!instruction.paired_single_load.W) PS1.f = (float)((i16)read16(&cpu->DMMU, EA + 2)) * scale;
             break;
         default:
             log_fatal("Invalid GQR_TYPE for single dequantization: %d", GQR.LD_TYPE);
     }
 
-    LOAD_PAIRED_SINGLE(&cpu->FPR[instruction.paired_single_load.D], &PS0, &PS1);
+    cpu->FPR[instruction.paired_single_load.D].PS0.d = CONVERT_TO_DOUBLE(PS0).d;
+    cpu->FPR[instruction.paired_single_load.D].PS1.d = CONVERT_TO_DOUBLE(PS1).d;
 }
 
 INLINE_GEKKO_INSTR(ps_mr) {
@@ -51,11 +50,11 @@ INLINE_GEKKO_INSTR(ps_mr) {
     ASSERT_FLOATING_POINT
     log_cpu("ps_mr %x", instruction.raw);
 
-    cpu->FPR[instruction.general_DAB.D].PS0 = cpu->FPR[instruction.general_DAB.B].PS0;
-    cpu->FPR[instruction.general_DAB.D].PS1 = cpu->FPR[instruction.general_DAB.B].PS1;
+    cpu->FPR[instruction.general_DAB.D].PS0.u = cpu->FPR[instruction.general_DAB.B].PS0.u;
+    cpu->FPR[instruction.general_DAB.D].PS1.u = cpu->FPR[instruction.general_DAB.B].PS1.u;
 
     // todo: I don't think floating point exceptions can be caused from moving
     if (instruction.general_DAB.Rc) {
-        UPDATE_CR_FROM_FPSCR(cpu->CR, cpu->FPSCR);
+        UPDATE_CR1_FROM_FPSCR(cpu->CR, cpu->FPSCR);
     }
 }

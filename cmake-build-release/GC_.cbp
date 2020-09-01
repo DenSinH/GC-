@@ -34,7 +34,8 @@
 				<Option type="1"/>
 				<Option compiler="clang"/>
 				<Compiler>
-					<Add directory="D:/CProjects/GC-/./include"/>
+					<Add directory="D:/CProjects/GC-/include"/>
+					<Add directory="D:/CProjects/GC-/src/Core/include"/>
 					<Add directory="D:/CProjects/GC-/src/Core"/>
 					<Add directory="D:/CProjects/GC-/src/Loader"/>
 				</Compiler>
@@ -52,7 +53,8 @@
 				<Option type="1"/>
 				<Option compiler="clang"/>
 				<Compiler>
-					<Add directory="D:/CProjects/GC-/./include"/>
+					<Add directory="D:/CProjects/GC-/include"/>
+					<Add directory="D:/CProjects/GC-/src/Core/include"/>
 					<Add directory="D:/CProjects/GC-/src/Core"/>
 					<Add directory="D:/CProjects/GC-/src/Loader"/>
 				</Compiler>
@@ -115,6 +117,7 @@
 				<Option compiler="clang"/>
 				<Compiler>
 					<Add directory="D:/CProjects/GC-/src/Core/../../include"/>
+					<Add directory="D:/CProjects/GC-/src/Core/./include"/>
 					<Add directory="D:/CProjects/GC-/src/Core"/>
 					<Add directory="D:/CProjects/GC-/src/Loader"/>
 				</Compiler>
@@ -133,6 +136,7 @@
 				<Option compiler="clang"/>
 				<Compiler>
 					<Add directory="D:/CProjects/GC-/src/Core/../../include"/>
+					<Add directory="D:/CProjects/GC-/src/Core/./include"/>
 					<Add directory="D:/CProjects/GC-/src/Core"/>
 					<Add directory="D:/CProjects/GC-/src/Loader"/>
 				</Compiler>
@@ -237,7 +241,13 @@
 		<Unit filename="D:/CProjects/GC-/src/Core/PPC/instructions.h">
 			<Option target="Core"/>
 		</Unit>
+		<Unit filename="D:/CProjects/GC-/src/Core/PPC/registers/CR.h">
+			<Option target="Core"/>
+		</Unit>
 		<Unit filename="D:/CProjects/GC-/src/Core/PPC/registers/FPR.h">
+			<Option target="Core"/>
+		</Unit>
+		<Unit filename="D:/CProjects/GC-/src/Core/PPC/registers/FPSCR.h">
 			<Option target="Core"/>
 		</Unit>
 		<Unit filename="D:/CProjects/GC-/src/Core/PPC/registers/GQR.h">
@@ -258,16 +268,16 @@
 		<Unit filename="D:/CProjects/GC-/src/Core/PPC/registers/XER.h">
 			<Option target="Core"/>
 		</Unit>
-		<Unit filename="D:/CProjects/GC-/src/Core/PPC/registers/condition_register.h">
-			<Option target="Core"/>
-		</Unit>
-		<Unit filename="D:/CProjects/GC-/src/Core/PPC/registers/floating_point_status_condition_register.h">
-			<Option target="Core"/>
-		</Unit>
 		<Unit filename="D:/CProjects/GC-/src/Core/PPC/registers/hardware_registers.c">
 			<Option target="Core"/>
 		</Unit>
 		<Unit filename="D:/CProjects/GC-/src/Core/PPC/registers/hardware_registers.h">
+			<Option target="Core"/>
+		</Unit>
+		<Unit filename="D:/CProjects/GC-/src/Core/include/float_utils.c">
+			<Option target="Core"/>
+		</Unit>
+		<Unit filename="D:/CProjects/GC-/src/Core/include/float_utils.h">
 			<Option target="Core"/>
 		</Unit>
 		<Unit filename="D:/CProjects/GC-/src/Core/system.c">

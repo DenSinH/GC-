@@ -341,6 +341,39 @@ PPC\registers\hardware_registers.c.s:
 	cd D:\CProjects\GC-\cmake-build-release\src\Core
 .PHONY : PPC\registers\hardware_registers.c.s
 
+include\float_utils.obj: include\float_utils.c.obj
+
+.PHONY : include\float_utils.obj
+
+# target to build an object file
+include\float_utils.c.obj:
+	cd D:\CProjects\GC-\cmake-build-release
+	$(MAKE) $(MAKESILENT) -f src\Core\CMakeFiles\Core.dir\build.make /nologo -$(MAKEFLAGS) src\Core\CMakeFiles\Core.dir\include\float_utils.c.obj
+	cd D:\CProjects\GC-\cmake-build-release\src\Core
+.PHONY : include\float_utils.c.obj
+
+include\float_utils.i: include\float_utils.c.i
+
+.PHONY : include\float_utils.i
+
+# target to preprocess a source file
+include\float_utils.c.i:
+	cd D:\CProjects\GC-\cmake-build-release
+	$(MAKE) $(MAKESILENT) -f src\Core\CMakeFiles\Core.dir\build.make /nologo -$(MAKEFLAGS) src\Core\CMakeFiles\Core.dir\include\float_utils.c.i
+	cd D:\CProjects\GC-\cmake-build-release\src\Core
+.PHONY : include\float_utils.c.i
+
+include\float_utils.s: include\float_utils.c.s
+
+.PHONY : include\float_utils.s
+
+# target to generate assembly for a file
+include\float_utils.c.s:
+	cd D:\CProjects\GC-\cmake-build-release
+	$(MAKE) $(MAKESILENT) -f src\Core\CMakeFiles\Core.dir\build.make /nologo -$(MAKEFLAGS) src\Core\CMakeFiles\Core.dir\include\float_utils.c.s
+	cd D:\CProjects\GC-\cmake-build-release\src\Core
+.PHONY : include\float_utils.c.s
+
 system.obj: system.c.obj
 
 .PHONY : system.obj
@@ -401,6 +434,9 @@ help:
 	@echo ... PPC/registers/hardware_registers.obj
 	@echo ... PPC/registers/hardware_registers.i
 	@echo ... PPC/registers/hardware_registers.s
+	@echo ... include/float_utils.obj
+	@echo ... include/float_utils.i
+	@echo ... include/float_utils.s
 	@echo ... system.obj
 	@echo ... system.i
 	@echo ... system.s

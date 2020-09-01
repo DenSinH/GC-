@@ -3,10 +3,11 @@
 
 #include <stdbool.h>
 #include <memory.h>
+#include <math.h>
 
 #include "MMU.h"
-#include "registers/condition_register.h"
-#include "registers/floating_point_status_condition_register.h"
+#include "registers/CR.h"
+#include "registers/FPSCR.h"
 #include "registers/MSR.h"
 #include "registers/XER.h"
 #include "registers/GQR.h"
@@ -19,6 +20,7 @@
 
 #include "default.h"
 #include "log.h"
+#include "float_utils.h"
 
 #define FULL_WRITE_MASK 0xffffffff
 
@@ -78,24 +80,26 @@ typedef struct s_Gekko {
 
 //                                 LT    , EQ    , GT
 const static u8 CR_settings[3] = { 0b1000, 0b0010, 0b0100 };
-#define UPDATE_CR0_RESULT32(cpu, result) cpu->CR.direct.CR0 = cpu->XER.SO | CR_settings[((i32)result >= 0) + ((i32)result > 0)]
+#define UPDATE_CR0_RESULT32(cpu, result) cpu->CR.direct.CR0 = cpu->XER.SO | CR_settings[((i32)(result) >= 0) + ((i32)(result) > 0)]
 #define GET_CRn_CMP_I32(cpu, op1, op2) (cpu->XER.SO | CR_settings[((i32)(op1) >= (i32)(op2)) + ((i32)(op1) > (i32)(op2))])
 #define GET_CRn_CMP_U32(cpu, op1, op2) (cpu->XER.SO | CR_settings[((op1) >= (op2)) + ((op1) > (op2))])
 
-static inline void LOAD_PAIRED_SINGLE(s_FPR* FPR, void* PS0, void* PS1) {
-    memcpy((void*)&(FPR->PS1), PS1, 4);
-    memcpy((void*)&(FPR->PS0), PS0, 4);
-}
+#define UPDATE_CR1_RESULT_FLOAT(cpu, result) cpu->CR.direct.CR1 = ((isnan(op1) || isnan(op2)) ? 0b0001 : CR_settings[((op1) >= (op2)) + ((op1) > (op2))])
+#define GET_CRn_CMP_FLOAT(op1, op2) ((isnan(op1) || isnan(op2)) ? 0b0001 : CR_settings[((op1) >= (op2)) + ((op1) > (op2))])
 
-static inline void LOAD_DOUBLE(s_FPR* FPR, void* value) {
-    memcpy((void*)&(FPR->PS0), value, 8);
+static inline void UPDATE_FPRF_RESULT_BIT_DOUBLE(s_Gekko* cpu, bit_double result) {
+    cpu->FPSCR.FPRF = (isnan(result.d) || isinf(result.d)) | CR_settings[((result.d) >= 0) + ((result.d) > 0)];
+    if (isnan(result.d) || (!(result.u & DOUBLE_QBIT) && result.u != 0)) {
+        // NaN, denormalized or -0
+        cpu->FPSCR.FPRF |= 0b10000;
+    }
 }
 
 static inline u64 GET_FPR(s_Gekko* cpu, unsigned int index) {
     if (cpu->HID2.PSE && cpu->HID2.LSQE) {
-        return (cpu->FPR[index].PS0 << 32) | cpu->FPR[index].PS1;
+        return (cpu->FPR[index].PS0.u << 32) | cpu->FPR[index].PS1.u;
     }
-    return cpu->FPR[index].PS0;
+    return cpu->FPR[index].PS0.u;
 }
 
 #define SPR_SIZE_BYTES 4
@@ -104,8 +108,8 @@ static inline void SET_SPR(s_Gekko* cpu, e_SPR SPR, u32* value) {
     memcpy((void*)cpu->SPR[SPR], (void*)value, SPR_SIZE_BYTES);
 }
 
-static inline void GET_SPR(s_Gekko* cpu, e_SPR SPR, void* target) {
-    memcpy(target, (void*)cpu->SPR[SPR], SPR_SIZE_BYTES);
+static inline void GET_SPR(s_Gekko* cpu, e_SPR SPR, u32* target) {
+    memcpy((void*)target, (void*)cpu->SPR[SPR], SPR_SIZE_BYTES);
 }
 
 #define GEKKO_PC_INIT_IPL 0x81300000

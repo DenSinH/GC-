@@ -2,9 +2,10 @@
 #define GC__FPR_H
 
 #include "default.h"
+#include "float_utils.h"
 
 typedef struct s_FPR {
-    u64 PS0, PS1;
+    bit_double PS0, PS1;
 } s_FPR;
 
 #endif //GC__FPR_H

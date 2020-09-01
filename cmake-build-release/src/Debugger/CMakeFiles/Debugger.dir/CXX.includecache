@@ -131,6 +131,8 @@ stdint.h
 -
 inttypes.h
 -
+SDL.h
+-
 imgui.h
 D:/CProjects/GC-/src/Debugger/widgets/imgui.h
 

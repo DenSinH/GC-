@@ -3,6 +3,7 @@
 #include <stdint.h>
 #include <inttypes.h>
 
+#include <SDL.h>
 #include "imgui.h"
 
 #define MAX_REGISTER_NAME_LENGTH 16
@@ -90,13 +91,17 @@ struct RegisterViewer
             if (!register_iter->islong) {
                 sprintf(label, "%08x", *((uint32_t*)register_iter->value));
 
-                if (ImGui::Selectable(label)) {}
+                if (ImGui::Selectable(label)) {
+                    SDL_SetClipboardText(label);
+                }
                 ImGui::NextColumn();
             }
             else {
                 sprintf(label, "%016" PRIx64, *((uint64_t*)register_iter->value));
 
-                if (ImGui::Selectable(label)) {}
+                if (ImGui::Selectable(label)) {
+                    SDL_SetClipboardText(label);
+                }
                 ImGui::NextColumn();
             }
 

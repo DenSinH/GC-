@@ -196,6 +196,9 @@ void build_instr_table(s_Gekko* cpu) {
             case 0b011111:
                 cpu->instructions[i] = instr_011111;
                 break;
+            case 0b111011:
+                cpu->instructions[i] = instr_111011;
+                break;
             case 0b111111:
                 cpu->instructions[i] = instr_111111;
                 break;

@@ -11,20 +11,22 @@ src/Core/CMakeFiles/Core.dir/PPC/Gekko.c.obj
  ../include/default.h
  ../include/flags.h
  ../include/log.h
+ ../src/Core/PPC/registers/FPSCR.h
+ ../src/Core/include/float_utils.h
  ../src/Loader/loader.h
  D:/CProjects/GC-/src/Core/PPC/Gekko.c
  D:/CProjects/GC-/src/Core/PPC/Gekko.h
  D:/CProjects/GC-/src/Core/PPC/MMU.h
  D:/CProjects/GC-/src/Core/PPC/gekko_instruction.h
+ D:/CProjects/GC-/src/Core/PPC/registers/CR.h
  D:/CProjects/GC-/src/Core/PPC/registers/FPR.h
+ D:/CProjects/GC-/src/Core/PPC/registers/FPSCR.h
  D:/CProjects/GC-/src/Core/PPC/registers/GQR.h
  D:/CProjects/GC-/src/Core/PPC/registers/HID.h
  D:/CProjects/GC-/src/Core/PPC/registers/MSR.h
  D:/CProjects/GC-/src/Core/PPC/registers/SPR_general.h
  D:/CProjects/GC-/src/Core/PPC/registers/TBR.h
  D:/CProjects/GC-/src/Core/PPC/registers/XER.h
- D:/CProjects/GC-/src/Core/PPC/registers/condition_register.h
- D:/CProjects/GC-/src/Core/PPC/registers/floating_point_status_condition_register.h
  D:/CProjects/GC-/src/Core/PPC/registers/hardware_registers.h
 src/Core/CMakeFiles/Core.dir/PPC/Gekko_init.c.obj
  ../include/default.h
@@ -32,20 +34,22 @@ src/Core/CMakeFiles/Core.dir/PPC/Gekko_init.c.obj
  ../include/helpers.h
  ../include/log.h
  ../src/Core/PPC/Gekko.h
+ ../src/Core/PPC/registers/FPSCR.h
+ ../src/Core/include/float_utils.h
  D:/CProjects/GC-/src/Core/PPC/Gekko.h
  D:/CProjects/GC-/src/Core/PPC/Gekko_init.c
  D:/CProjects/GC-/src/Core/PPC/MMU.h
  D:/CProjects/GC-/src/Core/PPC/gekko_instruction.h
  D:/CProjects/GC-/src/Core/PPC/instructions.h
+ D:/CProjects/GC-/src/Core/PPC/registers/CR.h
  D:/CProjects/GC-/src/Core/PPC/registers/FPR.h
+ D:/CProjects/GC-/src/Core/PPC/registers/FPSCR.h
  D:/CProjects/GC-/src/Core/PPC/registers/GQR.h
  D:/CProjects/GC-/src/Core/PPC/registers/HID.h
  D:/CProjects/GC-/src/Core/PPC/registers/MSR.h
  D:/CProjects/GC-/src/Core/PPC/registers/SPR_general.h
  D:/CProjects/GC-/src/Core/PPC/registers/TBR.h
  D:/CProjects/GC-/src/Core/PPC/registers/XER.h
- D:/CProjects/GC-/src/Core/PPC/registers/condition_register.h
- D:/CProjects/GC-/src/Core/PPC/registers/floating_point_status_condition_register.h
  D:/CProjects/GC-/src/Core/PPC/registers/hardware_registers.h
 src/Core/CMakeFiles/Core.dir/PPC/MMU.c.obj
  ../include/default.h
@@ -63,23 +67,24 @@ src/Core/CMakeFiles/Core.dir/PPC/instructions.c.obj
  ../src/Core/PPC/Gekko.h
  ../src/Core/PPC/MMU.h
  ../src/Core/PPC/instructions.h
+ ../src/Core/PPC/registers/CR.h
  ../src/Core/PPC/registers/FPR.h
+ ../src/Core/PPC/registers/FPSCR.h
  ../src/Core/PPC/registers/GQR.h
  ../src/Core/PPC/registers/HID.h
  ../src/Core/PPC/registers/MSR.h
  ../src/Core/PPC/registers/SPR_general.h
  ../src/Core/PPC/registers/TBR.h
  ../src/Core/PPC/registers/XER.h
- ../src/Core/PPC/registers/condition_register.h
- ../src/Core/PPC/registers/floating_point_status_condition_register.h
  ../src/Core/PPC/registers/hardware_registers.h
+ ../src/Core/include/float_utils.h
  D:/CProjects/GC-/src/Core/PPC/MMU.h
  D:/CProjects/GC-/src/Core/PPC/gekko_instruction.h
  D:/CProjects/GC-/src/Core/PPC/instructions.c
  D:/CProjects/GC-/src/Core/PPC/instructions.h
+ D:/CProjects/GC-/src/Core/PPC/instructions/CR.c
  D:/CProjects/GC-/src/Core/PPC/instructions/aggregate_instructions.c
  D:/CProjects/GC-/src/Core/PPC/instructions/branch_and_linkage.c
- D:/CProjects/GC-/src/Core/PPC/instructions/condition_register.c
  D:/CProjects/GC-/src/Core/PPC/instructions/float_arithmetic.c
  D:/CProjects/GC-/src/Core/PPC/instructions/float_compare_and_status.c
  D:/CProjects/GC-/src/Core/PPC/instructions/float_load_store.c
@@ -102,24 +107,33 @@ src/Core/CMakeFiles/Core.dir/PPC/registers/hardware_registers.c.obj
  ../include/default.h
  D:/CProjects/GC-/src/Core/PPC/registers/hardware_registers.c
  D:/CProjects/GC-/src/Core/PPC/registers/hardware_registers.h
+src/Core/CMakeFiles/Core.dir/include/float_utils.c.obj
+ ../include/default.h
+ ../include/flags.h
+ ../include/log.h
+ ../src/Core/PPC/registers/FPSCR.h
+ D:/CProjects/GC-/src/Core/include/float_utils.c
+ D:/CProjects/GC-/src/Core/include/float_utils.h
 src/Core/CMakeFiles/Core.dir/system.c.obj
  ../include/default.h
  ../include/flags.h
  ../include/log.h
  ../include/sleeping.h
+ ../src/Core/PPC/registers/FPSCR.h
+ ../src/Core/include/float_utils.h
  D:/CProjects/GC-/src/Core/Breakpoints/breakpoints.h
  D:/CProjects/GC-/src/Core/PPC/Gekko.h
  D:/CProjects/GC-/src/Core/PPC/MMU.h
  D:/CProjects/GC-/src/Core/PPC/gekko_instruction.h
+ D:/CProjects/GC-/src/Core/PPC/registers/CR.h
  D:/CProjects/GC-/src/Core/PPC/registers/FPR.h
+ D:/CProjects/GC-/src/Core/PPC/registers/FPSCR.h
  D:/CProjects/GC-/src/Core/PPC/registers/GQR.h
  D:/CProjects/GC-/src/Core/PPC/registers/HID.h
  D:/CProjects/GC-/src/Core/PPC/registers/MSR.h
  D:/CProjects/GC-/src/Core/PPC/registers/SPR_general.h
  D:/CProjects/GC-/src/Core/PPC/registers/TBR.h
  D:/CProjects/GC-/src/Core/PPC/registers/XER.h
- D:/CProjects/GC-/src/Core/PPC/registers/condition_register.h
- D:/CProjects/GC-/src/Core/PPC/registers/floating_point_status_condition_register.h
  D:/CProjects/GC-/src/Core/PPC/registers/hardware_registers.h
  D:/CProjects/GC-/src/Core/system.c
  D:/CProjects/GC-/src/Core/system.h

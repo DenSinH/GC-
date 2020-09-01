@@ -12,7 +12,7 @@ add_subdirectory(src/Core)
 add_subdirectory(src/Debugger)
 
 # for logging / stuff I want to use in all files
-include_directories(./include)
+include_directories(include src/Core/include)
 
 target_link_libraries(GC_ PRIVATE Core)
 target_link_libraries(GC_ PRIVATE Debugger)

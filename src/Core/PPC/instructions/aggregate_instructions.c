@@ -29,6 +29,9 @@ GEKKO_INSTR(instr_010011) {
         case MCRF_OPCODE_EXTENDED:
             mcrf(cpu, instruction);
             return;
+        case CROR_OPCODE_EXTENDED:
+            cror(cpu, instruction);
+            return;
         case CRXOR_OPCODE_EXTENDED:
             crxor(cpu, instruction);
             return;
@@ -123,11 +126,17 @@ GEKKO_INSTR(instr_011111) {
         case STWX_OPCODE_EXTENDED:
             stwx(cpu, instruction);
             return;
+        case LWZX_OPCODE_EXTENDED:
+            lwzx(cpu, instruction);
+            return;
         case LHZX_OPCODE_EXTENDED:
             lhzx(cpu, instruction);
             return;
-        case LWZX_OPCODE_EXTENDED:
-            lwzx(cpu, instruction);
+        case LBZX_OPCODE_EXTENDED:
+            lbzx(cpu, instruction);
+            return;
+        case STFIWX_OPCODE_EXTENDED:
+            stfiwx(cpu, instruction);
             return;
         case MFMSR_OPCODE_EXTENDED:
             mfmsr(cpu, instruction);
@@ -173,6 +182,19 @@ GEKKO_INSTR(instr_011111) {
     }
 }
 
+GEKKO_INSTR(instr_111011) {
+    switch (instruction.raw & 0x07e) {
+        // bottom 7 - 1 bits
+        case FDIVS_OPCODE_EXTENDED:
+            fdivs(cpu, instruction);
+            return;
+        default:
+            unimplemented(cpu, instruction);
+
+    }
+}
+
+
 GEKKO_INSTR(instr_111111) {
     // note: for this aggregate instruction, some have 5 bits to signify the instruction, others 10
     // I want to handle the 10bit case in the default case for the statement
@@ -180,9 +202,18 @@ GEKKO_INSTR(instr_111111) {
         // bottom 6 - 1 bits
         default:
             switch (instruction.raw & 0x7fe) {
-                // bottom 11 bits
+                // bottom 11 - 1 bits
+                case FCMPU_OPCODE_EXTENDED_10bit:
+                    fcmpu(cpu, instruction);
+                    return;
                 case FMR_OPCODE_EXTENDED_10bit:
                     fmr(cpu, instruction);
+                    return;
+                case FCTIWZ_OPCODE_EXTENDED_10bit:
+                    fctiwz(cpu, instruction);
+                    return;
+                case FNEG_OPCODE_EXTENDED_10bit:
+                    fneg(cpu, instruction);
                     return;
                 case MTFSF_OPCODE_EXTENDED_10bit:
                     mtfsf(cpu, instruction);

@@ -32,6 +32,22 @@ time.h
 unistd.h
 -
 
+../src/Core/PPC/registers/FPSCR.h
+default.h
+../src/Core/PPC/registers/default.h
+
+../src/Core/include/float_utils.h
+default.h
+../src/Core/include/default.h
+PPC/registers/FPSCR.h
+../src/Core/include/PPC/registers/FPSCR.h
+math.h
+-
+memory.h
+-
+stdbool.h
+-
+
 D:/CProjects/GC-/debugging.h
 stdlib.h
 -
@@ -77,12 +93,14 @@ stdbool.h
 -
 memory.h
 -
+math.h
+-
 MMU.h
 D:/CProjects/GC-/src/Core/PPC/MMU.h
-registers/condition_register.h
-D:/CProjects/GC-/src/Core/PPC/registers/condition_register.h
-registers/floating_point_status_condition_register.h
-D:/CProjects/GC-/src/Core/PPC/registers/floating_point_status_condition_register.h
+registers/CR.h
+D:/CProjects/GC-/src/Core/PPC/registers/CR.h
+registers/FPSCR.h
+D:/CProjects/GC-/src/Core/PPC/registers/FPSCR.h
 registers/MSR.h
 D:/CProjects/GC-/src/Core/PPC/registers/MSR.h
 registers/XER.h
@@ -105,6 +123,8 @@ default.h
 D:/CProjects/GC-/src/Core/PPC/default.h
 log.h
 D:/CProjects/GC-/src/Core/PPC/log.h
+float_utils.h
+D:/CProjects/GC-/src/Core/PPC/float_utils.h
 
 D:/CProjects/GC-/src/Core/PPC/MMU.h
 default.h
@@ -124,7 +144,19 @@ stdbool.h
 assert.h
 -
 
+D:/CProjects/GC-/src/Core/PPC/registers/CR.h
+stdbool.h
+-
+default.h
+D:/CProjects/GC-/src/Core/PPC/registers/default.h
+
 D:/CProjects/GC-/src/Core/PPC/registers/FPR.h
+default.h
+D:/CProjects/GC-/src/Core/PPC/registers/default.h
+float_utils.h
+D:/CProjects/GC-/src/Core/PPC/registers/float_utils.h
+
+D:/CProjects/GC-/src/Core/PPC/registers/FPSCR.h
 default.h
 D:/CProjects/GC-/src/Core/PPC/registers/default.h
 
@@ -143,16 +175,6 @@ default.h
 D:/CProjects/GC-/src/Core/PPC/registers/default.h
 
 D:/CProjects/GC-/src/Core/PPC/registers/XER.h
-default.h
-D:/CProjects/GC-/src/Core/PPC/registers/default.h
-
-D:/CProjects/GC-/src/Core/PPC/registers/condition_register.h
-stdbool.h
--
-default.h
-D:/CProjects/GC-/src/Core/PPC/registers/default.h
-
-D:/CProjects/GC-/src/Core/PPC/registers/floating_point_status_condition_register.h
 default.h
 D:/CProjects/GC-/src/Core/PPC/registers/default.h
 

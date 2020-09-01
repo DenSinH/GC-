@@ -4,7 +4,6 @@
 #include "default.h"
 
 typedef union s_TBR {
-    // integer:
     struct {
         u64 buffer: 3;
         u64 time: 61;

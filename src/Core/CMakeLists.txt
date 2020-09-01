@@ -11,9 +11,9 @@ add_library(Core STATIC
         Breakpoints/breakpoints.c
         PPC/gekko_instruction.h
         PPC/instructions.h
-        PPC/registers/condition_register.h
+        PPC/registers/CR.h
         PPC/registers/MSR.h
-        PPC/registers/floating_point_status_condition_register.h
+        PPC/registers/FPSCR.h
         PPC/registers/XER.h
         PPC/registers/GQR.h
         PPC/registers/HID.h
@@ -21,10 +21,10 @@ add_library(Core STATIC
         PPC/registers/SPR_general.h
         PPC/registers/hardware_registers.h
         PPC/registers/hardware_registers.c
-        PPC/registers/TBR.h)
+        PPC/registers/TBR.h include/float_utils.h include/float_utils.c)
 
 # for logging / stuff I want to use in all files
-include_directories(../../include)
+include_directories(../../include ./include)
 
 set_target_properties(Core PROPERTIES LINKER_LANGUAGE C)
 
