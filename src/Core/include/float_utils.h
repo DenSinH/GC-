@@ -4,7 +4,7 @@
 #include "flags.h"
 #include "default.h"
 
-#include "PPC/registers/FPSCR.h"
+#include "../PPC/Registers/FPSCR.h"
 
 #include <math.h>
 #include <memory.h>

@@ -5,7 +5,7 @@
 		<Option title="GC_"/>
 		<Option makefile_is_custom="1"/>
 		<Option compiler="clang"/>
-		<Option virtualFolders="CMake Files\;CMake Files\..\;CMake Files\..\..\;CMake Files\..\..\vcpkg\;CMake Files\..\..\vcpkg\vcpkg\;CMake Files\..\..\vcpkg\vcpkg\scripts\;CMake Files\..\..\vcpkg\vcpkg\scripts\buildsystems\;CMake Files\..\..\vcpkg\vcpkg\installed\;CMake Files\..\..\vcpkg\vcpkg\installed\x86-windows\;CMake Files\..\..\vcpkg\vcpkg\installed\x86-windows\share\;CMake Files\..\..\vcpkg\vcpkg\installed\x86-windows\share\sdl2\;CMake Files\..\..\vcpkg\vcpkg\installed\x86-windows\share\gl3w\;CMake Files\src\;CMake Files\src\Loader\;CMake Files\src\Core\;CMake Files\src\Debugger\;"/>
+		<Option virtualFolders="CMake Files\;CMake Files\..\;CMake Files\..\..\;CMake Files\..\..\vcpkg\;CMake Files\..\..\vcpkg\vcpkg\;CMake Files\..\..\vcpkg\vcpkg\scripts\;CMake Files\..\..\vcpkg\vcpkg\scripts\buildsystems\;CMake Files\..\..\vcpkg\vcpkg\installed\;CMake Files\..\..\vcpkg\vcpkg\installed\x86-windows\;CMake Files\..\..\vcpkg\vcpkg\installed\x86-windows\share\;CMake Files\..\..\vcpkg\vcpkg\installed\x86-windows\share\sdl2\;CMake Files\..\..\vcpkg\vcpkg\installed\x86-windows\share\gl3w\;CMake Files\src\;CMake Files\src\Loader\;CMake Files\src\Core\;CMake Files\src\Core\PPC\;CMake Files\src\Core\PPC\Registers\;CMake Files\src\Debugger\;"/>
 		<Build>
 			<Target title="all">
 				<Option working_dir="D:/CProjects/GC-/cmake-build-release"/>
@@ -38,6 +38,7 @@
 					<Add directory="D:/CProjects/GC-/src/Core/include"/>
 					<Add directory="D:/CProjects/GC-/src/Core"/>
 					<Add directory="D:/CProjects/GC-/src/Loader"/>
+					<Add directory="D:/CProjects/GC-/src/Core/PPC/Registers"/>
 				</Compiler>
 				<MakeCommands>
 					<Build command="nmake /NOLOGO /f D:\CProjects\GC-\cmake-build-release\Makefile VERBOSE=1 GC_"/>
@@ -57,6 +58,7 @@
 					<Add directory="D:/CProjects/GC-/src/Core/include"/>
 					<Add directory="D:/CProjects/GC-/src/Core"/>
 					<Add directory="D:/CProjects/GC-/src/Loader"/>
+					<Add directory="D:/CProjects/GC-/src/Core/PPC/Registers"/>
 				</Compiler>
 				<MakeCommands>
 					<Build command="nmake /NOLOGO /f D:\CProjects\GC-\cmake-build-release\Makefile VERBOSE=1 GC_/fast"/>
@@ -120,6 +122,7 @@
 					<Add directory="D:/CProjects/GC-/src/Core/./include"/>
 					<Add directory="D:/CProjects/GC-/src/Core"/>
 					<Add directory="D:/CProjects/GC-/src/Loader"/>
+					<Add directory="D:/CProjects/GC-/src/Core/PPC/Registers"/>
 				</Compiler>
 				<MakeCommands>
 					<Build command="nmake /NOLOGO /f D:\CProjects\GC-\cmake-build-release\src\Core\Makefile VERBOSE=1 Core"/>
@@ -139,12 +142,53 @@
 					<Add directory="D:/CProjects/GC-/src/Core/./include"/>
 					<Add directory="D:/CProjects/GC-/src/Core"/>
 					<Add directory="D:/CProjects/GC-/src/Loader"/>
+					<Add directory="D:/CProjects/GC-/src/Core/PPC/Registers"/>
 				</Compiler>
 				<MakeCommands>
 					<Build command="nmake /NOLOGO /f D:\CProjects\GC-\cmake-build-release\src\Core\Makefile VERBOSE=1 Core/fast"/>
 					<CompileFile command="nmake /NOLOGO /f D:\CProjects\GC-\cmake-build-release\src\Core\Makefile VERBOSE=1 &quot;$file&quot;"/>
 					<Clean command="nmake /NOLOGO /f D:\CProjects\GC-\cmake-build-release\src\Core\Makefile VERBOSE=1 clean"/>
 					<DistClean command="nmake /NOLOGO /f D:\CProjects\GC-\cmake-build-release\src\Core\Makefile VERBOSE=1 clean"/>
+				</MakeCommands>
+			</Target>
+			<Target title="Registers">
+				<Option output="D:/CProjects/GC-/cmake-build-release/src/Core/PPC/Registers/Registers.lib" prefix_auto="0" extension_auto="0"/>
+				<Option working_dir="D:/CProjects/GC-/cmake-build-release/src/Core/PPC/Registers"/>
+				<Option object_output="./"/>
+				<Option type="2"/>
+				<Option compiler="clang"/>
+				<Compiler>
+					<Add directory="D:/CProjects/GC-/src/Core/../../include"/>
+					<Add directory="D:/CProjects/GC-/src/Core/./include"/>
+					<Add directory="D:/CProjects/GC-/src/Core/PPC/Registers/../../include"/>
+					<Add directory="D:/CProjects/GC-/src/Core/PPC/Registers/./include"/>
+					<Add directory="D:/CProjects/GC-/src/Core/PPC/Registers"/>
+				</Compiler>
+				<MakeCommands>
+					<Build command="nmake /NOLOGO /f D:\CProjects\GC-\cmake-build-release\src\Core\PPC\Registers\Makefile VERBOSE=1 Registers"/>
+					<CompileFile command="nmake /NOLOGO /f D:\CProjects\GC-\cmake-build-release\src\Core\PPC\Registers\Makefile VERBOSE=1 &quot;$file&quot;"/>
+					<Clean command="nmake /NOLOGO /f D:\CProjects\GC-\cmake-build-release\src\Core\PPC\Registers\Makefile VERBOSE=1 clean"/>
+					<DistClean command="nmake /NOLOGO /f D:\CProjects\GC-\cmake-build-release\src\Core\PPC\Registers\Makefile VERBOSE=1 clean"/>
+				</MakeCommands>
+			</Target>
+			<Target title="Registers/fast">
+				<Option output="D:/CProjects/GC-/cmake-build-release/src/Core/PPC/Registers/Registers.lib" prefix_auto="0" extension_auto="0"/>
+				<Option working_dir="D:/CProjects/GC-/cmake-build-release/src/Core/PPC/Registers"/>
+				<Option object_output="./"/>
+				<Option type="2"/>
+				<Option compiler="clang"/>
+				<Compiler>
+					<Add directory="D:/CProjects/GC-/src/Core/../../include"/>
+					<Add directory="D:/CProjects/GC-/src/Core/./include"/>
+					<Add directory="D:/CProjects/GC-/src/Core/PPC/Registers/../../include"/>
+					<Add directory="D:/CProjects/GC-/src/Core/PPC/Registers/./include"/>
+					<Add directory="D:/CProjects/GC-/src/Core/PPC/Registers"/>
+				</Compiler>
+				<MakeCommands>
+					<Build command="nmake /NOLOGO /f D:\CProjects\GC-\cmake-build-release\src\Core\PPC\Registers\Makefile VERBOSE=1 Registers/fast"/>
+					<CompileFile command="nmake /NOLOGO /f D:\CProjects\GC-\cmake-build-release\src\Core\PPC\Registers\Makefile VERBOSE=1 &quot;$file&quot;"/>
+					<Clean command="nmake /NOLOGO /f D:\CProjects\GC-\cmake-build-release\src\Core\PPC\Registers\Makefile VERBOSE=1 clean"/>
+					<DistClean command="nmake /NOLOGO /f D:\CProjects\GC-\cmake-build-release\src\Core\PPC\Registers\Makefile VERBOSE=1 clean"/>
 				</MakeCommands>
 			</Target>
 			<Target title="Debugger">
@@ -232,6 +276,105 @@
 		<Unit filename="D:/CProjects/GC-/src/Core/PPC/MMU.h">
 			<Option target="Core"/>
 		</Unit>
+		<Unit filename="D:/CProjects/GC-/src/Core/PPC/Registers/CR.h">
+			<Option target="Registers"/>
+		</Unit>
+		<Unit filename="D:/CProjects/GC-/src/Core/PPC/Registers/FPR.h">
+			<Option target="Registers"/>
+		</Unit>
+		<Unit filename="D:/CProjects/GC-/src/Core/PPC/Registers/FPSCR.h">
+			<Option target="Registers"/>
+		</Unit>
+		<Unit filename="D:/CProjects/GC-/src/Core/PPC/Registers/GQR.h">
+			<Option target="Registers"/>
+		</Unit>
+		<Unit filename="D:/CProjects/GC-/src/Core/PPC/Registers/HID.h">
+			<Option target="Registers"/>
+		</Unit>
+		<Unit filename="D:/CProjects/GC-/src/Core/PPC/Registers/MSR.h">
+			<Option target="Registers"/>
+		</Unit>
+		<Unit filename="D:/CProjects/GC-/src/Core/PPC/Registers/SPR.c">
+			<Option target="Registers"/>
+		</Unit>
+		<Unit filename="D:/CProjects/GC-/src/Core/PPC/Registers/SPR.h">
+			<Option target="Registers"/>
+		</Unit>
+		<Unit filename="D:/CProjects/GC-/src/Core/PPC/Registers/TBR.h">
+			<Option target="Registers"/>
+		</Unit>
+		<Unit filename="D:/CProjects/GC-/src/Core/PPC/Registers/WPAR.h">
+			<Option target="Registers"/>
+		</Unit>
+		<Unit filename="D:/CProjects/GC-/src/Core/PPC/Registers/XER.h">
+			<Option target="Registers"/>
+		</Unit>
+		<Unit filename="D:/CProjects/GC-/src/Core/PPC/Registers/hardware_registers/AudioStreamingInterface.c">
+			<Option target="Registers"/>
+		</Unit>
+		<Unit filename="D:/CProjects/GC-/src/Core/PPC/Registers/hardware_registers/AudioStreamingInterface.h">
+			<Option target="Registers"/>
+		</Unit>
+		<Unit filename="D:/CProjects/GC-/src/Core/PPC/Registers/hardware_registers/CommandProcessor.c">
+			<Option target="Registers"/>
+		</Unit>
+		<Unit filename="D:/CProjects/GC-/src/Core/PPC/Registers/hardware_registers/CommandProcessor.h">
+			<Option target="Registers"/>
+		</Unit>
+		<Unit filename="D:/CProjects/GC-/src/Core/PPC/Registers/hardware_registers/DVDInterface.c">
+			<Option target="Registers"/>
+		</Unit>
+		<Unit filename="D:/CProjects/GC-/src/Core/PPC/Registers/hardware_registers/DVDInterface.h">
+			<Option target="Registers"/>
+		</Unit>
+		<Unit filename="D:/CProjects/GC-/src/Core/PPC/Registers/hardware_registers/DigitalSoundProcessorInterface.c">
+			<Option target="Registers"/>
+		</Unit>
+		<Unit filename="D:/CProjects/GC-/src/Core/PPC/Registers/hardware_registers/DigitalSoundProcessorInterface.h">
+			<Option target="Registers"/>
+		</Unit>
+		<Unit filename="D:/CProjects/GC-/src/Core/PPC/Registers/hardware_registers/ExternalInterface.c">
+			<Option target="Registers"/>
+		</Unit>
+		<Unit filename="D:/CProjects/GC-/src/Core/PPC/Registers/hardware_registers/ExternalInterface.h">
+			<Option target="Registers"/>
+		</Unit>
+		<Unit filename="D:/CProjects/GC-/src/Core/PPC/Registers/hardware_registers/GXFIFO.c">
+			<Option target="Registers"/>
+		</Unit>
+		<Unit filename="D:/CProjects/GC-/src/Core/PPC/Registers/hardware_registers/GXFIFO.h">
+			<Option target="Registers"/>
+		</Unit>
+		<Unit filename="D:/CProjects/GC-/src/Core/PPC/Registers/hardware_registers/PixelEngine.c">
+			<Option target="Registers"/>
+		</Unit>
+		<Unit filename="D:/CProjects/GC-/src/Core/PPC/Registers/hardware_registers/PixelEngine.h">
+			<Option target="Registers"/>
+		</Unit>
+		<Unit filename="D:/CProjects/GC-/src/Core/PPC/Registers/hardware_registers/ProcessorInterface.c">
+			<Option target="Registers"/>
+		</Unit>
+		<Unit filename="D:/CProjects/GC-/src/Core/PPC/Registers/hardware_registers/ProcessorInterface.h">
+			<Option target="Registers"/>
+		</Unit>
+		<Unit filename="D:/CProjects/GC-/src/Core/PPC/Registers/hardware_registers/SerialInterface.c">
+			<Option target="Registers"/>
+		</Unit>
+		<Unit filename="D:/CProjects/GC-/src/Core/PPC/Registers/hardware_registers/SerialInterface.h">
+			<Option target="Registers"/>
+		</Unit>
+		<Unit filename="D:/CProjects/GC-/src/Core/PPC/Registers/hardware_registers/VideoInterface.c">
+			<Option target="Registers"/>
+		</Unit>
+		<Unit filename="D:/CProjects/GC-/src/Core/PPC/Registers/hardware_registers/VideoInterface.h">
+			<Option target="Registers"/>
+		</Unit>
+		<Unit filename="D:/CProjects/GC-/src/Core/PPC/Registers/hardware_registers/hardware_registers.c">
+			<Option target="Registers"/>
+		</Unit>
+		<Unit filename="D:/CProjects/GC-/src/Core/PPC/Registers/hardware_registers/hardware_registers.h">
+			<Option target="Registers"/>
+		</Unit>
 		<Unit filename="D:/CProjects/GC-/src/Core/PPC/gekko_instruction.h">
 			<Option target="Core"/>
 		</Unit>
@@ -239,45 +382,6 @@
 			<Option target="Core"/>
 		</Unit>
 		<Unit filename="D:/CProjects/GC-/src/Core/PPC/instructions.h">
-			<Option target="Core"/>
-		</Unit>
-		<Unit filename="D:/CProjects/GC-/src/Core/PPC/registers/CR.h">
-			<Option target="Core"/>
-		</Unit>
-		<Unit filename="D:/CProjects/GC-/src/Core/PPC/registers/FPR.h">
-			<Option target="Core"/>
-		</Unit>
-		<Unit filename="D:/CProjects/GC-/src/Core/PPC/registers/FPSCR.h">
-			<Option target="Core"/>
-		</Unit>
-		<Unit filename="D:/CProjects/GC-/src/Core/PPC/registers/GQR.h">
-			<Option target="Core"/>
-		</Unit>
-		<Unit filename="D:/CProjects/GC-/src/Core/PPC/registers/HID.h">
-			<Option target="Core"/>
-		</Unit>
-		<Unit filename="D:/CProjects/GC-/src/Core/PPC/registers/MSR.h">
-			<Option target="Core"/>
-		</Unit>
-		<Unit filename="D:/CProjects/GC-/src/Core/PPC/registers/SPR.c">
-			<Option target="Core"/>
-		</Unit>
-		<Unit filename="D:/CProjects/GC-/src/Core/PPC/registers/SPR.h">
-			<Option target="Core"/>
-		</Unit>
-		<Unit filename="D:/CProjects/GC-/src/Core/PPC/registers/TBR.h">
-			<Option target="Core"/>
-		</Unit>
-		<Unit filename="D:/CProjects/GC-/src/Core/PPC/registers/WPAR.h">
-			<Option target="Core"/>
-		</Unit>
-		<Unit filename="D:/CProjects/GC-/src/Core/PPC/registers/XER.h">
-			<Option target="Core"/>
-		</Unit>
-		<Unit filename="D:/CProjects/GC-/src/Core/PPC/registers/hardware_registers.c">
-			<Option target="Core"/>
-		</Unit>
-		<Unit filename="D:/CProjects/GC-/src/Core/PPC/registers/hardware_registers.h">
 			<Option target="Core"/>
 		</Unit>
 		<Unit filename="D:/CProjects/GC-/src/Core/include/float_utils.c">
@@ -417,6 +521,9 @@
 		</Unit>
 		<Unit filename="D:/CProjects/GC-/src/Core/CMakeLists.txt">
 			<Option virtualFolder="CMake Files\src\Core\"/>
+		</Unit>
+		<Unit filename="D:/CProjects/GC-/src/Core/PPC/Registers/CMakeLists.txt">
+			<Option virtualFolder="CMake Files\src\Core\PPC\Registers\"/>
 		</Unit>
 		<Unit filename="D:/CProjects/GC-/src/Debugger/CMakeLists.txt">
 			<Option virtualFolder="CMake Files\src\Debugger\"/>

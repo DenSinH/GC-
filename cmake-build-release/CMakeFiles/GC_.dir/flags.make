@@ -6,5 +6,5 @@ C_FLAGS = -m32 /O2 /Ob2 /DNDEBUG -MD
 
 C_DEFINES = 
 
-C_INCLUDES = -ID:\CProjects\GC-\include -ID:\CProjects\GC-\src\Core\include -ID:\CProjects\GC-\src\Core -ID:\CProjects\GC-\src\Loader 
+C_INCLUDES = -ID:\CProjects\GC-\include -ID:\CProjects\GC-\src\Core\include -ID:\CProjects\GC-\src\Core -ID:\CProjects\GC-\src\Loader -ID:\CProjects\GC-\src\Core\PPC\Registers 
 

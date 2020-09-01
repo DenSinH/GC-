@@ -1,6 +1,6 @@
 #include "PPC/instructions.h"
 
-#include "../registers/SPR.h"
+#include "../Registers/SPR.h"
 
 #include "flags.h"
 

@@ -62,7 +62,7 @@ struct RegisterViewer
         }
 
         // display items starting from the bottom
-        ImGui::Columns(columns, "registers", true);  // 3-ways, no border
+        ImGui::Columns(columns, "Registers", true);  // 3-ways, no border
         int currentwidth = columns;
 
         char label[64];

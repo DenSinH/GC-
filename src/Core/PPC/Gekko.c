@@ -10,12 +10,12 @@
 
 #define IPL_FILE_NAME "files/ipl.bin"
 void load_IPL_to_Gekko(s_Gekko* cpu) {
-    decrypt_IPL_to(IPL_FILE_NAME, cpu->memory + IPL_START_ADDRESS);
+    decrypt_IPL_to(IPL_FILE_NAME, cpu->DMMU.memory_ptr + IPL_START_ADDRESS);
     cpu->PC = GEKKO_PC_INIT_IPL;
 }
 
 void load_DOL_to_Gekko(s_Gekko* cpu, const char file_name[]) {
-    cpu->PC = load_DOL_to(file_name, cpu->memory);
+    cpu->PC = load_DOL_to(file_name, cpu->DMMU.memory_ptr);
     strcpy_s(cpu->dol_file_name, DOL_FILE_NAME_LENGTH, file_name);
 }
 
@@ -69,7 +69,7 @@ void dump_Gekko_mem_range(s_Gekko* cpu, u32 start, u32 end) {
     FILE* file;
     fopen_s(&file, GEKKO_DUMP_FILE_NAME, "wb");
 
-    u32 written_length = fwrite(cpu->memory + start, 1, end - start, file);
+    u32 written_length = fwrite(cpu->DMMU.memory_ptr + start, 1, end - start, file);
     if (written_length != end - start) {
         log_fatal("Error writing to file: wrote %x bytes, should have written %x", written_length, end - start);
     }

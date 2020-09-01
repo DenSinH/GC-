@@ -3,6 +3,9 @@
 
 #include "default.h"
 
+#define HW_REG_READ_FUNCTION(_name) u32 _name(struct s_GameCube* system, u32 address, size_t size)
+#define HW_REG_WRITE_FUNCTION(_name) void _name(struct s_GameCube* system, u32 address, u32 value, size_t size)
+
 #define HR_INDEX_FROM_ADDRESS(address) (((address) >> 12) & 0xf)
 
 typedef enum {
@@ -39,6 +42,9 @@ typedef struct s_hardware_registers {
     u8 GX_FIFO[0x4];
 
     u8* pointers[9];
+
+    HW_REG_READ_FUNCTION((*read[9]));
+    HW_REG_WRITE_FUNCTION((*write[9]));
 } s_hardware_registers;
 
 void init_HW_regs(s_hardware_registers* HW_regs);

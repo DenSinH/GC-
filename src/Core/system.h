@@ -9,6 +9,7 @@
 #include "Breakpoints/breakpoints.h"
 
 typedef struct s_GameCube {
+    u8 memory[0x1800000];
     s_Gekko cpu;
 
     bool shutdown;
@@ -25,6 +26,6 @@ typedef struct s_GameCube {
 } s_GameCube ;
 
 s_GameCube* init_system();
-void run_system(s_GameCube* GameCube);
+void run_system(s_GameCube* system);
 
 #endif //GC__SYSTEM_H

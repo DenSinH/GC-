@@ -6,16 +6,16 @@
 #include <math.h>
 
 #include "MMU.h"
-#include "registers/CR.h"
-#include "registers/FPSCR.h"
-#include "registers/MSR.h"
-#include "registers/XER.h"
-#include "registers/GQR.h"
-#include "registers/HID.h"
-#include "registers/FPR.h"
-#include "registers/TBR.h"
-#include "registers/WPAR.h"
-#include "PPC/registers/hardware_registers/hardware_registers.h"
+#include "Registers/CR.h"
+#include "Registers/FPSCR.h"
+#include "Registers/MSR.h"
+#include "Registers/XER.h"
+#include "Registers/GQR.h"
+#include "Registers/HID.h"
+#include "Registers/FPR.h"
+#include "Registers/TBR.h"
+#include "Registers/WPAR.h"
+#include "Registers/hardware_registers/hardware_registers.h"
 #include "gekko_instruction.h"
 
 #include "default.h"
@@ -33,11 +33,11 @@
 #define GET_TBU(cpu_ptr) (u32)((cpu_ptr)->TBR.time >> 32)
 
 typedef struct s_Gekko {
-    u8 memory[0x1800000];
+    struct s_GameCube* GameCube_ptr;
     s_hardware_registers HW_regs;
 
-    u32 GPR[32];      // General purpose registers
-    s_FPR FPR[32];    // Floating-point registers
+    u32 GPR[32];      // General purpose Registers
+    s_FPR FPR[32];    // Floating-point Registers
 
     void* SPR[1024];  // pointers to SPRs (encoding in manual)
     u32 SPR_write_mask[1024]; // SPRs write masks
@@ -59,8 +59,8 @@ typedef struct s_Gekko {
     s_TBR TBR;      // Time base register
 
     s_GQR GQR[8];
-    u32 HID[0];     // hardware dependent registers (todo: stubbed)
-    s_HID2 HID2;    // hardware dependent registers (todo: stubbed)
+    u32 HID[0];     // hardware dependent Registers (todo: stubbed)
+    s_HID2 HID2;    // hardware dependent Registers (todo: stubbed)
     s_WPAR WPAR;
 
     u32 SR[16];

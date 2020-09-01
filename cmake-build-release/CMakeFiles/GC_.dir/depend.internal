@@ -10,7 +10,7 @@ CMakeFiles/GC_.dir/main.c.obj
  ../include/flags.h
  ../include/log.h
  ../include/sleeping.h
- ../src/Core/PPC/registers/FPSCR.h
+ ../src/Core/PPC/Registers/FPSCR.h
  ../src/Core/include/float_utils.h
  D:/CProjects/GC-/debugging.h
  D:/CProjects/GC-/debugthread.h
@@ -19,16 +19,16 @@ CMakeFiles/GC_.dir/main.c.obj
  D:/CProjects/GC-/src/Core/Breakpoints/breakpoints.h
  D:/CProjects/GC-/src/Core/PPC/Gekko.h
  D:/CProjects/GC-/src/Core/PPC/MMU.h
+ D:/CProjects/GC-/src/Core/PPC/Registers/CR.h
+ D:/CProjects/GC-/src/Core/PPC/Registers/FPR.h
+ D:/CProjects/GC-/src/Core/PPC/Registers/FPSCR.h
+ D:/CProjects/GC-/src/Core/PPC/Registers/GQR.h
+ D:/CProjects/GC-/src/Core/PPC/Registers/HID.h
+ D:/CProjects/GC-/src/Core/PPC/Registers/MSR.h
+ D:/CProjects/GC-/src/Core/PPC/Registers/TBR.h
+ D:/CProjects/GC-/src/Core/PPC/Registers/WPAR.h
+ D:/CProjects/GC-/src/Core/PPC/Registers/XER.h
+ D:/CProjects/GC-/src/Core/PPC/Registers/hardware_registers/hardware_registers.h
  D:/CProjects/GC-/src/Core/PPC/gekko_instruction.h
- D:/CProjects/GC-/src/Core/PPC/registers/CR.h
- D:/CProjects/GC-/src/Core/PPC/registers/FPR.h
- D:/CProjects/GC-/src/Core/PPC/registers/FPSCR.h
- D:/CProjects/GC-/src/Core/PPC/registers/GQR.h
- D:/CProjects/GC-/src/Core/PPC/registers/HID.h
- D:/CProjects/GC-/src/Core/PPC/registers/MSR.h
- D:/CProjects/GC-/src/Core/PPC/registers/TBR.h
- D:/CProjects/GC-/src/Core/PPC/registers/WPAR.h
- D:/CProjects/GC-/src/Core/PPC/registers/XER.h
- D:/CProjects/GC-/src/Core/PPC/registers/hardware_registers.h
  D:/CProjects/GC-/src/Core/system.h
  D:/CProjects/GC-/src/Debugger/debugger.h

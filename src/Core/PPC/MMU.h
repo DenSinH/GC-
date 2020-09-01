@@ -2,8 +2,8 @@
 #define GC__MMU_H
 
 #include "default.h"
-#include "PPC/registers/hardware_registers/hardware_registers.h"
-#include "registers/TBR.h"
+#include "Registers/hardware_registers/hardware_registers.h"
+#include "Registers/TBR.h"
 
 #include "flags.h"
 
@@ -35,9 +35,10 @@ typedef enum {
  * the Instruction MMU SR_ptr's "Shadow" the Data MMU's SRs
  * */
 typedef struct s_MMU {
-    u32* SR_ptr;      // Segment registers          [SUPERVISOR]
+    struct s_GameCube* GameCube_ptr;
+    u32* SR_ptr;      // Segment Registers          [SUPERVISOR]
     u64 BAT[8];       // Batch Address Translation  [SUPERVISOR]
-    u8* RAM_ptr;
+    u8* memory_ptr;
     s_TBR* TBR_ptr;
     s_hardware_registers* HW_regs_ptr;
 } s_MMU;
@@ -48,7 +49,7 @@ typedef struct s_MMU {
     (array[(address)] << 24)     | \
     (array[(address) + 1] << 16) | \
     (array[(address) + 2] << 8)  | \
-    array[(address) + 3]
+     array[(address) + 3]
 
 #define READ64(array, address)           \
     ((u64)array[(address)] << 56)     | \
@@ -58,7 +59,7 @@ typedef struct s_MMU {
     ((u64)array[(address) + 4] << 24) | \
     ((u64)array[(address) + 5] << 16) | \
     ((u64)array[(address) + 6] << 8)  | \
-    (u64)array[(address) + 7]
+    (u64) array[(address) + 7]
 
 #define WRITE8(array, address, value) array[address] = (value)
 #define WRITE16(array, address, value)       \

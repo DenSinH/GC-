@@ -308,72 +308,6 @@ PPC\instructions.c.s:
 	cd D:\CProjects\GC-\cmake-build-release\src\Core
 .PHONY : PPC\instructions.c.s
 
-PPC\registers\SPR.obj: PPC\registers\SPR.c.obj
-
-.PHONY : PPC\registers\SPR.obj
-
-# target to build an object file
-PPC\registers\SPR.c.obj:
-	cd D:\CProjects\GC-\cmake-build-release
-	$(MAKE) $(MAKESILENT) -f src\Core\CMakeFiles\Core.dir\build.make /nologo -$(MAKEFLAGS) src\Core\CMakeFiles\Core.dir\PPC\registers\SPR.c.obj
-	cd D:\CProjects\GC-\cmake-build-release\src\Core
-.PHONY : PPC\registers\SPR.c.obj
-
-PPC\registers\SPR.i: PPC\registers\SPR.c.i
-
-.PHONY : PPC\registers\SPR.i
-
-# target to preprocess a source file
-PPC\registers\SPR.c.i:
-	cd D:\CProjects\GC-\cmake-build-release
-	$(MAKE) $(MAKESILENT) -f src\Core\CMakeFiles\Core.dir\build.make /nologo -$(MAKEFLAGS) src\Core\CMakeFiles\Core.dir\PPC\registers\SPR.c.i
-	cd D:\CProjects\GC-\cmake-build-release\src\Core
-.PHONY : PPC\registers\SPR.c.i
-
-PPC\registers\SPR.s: PPC\registers\SPR.c.s
-
-.PHONY : PPC\registers\SPR.s
-
-# target to generate assembly for a file
-PPC\registers\SPR.c.s:
-	cd D:\CProjects\GC-\cmake-build-release
-	$(MAKE) $(MAKESILENT) -f src\Core\CMakeFiles\Core.dir\build.make /nologo -$(MAKEFLAGS) src\Core\CMakeFiles\Core.dir\PPC\registers\SPR.c.s
-	cd D:\CProjects\GC-\cmake-build-release\src\Core
-.PHONY : PPC\registers\SPR.c.s
-
-PPC\registers\hardware_registers.obj: PPC\registers\hardware_registers.c.obj
-
-.PHONY : PPC\registers\hardware_registers.obj
-
-# target to build an object file
-PPC\registers\hardware_registers.c.obj:
-	cd D:\CProjects\GC-\cmake-build-release
-	$(MAKE) $(MAKESILENT) -f src\Core\CMakeFiles\Core.dir\build.make /nologo -$(MAKEFLAGS) src\Core\CMakeFiles\Core.dir\PPC\registers\hardware_registers.c.obj
-	cd D:\CProjects\GC-\cmake-build-release\src\Core
-.PHONY : PPC\registers\hardware_registers.c.obj
-
-PPC\registers\hardware_registers.i: PPC\registers\hardware_registers.c.i
-
-.PHONY : PPC\registers\hardware_registers.i
-
-# target to preprocess a source file
-PPC\registers\hardware_registers.c.i:
-	cd D:\CProjects\GC-\cmake-build-release
-	$(MAKE) $(MAKESILENT) -f src\Core\CMakeFiles\Core.dir\build.make /nologo -$(MAKEFLAGS) src\Core\CMakeFiles\Core.dir\PPC\registers\hardware_registers.c.i
-	cd D:\CProjects\GC-\cmake-build-release\src\Core
-.PHONY : PPC\registers\hardware_registers.c.i
-
-PPC\registers\hardware_registers.s: PPC\registers\hardware_registers.c.s
-
-.PHONY : PPC\registers\hardware_registers.s
-
-# target to generate assembly for a file
-PPC\registers\hardware_registers.c.s:
-	cd D:\CProjects\GC-\cmake-build-release
-	$(MAKE) $(MAKESILENT) -f src\Core\CMakeFiles\Core.dir\build.make /nologo -$(MAKEFLAGS) src\Core\CMakeFiles\Core.dir\PPC\registers\hardware_registers.c.s
-	cd D:\CProjects\GC-\cmake-build-release\src\Core
-.PHONY : PPC\registers\hardware_registers.c.s
-
 include\float_utils.obj: include\float_utils.c.obj
 
 .PHONY : include\float_utils.obj
@@ -464,12 +398,6 @@ help:
 	@echo ... PPC/instructions.obj
 	@echo ... PPC/instructions.i
 	@echo ... PPC/instructions.s
-	@echo ... PPC/registers/SPR.obj
-	@echo ... PPC/registers/SPR.i
-	@echo ... PPC/registers/SPR.s
-	@echo ... PPC/registers/hardware_registers.obj
-	@echo ... PPC/registers/hardware_registers.i
-	@echo ... PPC/registers/hardware_registers.s
 	@echo ... include/float_utils.obj
 	@echo ... include/float_utils.i
 	@echo ... include/float_utils.s

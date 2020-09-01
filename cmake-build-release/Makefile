@@ -154,6 +154,19 @@ Core\fast:
 .PHONY : Core\fast
 
 #=============================================================================
+# Target rules for targets named Registers
+
+# Build rule for target.
+Registers: cmake_check_build_system
+	$(MAKE) $(MAKESILENT) -f CMakeFiles\Makefile2 /nologo -$(MAKEFLAGS) Registers
+.PHONY : Registers
+
+# fast build rule for target.
+Registers\fast:
+	$(MAKE) $(MAKESILENT) -f src\Core\PPC\Registers\CMakeFiles\Registers.dir\build.make /nologo -$(MAKEFLAGS) src\Core\PPC\Registers\CMakeFiles\Registers.dir\build
+.PHONY : Registers\fast
+
+#=============================================================================
 # Target rules for targets named Debugger
 
 # Build rule for target.
@@ -232,6 +245,7 @@ help:
 	@echo ... Debugger
 	@echo ... GC_
 	@echo ... Loader
+	@echo ... Registers
 	@echo ... debugthread.obj
 	@echo ... debugthread.i
 	@echo ... debugthread.s

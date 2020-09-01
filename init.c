@@ -125,7 +125,7 @@ void init() {
     debugger_init(
             &global_system->shutdown,
             &global_system->cpu.PC,
-            global_system->cpu.memory,
+            global_system->cpu.DMMU.memory_ptr,
             0x100000000,
             valid_address_check,
             (u64*)&global_system->cpu.TBR,

@@ -9,7 +9,7 @@ CMakeFiles\GC_.dir\main.c.obj: ..\include\default.h
 CMakeFiles\GC_.dir\main.c.obj: ..\include\flags.h
 CMakeFiles\GC_.dir\main.c.obj: ..\include\log.h
 CMakeFiles\GC_.dir\main.c.obj: ..\include\sleeping.h
-CMakeFiles\GC_.dir\main.c.obj: ..\src\Core\PPC\registers\FPSCR.h
+CMakeFiles\GC_.dir\main.c.obj: ..\src\Core\PPC\Registers\FPSCR.h
 CMakeFiles\GC_.dir\main.c.obj: ..\src\Core\include\float_utils.h
 CMakeFiles\GC_.dir\main.c.obj: ..\debugging.h
 CMakeFiles\GC_.dir\main.c.obj: ..\debugthread.h
@@ -18,17 +18,17 @@ CMakeFiles\GC_.dir\main.c.obj: ..\main.c
 CMakeFiles\GC_.dir\main.c.obj: ..\src\Core\Breakpoints\breakpoints.h
 CMakeFiles\GC_.dir\main.c.obj: ..\src\Core\PPC\Gekko.h
 CMakeFiles\GC_.dir\main.c.obj: ..\src\Core\PPC\MMU.h
+CMakeFiles\GC_.dir\main.c.obj: ..\src\Core\PPC\Registers\CR.h
+CMakeFiles\GC_.dir\main.c.obj: ..\src\Core\PPC\Registers\FPR.h
+CMakeFiles\GC_.dir\main.c.obj: ..\src\Core\PPC\Registers\FPSCR.h
+CMakeFiles\GC_.dir\main.c.obj: ..\src\Core\PPC\Registers\GQR.h
+CMakeFiles\GC_.dir\main.c.obj: ..\src\Core\PPC\Registers\HID.h
+CMakeFiles\GC_.dir\main.c.obj: ..\src\Core\PPC\Registers\MSR.h
+CMakeFiles\GC_.dir\main.c.obj: ..\src\Core\PPC\Registers\TBR.h
+CMakeFiles\GC_.dir\main.c.obj: ..\src\Core\PPC\Registers\WPAR.h
+CMakeFiles\GC_.dir\main.c.obj: ..\src\Core\PPC\Registers\XER.h
+CMakeFiles\GC_.dir\main.c.obj: ..\src\Core\PPC\Registers\hardware_registers\hardware_registers.h
 CMakeFiles\GC_.dir\main.c.obj: ..\src\Core\PPC\gekko_instruction.h
-CMakeFiles\GC_.dir\main.c.obj: ..\src\Core\PPC\registers\CR.h
-CMakeFiles\GC_.dir\main.c.obj: ..\src\Core\PPC\registers\FPR.h
-CMakeFiles\GC_.dir\main.c.obj: ..\src\Core\PPC\registers\FPSCR.h
-CMakeFiles\GC_.dir\main.c.obj: ..\src\Core\PPC\registers\GQR.h
-CMakeFiles\GC_.dir\main.c.obj: ..\src\Core\PPC\registers\HID.h
-CMakeFiles\GC_.dir\main.c.obj: ..\src\Core\PPC\registers\MSR.h
-CMakeFiles\GC_.dir\main.c.obj: ..\src\Core\PPC\registers\TBR.h
-CMakeFiles\GC_.dir\main.c.obj: ..\src\Core\PPC\registers\WPAR.h
-CMakeFiles\GC_.dir\main.c.obj: ..\src\Core\PPC\registers\XER.h
-CMakeFiles\GC_.dir\main.c.obj: ..\src\Core\PPC\registers\hardware_registers.h
 CMakeFiles\GC_.dir\main.c.obj: ..\src\Core\system.h
 CMakeFiles\GC_.dir\main.c.obj: ..\src\Debugger\debugger.h
 

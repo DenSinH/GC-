@@ -1,6 +1,6 @@
 #include "PPC/instructions.h"
-#include "PPC/registers/GQR.h"
-#include "PPC/registers/HID.h"
+#include "PPC/Registers/GQR.h"
+#include "PPC/Registers/HID.h"
 #include "PPC/MMU.h"
 
 #include "helpers.h"

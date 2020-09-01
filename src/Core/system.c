@@ -12,6 +12,7 @@
 s_GameCube* init_system() {
     s_GameCube* GameCube = malloc(sizeof(s_GameCube));
     memset(GameCube, 0x00, sizeof(struct s_GameCube));
+    GameCube->cpu.GameCube_ptr = GameCube;
     init_Gekko(&GameCube->cpu);
 
 #ifdef DO_BREAKPOINTS
@@ -33,35 +34,35 @@ s_GameCube* init_system() {
 #define TEST_DOL "D:\\CProjects\\GCResources\\GameCubeResources\\Tests\\Triangle\\Triangle.dol"
 #define STEP_ON_BREAK
 
-void run_system(s_GameCube* GameCube) {
-    load_DOL_to_Gekko(&GameCube->cpu, TEST_DOL);
+void run_system(s_GameCube* system) {
+    load_DOL_to_Gekko(&system->cpu, TEST_DOL);
 
 #ifdef STEP_ON_BREAK
     bool step = false;
 #endif
 
-    while (!GameCube->shutdown) {
+    while (!system->shutdown) {
 
-        step_Gekko(&GameCube->cpu);
-        if ((GameCube->cpu.PC & 0x0fffffff) > 0x01800000) {
-            log_fatal("Jumped to invalid address: %08x", GameCube->cpu.PC);
+        step_Gekko(&system->cpu);
+        if ((system->cpu.PC & 0x0fffffff) > 0x01800000) {
+            log_fatal("Jumped to invalid address: %08x", system->cpu.PC);
         }
 
 #if defined(DO_BREAKPOINTS) || defined(DO_DEBUGGER)
-        if (check_breakpoints(&GameCube->breakpoints, GameCube->cpu.PC)) {
-            dump_Gekko(&GameCube->cpu);
+        if (check_breakpoints(&system->breakpoints, system->cpu.PC)) {
+            dump_Gekko(&system->cpu);
             log_debug("Hit breakpoint %08x", GameCube->cpu.PC);
-            GameCube->paused = true;
+            system->paused = true;
         }
 #endif
 
 #ifdef DO_DEBUGGER
-        while (GameCube->paused && (GameCube->stepcount == 0) && !GameCube->shutdown) {
+        while (system->paused && (system->stepcount == 0) && !system->shutdown) {
             sleep_ms(16);
         }
 
-        if (GameCube->stepcount > 0) {
-            GameCube->stepcount--;
+        if (system->stepcount > 0) {
+            system->stepcount--;
         }
 #endif
     }
