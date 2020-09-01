@@ -261,6 +261,31 @@ src\Core\CMakeFiles\Core.dir\include\float_utils.c.s: cmake_force
 <<
 	cd D:\CProjects\GC-\cmake-build-release
 
+src\Core\CMakeFiles\Core.dir\PPC\registers\SPR.c.obj: src\Core\CMakeFiles\Core.dir\flags.make
+src\Core\CMakeFiles\Core.dir\PPC\registers\SPR.c.obj: ..\src\Core\PPC\registers\SPR.c
+	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green --progress-dir=D:\CProjects\GC-\cmake-build-release\CMakeFiles --progress-num=$(CMAKE_PROGRESS_9) "Building C object src/Core/CMakeFiles/Core.dir/PPC/registers/SPR.c.obj"
+	cd D:\CProjects\GC-\cmake-build-release\src\Core
+	"C:\PROGRA~2\Microsoft Visual Studio\2019\Community\VC\Tools\Llvm\bin\clang-cl.exe" @<<
+ /nologo $(C_DEFINES) $(C_INCLUDES) $(C_FLAGS) /FoCMakeFiles\Core.dir\PPC\registers\SPR.c.obj /FdCMakeFiles\Core.dir\Core.pdb -c D:\CProjects\GC-\src\Core\PPC\registers\SPR.c
+<<
+	cd D:\CProjects\GC-\cmake-build-release
+
+src\Core\CMakeFiles\Core.dir\PPC\registers\SPR.c.i: cmake_force
+	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green "Preprocessing C source to CMakeFiles/Core.dir/PPC/registers/SPR.c.i"
+	cd D:\CProjects\GC-\cmake-build-release\src\Core
+	"C:\PROGRA~2\Microsoft Visual Studio\2019\Community\VC\Tools\Llvm\bin\clang-cl.exe" > CMakeFiles\Core.dir\PPC\registers\SPR.c.i @<<
+ /nologo $(C_DEFINES) $(C_INCLUDES) $(C_FLAGS) -E D:\CProjects\GC-\src\Core\PPC\registers\SPR.c
+<<
+	cd D:\CProjects\GC-\cmake-build-release
+
+src\Core\CMakeFiles\Core.dir\PPC\registers\SPR.c.s: cmake_force
+	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green "Compiling C source to assembly CMakeFiles/Core.dir/PPC/registers/SPR.c.s"
+	cd D:\CProjects\GC-\cmake-build-release\src\Core
+	"C:\PROGRA~2\Microsoft Visual Studio\2019\Community\VC\Tools\Llvm\bin\clang-cl.exe" @<<
+ /nologo $(C_DEFINES) $(C_INCLUDES) $(C_FLAGS) /FoNUL /FAs /FaCMakeFiles\Core.dir\PPC\registers\SPR.c.s /c D:\CProjects\GC-\src\Core\PPC\registers\SPR.c
+<<
+	cd D:\CProjects\GC-\cmake-build-release
+
 # Object files for target Core
 Core_OBJECTS = \
 "CMakeFiles\Core.dir\PPC\Gekko.c.obj" \
@@ -270,7 +295,8 @@ Core_OBJECTS = \
 "CMakeFiles\Core.dir\system.c.obj" \
 "CMakeFiles\Core.dir\Breakpoints\breakpoints.c.obj" \
 "CMakeFiles\Core.dir\PPC\registers\hardware_registers.c.obj" \
-"CMakeFiles\Core.dir\include\float_utils.c.obj"
+"CMakeFiles\Core.dir\include\float_utils.c.obj" \
+"CMakeFiles\Core.dir\PPC\registers\SPR.c.obj"
 
 # External object files for target Core
 Core_EXTERNAL_OBJECTS =
@@ -283,9 +309,10 @@ src\Core\Core.lib: src\Core\CMakeFiles\Core.dir\system.c.obj
 src\Core\Core.lib: src\Core\CMakeFiles\Core.dir\Breakpoints\breakpoints.c.obj
 src\Core\Core.lib: src\Core\CMakeFiles\Core.dir\PPC\registers\hardware_registers.c.obj
 src\Core\Core.lib: src\Core\CMakeFiles\Core.dir\include\float_utils.c.obj
+src\Core\Core.lib: src\Core\CMakeFiles\Core.dir\PPC\registers\SPR.c.obj
 src\Core\Core.lib: src\Core\CMakeFiles\Core.dir\build.make
 src\Core\Core.lib: src\Core\CMakeFiles\Core.dir\objects1.rsp
-	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green --bold --progress-dir=D:\CProjects\GC-\cmake-build-release\CMakeFiles --progress-num=$(CMAKE_PROGRESS_9) "Linking C static library Core.lib"
+	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green --bold --progress-dir=D:\CProjects\GC-\cmake-build-release\CMakeFiles --progress-num=$(CMAKE_PROGRESS_10) "Linking C static library Core.lib"
 	cd D:\CProjects\GC-\cmake-build-release\src\Core
 	$(CMAKE_COMMAND) -P CMakeFiles\Core.dir\cmake_clean_target.cmake
 	cd D:\CProjects\GC-\cmake-build-release

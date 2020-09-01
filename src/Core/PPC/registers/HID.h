@@ -1,7 +1,7 @@
 #ifndef GC__HID_H
 #define GC__HID_H
 
-#define ASSERT_FLOATING_POINT assert(cpu->HID2.PSE /* HID2 does not allow floating point operations */);
+#include "flags.h"
 
 // todo: unused bits?
 #define HID2_WRITE_MASK 0xf0ff0000

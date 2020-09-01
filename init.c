@@ -172,6 +172,7 @@ void init() {
     add_register_data("HID0", &global_system->cpu.HID[0], false);
     add_register_data("HID1", &global_system->cpu.HID[1], false);
     add_register_data("HID2", &global_system->cpu.HID2, false);
+    add_register_data("WPAR", &global_system->cpu.WPAR, false);
 
     add_command("RESET", "Resets the system. Add 'pause/freeze/break' to freeze on reload.", reset_system);
     add_command("PAUSE", "Pauses the system.", pause_system);

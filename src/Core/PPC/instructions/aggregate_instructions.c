@@ -111,6 +111,9 @@ GEKKO_INSTR(instr_011111) {
         case EXTSH_OPCODE_EXTENDED:
             extsh(cpu, instruction);
             return;
+        case EXTSB_OPCODE_EXTENDED:
+            extsb(cpu, instruction);
+            return;
         case CNTLZW_OPCODE_EXTENDED:
             cntlzw(cpu, instruction);
             return;
@@ -128,6 +131,9 @@ GEKKO_INSTR(instr_011111) {
             return;
         case STWX_OPCODE_EXTENDED:
             stwx(cpu, instruction);
+            return;
+        case STHX_OPCODE_EXTENDED:
+            sthx(cpu, instruction);
             return;
         case LWZX_OPCODE_EXTENDED:
             lwzx(cpu, instruction);
@@ -189,8 +195,8 @@ GEKKO_INSTR(instr_011111) {
 }
 
 GEKKO_INSTR(instr_111011) {
-    switch (instruction.raw & 0x07e) {
-        // bottom 7 - 1 bits
+    switch (instruction.raw & 0x03e) {
+        // bottom 6 - 1 bits
         case FSUBS_OPCODE_EXTENDED:
             fsubs(cpu, instruction);
             return;
@@ -203,9 +209,11 @@ GEKKO_INSTR(instr_111011) {
         case FDIVS_OPCODE_EXTENDED:
             fdivs(cpu, instruction);
             return;
+        case FMADDS_OPCODE_EXTENDED:
+            fmadds(cpu, instruction);
+            return;
         default:
             unimplemented(cpu, instruction);
-
     }
 }
 

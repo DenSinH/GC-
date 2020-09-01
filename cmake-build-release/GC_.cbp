@@ -259,10 +259,16 @@
 		<Unit filename="D:/CProjects/GC-/src/Core/PPC/registers/MSR.h">
 			<Option target="Core"/>
 		</Unit>
-		<Unit filename="D:/CProjects/GC-/src/Core/PPC/registers/SPR_general.h">
+		<Unit filename="D:/CProjects/GC-/src/Core/PPC/registers/SPR.c">
+			<Option target="Core"/>
+		</Unit>
+		<Unit filename="D:/CProjects/GC-/src/Core/PPC/registers/SPR.h">
 			<Option target="Core"/>
 		</Unit>
 		<Unit filename="D:/CProjects/GC-/src/Core/PPC/registers/TBR.h">
+			<Option target="Core"/>
+		</Unit>
+		<Unit filename="D:/CProjects/GC-/src/Core/PPC/registers/WPAR.h">
 			<Option target="Core"/>
 		</Unit>
 		<Unit filename="D:/CProjects/GC-/src/Core/PPC/registers/XER.h">

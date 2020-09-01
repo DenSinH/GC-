@@ -25,8 +25,8 @@ CMakeFiles\GC_.dir\main.c.obj: ..\src\Core\PPC\registers\FPSCR.h
 CMakeFiles\GC_.dir\main.c.obj: ..\src\Core\PPC\registers\GQR.h
 CMakeFiles\GC_.dir\main.c.obj: ..\src\Core\PPC\registers\HID.h
 CMakeFiles\GC_.dir\main.c.obj: ..\src\Core\PPC\registers\MSR.h
-CMakeFiles\GC_.dir\main.c.obj: ..\src\Core\PPC\registers\SPR_general.h
 CMakeFiles\GC_.dir\main.c.obj: ..\src\Core\PPC\registers\TBR.h
+CMakeFiles\GC_.dir\main.c.obj: ..\src\Core\PPC\registers\WPAR.h
 CMakeFiles\GC_.dir\main.c.obj: ..\src\Core\PPC\registers\XER.h
 CMakeFiles\GC_.dir\main.c.obj: ..\src\Core\PPC\registers\hardware_registers.h
 CMakeFiles\GC_.dir\main.c.obj: ..\src\Core\system.h

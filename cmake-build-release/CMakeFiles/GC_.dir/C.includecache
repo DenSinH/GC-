@@ -37,6 +37,8 @@ default.h
 ../src/Core/PPC/registers/default.h
 
 ../src/Core/include/float_utils.h
+flags.h
+../src/Core/include/flags.h
 default.h
 ../src/Core/include/default.h
 PPC/registers/FPSCR.h
@@ -113,8 +115,8 @@ registers/FPR.h
 D:/CProjects/GC-/src/Core/PPC/registers/FPR.h
 registers/TBR.h
 D:/CProjects/GC-/src/Core/PPC/registers/TBR.h
-registers/SPR_general.h
-D:/CProjects/GC-/src/Core/PPC/registers/SPR_general.h
+registers/WPAR.h
+D:/CProjects/GC-/src/Core/PPC/registers/WPAR.h
 registers/hardware_registers.h
 D:/CProjects/GC-/src/Core/PPC/registers/hardware_registers.h
 gekko_instruction.h
@@ -163,16 +165,18 @@ D:/CProjects/GC-/src/Core/PPC/registers/default.h
 D:/CProjects/GC-/src/Core/PPC/registers/GQR.h
 
 D:/CProjects/GC-/src/Core/PPC/registers/HID.h
+flags.h
+D:/CProjects/GC-/src/Core/PPC/registers/flags.h
 
 D:/CProjects/GC-/src/Core/PPC/registers/MSR.h
 default.h
 D:/CProjects/GC-/src/Core/PPC/registers/default.h
 
-D:/CProjects/GC-/src/Core/PPC/registers/SPR_general.h
-
 D:/CProjects/GC-/src/Core/PPC/registers/TBR.h
 default.h
 D:/CProjects/GC-/src/Core/PPC/registers/default.h
+
+D:/CProjects/GC-/src/Core/PPC/registers/WPAR.h
 
 D:/CProjects/GC-/src/Core/PPC/registers/XER.h
 default.h

@@ -162,6 +162,15 @@ typedef union gekko_instruction {
         unsigned opcode: 6;
     } paired_single_load;
 
+    struct {
+        unsigned d: 12;
+        unsigned I: 3;
+        unsigned W: 1;
+        unsigned A: 5;
+        unsigned S: 5;
+        unsigned opcode: 6;
+    } paired_single_store;
+
     // SPR field is split
     struct {
         unsigned Rc: 1;

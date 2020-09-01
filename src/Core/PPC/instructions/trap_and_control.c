@@ -1,4 +1,7 @@
 #include "PPC/instructions.h"
+
+#include "../registers/SPR.h"
+
 #include "flags.h"
 
 INLINE_GEKKO_INSTR(mfmsr) {

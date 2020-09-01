@@ -55,8 +55,8 @@ registers/FPR.h
 ../src/Core/PPC/registers/FPR.h
 registers/TBR.h
 ../src/Core/PPC/registers/TBR.h
-registers/SPR_general.h
-../src/Core/PPC/registers/SPR_general.h
+registers/WPAR.h
+../src/Core/PPC/registers/WPAR.h
 registers/hardware_registers.h
 ../src/Core/PPC/registers/hardware_registers.h
 gekko_instruction.h
@@ -109,16 +109,18 @@ default.h
 ../src/Core/PPC/registers/GQR.h
 
 ../src/Core/PPC/registers/HID.h
+flags.h
+../src/Core/PPC/registers/flags.h
 
 ../src/Core/PPC/registers/MSR.h
 default.h
 ../src/Core/PPC/registers/default.h
 
-../src/Core/PPC/registers/SPR_general.h
-
 ../src/Core/PPC/registers/TBR.h
 default.h
 ../src/Core/PPC/registers/default.h
+
+../src/Core/PPC/registers/WPAR.h
 
 ../src/Core/PPC/registers/XER.h
 default.h
@@ -129,6 +131,8 @@ default.h
 ../src/Core/PPC/registers/default.h
 
 ../src/Core/include/float_utils.h
+flags.h
+../src/Core/include/flags.h
 default.h
 ../src/Core/include/default.h
 PPC/registers/FPSCR.h
@@ -139,6 +143,44 @@ memory.h
 -
 stdbool.h
 -
+
+D:/CProjects/GC-/src/Core/PPC/Gekko.h
+stdbool.h
+-
+memory.h
+-
+math.h
+-
+MMU.h
+D:/CProjects/GC-/src/Core/PPC/MMU.h
+registers/CR.h
+D:/CProjects/GC-/src/Core/PPC/registers/CR.h
+registers/FPSCR.h
+D:/CProjects/GC-/src/Core/PPC/registers/FPSCR.h
+registers/MSR.h
+D:/CProjects/GC-/src/Core/PPC/registers/MSR.h
+registers/XER.h
+D:/CProjects/GC-/src/Core/PPC/registers/XER.h
+registers/GQR.h
+D:/CProjects/GC-/src/Core/PPC/registers/GQR.h
+registers/HID.h
+D:/CProjects/GC-/src/Core/PPC/registers/HID.h
+registers/FPR.h
+D:/CProjects/GC-/src/Core/PPC/registers/FPR.h
+registers/TBR.h
+D:/CProjects/GC-/src/Core/PPC/registers/TBR.h
+registers/WPAR.h
+D:/CProjects/GC-/src/Core/PPC/registers/WPAR.h
+registers/hardware_registers.h
+D:/CProjects/GC-/src/Core/PPC/registers/hardware_registers.h
+gekko_instruction.h
+D:/CProjects/GC-/src/Core/PPC/gekko_instruction.h
+default.h
+D:/CProjects/GC-/src/Core/PPC/default.h
+log.h
+D:/CProjects/GC-/src/Core/PPC/log.h
+float_utils.h
+D:/CProjects/GC-/src/Core/PPC/float_utils.h
 
 D:/CProjects/GC-/src/Core/PPC/MMU.h
 default.h
@@ -305,6 +347,12 @@ PPC/registers/HID.h
 D:/CProjects/GC-/src/Core/PPC/instructions/PPC/registers/HID.h
 PPC/MMU.h
 D:/CProjects/GC-/src/Core/PPC/instructions/PPC/MMU.h
+helpers.h
+D:/CProjects/GC-/src/Core/PPC/instructions/helpers.h
+float_utils.h
+D:/CProjects/GC-/src/Core/PPC/instructions/float_utils.h
+limits.h
+-
 
 D:/CProjects/GC-/src/Core/PPC/instructions/paired_single_misc.c
 PPC/instructions.h
@@ -313,10 +361,16 @@ D:/CProjects/GC-/src/Core/PPC/instructions/PPC/instructions.h
 D:/CProjects/GC-/src/Core/PPC/instructions/trap_and_control.c
 PPC/instructions.h
 D:/CProjects/GC-/src/Core/PPC/instructions/PPC/instructions.h
+../registers/SPR.h
+D:/CProjects/GC-/src/Core/PPC/registers/SPR.h
 flags.h
 D:/CProjects/GC-/src/Core/PPC/instructions/flags.h
 
 D:/CProjects/GC-/src/Core/PPC/instructions/unimplemented.c
 PPC/instructions.h
 D:/CProjects/GC-/src/Core/PPC/instructions/PPC/instructions.h
+
+D:/CProjects/GC-/src/Core/PPC/registers/SPR.h
+../Gekko.h
+D:/CProjects/GC-/src/Core/PPC/Gekko.h
 

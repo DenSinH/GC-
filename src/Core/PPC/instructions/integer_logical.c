@@ -110,6 +110,15 @@ INLINE_GEKKO_INSTR(extsh) {
     }
 }
 
+INLINE_GEKKO_INSTR(extsb) {
+    GEKKO_INSTR_HEADER
+    log_cpu("extsh %08x", instruction.raw);
+    cpu->GPR[instruction.general_SAB.A] = (i32)((i8)cpu->GPR[instruction.general_SAB.S]);
+    if (instruction.general_SAB.Rc) {
+        UPDATE_CR0_RESULT32(cpu, cpu->GPR[instruction.general_SAB.A]);
+    }
+}
+
 INLINE_GEKKO_INSTR(cntlzw) {
     GEKKO_INSTR_HEADER
     log_cpu("cntlzw %08x", instruction.raw);

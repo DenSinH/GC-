@@ -14,8 +14,8 @@
 #include "registers/HID.h"
 #include "registers/FPR.h"
 #include "registers/TBR.h"
-#include "registers/SPR_general.h"
-#include "registers/hardware_registers.h"
+#include "registers/WPAR.h"
+#include "PPC/registers/hardware_registers/hardware_registers.h"
 #include "gekko_instruction.h"
 
 #include "default.h"
@@ -60,7 +60,8 @@ typedef struct s_Gekko {
 
     s_GQR GQR[8];
     u32 HID[0];     // hardware dependent registers (todo: stubbed)
-    s_HID2 HID2;     // hardware dependent registers (todo: stubbed)
+    s_HID2 HID2;    // hardware dependent registers (todo: stubbed)
+    s_WPAR WPAR;
 
     u32 SR[16];
 
@@ -100,16 +101,6 @@ static inline u64 GET_FPR(s_Gekko* cpu, unsigned int index) {
         return (cpu->FPR[index].PS0.u << 32) | cpu->FPR[index].PS1.u;
     }
     return cpu->FPR[index].PS0.u;
-}
-
-#define SPR_SIZE_BYTES 4
-static inline void SET_SPR(s_Gekko* cpu, e_SPR SPR, u32* value) {
-    *value &= cpu->SPR_write_mask[SPR];
-    memcpy((void*)cpu->SPR[SPR], (void*)value, SPR_SIZE_BYTES);
-}
-
-static inline void GET_SPR(s_Gekko* cpu, e_SPR SPR, u32* target) {
-    memcpy((void*)target, (void*)cpu->SPR[SPR], SPR_SIZE_BYTES);
 }
 
 #define GEKKO_PC_INIT_IPL 0x81300000

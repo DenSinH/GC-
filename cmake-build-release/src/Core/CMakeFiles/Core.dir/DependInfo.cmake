@@ -9,6 +9,7 @@ set(CMAKE_DEPENDS_CHECK_C
   "D:/CProjects/GC-/src/Core/PPC/Gekko_init.c" "D:/CProjects/GC-/cmake-build-release/src/Core/CMakeFiles/Core.dir/PPC/Gekko_init.c.obj"
   "D:/CProjects/GC-/src/Core/PPC/MMU.c" "D:/CProjects/GC-/cmake-build-release/src/Core/CMakeFiles/Core.dir/PPC/MMU.c.obj"
   "D:/CProjects/GC-/src/Core/PPC/instructions.c" "D:/CProjects/GC-/cmake-build-release/src/Core/CMakeFiles/Core.dir/PPC/instructions.c.obj"
+  "D:/CProjects/GC-/src/Core/PPC/registers/SPR.c" "D:/CProjects/GC-/cmake-build-release/src/Core/CMakeFiles/Core.dir/PPC/registers/SPR.c.obj"
   "D:/CProjects/GC-/src/Core/PPC/registers/hardware_registers.c" "D:/CProjects/GC-/cmake-build-release/src/Core/CMakeFiles/Core.dir/PPC/registers/hardware_registers.c.obj"
   "D:/CProjects/GC-/src/Core/include/float_utils.c" "D:/CProjects/GC-/cmake-build-release/src/Core/CMakeFiles/Core.dir/include/float_utils.c.obj"
   "D:/CProjects/GC-/src/Core/system.c" "D:/CProjects/GC-/cmake-build-release/src/Core/CMakeFiles/Core.dir/system.c.obj"

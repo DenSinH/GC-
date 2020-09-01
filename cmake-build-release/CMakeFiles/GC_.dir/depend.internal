@@ -26,8 +26,8 @@ CMakeFiles/GC_.dir/main.c.obj
  D:/CProjects/GC-/src/Core/PPC/registers/GQR.h
  D:/CProjects/GC-/src/Core/PPC/registers/HID.h
  D:/CProjects/GC-/src/Core/PPC/registers/MSR.h
- D:/CProjects/GC-/src/Core/PPC/registers/SPR_general.h
  D:/CProjects/GC-/src/Core/PPC/registers/TBR.h
+ D:/CProjects/GC-/src/Core/PPC/registers/WPAR.h
  D:/CProjects/GC-/src/Core/PPC/registers/XER.h
  D:/CProjects/GC-/src/Core/PPC/registers/hardware_registers.h
  D:/CProjects/GC-/src/Core/system.h

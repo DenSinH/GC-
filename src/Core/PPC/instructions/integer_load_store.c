@@ -28,6 +28,15 @@ GEKKO_INSTR(sth) {
     write16(&cpu->DMMU, EA, (u16)cpu->GPR[instruction.general_SAd.S]);
 }
 
+INLINE_GEKKO_INSTR(sthx) {
+    GEKKO_INSTR_HEADER
+
+    log_cpu("sthx %08x", instruction.raw);
+
+    u32 EA = (instruction.general_SAd.A ? cpu->GPR[instruction.general_SAB.A] : 0) + cpu->GPR[instruction.general_SAB.B];
+    write16(&cpu->DMMU, EA, (u16)cpu->GPR[instruction.general_SAB.S]);
+}
+
 GEKKO_INSTR(stb) {
     GEKKO_INSTR_HEADER
 

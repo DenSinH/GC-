@@ -18,10 +18,10 @@ add_library(Core STATIC
         PPC/registers/GQR.h
         PPC/registers/HID.h
         PPC/registers/FPR.h
-        PPC/registers/SPR_general.h
-        PPC/registers/hardware_registers.h
-        PPC/registers/hardware_registers.c
-        PPC/registers/TBR.h include/float_utils.h include/float_utils.c)
+        PPC/registers/SPR.h
+        PPC/registers/hardware_registers/hardware_registers.h
+        PPC/registers/hardware_registers/hardware_registers.c
+        PPC/registers/TBR.h include/float_utils.h include/float_utils.c PPC/registers/WPAR.h PPC/registers/SPR.c)
 
 # for logging / stuff I want to use in all files
 include_directories(../../include ./include)

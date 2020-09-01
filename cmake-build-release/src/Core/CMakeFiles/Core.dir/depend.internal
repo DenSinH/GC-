@@ -24,8 +24,8 @@ src/Core/CMakeFiles/Core.dir/PPC/Gekko.c.obj
  D:/CProjects/GC-/src/Core/PPC/registers/GQR.h
  D:/CProjects/GC-/src/Core/PPC/registers/HID.h
  D:/CProjects/GC-/src/Core/PPC/registers/MSR.h
- D:/CProjects/GC-/src/Core/PPC/registers/SPR_general.h
  D:/CProjects/GC-/src/Core/PPC/registers/TBR.h
+ D:/CProjects/GC-/src/Core/PPC/registers/WPAR.h
  D:/CProjects/GC-/src/Core/PPC/registers/XER.h
  D:/CProjects/GC-/src/Core/PPC/registers/hardware_registers.h
 src/Core/CMakeFiles/Core.dir/PPC/Gekko_init.c.obj
@@ -47,8 +47,9 @@ src/Core/CMakeFiles/Core.dir/PPC/Gekko_init.c.obj
  D:/CProjects/GC-/src/Core/PPC/registers/GQR.h
  D:/CProjects/GC-/src/Core/PPC/registers/HID.h
  D:/CProjects/GC-/src/Core/PPC/registers/MSR.h
- D:/CProjects/GC-/src/Core/PPC/registers/SPR_general.h
+ D:/CProjects/GC-/src/Core/PPC/registers/SPR.h
  D:/CProjects/GC-/src/Core/PPC/registers/TBR.h
+ D:/CProjects/GC-/src/Core/PPC/registers/WPAR.h
  D:/CProjects/GC-/src/Core/PPC/registers/XER.h
  D:/CProjects/GC-/src/Core/PPC/registers/hardware_registers.h
 src/Core/CMakeFiles/Core.dir/PPC/MMU.c.obj
@@ -73,11 +74,12 @@ src/Core/CMakeFiles/Core.dir/PPC/instructions.c.obj
  ../src/Core/PPC/registers/GQR.h
  ../src/Core/PPC/registers/HID.h
  ../src/Core/PPC/registers/MSR.h
- ../src/Core/PPC/registers/SPR_general.h
  ../src/Core/PPC/registers/TBR.h
+ ../src/Core/PPC/registers/WPAR.h
  ../src/Core/PPC/registers/XER.h
  ../src/Core/PPC/registers/hardware_registers.h
  ../src/Core/include/float_utils.h
+ D:/CProjects/GC-/src/Core/PPC/Gekko.h
  D:/CProjects/GC-/src/Core/PPC/MMU.h
  D:/CProjects/GC-/src/Core/PPC/gekko_instruction.h
  D:/CProjects/GC-/src/Core/PPC/instructions.c
@@ -103,6 +105,28 @@ src/Core/CMakeFiles/Core.dir/PPC/instructions.c.obj
  D:/CProjects/GC-/src/Core/PPC/instructions/paired_single_misc.c
  D:/CProjects/GC-/src/Core/PPC/instructions/trap_and_control.c
  D:/CProjects/GC-/src/Core/PPC/instructions/unimplemented.c
+ D:/CProjects/GC-/src/Core/PPC/registers/SPR.h
+src/Core/CMakeFiles/Core.dir/PPC/registers/SPR.c.obj
+ ../include/default.h
+ ../include/flags.h
+ ../include/log.h
+ ../src/Core/PPC/registers/FPSCR.h
+ ../src/Core/include/float_utils.h
+ D:/CProjects/GC-/src/Core/PPC/Gekko.h
+ D:/CProjects/GC-/src/Core/PPC/MMU.h
+ D:/CProjects/GC-/src/Core/PPC/gekko_instruction.h
+ D:/CProjects/GC-/src/Core/PPC/registers/CR.h
+ D:/CProjects/GC-/src/Core/PPC/registers/FPR.h
+ D:/CProjects/GC-/src/Core/PPC/registers/FPSCR.h
+ D:/CProjects/GC-/src/Core/PPC/registers/GQR.h
+ D:/CProjects/GC-/src/Core/PPC/registers/HID.h
+ D:/CProjects/GC-/src/Core/PPC/registers/MSR.h
+ D:/CProjects/GC-/src/Core/PPC/registers/SPR.c
+ D:/CProjects/GC-/src/Core/PPC/registers/SPR.h
+ D:/CProjects/GC-/src/Core/PPC/registers/TBR.h
+ D:/CProjects/GC-/src/Core/PPC/registers/WPAR.h
+ D:/CProjects/GC-/src/Core/PPC/registers/XER.h
+ D:/CProjects/GC-/src/Core/PPC/registers/hardware_registers.h
 src/Core/CMakeFiles/Core.dir/PPC/registers/hardware_registers.c.obj
  ../include/default.h
  D:/CProjects/GC-/src/Core/PPC/registers/hardware_registers.c
@@ -131,8 +155,8 @@ src/Core/CMakeFiles/Core.dir/system.c.obj
  D:/CProjects/GC-/src/Core/PPC/registers/GQR.h
  D:/CProjects/GC-/src/Core/PPC/registers/HID.h
  D:/CProjects/GC-/src/Core/PPC/registers/MSR.h
- D:/CProjects/GC-/src/Core/PPC/registers/SPR_general.h
  D:/CProjects/GC-/src/Core/PPC/registers/TBR.h
+ D:/CProjects/GC-/src/Core/PPC/registers/WPAR.h
  D:/CProjects/GC-/src/Core/PPC/registers/XER.h
  D:/CProjects/GC-/src/Core/PPC/registers/hardware_registers.h
  D:/CProjects/GC-/src/Core/system.c

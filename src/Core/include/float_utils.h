@@ -1,12 +1,20 @@
 #ifndef GC__FLOAT_UTILS_H
 #define GC__FLOAT_UTILS_H
 
+#include "flags.h"
 #include "default.h"
+
 #include "PPC/registers/FPSCR.h"
 
 #include <math.h>
 #include <memory.h>
 #include <stdbool.h>
+
+#ifdef DO_ASSERT_PAIRED_SINGLE
+#define ASSERT_PAIRED_SINGLE assert(cpu->HID2.PSE /* HID2 does not allow floating point operations */);
+#else
+#define ASSERT_PAIRED_SINGLE
+#endif
 
 #define DOUBLE_SIGN 0x8000000000000000ULL
 #define DOUBLE_EXP  0x7ff0000000000000ULL
@@ -80,5 +88,49 @@ s_float_result float_add(s_FPSCR* FPSCR, bit_double op1, bit_double op2);
 s_float_result float_mul(s_FPSCR* FPSCR, bit_double opa, bit_double opc);
 s_float_result float_madd(s_FPSCR* FPSCR, bit_double opa, bit_double opb, bit_double opc);
 s_float_result float_div(s_FPSCR* FPSCR, bit_double op1, bit_double op2);
+
+#ifndef QUANTIZATION_SCALE_TABLES
+#define QUANTIZATION_SCALE_TABLES
+/* borrowed from Dolphin: */
+// dequantize table
+const static float dequantize_scale[] = {
+        1.0 / (1ULL << 0),  1.0 / (1ULL << 1),  1.0 / (1ULL << 2),  1.0 / (1ULL << 3),
+        1.0 / (1ULL << 4),  1.0 / (1ULL << 5),  1.0 / (1ULL << 6),  1.0 / (1ULL << 7),
+        1.0 / (1ULL << 8),  1.0 / (1ULL << 9),  1.0 / (1ULL << 10), 1.0 / (1ULL << 11),
+        1.0 / (1ULL << 12), 1.0 / (1ULL << 13), 1.0 / (1ULL << 14), 1.0 / (1ULL << 15),
+        1.0 / (1ULL << 16), 1.0 / (1ULL << 17), 1.0 / (1ULL << 18), 1.0 / (1ULL << 19),
+        1.0 / (1ULL << 20), 1.0 / (1ULL << 21), 1.0 / (1ULL << 22), 1.0 / (1ULL << 23),
+        1.0 / (1ULL << 24), 1.0 / (1ULL << 25), 1.0 / (1ULL << 26), 1.0 / (1ULL << 27),
+        1.0 / (1ULL << 28), 1.0 / (1ULL << 29), 1.0 / (1ULL << 30), 1.0 / (1ULL << 31),
+        (1ULL << 32),       (1ULL << 31),       (1ULL << 30),       (1ULL << 29),
+        (1ULL << 28),       (1ULL << 27),       (1ULL << 26),       (1ULL << 25),
+        (1ULL << 24),       (1ULL << 23),       (1ULL << 22),       (1ULL << 21),
+        (1ULL << 20),       (1ULL << 19),       (1ULL << 18),       (1ULL << 17),
+        (1ULL << 16),       (1ULL << 15),       (1ULL << 14),       (1ULL << 13),
+        (1ULL << 12),       (1ULL << 11),       (1ULL << 10),       (1ULL << 9),
+        (1ULL << 8),        (1ULL << 7),        (1ULL << 6),        (1ULL << 5),
+        (1ULL << 4),        (1ULL << 3),        (1ULL << 2),        (1ULL << 1),
+};
+
+// quantize table
+const static float quantize_scale[] = {
+        (1ULL << 0),        (1ULL << 1),        (1ULL << 2),        (1ULL << 3),
+        (1ULL << 4),        (1ULL << 5),        (1ULL << 6),        (1ULL << 7),
+        (1ULL << 8),        (1ULL << 9),        (1ULL << 10),       (1ULL << 11),
+        (1ULL << 12),       (1ULL << 13),       (1ULL << 14),       (1ULL << 15),
+        (1ULL << 16),       (1ULL << 17),       (1ULL << 18),       (1ULL << 19),
+        (1ULL << 20),       (1ULL << 21),       (1ULL << 22),       (1ULL << 23),
+        (1ULL << 24),       (1ULL << 25),       (1ULL << 26),       (1ULL << 27),
+        (1ULL << 28),       (1ULL << 29),       (1ULL << 30),       (1ULL << 31),
+        1.0 / (1ULL << 32), 1.0 / (1ULL << 31), 1.0 / (1ULL << 30), 1.0 / (1ULL << 29),
+        1.0 / (1ULL << 28), 1.0 / (1ULL << 27), 1.0 / (1ULL << 26), 1.0 / (1ULL << 25),
+        1.0 / (1ULL << 24), 1.0 / (1ULL << 23), 1.0 / (1ULL << 22), 1.0 / (1ULL << 21),
+        1.0 / (1ULL << 20), 1.0 / (1ULL << 19), 1.0 / (1ULL << 18), 1.0 / (1ULL << 17),
+        1.0 / (1ULL << 16), 1.0 / (1ULL << 15), 1.0 / (1ULL << 14), 1.0 / (1ULL << 13),
+        1.0 / (1ULL << 12), 1.0 / (1ULL << 11), 1.0 / (1ULL << 10), 1.0 / (1ULL << 9),
+        1.0 / (1ULL << 8),  1.0 / (1ULL << 7),  1.0 / (1ULL << 6),  1.0 / (1ULL << 5),
+        1.0 / (1ULL << 4),  1.0 / (1ULL << 3),  1.0 / (1ULL << 2),  1.0 / (1ULL << 1),
+};
+#endif
 
 #endif //GC__FLOAT_UTILS_H

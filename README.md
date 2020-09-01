@@ -183,7 +183,7 @@ required settings:
  #### Condition Register Logical Instructions
  - [ ] crand
  - [ ] crandc
- - [ ] creqv
+ - [x] creqv
  - [ ] crnand
  - [ ] crnor
  - [x] cror
