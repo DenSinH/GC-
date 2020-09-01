@@ -32,6 +32,27 @@ typedef union gekko_instruction {
 
     struct {
         unsigned Rc: 1;
+        unsigned: 5;
+        unsigned C: 5;
+        unsigned B: 5;
+        unsigned A: 5;
+        unsigned D: 5;
+        unsigned opcode:6;
+    } general_DABC;
+
+
+    struct {
+        unsigned Rc: 1;
+        unsigned: 5;
+        unsigned C: 5;
+        unsigned B: 5;
+        unsigned A: 5;
+        unsigned S: 5;
+        unsigned opcode:6;
+    } general_SABC;
+
+    struct {
+        unsigned Rc: 1;
         unsigned: 9;
         unsigned OE: 1;
         unsigned B: 5;

@@ -73,7 +73,12 @@ static inline bit_double TO_SINGLE(bit_double value) {
     return value;
 }
 
-s_float_result float_round(s_FPSCR* FPSCR, bit_double value, e_RN_modes rounding_mode);
+s_float_result float_round_to_int(s_FPSCR* FPSCR, bit_double value, e_RN_modes rounding_mode);
+s_float_result float_round_to_single(s_FPSCR* FPSCR, bit_double value, e_RN_modes rounding_mode);
+s_float_result float_sub(s_FPSCR* FPSCR, bit_double op1, bit_double op2);
+s_float_result float_add(s_FPSCR* FPSCR, bit_double op1, bit_double op2);
+s_float_result float_mul(s_FPSCR* FPSCR, bit_double opa, bit_double opc);
+s_float_result float_madd(s_FPSCR* FPSCR, bit_double opa, bit_double opb, bit_double opc);
 s_float_result float_div(s_FPSCR* FPSCR, bit_double op1, bit_double op2);
 
 #endif //GC__FLOAT_UTILS_H

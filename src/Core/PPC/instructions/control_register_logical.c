@@ -8,6 +8,18 @@ INLINE_GEKKO_INSTR(mcrf) {
 }
 
 /* remember: bit 0 is most significant bit, so we need to reason from 0x80000000 */
+INLINE_GEKKO_INSTR(creqv) {
+    GEKKO_INSTR_HEADER
+    log_cpu("creqv %x", instruction.raw);
+
+    u32 bitA = (cpu->CR.raw << instruction.general_DAB.A) & 0x80000000;
+    u32 bitB = (cpu->CR.raw << instruction.general_DAB.B) & 0x80000000;
+    cpu->CR.raw = (cpu->CR.raw & ~(0x80000000 >> instruction.general_DAB.D));
+    if (~(bitA ^ bitB)) {
+        cpu->CR.raw |= 0x80000000 >> instruction.general_DAB.D;
+    }
+}
+
 INLINE_GEKKO_INSTR(cror) {
     GEKKO_INSTR_HEADER
     log_cpu("cror %x", instruction.raw);

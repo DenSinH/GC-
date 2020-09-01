@@ -57,7 +57,7 @@ required settings:
  - [x] oris
  - [x] xorx
  - [x] xori
- - [ ] xoris
+ - [x] xoris
  #### Integer Rotate Instructions
  - [x] rlwimix
  - [x] rlwinmx
@@ -68,19 +68,19 @@ required settings:
  - [x] srawix
  - [x] srwx
  #### Floating-Point Arithmetic Instructions
- - [ ] faddx
- - [ ] faddsx
- - [ ] fdivx
- - [ ] fdivsx
- - [ ] fmulx
- - [ ] fmulsx
+ - [x] faddx
+ - [x] faddsx
+ - [x] fdivx
+ - [x] fdivsx
+ - [x] fmulx
+ - [x] fmulsx
  - [ ] fresx
  - [ ] frsqrtex
- - [ ] fsubx
- - [ ] fsubsx
+ - [x] fsubx
+ - [x] fsubsx
  - [ ] fselx
  #### Floating-Point Multiply-Add Instructions
- - [ ] fmaddx
+ - [x] fmaddx
  - [ ] fmaddsx
  - [ ] fmsubx
  - [ ] fmsubsx
@@ -94,7 +94,7 @@ required settings:
  - [ ] frspx
  #### Floating-Point Compare Instructions
  - [ ] fcmpo
- - [ ] fcmpu
+ - [x] fcmpu
  #### Floating-Point Status and Control Register Instructions
  - [ ] mcrfs
  - [ ] mffsx
@@ -165,16 +165,16 @@ required settings:
  - [ ] stfdu
  - [ ] stfdux
  - [ ] stfdx
- - [ ] stfiwx
- - [ ] stfs
+ - [x] stfiwx
+ - [x] stfs
  - [ ] stfsu
  - [ ] stfsux
  - [ ] stfsx
  #### Floating-Point Move Instructions
  - [ ] fabsx
- - [ ] fmrx
- - [ ] fnabsx
- - [ ] fnegx
+ - [x] fmrx
+ - [x] fnabsx
+ - [x] fnegx
  #### Branch Instructions
  - [x] bx
  - [x] bcx
@@ -186,7 +186,7 @@ required settings:
  - [ ] creqv
  - [ ] crnand
  - [ ] crnor
- - [ ] cror
+ - [x] cror
  - [ ] crorc
  - [x] crxor
  - [x] mcrf

@@ -81,9 +81,9 @@ src\Core\CMakeFiles\Core.dir\PPC\instructions.c.obj: ..\src\Core\PPC\MMU.h
 src\Core\CMakeFiles\Core.dir\PPC\instructions.c.obj: ..\src\Core\PPC\gekko_instruction.h
 src\Core\CMakeFiles\Core.dir\PPC\instructions.c.obj: ..\src\Core\PPC\instructions.c
 src\Core\CMakeFiles\Core.dir\PPC\instructions.c.obj: ..\src\Core\PPC\instructions.h
-src\Core\CMakeFiles\Core.dir\PPC\instructions.c.obj: ..\src\Core\PPC\instructions\CR.c
 src\Core\CMakeFiles\Core.dir\PPC\instructions.c.obj: ..\src\Core\PPC\instructions\aggregate_instructions.c
 src\Core\CMakeFiles\Core.dir\PPC\instructions.c.obj: ..\src\Core\PPC\instructions\branch_and_linkage.c
+src\Core\CMakeFiles\Core.dir\PPC\instructions.c.obj: ..\src\Core\PPC\instructions\control_register_logical.c
 src\Core\CMakeFiles\Core.dir\PPC\instructions.c.obj: ..\src\Core\PPC\instructions\float_arithmetic.c
 src\Core\CMakeFiles\Core.dir\PPC\instructions.c.obj: ..\src\Core\PPC\instructions\float_compare_and_status.c
 src\Core\CMakeFiles\Core.dir\PPC\instructions.c.obj: ..\src\Core\PPC\instructions\float_load_store.c

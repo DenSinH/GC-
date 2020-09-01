@@ -118,6 +118,9 @@ void build_instr_table(s_Gekko* cpu) {
             case MAIN_INSTR_HASH(XORI_OPCODE):
                 cpu->instructions[i] = xori;
                 break;
+            case MAIN_INSTR_HASH(XORIS_OPCODE):
+                cpu->instructions[i] = xoris;
+                break;
             /* integer compare */
             case MAIN_INSTR_HASH(CMPLI_OPCODE):
                 cpu->instructions[i] = cmpli;
@@ -178,6 +181,9 @@ void build_instr_table(s_Gekko* cpu) {
                 break;
             case MAIN_INSTR_HASH(LFD_OPCODE):
                 cpu->instructions[i] = lfd;
+                break;
+            case MAIN_INSTR_HASH(STFS_OPCODE):
+                cpu->instructions[i] = stfs;
                 break;
             case MAIN_INSTR_HASH(LFS_OPCODE):
                 cpu->instructions[i] = lfs;

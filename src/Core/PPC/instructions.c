@@ -14,7 +14,7 @@
 #include "instructions/float_load_store.c"
 #include "instructions/float_move.c"
 #include "instructions/branch_and_linkage.c"
-#include "instructions/CR.c"
+#include "instructions/control_register_logical.c"
 #include "instructions/trap_and_control.c"
 #include "instructions/misc_control.c"
 #include "instructions/paired_single_load_store.c"
