@@ -235,33 +235,33 @@ required settings:
  - [ ] psq_stu
  #### Paired-Single Floating Point Arithmetic Instructions
  - [ ] ps_div
- - [ ] ps_sub
- - [ ] ps_add
+ - [x] ps_sub
+ - [x] ps_add
  - [ ] ps_sel
  - [ ] ps_res
- - [ ] ps_mul
+ - [x] ps_mul
  - [ ] ps_rsqrte
  - [ ] ps_msub
  - [ ] ps_madd
- - [ ] ps_nmsub
+ - [x] ps_nmsub
  - [ ] ps_nmadd
  - [ ] ps_neg
  - [x] ps_mr
  - [ ] ps_nabs
  - [ ] ps_abs
  #### Miscellaneous Paired-Single Instructions
- - [ ] ps_sum0
- - [ ] ps_sum1
- - [ ] ps_muls0
- - [ ] ps_muls1
- - [ ] ps_madds0
- - [ ] ps_madds1
+ - [x] ps_sum0
+ - [x] ps_sum1
+ - [x] ps_muls0
+ - [x] ps_muls1
+ - [x] ps_madds0
+ - [x] ps_madds1
  - [ ] ps_cmpu0
  - [ ] ps_cmpo0
  - [ ] ps_cmpu1
  - [ ] ps_cmpo1
- - [ ] ps_merge00
- - [ ] ps_merge01
- - [ ] ps_merge10
- - [ ] ps_merge11
+ - [x] ps_merge00
+ - [x] ps_merge01
+ - [x] ps_merge10
+ - [x] ps_merge11
  - [ ] dcbz_l

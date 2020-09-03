@@ -69,6 +69,8 @@ struct RegisterViewer
         std::list<s_register_data> :: iterator register_iter;
         for (register_iter = this->Registers.begin(); register_iter != this->Registers.end(); ++register_iter) {
             if (!register_iter->value) {
+                ImGui::Columns(1);
+                ImGui::Columns(currentwidth);
                 ImGui::Separator();
                 continue;
             }
@@ -104,7 +106,6 @@ struct RegisterViewer
                 }
                 ImGui::NextColumn();
             }
-
         }
 
         ImGui::Columns(1);

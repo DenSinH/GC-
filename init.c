@@ -153,6 +153,17 @@ static void init() {
 
     add_register_data("", NULL, false);
 
+    add_register_data("HID0", &global_system->cpu.HID[0], false);
+    add_register_data("HID1", &global_system->cpu.HID[1], false);
+    add_register_data("HID2", &global_system->cpu.HID2, false);
+    add_register_data("WPAR", &global_system->cpu.WPAR, false);
+
+    add_register_data("DEC", &global_system->cpu.DEC, false);
+    add_register_data("SRR0", &global_system->cpu.SRR0, false);
+    add_register_data("SRR1", &global_system->cpu.SRR1, false);
+
+    add_register_data("", NULL, false);
+
     for (int i = 0; i < 8; i++) {
         sprintf(name, "GQR%02d", i);
         add_register_data(name, &global_system->cpu.GQR[i], false);
@@ -169,12 +180,22 @@ static void init() {
 
     add_register_data("", NULL, false);
 
-    add_register_data("HID0", &global_system->cpu.HID[0], false);
-    add_register_data("HID1", &global_system->cpu.HID[1], false);
-    add_register_data("HID2", &global_system->cpu.HID2, false);
-    add_register_data("WPAR", &global_system->cpu.WPAR, false);
+    for (int i = 0; i < 4; i++) {
+        sprintf(name, "IBAT%02d", i);
+        add_register_data(name, &global_system->cpu.IMMU.BAT[i], true);
+    }
 
-    add_register_data("DEC", &global_system->cpu.DEC, false);
+    for (int i = 0; i < 4; i++) {
+        sprintf(name, "DBAT%02d", i);
+        add_register_data(name, &global_system->cpu.DMMU.BAT[i], true);
+    }
+
+    add_register_data("", NULL, false);
+
+    for (int i = 0; i < 16; i++) {
+        sprintf(name, "SR%02d", i);
+        add_register_data(name, &global_system->cpu.SR[i], false);
+    }
 
     add_command("RESET", "Resets the system. Add 'pause/freeze/break' to freeze on reload.", reset_system);
     add_command("PAUSE", "Pauses the system.", pause_system);

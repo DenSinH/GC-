@@ -5,11 +5,53 @@ GEKKO_INSTR(instr_000100) {
     // I want to handle the 10bit case in the default case for the statement
     switch (instruction.raw & 0x03e) {
         // bottom 6 - 1 bits
+        case PS_MUL_OPCODE_EXTENDED_5bit:
+            ps_mul(cpu, instruction);
+            return;
+        case PS_MSUB_OPCODE_EXTENDED_5bit:
+            ps_msub(cpu, instruction);
+            return;
+        case PS_MADD_OPCODE_EXTENDED_5bit:
+            ps_madd(cpu, instruction);
+            return;
+        case PS_MADDS0_OPCODE_EXTENDED_5bit:
+            ps_madds0(cpu, instruction);
+            return;
+        case PS_MADDS1_OPCODE_EXTENDED_5bit:
+            ps_madds1(cpu, instruction);
+            return;
+        case PS_SUM0_OPCODE_EXTENDED_5bit:
+            ps_sum0(cpu, instruction);
+            return;
+        case PS_SUM1_OPCODE_EXTENDED_5bit:
+            ps_sum1(cpu, instruction);
+            return;
+        case PS_MULS0_OPCODE_EXTENDED_5bit:
+            ps_muls0(cpu, instruction);
+            return;
+        case PS_MULS1_OPCODE_EXTENDED_5bit:
+            ps_muls1(cpu, instruction);
+            return;
         default:
             switch (instruction.raw & 0x7fe) {
                 // bottom 11 bits
+                case PS_NEG_OPCODE_EXTENDED_10bit:
+                    ps_neg(cpu, instruction);
+                    return;
                 case PS_MR_OPCODE_EXTENDED_10bit:
                     ps_mr(cpu, instruction);
+                    return;
+                case PS_MERGE00_OPCODE_EXTENDED_10bit:
+                    ps_merge00(cpu, instruction);
+                    return;
+                case PS_MERGE01_OPCODE_EXTENDED_10bit:
+                    ps_merge01(cpu, instruction);
+                    return;
+                case PS_MERGE10_OPCODE_EXTENDED_10bit:
+                    ps_merge10(cpu, instruction);
+                    return;
+                case PS_MERGE11_OPCODE_EXTENDED_10bit:
+                    ps_merge11(cpu, instruction);
                     return;
                 default:
                     unimplemented(cpu, instruction);
@@ -212,6 +254,12 @@ GEKKO_INSTR(instr_111011) {
         case FMADDS_OPCODE_EXTENDED:
             fmadds(cpu, instruction);
             return;
+        case FNMSUBS_OPCODE_EXTENDED:
+            fnmsubs(cpu, instruction);
+            return;
+        case FNMADDS_OPCODE_EXTENDED:
+            fnmadds(cpu, instruction);
+            return;
         default:
             unimplemented(cpu, instruction);
     }
@@ -236,6 +284,9 @@ GEKKO_INSTR(instr_111111) {
             return;
         case FMADD_OPCODE_EXTENDED_5bit:
             fmadd(cpu, instruction);
+            return;
+        case FRSQRTE_OPCODE_EXTENDED_5bit:
+            frsqrte(cpu, instruction);
             return;
         default:
             switch (instruction.raw & 0x7fe) {

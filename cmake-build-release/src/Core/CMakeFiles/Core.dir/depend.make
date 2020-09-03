@@ -13,6 +13,7 @@ src\Core\CMakeFiles\Core.dir\PPC\Gekko.c.obj: ..\include\log.h
 src\Core\CMakeFiles\Core.dir\PPC\Gekko.c.obj: ..\src\Core\PPC\Registers\FPSCR.h
 src\Core\CMakeFiles\Core.dir\PPC\Gekko.c.obj: ..\src\Core\include\core_utils.h
 src\Core\CMakeFiles\Core.dir\PPC\Gekko.c.obj: ..\src\Core\include\float_utils.h
+src\Core\CMakeFiles\Core.dir\PPC\Gekko.c.obj: ..\src\Core\include\hwreg_utils.h
 src\Core\CMakeFiles\Core.dir\PPC\Gekko.c.obj: ..\src\Loader\loader.h
 src\Core\CMakeFiles\Core.dir\PPC\Gekko.c.obj: ..\src\Core\PPC\Gekko.c
 src\Core\CMakeFiles\Core.dir\PPC\Gekko.c.obj: ..\src\Core\PPC\Gekko.h
@@ -38,7 +39,6 @@ src\Core\CMakeFiles\Core.dir\PPC\Gekko.c.obj: ..\src\Core\PPC\Registers\hardware
 src\Core\CMakeFiles\Core.dir\PPC\Gekko.c.obj: ..\src\Core\PPC\Registers\hardware_registers\SerialInterface.h
 src\Core\CMakeFiles\Core.dir\PPC\Gekko.c.obj: ..\src\Core\PPC\Registers\hardware_registers\VideoInterface.h
 src\Core\CMakeFiles\Core.dir\PPC\Gekko.c.obj: ..\src\Core\PPC\Registers\hardware_registers\hardware_registers.h
-src\Core\CMakeFiles\Core.dir\PPC\Gekko.c.obj: ..\src\Core\PPC\Registers\hardware_registers\hwreg_default.h
 src\Core\CMakeFiles\Core.dir\PPC\Gekko.c.obj: ..\src\Core\PPC\gekko_instruction.h
 
 src\Core\CMakeFiles\Core.dir\PPC\Gekko_init.c.obj: ..\include\default.h
@@ -48,6 +48,7 @@ src\Core\CMakeFiles\Core.dir\PPC\Gekko_init.c.obj: ..\include\log.h
 src\Core\CMakeFiles\Core.dir\PPC\Gekko_init.c.obj: ..\src\Core\PPC\Registers\FPSCR.h
 src\Core\CMakeFiles\Core.dir\PPC\Gekko_init.c.obj: ..\src\Core\include\core_utils.h
 src\Core\CMakeFiles\Core.dir\PPC\Gekko_init.c.obj: ..\src\Core\include\float_utils.h
+src\Core\CMakeFiles\Core.dir\PPC\Gekko_init.c.obj: ..\src\Core\include\hwreg_utils.h
 src\Core\CMakeFiles\Core.dir\PPC\Gekko_init.c.obj: ..\src\Core\Breakpoints\breakpoints.h
 src\Core\CMakeFiles\Core.dir\PPC\Gekko_init.c.obj: ..\src\Core\PPC\Gekko.h
 src\Core\CMakeFiles\Core.dir\PPC\Gekko_init.c.obj: ..\src\Core\PPC\Gekko_init.c
@@ -74,7 +75,6 @@ src\Core\CMakeFiles\Core.dir\PPC\Gekko_init.c.obj: ..\src\Core\PPC\Registers\har
 src\Core\CMakeFiles\Core.dir\PPC\Gekko_init.c.obj: ..\src\Core\PPC\Registers\hardware_registers\SerialInterface.h
 src\Core\CMakeFiles\Core.dir\PPC\Gekko_init.c.obj: ..\src\Core\PPC\Registers\hardware_registers\VideoInterface.h
 src\Core\CMakeFiles\Core.dir\PPC\Gekko_init.c.obj: ..\src\Core\PPC\Registers\hardware_registers\hardware_registers.h
-src\Core\CMakeFiles\Core.dir\PPC\Gekko_init.c.obj: ..\src\Core\PPC\Registers\hardware_registers\hwreg_default.h
 src\Core\CMakeFiles\Core.dir\PPC\Gekko_init.c.obj: ..\src\Core\PPC\gekko_instruction.h
 src\Core\CMakeFiles\Core.dir\PPC\Gekko_init.c.obj: ..\src\Core\PPC\instructions.h
 src\Core\CMakeFiles\Core.dir\PPC\Gekko_init.c.obj: ..\src\Core\system.h
@@ -83,6 +83,7 @@ src\Core\CMakeFiles\Core.dir\PPC\MMU.c.obj: ..\include\default.h
 src\Core\CMakeFiles\Core.dir\PPC\MMU.c.obj: ..\include\flags.h
 src\Core\CMakeFiles\Core.dir\PPC\MMU.c.obj: ..\include\log.h
 src\Core\CMakeFiles\Core.dir\PPC\MMU.c.obj: ..\src\Core\include\core_utils.h
+src\Core\CMakeFiles\Core.dir\PPC\MMU.c.obj: ..\src\Core\include\hwreg_utils.h
 src\Core\CMakeFiles\Core.dir\PPC\MMU.c.obj: ..\src\Core\PPC\MMU.c
 src\Core\CMakeFiles\Core.dir\PPC\MMU.c.obj: ..\src\Core\PPC\MMU.h
 src\Core\CMakeFiles\Core.dir\PPC\MMU.c.obj: ..\src\Core\PPC\Registers\TBR.h
@@ -98,7 +99,6 @@ src\Core\CMakeFiles\Core.dir\PPC\MMU.c.obj: ..\src\Core\PPC\Registers\hardware_r
 src\Core\CMakeFiles\Core.dir\PPC\MMU.c.obj: ..\src\Core\PPC\Registers\hardware_registers\SerialInterface.h
 src\Core\CMakeFiles\Core.dir\PPC\MMU.c.obj: ..\src\Core\PPC\Registers\hardware_registers\VideoInterface.h
 src\Core\CMakeFiles\Core.dir\PPC\MMU.c.obj: ..\src\Core\PPC\Registers\hardware_registers\hardware_registers.h
-src\Core\CMakeFiles\Core.dir\PPC\MMU.c.obj: ..\src\Core\PPC\Registers\hardware_registers\hwreg_default.h
 
 src\Core\CMakeFiles\Core.dir\PPC\instructions.c.obj: ..\include\default.h
 src\Core\CMakeFiles\Core.dir\PPC\instructions.c.obj: ..\include\flags.h
@@ -127,10 +127,10 @@ src\Core\CMakeFiles\Core.dir\PPC\instructions.c.obj: ..\src\Core\PPC\Registers\h
 src\Core\CMakeFiles\Core.dir\PPC\instructions.c.obj: ..\src\Core\PPC\Registers\hardware_registers\SerialInterface.h
 src\Core\CMakeFiles\Core.dir\PPC\instructions.c.obj: ..\src\Core\PPC\Registers\hardware_registers\VideoInterface.h
 src\Core\CMakeFiles\Core.dir\PPC\instructions.c.obj: ..\src\Core\PPC\Registers\hardware_registers\hardware_registers.h
-src\Core\CMakeFiles\Core.dir\PPC\instructions.c.obj: ..\src\Core\PPC\Registers\hardware_registers\hwreg_default.h
 src\Core\CMakeFiles\Core.dir\PPC\instructions.c.obj: ..\src\Core\PPC\instructions.h
 src\Core\CMakeFiles\Core.dir\PPC\instructions.c.obj: ..\src\Core\include\core_utils.h
 src\Core\CMakeFiles\Core.dir\PPC\instructions.c.obj: ..\src\Core\include\float_utils.h
+src\Core\CMakeFiles\Core.dir\PPC\instructions.c.obj: ..\src\Core\include\hwreg_utils.h
 src\Core\CMakeFiles\Core.dir\PPC\instructions.c.obj: ..\src\Core\PPC\Gekko.h
 src\Core\CMakeFiles\Core.dir\PPC\instructions.c.obj: ..\src\Core\PPC\MMU.h
 src\Core\CMakeFiles\Core.dir\PPC\instructions.c.obj: ..\src\Core\PPC\Registers\SPR.h
@@ -144,7 +144,6 @@ src\Core\CMakeFiles\Core.dir\PPC\instructions.c.obj: ..\src\Core\PPC\instruction
 src\Core\CMakeFiles\Core.dir\PPC\instructions.c.obj: ..\src\Core\PPC\instructions\float_compare_and_status.c
 src\Core\CMakeFiles\Core.dir\PPC\instructions.c.obj: ..\src\Core\PPC\instructions\float_load_store.c
 src\Core\CMakeFiles\Core.dir\PPC\instructions.c.obj: ..\src\Core\PPC\instructions\float_move.c
-src\Core\CMakeFiles\Core.dir\PPC\instructions.c.obj: ..\src\Core\PPC\instructions\float_mul_add.c
 src\Core\CMakeFiles\Core.dir\PPC\instructions.c.obj: ..\src\Core\PPC\instructions\float_rounding_and_conversion.c
 src\Core\CMakeFiles\Core.dir\PPC\instructions.c.obj: ..\src\Core\PPC\instructions\integer_arithmetic.c
 src\Core\CMakeFiles\Core.dir\PPC\instructions.c.obj: ..\src\Core\PPC\instructions\integer_compare.c
@@ -173,6 +172,7 @@ src\Core\CMakeFiles\Core.dir\system.c.obj: ..\include\sleeping.h
 src\Core\CMakeFiles\Core.dir\system.c.obj: ..\src\Core\PPC\Registers\FPSCR.h
 src\Core\CMakeFiles\Core.dir\system.c.obj: ..\src\Core\include\core_utils.h
 src\Core\CMakeFiles\Core.dir\system.c.obj: ..\src\Core\include\float_utils.h
+src\Core\CMakeFiles\Core.dir\system.c.obj: ..\src\Core\include\hwreg_utils.h
 src\Core\CMakeFiles\Core.dir\system.c.obj: ..\src\Core\Breakpoints\breakpoints.h
 src\Core\CMakeFiles\Core.dir\system.c.obj: ..\src\Core\PPC\Gekko.h
 src\Core\CMakeFiles\Core.dir\system.c.obj: ..\src\Core\PPC\MMU.h
@@ -197,7 +197,6 @@ src\Core\CMakeFiles\Core.dir\system.c.obj: ..\src\Core\PPC\Registers\hardware_re
 src\Core\CMakeFiles\Core.dir\system.c.obj: ..\src\Core\PPC\Registers\hardware_registers\SerialInterface.h
 src\Core\CMakeFiles\Core.dir\system.c.obj: ..\src\Core\PPC\Registers\hardware_registers\VideoInterface.h
 src\Core\CMakeFiles\Core.dir\system.c.obj: ..\src\Core\PPC\Registers\hardware_registers\hardware_registers.h
-src\Core\CMakeFiles\Core.dir\system.c.obj: ..\src\Core\PPC\Registers\hardware_registers\hwreg_default.h
 src\Core\CMakeFiles\Core.dir\system.c.obj: ..\src\Core\PPC\gekko_instruction.h
 src\Core\CMakeFiles\Core.dir\system.c.obj: ..\src\Core\system.c
 src\Core\CMakeFiles\Core.dir\system.c.obj: ..\src\Core\system.h

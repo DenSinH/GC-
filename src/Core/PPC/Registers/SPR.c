@@ -23,23 +23,23 @@ void init_SPRs(s_Gekko* cpu) {
     cpu->SPR[SPR_HID2] = &cpu->HID2;
     cpu->SPR_write_mask[SPR_HID2] = HID2_WRITE_MASK;
 
-    cpu->SPR[SPR_IBAT0L] = &cpu->IMMU.BAT[BAT0L];
-    cpu->SPR[SPR_IBAT0U] = &cpu->IMMU.BAT[BAT0U];
-    cpu->SPR[SPR_IBAT1L] = &cpu->IMMU.BAT[BAT1L];
-    cpu->SPR[SPR_IBAT1U] = &cpu->IMMU.BAT[BAT1U];
-    cpu->SPR[SPR_IBAT2L] = &cpu->IMMU.BAT[BAT2L];
-    cpu->SPR[SPR_IBAT2U] = &cpu->IMMU.BAT[BAT2U];
-    cpu->SPR[SPR_IBAT3L] = &cpu->IMMU.BAT[BAT3L];
-    cpu->SPR[SPR_IBAT3U] = &cpu->IMMU.BAT[BAT3U];
+    cpu->SPR[SPR_IBAT0L] = ((void*)&cpu->IMMU.BAT[BAT0L >> 1]);
+    cpu->SPR[SPR_IBAT0U] = ((void*)&cpu->IMMU.BAT[BAT0U >> 1]) + 4;
+    cpu->SPR[SPR_IBAT1L] = ((void*)&cpu->IMMU.BAT[BAT1L >> 1]);
+    cpu->SPR[SPR_IBAT1U] = ((void*)&cpu->IMMU.BAT[BAT1U >> 1]) + 4;
+    cpu->SPR[SPR_IBAT2L] = ((void*)&cpu->IMMU.BAT[BAT2L >> 1]);
+    cpu->SPR[SPR_IBAT2U] = ((void*)&cpu->IMMU.BAT[BAT2U >> 1]) + 4;
+    cpu->SPR[SPR_IBAT3L] = ((void*)&cpu->IMMU.BAT[BAT3L >> 1]);
+    cpu->SPR[SPR_IBAT3U] = ((void*)&cpu->IMMU.BAT[BAT3U >> 1]) + 4;
 
-    cpu->SPR[SPR_DBAT0L] = &cpu->DMMU.BAT[BAT0L];
-    cpu->SPR[SPR_DBAT0U] = &cpu->DMMU.BAT[BAT0U];
-    cpu->SPR[SPR_DBAT1L] = &cpu->DMMU.BAT[BAT1L];
-    cpu->SPR[SPR_DBAT1U] = &cpu->DMMU.BAT[BAT1U];
-    cpu->SPR[SPR_DBAT2L] = &cpu->DMMU.BAT[BAT2L];
-    cpu->SPR[SPR_DBAT2U] = &cpu->DMMU.BAT[BAT2U];
-    cpu->SPR[SPR_DBAT3L] = &cpu->DMMU.BAT[BAT3L];
-    cpu->SPR[SPR_DBAT3U] = &cpu->DMMU.BAT[BAT3U];
+    cpu->SPR[SPR_DBAT0L] = ((void*)&cpu->DMMU.BAT[BAT0L >> 1]);
+    cpu->SPR[SPR_DBAT0U] = ((void*)&cpu->DMMU.BAT[BAT0U >> 1]) + 4;
+    cpu->SPR[SPR_DBAT1L] = ((void*)&cpu->DMMU.BAT[BAT1L >> 1]);
+    cpu->SPR[SPR_DBAT1U] = ((void*)&cpu->DMMU.BAT[BAT1U >> 1]) + 4;
+    cpu->SPR[SPR_DBAT2L] = ((void*)&cpu->DMMU.BAT[BAT2L >> 1]);
+    cpu->SPR[SPR_DBAT2U] = ((void*)&cpu->DMMU.BAT[BAT2U >> 1]) + 4;
+    cpu->SPR[SPR_DBAT3L] = ((void*)&cpu->DMMU.BAT[BAT3L >> 1]);
+    cpu->SPR[SPR_DBAT3U] = ((void*)&cpu->DMMU.BAT[BAT3U >> 1]) + 4;
 
     // todo: implement functionality
     cpu->SPR[SPR_WPAR] = &cpu->WPAR;

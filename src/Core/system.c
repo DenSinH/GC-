@@ -27,7 +27,7 @@ s_GameCube* init_system() {
 //    add_breakpoint(&GameCube->breakpoints, 0x80011f94);
 #endif
 
-//    add_breakpoint(&GameCube->breakpoints, 0x80004b68);
+//    add_breakpoint(&GameCube->breakpoints, 0x80003e38);
     return GameCube;
 }
 

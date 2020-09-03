@@ -6,8 +6,8 @@ set(CMAKE_C_STANDARD 11)
 set(CMAKE_MODULE_PATH ${PROJECT_SOURCE_DIR}/cmake)
 
 set(CMAKE_CXX_FLAGS_RELEASE "-O3")
-set(CMAKE_C_FLAGS_RELEASE "-O3")
-add_compile_options(-Wall $<$<CONFIG:_DEBUG>:-fsanitize=address>)
+set(CMAKE_C_FLAGS_RELEASE "-Ofast")
+# add_compile_options(-Wall $<$<CONFIG:_DEBUG>:-fsanitize=address>)
 add_compile_options(
         -Wno-gnu-binary-literal
         -Wno-visibility
@@ -18,7 +18,7 @@ add_compile_definitions(
         $<$<CONFIG:RELEASE>:NDEBUG>
         $<$<CONFIG:RELEASE>:BOOST_DISABLE_ASSERTS>
 )
-add_link_options($<$<CONFIG:_DEBUG>:-fsanitize=address>)
+# add_link_options($<$<CONFIG:_DEBUG>:-fsanitize=address>)
 
 add_executable(GC_
         main.c

@@ -6,7 +6,6 @@
 #include "instructions/integer_logical.c"
 #include "instructions/integer_rotate_and_shift.c"
 #include "instructions/float_arithmetic.c"
-#include "instructions/float_mul_add.c"
 #include "instructions/float_rounding_and_conversion.c"
 #include "instructions/float_compare_and_status.c"
 #include "instructions/integer_load_store.c"

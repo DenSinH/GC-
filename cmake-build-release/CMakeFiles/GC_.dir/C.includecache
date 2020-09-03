@@ -52,6 +52,12 @@ memory.h
 stdbool.h
 -
 
+../src/Core/include/hwreg_utils.h
+flags.h
+../src/Core/include/flags.h
+assert.h
+-
+
 D:/CProjects/GC-/debugging.h
 stdlib.h
 -
@@ -181,68 +187,68 @@ D:/CProjects/GC-/src/Core/PPC/Registers/default.h
 D:/CProjects/GC-/src/Core/PPC/Registers/hardware_registers/AudioStreamingInterface.h
 default.h
 D:/CProjects/GC-/src/Core/PPC/Registers/hardware_registers/default.h
-hwreg_default.h
-D:/CProjects/GC-/src/Core/PPC/Registers/hardware_registers/hwreg_default.h
+hwreg_utils.h
+D:/CProjects/GC-/src/Core/PPC/Registers/hardware_registers/hwreg_utils.h
 
 D:/CProjects/GC-/src/Core/PPC/Registers/hardware_registers/CommandProcessor.h
 default.h
 D:/CProjects/GC-/src/Core/PPC/Registers/hardware_registers/default.h
-hwreg_default.h
-D:/CProjects/GC-/src/Core/PPC/Registers/hardware_registers/hwreg_default.h
+hwreg_utils.h
+D:/CProjects/GC-/src/Core/PPC/Registers/hardware_registers/hwreg_utils.h
 
 D:/CProjects/GC-/src/Core/PPC/Registers/hardware_registers/DVDInterface.h
 default.h
 D:/CProjects/GC-/src/Core/PPC/Registers/hardware_registers/default.h
-hwreg_default.h
-D:/CProjects/GC-/src/Core/PPC/Registers/hardware_registers/hwreg_default.h
+hwreg_utils.h
+D:/CProjects/GC-/src/Core/PPC/Registers/hardware_registers/hwreg_utils.h
 
 D:/CProjects/GC-/src/Core/PPC/Registers/hardware_registers/DigitalSoundProcessorInterface.h
 default.h
 D:/CProjects/GC-/src/Core/PPC/Registers/hardware_registers/default.h
-hwreg_default.h
-D:/CProjects/GC-/src/Core/PPC/Registers/hardware_registers/hwreg_default.h
+hwreg_utils.h
+D:/CProjects/GC-/src/Core/PPC/Registers/hardware_registers/hwreg_utils.h
 
 D:/CProjects/GC-/src/Core/PPC/Registers/hardware_registers/ExternalInterface.h
 default.h
 D:/CProjects/GC-/src/Core/PPC/Registers/hardware_registers/default.h
-hwreg_default.h
-D:/CProjects/GC-/src/Core/PPC/Registers/hardware_registers/hwreg_default.h
+hwreg_utils.h
+D:/CProjects/GC-/src/Core/PPC/Registers/hardware_registers/hwreg_utils.h
 
 D:/CProjects/GC-/src/Core/PPC/Registers/hardware_registers/GX_FIFO.h
 default.h
 D:/CProjects/GC-/src/Core/PPC/Registers/hardware_registers/default.h
-hwreg_default.h
-D:/CProjects/GC-/src/Core/PPC/Registers/hardware_registers/hwreg_default.h
+hwreg_utils.h
+D:/CProjects/GC-/src/Core/PPC/Registers/hardware_registers/hwreg_utils.h
 
 D:/CProjects/GC-/src/Core/PPC/Registers/hardware_registers/MemoryInterface.h
 default.h
 D:/CProjects/GC-/src/Core/PPC/Registers/hardware_registers/default.h
-hwreg_default.h
-D:/CProjects/GC-/src/Core/PPC/Registers/hardware_registers/hwreg_default.h
+hwreg_utils.h
+D:/CProjects/GC-/src/Core/PPC/Registers/hardware_registers/hwreg_utils.h
 
 D:/CProjects/GC-/src/Core/PPC/Registers/hardware_registers/PixelEngine.h
 default.h
 D:/CProjects/GC-/src/Core/PPC/Registers/hardware_registers/default.h
-hwreg_default.h
-D:/CProjects/GC-/src/Core/PPC/Registers/hardware_registers/hwreg_default.h
+hwreg_utils.h
+D:/CProjects/GC-/src/Core/PPC/Registers/hardware_registers/hwreg_utils.h
 
 D:/CProjects/GC-/src/Core/PPC/Registers/hardware_registers/ProcessorInterface.h
 default.h
 D:/CProjects/GC-/src/Core/PPC/Registers/hardware_registers/default.h
-hwreg_default.h
-D:/CProjects/GC-/src/Core/PPC/Registers/hardware_registers/hwreg_default.h
+hwreg_utils.h
+D:/CProjects/GC-/src/Core/PPC/Registers/hardware_registers/hwreg_utils.h
 
 D:/CProjects/GC-/src/Core/PPC/Registers/hardware_registers/SerialInterface.h
 default.h
 D:/CProjects/GC-/src/Core/PPC/Registers/hardware_registers/default.h
-hwreg_default.h
-D:/CProjects/GC-/src/Core/PPC/Registers/hardware_registers/hwreg_default.h
+hwreg_utils.h
+D:/CProjects/GC-/src/Core/PPC/Registers/hardware_registers/hwreg_utils.h
 
 D:/CProjects/GC-/src/Core/PPC/Registers/hardware_registers/VideoInterface.h
 default.h
 D:/CProjects/GC-/src/Core/PPC/Registers/hardware_registers/default.h
-hwreg_default.h
-D:/CProjects/GC-/src/Core/PPC/Registers/hardware_registers/hwreg_default.h
+hwreg_utils.h
+D:/CProjects/GC-/src/Core/PPC/Registers/hardware_registers/hwreg_utils.h
 
 D:/CProjects/GC-/src/Core/PPC/Registers/hardware_registers/hardware_registers.h
 AudioStreamingInterface.h
@@ -267,16 +273,10 @@ SerialInterface.h
 D:/CProjects/GC-/src/Core/PPC/Registers/hardware_registers/SerialInterface.h
 VideoInterface.h
 D:/CProjects/GC-/src/Core/PPC/Registers/hardware_registers/VideoInterface.h
-hwreg_default.h
-D:/CProjects/GC-/src/Core/PPC/Registers/hardware_registers/hwreg_default.h
+hwreg_utils.h
+D:/CProjects/GC-/src/Core/PPC/Registers/hardware_registers/hwreg_utils.h
 default.h
 D:/CProjects/GC-/src/Core/PPC/Registers/hardware_registers/default.h
-
-D:/CProjects/GC-/src/Core/PPC/Registers/hardware_registers/hwreg_default.h
-flags.h
-D:/CProjects/GC-/src/Core/PPC/Registers/hardware_registers/flags.h
-assert.h
--
 
 D:/CProjects/GC-/src/Core/PPC/gekko_instruction.h
 default.h

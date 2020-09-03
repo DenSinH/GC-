@@ -1,5 +1,7 @@
 #include "float_utils.h"
 #include "log.h"
+
+#include <immintrin.h>
 #include <limits.h>
 
 s_float_result float_round_to_int(s_FPSCR* FPSCR, bit_double value, e_RN_modes rounding_mode) {
@@ -277,6 +279,116 @@ s_float_result float_madd(s_FPSCR* FPSCR, bit_double opa, bit_double opb, bit_do
         // only other possibility is ISI
         result.exception |= VX_VXISI;
         SET_VX_EXCEPTIONS(FPSCR, VX_VXISI);
+    }
+
+    return result;
+}
+
+s_float_result float_msub(s_FPSCR* FPSCR, bit_double opa, bit_double opb, bit_double opc) {
+    s_float_result result = { .value.d = opa.d * opc.d };
+
+    if (isnan(result.value.d)) {
+        // SNAN exception
+        if (IS_SNAN(opa) || IS_SNAN(opb) || IS_SNAN(opc)) {
+            result.exception |= VX_VXSNAN;
+            SET_VX_EXCEPTIONS(FPSCR, VX_VXSNAN);
+        }
+
+        // clear FR,FI on invalid operation exceptions
+        FPSCR->FR = 0;
+        FPSCR->FI = 0;
+
+        if (isnan(opa.d)) {
+            result.value.u = DOUBLE_MAKE_QUIET(opa.u);
+            return result;
+        }
+        else if (isnan(opb.d)) {
+            result.value.u = DOUBLE_MAKE_QUIET(opb.u);
+            return result;
+        }
+        else if (isnan(opc.d)) {
+            result.value.u = DOUBLE_MAKE_QUIET(opc.u);
+            return result;
+        }
+            // IMZ exception, only other possibility
+        else {
+            result.exception |= VX_VXIMZ;
+            SET_VX_EXCEPTIONS(FPSCR, VX_VXIMZ);
+        }
+    }
+
+    result.value.d -= opb.d;
+
+    if (isnan(result.value.d)) {
+        // result was not NaN before
+        if (isnan(opb.d)) {
+            result.value.u = DOUBLE_MAKE_QUIET(opb.u);
+            return result;
+        }
+
+        // clear FR,FI on invalid operation exceptions
+        FPSCR->FR = 0;
+        FPSCR->FI = 0;
+
+        // only other possibility is ISI
+        result.exception |= VX_VXISI;
+        SET_VX_EXCEPTIONS(FPSCR, VX_VXISI);
+    }
+
+    return result;
+}
+
+inline float rsqrt(const float f)
+{
+    __m128 temp = _mm_set_ss(f);
+    temp = _mm_rsqrt_ss(temp);
+    return _mm_cvtss_f32(temp);
+}
+
+s_float_result float_rsqrte(s_FPSCR* FPSCR, bit_double op) {
+    s_float_result result = { .value.d = op.d };
+
+    if (op.d < 0.0) {
+        SET_VX_EXCEPTIONS(FPSCR, VX_VXSQRT);
+        result.exception |= VX_VXSQRT;
+
+        // clear FR,FI on invalid operation exceptions
+        FPSCR->FR = 0;
+        FPSCR->FI = 0;
+
+        if (!FPSCR->VE) {
+            result.value.d = DOUBLE_QNAN;
+        }
+    }
+    else if (op.d == 0.0) {
+        if (!FPSCR->ZX) {
+            FPSCR->ZX = 1;
+            FPSCR->FX = 1;
+        }
+
+        // clear FR,FI on invalid operation exceptions
+        FPSCR->FR = 0;
+        FPSCR->FI = 0;
+
+        if (!FPSCR->VE) {
+            result.value.d = INFINITY;
+        }
+    }
+    else if (IS_SNAN(op)) {
+        SET_VX_EXCEPTIONS(FPSCR, VX_VXSNAN);
+        result.exception |= VX_VXSNAN;
+
+        // clear FR,FI on invalid operation exceptions
+        FPSCR->FR = 0;
+        FPSCR->FI = 0;
+
+        if (!FPSCR->VE) {
+            result.value.u = DOUBLE_MAKE_QUIET(op.u);
+        }
+    }
+    // in case of QNaN: result is already the right value
+    else if (!isnan(op.d)) {
+        result.value.d = rsqrt((float)op.d);
     }
 
     return result;

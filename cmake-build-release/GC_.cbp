@@ -401,9 +401,6 @@
 		<Unit filename="D:/CProjects/GC-/src/Core/PPC/Registers/hardware_registers/hardware_registers.h">
 			<Option target="Registers"/>
 		</Unit>
-		<Unit filename="D:/CProjects/GC-/src/Core/PPC/Registers/hardware_registers/hwreg_default.h">
-			<Option target="Registers"/>
-		</Unit>
 		<Unit filename="D:/CProjects/GC-/src/Core/PPC/gekko_instruction.h">
 			<Option target="Core"/>
 		</Unit>
@@ -421,6 +418,9 @@
 		</Unit>
 		<Unit filename="D:/CProjects/GC-/src/Core/include/float_utils.h">
 			<Option target="Core"/>
+		</Unit>
+		<Unit filename="D:/CProjects/GC-/src/Core/include/hwreg_utils.h">
+			<Option target="Registers"/>
 		</Unit>
 		<Unit filename="D:/CProjects/GC-/src/Core/system.c">
 			<Option target="Core"/>

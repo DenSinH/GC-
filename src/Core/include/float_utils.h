@@ -21,6 +21,7 @@
 #define DOUBLE_FRAC 0x000fffffffffffffULL
 #define DOUBLE_ZERO 0x0000000000000000ULL
 #define DOUBLE_QBIT 0x0008000000000000ULL
+#define DOUBLE_QNAN (DOUBLE_EXP | DOUBLE_QBIT)
 
 #define DOUBLE_MAKE_QUIET(value) ((value) | DOUBLE_QBIT)
 
@@ -87,7 +88,9 @@ s_float_result float_sub(s_FPSCR* FPSCR, bit_double op1, bit_double op2);
 s_float_result float_add(s_FPSCR* FPSCR, bit_double op1, bit_double op2);
 s_float_result float_mul(s_FPSCR* FPSCR, bit_double opa, bit_double opc);
 s_float_result float_madd(s_FPSCR* FPSCR, bit_double opa, bit_double opb, bit_double opc);
+s_float_result float_msub(s_FPSCR* FPSCR, bit_double opa, bit_double opb, bit_double opc);
 s_float_result float_div(s_FPSCR* FPSCR, bit_double op1, bit_double op2);
+s_float_result float_rsqrte(s_FPSCR* FPSCR, bit_double op);
 
 #ifndef QUANTIZATION_SCALE_TABLES
 #define QUANTIZATION_SCALE_TABLES

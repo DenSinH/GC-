@@ -12,6 +12,7 @@ CMakeFiles\GC_.dir\main.c.obj: ..\include\sleeping.h
 CMakeFiles\GC_.dir\main.c.obj: ..\src\Core\PPC\Registers\FPSCR.h
 CMakeFiles\GC_.dir\main.c.obj: ..\src\Core\include\core_utils.h
 CMakeFiles\GC_.dir\main.c.obj: ..\src\Core\include\float_utils.h
+CMakeFiles\GC_.dir\main.c.obj: ..\src\Core\include\hwreg_utils.h
 CMakeFiles\GC_.dir\main.c.obj: ..\debugging.h
 CMakeFiles\GC_.dir\main.c.obj: ..\debugthread.h
 CMakeFiles\GC_.dir\main.c.obj: ..\init.c
@@ -40,7 +41,6 @@ CMakeFiles\GC_.dir\main.c.obj: ..\src\Core\PPC\Registers\hardware_registers\Proc
 CMakeFiles\GC_.dir\main.c.obj: ..\src\Core\PPC\Registers\hardware_registers\SerialInterface.h
 CMakeFiles\GC_.dir\main.c.obj: ..\src\Core\PPC\Registers\hardware_registers\VideoInterface.h
 CMakeFiles\GC_.dir\main.c.obj: ..\src\Core\PPC\Registers\hardware_registers\hardware_registers.h
-CMakeFiles\GC_.dir\main.c.obj: ..\src\Core\PPC\Registers\hardware_registers\hwreg_default.h
 CMakeFiles\GC_.dir\main.c.obj: ..\src\Core\PPC\gekko_instruction.h
 CMakeFiles\GC_.dir\main.c.obj: ..\src\Core\system.h
 CMakeFiles\GC_.dir\main.c.obj: ..\src\Debugger\debugger.h

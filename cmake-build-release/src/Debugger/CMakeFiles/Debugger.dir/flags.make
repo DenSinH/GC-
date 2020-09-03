@@ -3,13 +3,13 @@
 
 # compile C with C:/Program Files (x86)/Microsoft Visual Studio/2019/Community/VC/Tools/Llvm/bin/clang-cl.exe
 # compile CXX with C:/Program Files (x86)/Microsoft Visual Studio/2019/Community/VC/Tools/Llvm/bin/clang-cl.exe
-C_FLAGS = -m32 -O3 -MD   -Wall -Wno-gnu-binary-literal -Wno-visibility -Wno-c++98-compat -Wno-double-promotion
+C_FLAGS = -m32 -Ofast -MD   -Wno-gnu-binary-literal -Wno-visibility -Wno-c++98-compat -Wno-double-promotion
 
 C_DEFINES = -DBOOST_DISABLE_ASSERTS -DNDEBUG
 
 C_INCLUDES = -ID:\CProjects\GC-\src\Debugger\imgui -ID:\vcpkg\vcpkg\installed\x86-windows\include -ID:\vcpkg\vcpkg\installed\x86-windows\include\SDL2 
 
-CXX_FLAGS = -m32 -O3 -MD   -Wall -Wno-gnu-binary-literal -Wno-visibility -Wno-c++98-compat -Wno-double-promotion -std:c++17
+CXX_FLAGS = -m32 -O3 -MD   -Wno-gnu-binary-literal -Wno-visibility -Wno-c++98-compat -Wno-double-promotion -std:c++17
 
 CXX_DEFINES = -DBOOST_DISABLE_ASSERTS -DNDEBUG
 

@@ -103,7 +103,6 @@ INLINE_GEKKO_INSTR(ps_mr) {
     cpu->FPR[instruction.general_DAB.D].PS0.u = cpu->FPR[instruction.general_DAB.B].PS0.u;
     cpu->FPR[instruction.general_DAB.D].PS1.u = cpu->FPR[instruction.general_DAB.B].PS1.u;
 
-    // todo: I don't think floating point exceptions can be caused from moving
     if (instruction.general_DAB.Rc) {
         UPDATE_CR1_FROM_FPSCR(cpu->CR, cpu->FPSCR);
     }
