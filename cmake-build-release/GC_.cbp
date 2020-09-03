@@ -5,7 +5,7 @@
 		<Option title="GC_"/>
 		<Option makefile_is_custom="1"/>
 		<Option compiler="clang"/>
-		<Option virtualFolders="CMake Files\;CMake Files\..\;CMake Files\..\..\;CMake Files\..\..\vcpkg\;CMake Files\..\..\vcpkg\vcpkg\;CMake Files\..\..\vcpkg\vcpkg\scripts\;CMake Files\..\..\vcpkg\vcpkg\scripts\buildsystems\;CMake Files\..\..\vcpkg\vcpkg\installed\;CMake Files\..\..\vcpkg\vcpkg\installed\x86-windows\;CMake Files\..\..\vcpkg\vcpkg\installed\x86-windows\share\;CMake Files\..\..\vcpkg\vcpkg\installed\x86-windows\share\sdl2\;CMake Files\..\..\vcpkg\vcpkg\installed\x86-windows\share\gl3w\;CMake Files\src\;CMake Files\src\Loader\;CMake Files\src\Core\;CMake Files\src\Core\PPC\;CMake Files\src\Core\PPC\Registers\;CMake Files\src\Debugger\;"/>
+		<Option virtualFolders="CMake Files\;CMake Files\..\;CMake Files\..\..\;CMake Files\..\..\vcpkg\;CMake Files\..\..\vcpkg\vcpkg\;CMake Files\..\..\vcpkg\vcpkg\scripts\;CMake Files\..\..\vcpkg\vcpkg\scripts\buildsystems\;CMake Files\..\..\vcpkg\vcpkg\installed\;CMake Files\..\..\vcpkg\vcpkg\installed\x86-windows\;CMake Files\..\..\vcpkg\vcpkg\installed\x86-windows\share\;CMake Files\..\..\vcpkg\vcpkg\installed\x86-windows\share\sdl2\;CMake Files\..\..\vcpkg\vcpkg\installed\x86-windows\share\gl3w\;CMake Files\src\;CMake Files\src\Core\;CMake Files\src\Core\PPC\;CMake Files\src\Core\PPC\Registers\;CMake Files\src\Debugger\;CMake Files\src\Loader\;"/>
 		<Build>
 			<Target title="all">
 				<Option working_dir="D:/CProjects/GC-/cmake-build-release"/>
@@ -34,6 +34,8 @@
 				<Option type="1"/>
 				<Option compiler="clang"/>
 				<Compiler>
+					<Add option="-DNDEBUG"/>
+					<Add option="-DBOOST_DISABLE_ASSERTS"/>
 					<Add directory="D:/CProjects/GC-/include"/>
 					<Add directory="D:/CProjects/GC-/src/Core/include"/>
 					<Add directory="D:/CProjects/GC-/src/Core"/>
@@ -54,6 +56,8 @@
 				<Option type="1"/>
 				<Option compiler="clang"/>
 				<Compiler>
+					<Add option="-DNDEBUG"/>
+					<Add option="-DBOOST_DISABLE_ASSERTS"/>
 					<Add directory="D:/CProjects/GC-/include"/>
 					<Add directory="D:/CProjects/GC-/src/Core/include"/>
 					<Add directory="D:/CProjects/GC-/src/Core"/>
@@ -77,40 +81,6 @@
 					<DistClean command="nmake /NOLOGO /f D:\CProjects\GC-\cmake-build-release\Makefile VERBOSE=1 clean"/>
 				</MakeCommands>
 			</Target>
-			<Target title="Loader">
-				<Option output="D:/CProjects/GC-/cmake-build-release/src/Loader/Loader.lib" prefix_auto="0" extension_auto="0"/>
-				<Option working_dir="D:/CProjects/GC-/cmake-build-release/src/Loader"/>
-				<Option object_output="./"/>
-				<Option type="2"/>
-				<Option compiler="clang"/>
-				<Compiler>
-					<Add directory="D:/CProjects/GC-/src/Loader/../../include"/>
-					<Add directory="D:/CProjects/GC-/src/Loader"/>
-				</Compiler>
-				<MakeCommands>
-					<Build command="nmake /NOLOGO /f D:\CProjects\GC-\cmake-build-release\src\Loader\Makefile VERBOSE=1 Loader"/>
-					<CompileFile command="nmake /NOLOGO /f D:\CProjects\GC-\cmake-build-release\src\Loader\Makefile VERBOSE=1 &quot;$file&quot;"/>
-					<Clean command="nmake /NOLOGO /f D:\CProjects\GC-\cmake-build-release\src\Loader\Makefile VERBOSE=1 clean"/>
-					<DistClean command="nmake /NOLOGO /f D:\CProjects\GC-\cmake-build-release\src\Loader\Makefile VERBOSE=1 clean"/>
-				</MakeCommands>
-			</Target>
-			<Target title="Loader/fast">
-				<Option output="D:/CProjects/GC-/cmake-build-release/src/Loader/Loader.lib" prefix_auto="0" extension_auto="0"/>
-				<Option working_dir="D:/CProjects/GC-/cmake-build-release/src/Loader"/>
-				<Option object_output="./"/>
-				<Option type="2"/>
-				<Option compiler="clang"/>
-				<Compiler>
-					<Add directory="D:/CProjects/GC-/src/Loader/../../include"/>
-					<Add directory="D:/CProjects/GC-/src/Loader"/>
-				</Compiler>
-				<MakeCommands>
-					<Build command="nmake /NOLOGO /f D:\CProjects\GC-\cmake-build-release\src\Loader\Makefile VERBOSE=1 Loader/fast"/>
-					<CompileFile command="nmake /NOLOGO /f D:\CProjects\GC-\cmake-build-release\src\Loader\Makefile VERBOSE=1 &quot;$file&quot;"/>
-					<Clean command="nmake /NOLOGO /f D:\CProjects\GC-\cmake-build-release\src\Loader\Makefile VERBOSE=1 clean"/>
-					<DistClean command="nmake /NOLOGO /f D:\CProjects\GC-\cmake-build-release\src\Loader\Makefile VERBOSE=1 clean"/>
-				</MakeCommands>
-			</Target>
 			<Target title="Core">
 				<Option output="D:/CProjects/GC-/cmake-build-release/src/Core/Core.lib" prefix_auto="0" extension_auto="0"/>
 				<Option working_dir="D:/CProjects/GC-/cmake-build-release/src/Core"/>
@@ -118,6 +88,8 @@
 				<Option type="2"/>
 				<Option compiler="clang"/>
 				<Compiler>
+					<Add option="-DNDEBUG"/>
+					<Add option="-DBOOST_DISABLE_ASSERTS"/>
 					<Add directory="D:/CProjects/GC-/src/Core/../../include"/>
 					<Add directory="D:/CProjects/GC-/src/Core/./include"/>
 					<Add directory="D:/CProjects/GC-/src/Core"/>
@@ -138,6 +110,8 @@
 				<Option type="2"/>
 				<Option compiler="clang"/>
 				<Compiler>
+					<Add option="-DNDEBUG"/>
+					<Add option="-DBOOST_DISABLE_ASSERTS"/>
 					<Add directory="D:/CProjects/GC-/src/Core/../../include"/>
 					<Add directory="D:/CProjects/GC-/src/Core/./include"/>
 					<Add directory="D:/CProjects/GC-/src/Core"/>
@@ -158,6 +132,8 @@
 				<Option type="2"/>
 				<Option compiler="clang"/>
 				<Compiler>
+					<Add option="-DNDEBUG"/>
+					<Add option="-DBOOST_DISABLE_ASSERTS"/>
 					<Add directory="D:/CProjects/GC-/src/Core/../../include"/>
 					<Add directory="D:/CProjects/GC-/src/Core/./include"/>
 					<Add directory="D:/CProjects/GC-/src/Core/PPC/Registers/../../include"/>
@@ -178,6 +154,8 @@
 				<Option type="2"/>
 				<Option compiler="clang"/>
 				<Compiler>
+					<Add option="-DNDEBUG"/>
+					<Add option="-DBOOST_DISABLE_ASSERTS"/>
 					<Add directory="D:/CProjects/GC-/src/Core/../../include"/>
 					<Add directory="D:/CProjects/GC-/src/Core/./include"/>
 					<Add directory="D:/CProjects/GC-/src/Core/PPC/Registers/../../include"/>
@@ -198,6 +176,8 @@
 				<Option type="2"/>
 				<Option compiler="clang"/>
 				<Compiler>
+					<Add option="-DNDEBUG"/>
+					<Add option="-DBOOST_DISABLE_ASSERTS"/>
 					<Add directory="D:/CProjects/GC-/src/Debugger/imgui"/>
 					<Add directory="D:/vcpkg/vcpkg/installed/x86-windows/include"/>
 					<Add directory="D:/vcpkg/vcpkg/installed/x86-windows/include/SDL2"/>
@@ -216,6 +196,8 @@
 				<Option type="2"/>
 				<Option compiler="clang"/>
 				<Compiler>
+					<Add option="-DNDEBUG"/>
+					<Add option="-DBOOST_DISABLE_ASSERTS"/>
 					<Add directory="D:/CProjects/GC-/src/Debugger/imgui"/>
 					<Add directory="D:/vcpkg/vcpkg/installed/x86-windows/include"/>
 					<Add directory="D:/vcpkg/vcpkg/installed/x86-windows/include/SDL2"/>
@@ -225,6 +207,44 @@
 					<CompileFile command="nmake /NOLOGO /f D:\CProjects\GC-\cmake-build-release\src\Debugger\Makefile VERBOSE=1 &quot;$file&quot;"/>
 					<Clean command="nmake /NOLOGO /f D:\CProjects\GC-\cmake-build-release\src\Debugger\Makefile VERBOSE=1 clean"/>
 					<DistClean command="nmake /NOLOGO /f D:\CProjects\GC-\cmake-build-release\src\Debugger\Makefile VERBOSE=1 clean"/>
+				</MakeCommands>
+			</Target>
+			<Target title="Loader">
+				<Option output="D:/CProjects/GC-/cmake-build-release/src/Loader/Loader.lib" prefix_auto="0" extension_auto="0"/>
+				<Option working_dir="D:/CProjects/GC-/cmake-build-release/src/Loader"/>
+				<Option object_output="./"/>
+				<Option type="2"/>
+				<Option compiler="clang"/>
+				<Compiler>
+					<Add option="-DNDEBUG"/>
+					<Add option="-DBOOST_DISABLE_ASSERTS"/>
+					<Add directory="D:/CProjects/GC-/src/Loader/../../include"/>
+					<Add directory="D:/CProjects/GC-/src/Loader"/>
+				</Compiler>
+				<MakeCommands>
+					<Build command="nmake /NOLOGO /f D:\CProjects\GC-\cmake-build-release\src\Loader\Makefile VERBOSE=1 Loader"/>
+					<CompileFile command="nmake /NOLOGO /f D:\CProjects\GC-\cmake-build-release\src\Loader\Makefile VERBOSE=1 &quot;$file&quot;"/>
+					<Clean command="nmake /NOLOGO /f D:\CProjects\GC-\cmake-build-release\src\Loader\Makefile VERBOSE=1 clean"/>
+					<DistClean command="nmake /NOLOGO /f D:\CProjects\GC-\cmake-build-release\src\Loader\Makefile VERBOSE=1 clean"/>
+				</MakeCommands>
+			</Target>
+			<Target title="Loader/fast">
+				<Option output="D:/CProjects/GC-/cmake-build-release/src/Loader/Loader.lib" prefix_auto="0" extension_auto="0"/>
+				<Option working_dir="D:/CProjects/GC-/cmake-build-release/src/Loader"/>
+				<Option object_output="./"/>
+				<Option type="2"/>
+				<Option compiler="clang"/>
+				<Compiler>
+					<Add option="-DNDEBUG"/>
+					<Add option="-DBOOST_DISABLE_ASSERTS"/>
+					<Add directory="D:/CProjects/GC-/src/Loader/../../include"/>
+					<Add directory="D:/CProjects/GC-/src/Loader"/>
+				</Compiler>
+				<MakeCommands>
+					<Build command="nmake /NOLOGO /f D:\CProjects\GC-\cmake-build-release\src\Loader\Makefile VERBOSE=1 Loader/fast"/>
+					<CompileFile command="nmake /NOLOGO /f D:\CProjects\GC-\cmake-build-release\src\Loader\Makefile VERBOSE=1 &quot;$file&quot;"/>
+					<Clean command="nmake /NOLOGO /f D:\CProjects\GC-\cmake-build-release\src\Loader\Makefile VERBOSE=1 clean"/>
+					<DistClean command="nmake /NOLOGO /f D:\CProjects\GC-\cmake-build-release\src\Loader\Makefile VERBOSE=1 clean"/>
 				</MakeCommands>
 			</Target>
 		</Build>
@@ -339,10 +359,16 @@
 		<Unit filename="D:/CProjects/GC-/src/Core/PPC/Registers/hardware_registers/ExternalInterface.h">
 			<Option target="Registers"/>
 		</Unit>
-		<Unit filename="D:/CProjects/GC-/src/Core/PPC/Registers/hardware_registers/GXFIFO.c">
+		<Unit filename="D:/CProjects/GC-/src/Core/PPC/Registers/hardware_registers/GX_FIFO.c">
 			<Option target="Registers"/>
 		</Unit>
-		<Unit filename="D:/CProjects/GC-/src/Core/PPC/Registers/hardware_registers/GXFIFO.h">
+		<Unit filename="D:/CProjects/GC-/src/Core/PPC/Registers/hardware_registers/GX_FIFO.h">
+			<Option target="Registers"/>
+		</Unit>
+		<Unit filename="D:/CProjects/GC-/src/Core/PPC/Registers/hardware_registers/MemoryInterface.c">
+			<Option target="Registers"/>
+		</Unit>
+		<Unit filename="D:/CProjects/GC-/src/Core/PPC/Registers/hardware_registers/MemoryInterface.h">
 			<Option target="Registers"/>
 		</Unit>
 		<Unit filename="D:/CProjects/GC-/src/Core/PPC/Registers/hardware_registers/PixelEngine.c">
@@ -375,6 +401,9 @@
 		<Unit filename="D:/CProjects/GC-/src/Core/PPC/Registers/hardware_registers/hardware_registers.h">
 			<Option target="Registers"/>
 		</Unit>
+		<Unit filename="D:/CProjects/GC-/src/Core/PPC/Registers/hardware_registers/hwreg_default.h">
+			<Option target="Registers"/>
+		</Unit>
 		<Unit filename="D:/CProjects/GC-/src/Core/PPC/gekko_instruction.h">
 			<Option target="Core"/>
 		</Unit>
@@ -382,6 +411,9 @@
 			<Option target="Core"/>
 		</Unit>
 		<Unit filename="D:/CProjects/GC-/src/Core/PPC/instructions.h">
+			<Option target="Core"/>
+		</Unit>
+		<Unit filename="D:/CProjects/GC-/src/Core/include/core_utils.h">
 			<Option target="Core"/>
 		</Unit>
 		<Unit filename="D:/CProjects/GC-/src/Core/include/float_utils.c">
@@ -516,9 +548,6 @@
 		<Unit filename="D:/CProjects/GC-/../../vcpkg/vcpkg/installed/x86-windows/share/gl3w/gl3wConfig.cmake">
 			<Option virtualFolder="CMake Files\..\..\vcpkg\vcpkg\installed\x86-windows\share\gl3w\"/>
 		</Unit>
-		<Unit filename="D:/CProjects/GC-/src/Loader/CMakeLists.txt">
-			<Option virtualFolder="CMake Files\src\Loader\"/>
-		</Unit>
 		<Unit filename="D:/CProjects/GC-/src/Core/CMakeLists.txt">
 			<Option virtualFolder="CMake Files\src\Core\"/>
 		</Unit>
@@ -527,6 +556,9 @@
 		</Unit>
 		<Unit filename="D:/CProjects/GC-/src/Debugger/CMakeLists.txt">
 			<Option virtualFolder="CMake Files\src\Debugger\"/>
+		</Unit>
+		<Unit filename="D:/CProjects/GC-/src/Loader/CMakeLists.txt">
+			<Option virtualFolder="CMake Files\src\Loader\"/>
 		</Unit>
 	</Project>
 </CodeBlocks_project_file>

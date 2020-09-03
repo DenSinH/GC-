@@ -7,7 +7,7 @@
 
 
 #ifdef _WIN32
-    #include <windows.h>
+    #include <Windows.h>
 
     #define FOREGROUND_YELLOW (FOREGROUND_INTENSITY | FOREGROUND_RED | FOREGROUND_GREEN)
     #define FOREGROUND_WHITE (FOREGROUND_RED | FOREGROUND_GREEN | FOREGROUND_BLUE)

@@ -53,7 +53,7 @@ struct MemoryViewer
     char            DataInputBuf[32];
     char            AddrInputBuf[32];
     uint64_t        GotoAddr;
-    uint64_t        CenterAddr;
+    uint32_t        CenterAddr;
     uint64_t        LineTotalCount;
     uint64_t        HighlightMin, HighlightMax;
     int             PreviewEndianess;
@@ -402,9 +402,9 @@ struct MemoryViewer
         if (ImGui::InputText("##addr", AddrInputBuf, 32, ImGuiInputTextFlags_CharsHexadecimal | ImGuiInputTextFlags_EnterReturnsTrue))
         {
             uint64_t goto_addr;
-            if (sscanf(AddrInputBuf, "%" _PRISizeT "X", &goto_addr) == 1)
+            if (sscanf_s(AddrInputBuf, "%" _PRISizeT "X", &goto_addr) == 1)
             {
-                GotoAddr = goto_addr - base_display_addr;
+                GotoAddr = (uint32_t)(goto_addr - base_display_addr);
                 HighlightMin = HighlightMax = (uint64_t)-1;
             }
         }
@@ -415,7 +415,7 @@ struct MemoryViewer
             if (GotoAddr < mem_size)
             {
                 ImGui::BeginChild("##scrolling");
-                CenterAddr = GotoAddr;
+                CenterAddr = (uint32_t)GotoAddr;
                 ImGui::EndChild();
                 DataEditingAddr = DataPreviewAddr = GotoAddr;
                 DataEditingTakeFocus = true;

@@ -5,10 +5,11 @@
 #include "Registers/SPR.h"
 
 void init_Gekko(s_Gekko* cpu) {
+    cpu->HW_regs.system = cpu->system;
     init_HW_regs(&cpu->HW_regs);
 
-    cpu->IMMU.memory_ptr = cpu->DMMU.memory_ptr = cpu->GameCube_ptr->memory;
-    cpu->IMMU.GameCube_ptr = cpu->DMMU.GameCube_ptr = cpu->GameCube_ptr;
+    cpu->IMMU.memory_ptr = cpu->DMMU.memory_ptr = cpu->system->memory;
+    cpu->IMMU.system_ptr = cpu->DMMU.system_ptr = cpu->system;
     cpu->IMMU.SR_ptr = cpu->DMMU.SR_ptr = cpu->SR;
     cpu->IMMU.TBR_ptr = cpu->DMMU.TBR_ptr = &cpu->TBR;
     cpu->IMMU.HW_regs_ptr = cpu->DMMU.HW_regs_ptr = &cpu->HW_regs;

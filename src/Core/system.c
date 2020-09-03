@@ -12,7 +12,7 @@
 s_GameCube* init_system() {
     s_GameCube* GameCube = malloc(sizeof(s_GameCube));
     memset(GameCube, 0x00, sizeof(struct s_GameCube));
-    GameCube->cpu.GameCube_ptr = GameCube;
+    GameCube->cpu.system = GameCube;
     init_Gekko(&GameCube->cpu);
 
 #ifdef DO_BREAKPOINTS
@@ -32,6 +32,7 @@ s_GameCube* init_system() {
 }
 
 #define TEST_DOL "D:\\CProjects\\GCResources\\GameCubeResources\\Tests\\Triangle\\Triangle.dol"
+// #define TEST_DOL "D:\\CProjects\\GCResources\\GameCubeResources\\Tests\\GCTests\\GCTests.dol"
 #define STEP_ON_BREAK
 
 void run_system(s_GameCube* system) {

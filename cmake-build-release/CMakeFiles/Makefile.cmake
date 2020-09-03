@@ -59,17 +59,17 @@ set(CMAKE_MAKEFILE_OUTPUTS
 # Byproducts of CMake generate step:
 set(CMAKE_MAKEFILE_PRODUCTS
   "CMakeFiles/CMakeDirectoryInformation.cmake"
-  "src/Loader/CMakeFiles/CMakeDirectoryInformation.cmake"
   "src/Core/CMakeFiles/CMakeDirectoryInformation.cmake"
   "src/Core/PPC/Registers/CMakeFiles/CMakeDirectoryInformation.cmake"
   "src/Debugger/CMakeFiles/CMakeDirectoryInformation.cmake"
+  "src/Loader/CMakeFiles/CMakeDirectoryInformation.cmake"
   )
 
 # Dependency information for all targets:
 set(CMAKE_DEPEND_INFO_FILES
   "CMakeFiles/GC_.dir/DependInfo.cmake"
-  "src/Loader/CMakeFiles/Loader.dir/DependInfo.cmake"
   "src/Core/CMakeFiles/Core.dir/DependInfo.cmake"
   "src/Core/PPC/Registers/CMakeFiles/Registers.dir/DependInfo.cmake"
   "src/Debugger/CMakeFiles/Debugger.dir/DependInfo.cmake"
+  "src/Loader/CMakeFiles/Loader.dir/DependInfo.cmake"
   )

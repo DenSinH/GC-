@@ -10,6 +10,7 @@ CMakeFiles\GC_.dir\main.c.obj: ..\include\flags.h
 CMakeFiles\GC_.dir\main.c.obj: ..\include\log.h
 CMakeFiles\GC_.dir\main.c.obj: ..\include\sleeping.h
 CMakeFiles\GC_.dir\main.c.obj: ..\src\Core\PPC\Registers\FPSCR.h
+CMakeFiles\GC_.dir\main.c.obj: ..\src\Core\include\core_utils.h
 CMakeFiles\GC_.dir\main.c.obj: ..\src\Core\include\float_utils.h
 CMakeFiles\GC_.dir\main.c.obj: ..\debugging.h
 CMakeFiles\GC_.dir\main.c.obj: ..\debugthread.h
@@ -27,7 +28,19 @@ CMakeFiles\GC_.dir\main.c.obj: ..\src\Core\PPC\Registers\MSR.h
 CMakeFiles\GC_.dir\main.c.obj: ..\src\Core\PPC\Registers\TBR.h
 CMakeFiles\GC_.dir\main.c.obj: ..\src\Core\PPC\Registers\WPAR.h
 CMakeFiles\GC_.dir\main.c.obj: ..\src\Core\PPC\Registers\XER.h
+CMakeFiles\GC_.dir\main.c.obj: ..\src\Core\PPC\Registers\hardware_registers\AudioStreamingInterface.h
+CMakeFiles\GC_.dir\main.c.obj: ..\src\Core\PPC\Registers\hardware_registers\CommandProcessor.h
+CMakeFiles\GC_.dir\main.c.obj: ..\src\Core\PPC\Registers\hardware_registers\DVDInterface.h
+CMakeFiles\GC_.dir\main.c.obj: ..\src\Core\PPC\Registers\hardware_registers\DigitalSoundProcessorInterface.h
+CMakeFiles\GC_.dir\main.c.obj: ..\src\Core\PPC\Registers\hardware_registers\ExternalInterface.h
+CMakeFiles\GC_.dir\main.c.obj: ..\src\Core\PPC\Registers\hardware_registers\GX_FIFO.h
+CMakeFiles\GC_.dir\main.c.obj: ..\src\Core\PPC\Registers\hardware_registers\MemoryInterface.h
+CMakeFiles\GC_.dir\main.c.obj: ..\src\Core\PPC\Registers\hardware_registers\PixelEngine.h
+CMakeFiles\GC_.dir\main.c.obj: ..\src\Core\PPC\Registers\hardware_registers\ProcessorInterface.h
+CMakeFiles\GC_.dir\main.c.obj: ..\src\Core\PPC\Registers\hardware_registers\SerialInterface.h
+CMakeFiles\GC_.dir\main.c.obj: ..\src\Core\PPC\Registers\hardware_registers\VideoInterface.h
 CMakeFiles\GC_.dir\main.c.obj: ..\src\Core\PPC\Registers\hardware_registers\hardware_registers.h
+CMakeFiles\GC_.dir\main.c.obj: ..\src\Core\PPC\Registers\hardware_registers\hwreg_default.h
 CMakeFiles\GC_.dir\main.c.obj: ..\src\Core\PPC\gekko_instruction.h
 CMakeFiles\GC_.dir\main.c.obj: ..\src\Core\system.h
 CMakeFiles\GC_.dir\main.c.obj: ..\src\Debugger\debugger.h

@@ -30,8 +30,8 @@ add_library(Registers STATIC
         hardware_registers/ExternalInterface.h
         hardware_registers/AudioStreamingInterface.c
         hardware_registers/AudioStreamingInterface.h
-        hardware_registers/GXFIFO.c
-        hardware_registers/GXFIFO.h)
+        hardware_registers/GX_FIFO.c
+        hardware_registers/GX_FIFO.h hardware_registers/MemoryInterface.c hardware_registers/MemoryInterface.h ../../include/hwreg_utils.h)
 
 
 # for logging / stuff I want to use in all files

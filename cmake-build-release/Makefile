@@ -128,19 +128,6 @@ GC_\fast:
 .PHONY : GC_\fast
 
 #=============================================================================
-# Target rules for targets named Loader
-
-# Build rule for target.
-Loader: cmake_check_build_system
-	$(MAKE) $(MAKESILENT) -f CMakeFiles\Makefile2 /nologo -$(MAKEFLAGS) Loader
-.PHONY : Loader
-
-# fast build rule for target.
-Loader\fast:
-	$(MAKE) $(MAKESILENT) -f src\Loader\CMakeFiles\Loader.dir\build.make /nologo -$(MAKEFLAGS) src\Loader\CMakeFiles\Loader.dir\build
-.PHONY : Loader\fast
-
-#=============================================================================
 # Target rules for targets named Core
 
 # Build rule for target.
@@ -178,6 +165,19 @@ Debugger: cmake_check_build_system
 Debugger\fast:
 	$(MAKE) $(MAKESILENT) -f src\Debugger\CMakeFiles\Debugger.dir\build.make /nologo -$(MAKEFLAGS) src\Debugger\CMakeFiles\Debugger.dir\build
 .PHONY : Debugger\fast
+
+#=============================================================================
+# Target rules for targets named Loader
+
+# Build rule for target.
+Loader: cmake_check_build_system
+	$(MAKE) $(MAKESILENT) -f CMakeFiles\Makefile2 /nologo -$(MAKEFLAGS) Loader
+.PHONY : Loader
+
+# fast build rule for target.
+Loader\fast:
+	$(MAKE) $(MAKESILENT) -f src\Loader\CMakeFiles\Loader.dir\build.make /nologo -$(MAKEFLAGS) src\Loader\CMakeFiles\Loader.dir\build
+.PHONY : Loader\fast
 
 debugthread.obj: debugthread.c.obj
 

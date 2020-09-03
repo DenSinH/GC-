@@ -8,7 +8,7 @@
 
 s_GameCube* global_system;
 
-CONSOLE_COMMAND(reset_system) {
+static CONSOLE_COMMAND(reset_system) {
 #ifdef DO_DEBUGGER
     if (argc > 1 && (strcmp(args[1], "freeze") || strcmp(args[1], "pause")|| strcmp(args[1], "break"))) {
         global_system->paused = true;
@@ -19,7 +19,7 @@ CONSOLE_COMMAND(reset_system) {
 #endif
 }
 
-CONSOLE_COMMAND(pause_system) {
+static CONSOLE_COMMAND(pause_system) {
 #ifdef DO_DEBUGGER
     global_system->paused = true;
 
@@ -27,7 +27,7 @@ CONSOLE_COMMAND(pause_system) {
 #endif
 }
 
-CONSOLE_COMMAND(unpause_system) {
+static CONSOLE_COMMAND(unpause_system) {
 #ifdef DO_DEBUGGER
     global_system->paused = false;
 
@@ -35,7 +35,7 @@ CONSOLE_COMMAND(unpause_system) {
 #endif
 }
 
-CONSOLE_COMMAND(break_system) {
+static CONSOLE_COMMAND(break_system) {
 #ifdef DO_DEBUGGER
     if (argc < 2) {
         pause_system(args, argc, output);
@@ -48,7 +48,7 @@ CONSOLE_COMMAND(break_system) {
 #endif
 }
 
-CONSOLE_COMMAND(unbreak_system) {
+static CONSOLE_COMMAND(unbreak_system) {
 #ifdef DO_DEBUGGER
     if (argc < 2) {
         unpause_system(args, argc, output);
@@ -61,7 +61,7 @@ CONSOLE_COMMAND(unbreak_system) {
 #endif
 }
 
-CONSOLE_COMMAND(step_system) {
+static CONSOLE_COMMAND(step_system) {
 #ifdef DO_DEBUGGER
     global_system->paused = true;
     if (argc < 2) {
@@ -76,7 +76,7 @@ CONSOLE_COMMAND(step_system) {
 #endif
 }
 
-CONSOLE_COMMAND(dump_memory_range) {
+static CONSOLE_COMMAND(dump_memory_range) {
     if (argc < 2) {
         strcpy_s(output, MAX_OUTPUT_LENGTH, "Provide an address/range to dump from");
     }
@@ -92,11 +92,11 @@ CONSOLE_COMMAND(dump_memory_range) {
     }
 }
 
-CONSOLE_COMMAND(get_state) {
+static CONSOLE_COMMAND(get_state) {
     dump_Gekko(&global_system->cpu);
 }
 
-u8 view_byte(const u8* memory, uint64_t off) {
+static u8 view_byte(const u8* memory, uint64_t off) {
     switch (off >> 20) {
         case 0x000 ... 0x017:
         case 0x800 ... 0x817:
@@ -107,7 +107,7 @@ u8 view_byte(const u8* memory, uint64_t off) {
     }
 }
 
-u32 valid_address_check(u32 address) {
+static u32 valid_address_check(u32 address) {
     switch (address >> 20) {
         case 0x000 ... 0x017:
         case 0x800 ... 0x817:
@@ -119,7 +119,7 @@ u32 valid_address_check(u32 address) {
 }
 
 
-void init() {
+static void init() {
     global_system = init_system();
 
     debugger_init(
@@ -173,6 +173,8 @@ void init() {
     add_register_data("HID1", &global_system->cpu.HID[1], false);
     add_register_data("HID2", &global_system->cpu.HID2, false);
     add_register_data("WPAR", &global_system->cpu.WPAR, false);
+
+    add_register_data("DEC", &global_system->cpu.DEC, false);
 
     add_command("RESET", "Resets the system. Add 'pause/freeze/break' to freeze on reload.", reset_system);
     add_command("PAUSE", "Pauses the system.", pause_system);

@@ -23,7 +23,10 @@ void exception_handler() {
 
 int main() {
     init();
+
+#ifdef DO_BREAKPOINTS
     global_system->paused = true;
+#endif
 
     atexit(exception_handler);
 

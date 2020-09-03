@@ -2,7 +2,7 @@
 #define GC__SLEEPING_H
 
 #ifdef _WIN32
-#include <windows.h>
+#include <Windows.h>
 #elif _POSIX_C_SOURCE >= 199309L
 #include <time.h>   // for nanosleep
 #else

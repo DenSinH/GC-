@@ -4,16 +4,16 @@
 #include "default.h"
 
 typedef enum e_VX  {
-    VX_VXCVI  = 1 << 8,
-    VX_VXSQRT = 1 << 9,
-    VX_VXSOFT = 1 << 10,
-    VX_VXVC   = 1 << 19,
-    VX_VXIMZ  = 1 << 20,
-    VX_VXZDZ  = 1 << 21,
-    VX_VXIDI  = 1 << 22,
-    VX_VXISI  = 1 << 23,
-    VX_VXSNAN = 1 << 24,
-    VX_VX     = 1 << 29
+    VX_VXCVI  = 1u << 8,
+    VX_VXSQRT = 1u << 9,
+    VX_VXSOFT = 1u << 10,
+    VX_VXVC   = 1u << 19,
+    VX_VXIMZ  = 1u << 20,
+    VX_VXZDZ  = 1u << 21,
+    VX_VXIDI  = 1u << 22,
+    VX_VXISI  = 1u << 23,
+    VX_VXSNAN = 1u << 24,
+    VX_VX     = 1u << 29
 } e_VX;
 
 // todo: bit 20 is 0 (mask out?)

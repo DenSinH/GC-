@@ -13,7 +13,7 @@ add_library(Core STATIC
         PPC/gekko_instruction.h
         include/float_utils.h
         include/float_utils.c
-        )
+        include/core_utils.h)
 # for logging / stuff I want to use in all files
 include_directories(../../include ./include)
 

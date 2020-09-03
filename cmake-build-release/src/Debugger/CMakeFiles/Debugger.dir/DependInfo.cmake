@@ -9,6 +9,12 @@ set(CMAKE_DEPENDS_CHECK_C
   )
 set(CMAKE_C_COMPILER_ID "Clang")
 
+# Preprocessor definitions for this target.
+set(CMAKE_TARGET_DEFINITIONS_C
+  "BOOST_DISABLE_ASSERTS"
+  "NDEBUG"
+  )
+
 # The include file search paths:
 set(CMAKE_C_TARGET_INCLUDE_PATH
   "../src/Debugger/imgui"
@@ -26,6 +32,12 @@ set(CMAKE_DEPENDS_CHECK_CXX
   "D:/CProjects/GC-/src/Debugger/widgets/menubar.cpp" "D:/CProjects/GC-/cmake-build-release/src/Debugger/CMakeFiles/Debugger.dir/widgets/menubar.cpp.obj"
   )
 set(CMAKE_CXX_COMPILER_ID "Clang")
+
+# Preprocessor definitions for this target.
+set(CMAKE_TARGET_DEFINITIONS_CXX
+  "BOOST_DISABLE_ASSERTS"
+  "NDEBUG"
+  )
 
 # The include file search paths:
 set(CMAKE_CXX_TARGET_INCLUDE_PATH

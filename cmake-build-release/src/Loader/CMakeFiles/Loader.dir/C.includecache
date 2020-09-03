@@ -21,7 +21,7 @@ stdlib.h
 -
 flags.h
 ../include/flags.h
-windows.h
+Windows.h
 -
 
 D:/CProjects/GC-/src/Loader/helpers.h

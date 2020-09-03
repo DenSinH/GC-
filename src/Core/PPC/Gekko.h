@@ -33,7 +33,7 @@
 #define GET_TBU(cpu_ptr) (u32)((cpu_ptr)->TBR.time >> 32)
 
 typedef struct s_Gekko {
-    struct s_GameCube* GameCube_ptr;
+    struct s_GameCube* system;
     s_hardware_registers HW_regs;
 
     u32 GPR[32];      // General purpose Registers
@@ -59,7 +59,7 @@ typedef struct s_Gekko {
     s_TBR TBR;      // Time base register
 
     s_GQR GQR[8];
-    u32 HID[0];     // hardware dependent Registers (todo: stubbed)
+    u32 HID[2];     // hardware dependent Registers (todo: stubbed)
     s_HID2 HID2;    // hardware dependent Registers (todo: stubbed)
     s_WPAR WPAR;
 

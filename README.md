@@ -81,7 +81,7 @@ required settings:
  - [ ] fselx
  #### Floating-Point Multiply-Add Instructions
  - [x] fmaddx
- - [ ] fmaddsx
+ - [x] fmaddsx
  - [ ] fmsubx
  - [ ] fmsubsx
  - [ ] fnmaddx
@@ -231,7 +231,7 @@ required settings:
  - [ ] psq_stux
  - [x] psq_l
  - [ ] psq_lu
- - [ ] psq_st
+ - [x] psq_st
  - [ ] psq_stu
  #### Paired-Single Floating Point Arithmetic Instructions
  - [ ] ps_div

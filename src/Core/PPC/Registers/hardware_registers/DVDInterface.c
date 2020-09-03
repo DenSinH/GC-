@@ -1,5 +1,6 @@
-//
-// Created by Dennis on 1-9-2020.
-//
-
 #include "DVDInterface.h"
+
+
+HW_REG_INIT_FUNCTION(DI) {
+
+}

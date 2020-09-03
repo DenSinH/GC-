@@ -6,20 +6,26 @@
 #define VERBOSITY_INFO 2
 #define VERBOSITY_WARN 3
 #define VERBOSITY_ERROR 4
+#define VERBOSITY_MAX VERBOSITY_ERROR
 
 #define COMPONENT_CPU 0x01
 #define COMPONENT_MMU 0x02
 
+#ifndef NDEBUG
 // change to change verbosity / component logging:
 #define VERBOSITY VERBOSITY_WARN
 #define COMPONENT_FLAGS 0 // COMPONENT_CPU | COMPONENT_MMU
 
 #define CHECK_SPR_ACCESS
 #define CHECK_HR_ACCESS
+#undef RECURSE_HR_ACCESS
 #define DO_ASSERT_PAIRED_SINGLE
 
 #define DO_DEBUGGER
 #define DO_BREAKPOINTS
 #define DO_CALL_STACK
+#else
+#define VERBOSITY VERBOSITY_ERROR
+#endif
 
 #endif //GC__FLAGS_H

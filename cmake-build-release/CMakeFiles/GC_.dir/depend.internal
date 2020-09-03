@@ -11,6 +11,7 @@ CMakeFiles/GC_.dir/main.c.obj
  ../include/log.h
  ../include/sleeping.h
  ../src/Core/PPC/Registers/FPSCR.h
+ ../src/Core/include/core_utils.h
  ../src/Core/include/float_utils.h
  D:/CProjects/GC-/debugging.h
  D:/CProjects/GC-/debugthread.h
@@ -28,7 +29,19 @@ CMakeFiles/GC_.dir/main.c.obj
  D:/CProjects/GC-/src/Core/PPC/Registers/TBR.h
  D:/CProjects/GC-/src/Core/PPC/Registers/WPAR.h
  D:/CProjects/GC-/src/Core/PPC/Registers/XER.h
+ D:/CProjects/GC-/src/Core/PPC/Registers/hardware_registers/AudioStreamingInterface.h
+ D:/CProjects/GC-/src/Core/PPC/Registers/hardware_registers/CommandProcessor.h
+ D:/CProjects/GC-/src/Core/PPC/Registers/hardware_registers/DVDInterface.h
+ D:/CProjects/GC-/src/Core/PPC/Registers/hardware_registers/DigitalSoundProcessorInterface.h
+ D:/CProjects/GC-/src/Core/PPC/Registers/hardware_registers/ExternalInterface.h
+ D:/CProjects/GC-/src/Core/PPC/Registers/hardware_registers/GX_FIFO.h
+ D:/CProjects/GC-/src/Core/PPC/Registers/hardware_registers/MemoryInterface.h
+ D:/CProjects/GC-/src/Core/PPC/Registers/hardware_registers/PixelEngine.h
+ D:/CProjects/GC-/src/Core/PPC/Registers/hardware_registers/ProcessorInterface.h
+ D:/CProjects/GC-/src/Core/PPC/Registers/hardware_registers/SerialInterface.h
+ D:/CProjects/GC-/src/Core/PPC/Registers/hardware_registers/VideoInterface.h
  D:/CProjects/GC-/src/Core/PPC/Registers/hardware_registers/hardware_registers.h
+ D:/CProjects/GC-/src/Core/PPC/Registers/hardware_registers/hwreg_default.h
  D:/CProjects/GC-/src/Core/PPC/gekko_instruction.h
  D:/CProjects/GC-/src/Core/system.h
  D:/CProjects/GC-/src/Debugger/debugger.h
