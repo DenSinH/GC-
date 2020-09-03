@@ -18,8 +18,6 @@ src\Debugger\CMakeFiles\Debugger.dir\widgets\disassemble.c.obj: D:\vcpkg\vcpkg\i
 src\Debugger\CMakeFiles\Debugger.dir\widgets\disassemble.c.obj: D:\vcpkg\vcpkg\installed\x86-windows\include\capstone\x86.h
 src\Debugger\CMakeFiles\Debugger.dir\widgets\disassemble.c.obj: D:\vcpkg\vcpkg\installed\x86-windows\include\capstone\xcore.h
 
-src\Debugger\CMakeFiles\Debugger.dir\debugger.cpp.obj: ..\src\Debugger\imgui\imconfig.h
-src\Debugger\CMakeFiles\Debugger.dir\debugger.cpp.obj: ..\src\Debugger\imgui\imgui.h
 src\Debugger\CMakeFiles\Debugger.dir\debugger.cpp.obj: ..\src\Debugger\imgui\imgui_impl_opengl3.h
 src\Debugger\CMakeFiles\Debugger.dir\debugger.cpp.obj: ..\src\Debugger\imgui\imgui_impl_sdl.h
 src\Debugger\CMakeFiles\Debugger.dir\debugger.cpp.obj: ..\src\Debugger\debugger.cpp
@@ -94,27 +92,9 @@ src\Debugger\CMakeFiles\Debugger.dir\debugger.cpp.obj: D:\vcpkg\vcpkg\installed\
 src\Debugger\CMakeFiles\Debugger.dir\debugger.cpp.obj: D:\vcpkg\vcpkg\installed\x86-windows\include\capstone\tms320c64x.h
 src\Debugger\CMakeFiles\Debugger.dir\debugger.cpp.obj: D:\vcpkg\vcpkg\installed\x86-windows\include\capstone\x86.h
 src\Debugger\CMakeFiles\Debugger.dir\debugger.cpp.obj: D:\vcpkg\vcpkg\installed\x86-windows\include\capstone\xcore.h
+src\Debugger\CMakeFiles\Debugger.dir\debugger.cpp.obj: D:\vcpkg\vcpkg\installed\x86-windows\include\imconfig.h
+src\Debugger\CMakeFiles\Debugger.dir\debugger.cpp.obj: D:\vcpkg\vcpkg\installed\x86-windows\include\imgui.h
 
-src\Debugger\CMakeFiles\Debugger.dir\imgui\imgui.cpp.obj: ..\src\Debugger\imgui\imconfig.h
-src\Debugger\CMakeFiles\Debugger.dir\imgui\imgui.cpp.obj: ..\src\Debugger\imgui\imgui.cpp
-src\Debugger\CMakeFiles\Debugger.dir\imgui\imgui.cpp.obj: ..\src\Debugger\imgui\imgui.h
-src\Debugger\CMakeFiles\Debugger.dir\imgui\imgui.cpp.obj: ..\src\Debugger\imgui\imgui_internal.h
-src\Debugger\CMakeFiles\Debugger.dir\imgui\imgui.cpp.obj: ..\src\Debugger\imgui\imstb_textedit.h
-
-src\Debugger\CMakeFiles\Debugger.dir\imgui\imgui_demo.cpp.obj: ..\src\Debugger\imgui\imconfig.h
-src\Debugger\CMakeFiles\Debugger.dir\imgui\imgui_demo.cpp.obj: ..\src\Debugger\imgui\imgui.h
-src\Debugger\CMakeFiles\Debugger.dir\imgui\imgui_demo.cpp.obj: ..\src\Debugger\imgui\imgui_demo.cpp
-
-src\Debugger\CMakeFiles\Debugger.dir\imgui\imgui_draw.cpp.obj: ..\src\Debugger\imgui\imconfig.h
-src\Debugger\CMakeFiles\Debugger.dir\imgui\imgui_draw.cpp.obj: ..\src\Debugger\imgui\imgui.h
-src\Debugger\CMakeFiles\Debugger.dir\imgui\imgui_draw.cpp.obj: ..\src\Debugger\imgui\imgui_draw.cpp
-src\Debugger\CMakeFiles\Debugger.dir\imgui\imgui_draw.cpp.obj: ..\src\Debugger\imgui\imgui_internal.h
-src\Debugger\CMakeFiles\Debugger.dir\imgui\imgui_draw.cpp.obj: ..\src\Debugger\imgui\imstb_rectpack.h
-src\Debugger\CMakeFiles\Debugger.dir\imgui\imgui_draw.cpp.obj: ..\src\Debugger\imgui\imstb_textedit.h
-src\Debugger\CMakeFiles\Debugger.dir\imgui\imgui_draw.cpp.obj: ..\src\Debugger\imgui\imstb_truetype.h
-
-src\Debugger\CMakeFiles\Debugger.dir\imgui\imgui_impl_opengl3.cpp.obj: ..\src\Debugger\imgui\imconfig.h
-src\Debugger\CMakeFiles\Debugger.dir\imgui\imgui_impl_opengl3.cpp.obj: ..\src\Debugger\imgui\imgui.h
 src\Debugger\CMakeFiles\Debugger.dir\imgui\imgui_impl_opengl3.cpp.obj: ..\src\Debugger\imgui\imgui_impl_opengl3.cpp
 src\Debugger\CMakeFiles\Debugger.dir\imgui\imgui_impl_opengl3.cpp.obj: ..\src\Debugger\imgui\imgui_impl_opengl3.h
 src\Debugger\CMakeFiles\Debugger.dir\imgui\imgui_impl_opengl3.cpp.obj: D:\vcpkg\vcpkg\installed\x86-windows\include\GL\gl3w.h
@@ -124,9 +104,9 @@ src\Debugger\CMakeFiles\Debugger.dir\imgui\imgui_impl_opengl3.cpp.obj: D:\vcpkg\
 src\Debugger\CMakeFiles\Debugger.dir\imgui\imgui_impl_opengl3.cpp.obj: D:\vcpkg\vcpkg\installed\x86-windows\include\GLES3\gl3.h
 src\Debugger\CMakeFiles\Debugger.dir\imgui\imgui_impl_opengl3.cpp.obj: D:\vcpkg\vcpkg\installed\x86-windows\include\GLES3\gl3platform.h
 src\Debugger\CMakeFiles\Debugger.dir\imgui\imgui_impl_opengl3.cpp.obj: D:\vcpkg\vcpkg\installed\x86-windows\include\KHR\khrplatform.h
+src\Debugger\CMakeFiles\Debugger.dir\imgui\imgui_impl_opengl3.cpp.obj: D:\vcpkg\vcpkg\installed\x86-windows\include\imconfig.h
+src\Debugger\CMakeFiles\Debugger.dir\imgui\imgui_impl_opengl3.cpp.obj: D:\vcpkg\vcpkg\installed\x86-windows\include\imgui.h
 
-src\Debugger\CMakeFiles\Debugger.dir\imgui\imgui_impl_sdl.cpp.obj: ..\src\Debugger\imgui\imconfig.h
-src\Debugger\CMakeFiles\Debugger.dir\imgui\imgui_impl_sdl.cpp.obj: ..\src\Debugger\imgui\imgui.h
 src\Debugger\CMakeFiles\Debugger.dir\imgui\imgui_impl_sdl.cpp.obj: ..\src\Debugger\imgui\imgui_impl_sdl.cpp
 src\Debugger\CMakeFiles\Debugger.dir\imgui\imgui_impl_sdl.cpp.obj: ..\src\Debugger\imgui\imgui_impl_sdl.h
 src\Debugger\CMakeFiles\Debugger.dir\imgui\imgui_impl_sdl.cpp.obj: D:\vcpkg\vcpkg\installed\x86-windows\include\EGL\egl.h
@@ -181,15 +161,11 @@ src\Debugger\CMakeFiles\Debugger.dir\imgui\imgui_impl_sdl.cpp.obj: D:\vcpkg\vcpk
 src\Debugger\CMakeFiles\Debugger.dir\imgui\imgui_impl_sdl.cpp.obj: D:\vcpkg\vcpkg\installed\x86-windows\include\SDL2\SDL_video.h
 src\Debugger\CMakeFiles\Debugger.dir\imgui\imgui_impl_sdl.cpp.obj: D:\vcpkg\vcpkg\installed\x86-windows\include\SDL2\begin_code.h
 src\Debugger\CMakeFiles\Debugger.dir\imgui\imgui_impl_sdl.cpp.obj: D:\vcpkg\vcpkg\installed\x86-windows\include\SDL2\close_code.h
+src\Debugger\CMakeFiles\Debugger.dir\imgui\imgui_impl_sdl.cpp.obj: D:\vcpkg\vcpkg\installed\x86-windows\include\imconfig.h
+src\Debugger\CMakeFiles\Debugger.dir\imgui\imgui_impl_sdl.cpp.obj: D:\vcpkg\vcpkg\installed\x86-windows\include\imgui.h
 
-src\Debugger\CMakeFiles\Debugger.dir\imgui\imgui_widgets.cpp.obj: ..\src\Debugger\imgui\imconfig.h
-src\Debugger\CMakeFiles\Debugger.dir\imgui\imgui_widgets.cpp.obj: ..\src\Debugger\imgui\imgui.h
-src\Debugger\CMakeFiles\Debugger.dir\imgui\imgui_widgets.cpp.obj: ..\src\Debugger\imgui\imgui_internal.h
-src\Debugger\CMakeFiles\Debugger.dir\imgui\imgui_widgets.cpp.obj: ..\src\Debugger\imgui\imgui_widgets.cpp
-src\Debugger\CMakeFiles\Debugger.dir\imgui\imgui_widgets.cpp.obj: ..\src\Debugger\imgui\imstb_textedit.h
-
-src\Debugger\CMakeFiles\Debugger.dir\widgets\menubar.cpp.obj: ..\src\Debugger\imgui\imconfig.h
-src\Debugger\CMakeFiles\Debugger.dir\widgets\menubar.cpp.obj: ..\src\Debugger\imgui\imgui.h
 src\Debugger\CMakeFiles\Debugger.dir\widgets\menubar.cpp.obj: ..\src\Debugger\widgets\menubar.cpp
 src\Debugger\CMakeFiles\Debugger.dir\widgets\menubar.cpp.obj: ..\src\Debugger\widgets\menubar.h
+src\Debugger\CMakeFiles\Debugger.dir\widgets\menubar.cpp.obj: D:\vcpkg\vcpkg\installed\x86-windows\include\imconfig.h
+src\Debugger\CMakeFiles\Debugger.dir\widgets\menubar.cpp.obj: D:\vcpkg\vcpkg\installed\x86-windows\include\imgui.h
 

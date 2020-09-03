@@ -19,8 +19,6 @@ src/Debugger/CMakeFiles/Debugger.dir/widgets/disassemble.c.obj
  D:/vcpkg/vcpkg/installed/x86-windows/include/capstone/x86.h
  D:/vcpkg/vcpkg/installed/x86-windows/include/capstone/xcore.h
 src/Debugger/CMakeFiles/Debugger.dir/debugger.cpp.obj
- ../src/Debugger/imgui/imconfig.h
- ../src/Debugger/imgui/imgui.h
  ../src/Debugger/imgui/imgui_impl_opengl3.h
  ../src/Debugger/imgui/imgui_impl_sdl.h
  D:/CProjects/GC-/src/Debugger/debugger.cpp
@@ -95,27 +93,9 @@ src/Debugger/CMakeFiles/Debugger.dir/debugger.cpp.obj
  D:/vcpkg/vcpkg/installed/x86-windows/include/capstone/tms320c64x.h
  D:/vcpkg/vcpkg/installed/x86-windows/include/capstone/x86.h
  D:/vcpkg/vcpkg/installed/x86-windows/include/capstone/xcore.h
-src/Debugger/CMakeFiles/Debugger.dir/imgui/imgui.cpp.obj
- D:/CProjects/GC-/src/Debugger/imgui/imconfig.h
- D:/CProjects/GC-/src/Debugger/imgui/imgui.cpp
- D:/CProjects/GC-/src/Debugger/imgui/imgui.h
- D:/CProjects/GC-/src/Debugger/imgui/imgui_internal.h
- D:/CProjects/GC-/src/Debugger/imgui/imstb_textedit.h
-src/Debugger/CMakeFiles/Debugger.dir/imgui/imgui_demo.cpp.obj
- D:/CProjects/GC-/src/Debugger/imgui/imconfig.h
- D:/CProjects/GC-/src/Debugger/imgui/imgui.h
- D:/CProjects/GC-/src/Debugger/imgui/imgui_demo.cpp
-src/Debugger/CMakeFiles/Debugger.dir/imgui/imgui_draw.cpp.obj
- D:/CProjects/GC-/src/Debugger/imgui/imconfig.h
- D:/CProjects/GC-/src/Debugger/imgui/imgui.h
- D:/CProjects/GC-/src/Debugger/imgui/imgui_draw.cpp
- D:/CProjects/GC-/src/Debugger/imgui/imgui_internal.h
- D:/CProjects/GC-/src/Debugger/imgui/imstb_rectpack.h
- D:/CProjects/GC-/src/Debugger/imgui/imstb_textedit.h
- D:/CProjects/GC-/src/Debugger/imgui/imstb_truetype.h
+ D:/vcpkg/vcpkg/installed/x86-windows/include/imconfig.h
+ D:/vcpkg/vcpkg/installed/x86-windows/include/imgui.h
 src/Debugger/CMakeFiles/Debugger.dir/imgui/imgui_impl_opengl3.cpp.obj
- D:/CProjects/GC-/src/Debugger/imgui/imconfig.h
- D:/CProjects/GC-/src/Debugger/imgui/imgui.h
  D:/CProjects/GC-/src/Debugger/imgui/imgui_impl_opengl3.cpp
  D:/CProjects/GC-/src/Debugger/imgui/imgui_impl_opengl3.h
  D:/vcpkg/vcpkg/installed/x86-windows/include/GL/gl3w.h
@@ -125,9 +105,9 @@ src/Debugger/CMakeFiles/Debugger.dir/imgui/imgui_impl_opengl3.cpp.obj
  D:/vcpkg/vcpkg/installed/x86-windows/include/GLES3/gl3.h
  D:/vcpkg/vcpkg/installed/x86-windows/include/GLES3/gl3platform.h
  D:/vcpkg/vcpkg/installed/x86-windows/include/KHR/khrplatform.h
+ D:/vcpkg/vcpkg/installed/x86-windows/include/imconfig.h
+ D:/vcpkg/vcpkg/installed/x86-windows/include/imgui.h
 src/Debugger/CMakeFiles/Debugger.dir/imgui/imgui_impl_sdl.cpp.obj
- D:/CProjects/GC-/src/Debugger/imgui/imconfig.h
- D:/CProjects/GC-/src/Debugger/imgui/imgui.h
  D:/CProjects/GC-/src/Debugger/imgui/imgui_impl_sdl.cpp
  D:/CProjects/GC-/src/Debugger/imgui/imgui_impl_sdl.h
  D:/vcpkg/vcpkg/installed/x86-windows/include/EGL/egl.h
@@ -182,14 +162,10 @@ src/Debugger/CMakeFiles/Debugger.dir/imgui/imgui_impl_sdl.cpp.obj
  D:/vcpkg/vcpkg/installed/x86-windows/include/SDL2/SDL_video.h
  D:/vcpkg/vcpkg/installed/x86-windows/include/SDL2/begin_code.h
  D:/vcpkg/vcpkg/installed/x86-windows/include/SDL2/close_code.h
-src/Debugger/CMakeFiles/Debugger.dir/imgui/imgui_widgets.cpp.obj
- D:/CProjects/GC-/src/Debugger/imgui/imconfig.h
- D:/CProjects/GC-/src/Debugger/imgui/imgui.h
- D:/CProjects/GC-/src/Debugger/imgui/imgui_internal.h
- D:/CProjects/GC-/src/Debugger/imgui/imgui_widgets.cpp
- D:/CProjects/GC-/src/Debugger/imgui/imstb_textedit.h
+ D:/vcpkg/vcpkg/installed/x86-windows/include/imconfig.h
+ D:/vcpkg/vcpkg/installed/x86-windows/include/imgui.h
 src/Debugger/CMakeFiles/Debugger.dir/widgets/menubar.cpp.obj
- ../src/Debugger/imgui/imconfig.h
- ../src/Debugger/imgui/imgui.h
  D:/CProjects/GC-/src/Debugger/widgets/menubar.cpp
  D:/CProjects/GC-/src/Debugger/widgets/menubar.h
+ D:/vcpkg/vcpkg/installed/x86-windows/include/imconfig.h
+ D:/vcpkg/vcpkg/installed/x86-windows/include/imgui.h

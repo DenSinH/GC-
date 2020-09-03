@@ -254,6 +254,9 @@ _VCPKG_INSTALLED_DIR:PATH=D:/vcpkg/vcpkg/installed
 //The directory containing a CMake configuration file for gl3w.
 gl3w_DIR:PATH=D:/vcpkg/vcpkg/installed/x86-windows/share/gl3w
 
+//The directory containing a CMake configuration file for imgui.
+imgui_DIR:PATH=D:/vcpkg/vcpkg/installed/x86-windows/share/imgui
+
 
 ########################
 # INTERNAL cache entries

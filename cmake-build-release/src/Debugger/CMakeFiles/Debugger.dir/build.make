@@ -61,84 +61,9 @@ include src\Debugger\CMakeFiles\Debugger.dir\progress.make
 # Include the compile flags for this target's objects.
 include src\Debugger\CMakeFiles\Debugger.dir\flags.make
 
-src\Debugger\CMakeFiles\Debugger.dir\imgui\imgui.cpp.obj: src\Debugger\CMakeFiles\Debugger.dir\flags.make
-src\Debugger\CMakeFiles\Debugger.dir\imgui\imgui.cpp.obj: ..\src\Debugger\imgui\imgui.cpp
-	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green --progress-dir=D:\CProjects\GC-\cmake-build-release\CMakeFiles --progress-num=$(CMAKE_PROGRESS_1) "Building CXX object src/Debugger/CMakeFiles/Debugger.dir/imgui/imgui.cpp.obj"
-	cd D:\CProjects\GC-\cmake-build-release\src\Debugger
-	"C:\PROGRA~2\Microsoft Visual Studio\2019\Community\VC\Tools\Llvm\bin\clang-cl.exe" @<<
- /nologo -TP $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) /FoCMakeFiles\Debugger.dir\imgui\imgui.cpp.obj /FdCMakeFiles\Debugger.dir\Debugger.pdb -c D:\CProjects\GC-\src\Debugger\imgui\imgui.cpp
-<<
-	cd D:\CProjects\GC-\cmake-build-release
-
-src\Debugger\CMakeFiles\Debugger.dir\imgui\imgui.cpp.i: cmake_force
-	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green "Preprocessing CXX source to CMakeFiles/Debugger.dir/imgui/imgui.cpp.i"
-	cd D:\CProjects\GC-\cmake-build-release\src\Debugger
-	"C:\PROGRA~2\Microsoft Visual Studio\2019\Community\VC\Tools\Llvm\bin\clang-cl.exe" > CMakeFiles\Debugger.dir\imgui\imgui.cpp.i @<<
- /nologo -TP $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -E D:\CProjects\GC-\src\Debugger\imgui\imgui.cpp
-<<
-	cd D:\CProjects\GC-\cmake-build-release
-
-src\Debugger\CMakeFiles\Debugger.dir\imgui\imgui.cpp.s: cmake_force
-	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green "Compiling CXX source to assembly CMakeFiles/Debugger.dir/imgui/imgui.cpp.s"
-	cd D:\CProjects\GC-\cmake-build-release\src\Debugger
-	"C:\PROGRA~2\Microsoft Visual Studio\2019\Community\VC\Tools\Llvm\bin\clang-cl.exe" @<<
- /nologo -TP $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) /FoNUL /FAs /FaCMakeFiles\Debugger.dir\imgui\imgui.cpp.s /c D:\CProjects\GC-\src\Debugger\imgui\imgui.cpp
-<<
-	cd D:\CProjects\GC-\cmake-build-release
-
-src\Debugger\CMakeFiles\Debugger.dir\imgui\imgui_demo.cpp.obj: src\Debugger\CMakeFiles\Debugger.dir\flags.make
-src\Debugger\CMakeFiles\Debugger.dir\imgui\imgui_demo.cpp.obj: ..\src\Debugger\imgui\imgui_demo.cpp
-	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green --progress-dir=D:\CProjects\GC-\cmake-build-release\CMakeFiles --progress-num=$(CMAKE_PROGRESS_2) "Building CXX object src/Debugger/CMakeFiles/Debugger.dir/imgui/imgui_demo.cpp.obj"
-	cd D:\CProjects\GC-\cmake-build-release\src\Debugger
-	"C:\PROGRA~2\Microsoft Visual Studio\2019\Community\VC\Tools\Llvm\bin\clang-cl.exe" @<<
- /nologo -TP $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) /FoCMakeFiles\Debugger.dir\imgui\imgui_demo.cpp.obj /FdCMakeFiles\Debugger.dir\Debugger.pdb -c D:\CProjects\GC-\src\Debugger\imgui\imgui_demo.cpp
-<<
-	cd D:\CProjects\GC-\cmake-build-release
-
-src\Debugger\CMakeFiles\Debugger.dir\imgui\imgui_demo.cpp.i: cmake_force
-	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green "Preprocessing CXX source to CMakeFiles/Debugger.dir/imgui/imgui_demo.cpp.i"
-	cd D:\CProjects\GC-\cmake-build-release\src\Debugger
-	"C:\PROGRA~2\Microsoft Visual Studio\2019\Community\VC\Tools\Llvm\bin\clang-cl.exe" > CMakeFiles\Debugger.dir\imgui\imgui_demo.cpp.i @<<
- /nologo -TP $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -E D:\CProjects\GC-\src\Debugger\imgui\imgui_demo.cpp
-<<
-	cd D:\CProjects\GC-\cmake-build-release
-
-src\Debugger\CMakeFiles\Debugger.dir\imgui\imgui_demo.cpp.s: cmake_force
-	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green "Compiling CXX source to assembly CMakeFiles/Debugger.dir/imgui/imgui_demo.cpp.s"
-	cd D:\CProjects\GC-\cmake-build-release\src\Debugger
-	"C:\PROGRA~2\Microsoft Visual Studio\2019\Community\VC\Tools\Llvm\bin\clang-cl.exe" @<<
- /nologo -TP $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) /FoNUL /FAs /FaCMakeFiles\Debugger.dir\imgui\imgui_demo.cpp.s /c D:\CProjects\GC-\src\Debugger\imgui\imgui_demo.cpp
-<<
-	cd D:\CProjects\GC-\cmake-build-release
-
-src\Debugger\CMakeFiles\Debugger.dir\imgui\imgui_draw.cpp.obj: src\Debugger\CMakeFiles\Debugger.dir\flags.make
-src\Debugger\CMakeFiles\Debugger.dir\imgui\imgui_draw.cpp.obj: ..\src\Debugger\imgui\imgui_draw.cpp
-	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green --progress-dir=D:\CProjects\GC-\cmake-build-release\CMakeFiles --progress-num=$(CMAKE_PROGRESS_3) "Building CXX object src/Debugger/CMakeFiles/Debugger.dir/imgui/imgui_draw.cpp.obj"
-	cd D:\CProjects\GC-\cmake-build-release\src\Debugger
-	"C:\PROGRA~2\Microsoft Visual Studio\2019\Community\VC\Tools\Llvm\bin\clang-cl.exe" @<<
- /nologo -TP $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) /FoCMakeFiles\Debugger.dir\imgui\imgui_draw.cpp.obj /FdCMakeFiles\Debugger.dir\Debugger.pdb -c D:\CProjects\GC-\src\Debugger\imgui\imgui_draw.cpp
-<<
-	cd D:\CProjects\GC-\cmake-build-release
-
-src\Debugger\CMakeFiles\Debugger.dir\imgui\imgui_draw.cpp.i: cmake_force
-	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green "Preprocessing CXX source to CMakeFiles/Debugger.dir/imgui/imgui_draw.cpp.i"
-	cd D:\CProjects\GC-\cmake-build-release\src\Debugger
-	"C:\PROGRA~2\Microsoft Visual Studio\2019\Community\VC\Tools\Llvm\bin\clang-cl.exe" > CMakeFiles\Debugger.dir\imgui\imgui_draw.cpp.i @<<
- /nologo -TP $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -E D:\CProjects\GC-\src\Debugger\imgui\imgui_draw.cpp
-<<
-	cd D:\CProjects\GC-\cmake-build-release
-
-src\Debugger\CMakeFiles\Debugger.dir\imgui\imgui_draw.cpp.s: cmake_force
-	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green "Compiling CXX source to assembly CMakeFiles/Debugger.dir/imgui/imgui_draw.cpp.s"
-	cd D:\CProjects\GC-\cmake-build-release\src\Debugger
-	"C:\PROGRA~2\Microsoft Visual Studio\2019\Community\VC\Tools\Llvm\bin\clang-cl.exe" @<<
- /nologo -TP $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) /FoNUL /FAs /FaCMakeFiles\Debugger.dir\imgui\imgui_draw.cpp.s /c D:\CProjects\GC-\src\Debugger\imgui\imgui_draw.cpp
-<<
-	cd D:\CProjects\GC-\cmake-build-release
-
 src\Debugger\CMakeFiles\Debugger.dir\imgui\imgui_impl_opengl3.cpp.obj: src\Debugger\CMakeFiles\Debugger.dir\flags.make
 src\Debugger\CMakeFiles\Debugger.dir\imgui\imgui_impl_opengl3.cpp.obj: ..\src\Debugger\imgui\imgui_impl_opengl3.cpp
-	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green --progress-dir=D:\CProjects\GC-\cmake-build-release\CMakeFiles --progress-num=$(CMAKE_PROGRESS_4) "Building CXX object src/Debugger/CMakeFiles/Debugger.dir/imgui/imgui_impl_opengl3.cpp.obj"
+	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green --progress-dir=D:\CProjects\GC-\cmake-build-release\CMakeFiles --progress-num=$(CMAKE_PROGRESS_1) "Building CXX object src/Debugger/CMakeFiles/Debugger.dir/imgui/imgui_impl_opengl3.cpp.obj"
 	cd D:\CProjects\GC-\cmake-build-release\src\Debugger
 	"C:\PROGRA~2\Microsoft Visual Studio\2019\Community\VC\Tools\Llvm\bin\clang-cl.exe" @<<
  /nologo -TP $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) /FoCMakeFiles\Debugger.dir\imgui\imgui_impl_opengl3.cpp.obj /FdCMakeFiles\Debugger.dir\Debugger.pdb -c D:\CProjects\GC-\src\Debugger\imgui\imgui_impl_opengl3.cpp
@@ -163,7 +88,7 @@ src\Debugger\CMakeFiles\Debugger.dir\imgui\imgui_impl_opengl3.cpp.s: cmake_force
 
 src\Debugger\CMakeFiles\Debugger.dir\imgui\imgui_impl_sdl.cpp.obj: src\Debugger\CMakeFiles\Debugger.dir\flags.make
 src\Debugger\CMakeFiles\Debugger.dir\imgui\imgui_impl_sdl.cpp.obj: ..\src\Debugger\imgui\imgui_impl_sdl.cpp
-	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green --progress-dir=D:\CProjects\GC-\cmake-build-release\CMakeFiles --progress-num=$(CMAKE_PROGRESS_5) "Building CXX object src/Debugger/CMakeFiles/Debugger.dir/imgui/imgui_impl_sdl.cpp.obj"
+	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green --progress-dir=D:\CProjects\GC-\cmake-build-release\CMakeFiles --progress-num=$(CMAKE_PROGRESS_2) "Building CXX object src/Debugger/CMakeFiles/Debugger.dir/imgui/imgui_impl_sdl.cpp.obj"
 	cd D:\CProjects\GC-\cmake-build-release\src\Debugger
 	"C:\PROGRA~2\Microsoft Visual Studio\2019\Community\VC\Tools\Llvm\bin\clang-cl.exe" @<<
  /nologo -TP $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) /FoCMakeFiles\Debugger.dir\imgui\imgui_impl_sdl.cpp.obj /FdCMakeFiles\Debugger.dir\Debugger.pdb -c D:\CProjects\GC-\src\Debugger\imgui\imgui_impl_sdl.cpp
@@ -186,34 +111,9 @@ src\Debugger\CMakeFiles\Debugger.dir\imgui\imgui_impl_sdl.cpp.s: cmake_force
 <<
 	cd D:\CProjects\GC-\cmake-build-release
 
-src\Debugger\CMakeFiles\Debugger.dir\imgui\imgui_widgets.cpp.obj: src\Debugger\CMakeFiles\Debugger.dir\flags.make
-src\Debugger\CMakeFiles\Debugger.dir\imgui\imgui_widgets.cpp.obj: ..\src\Debugger\imgui\imgui_widgets.cpp
-	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green --progress-dir=D:\CProjects\GC-\cmake-build-release\CMakeFiles --progress-num=$(CMAKE_PROGRESS_6) "Building CXX object src/Debugger/CMakeFiles/Debugger.dir/imgui/imgui_widgets.cpp.obj"
-	cd D:\CProjects\GC-\cmake-build-release\src\Debugger
-	"C:\PROGRA~2\Microsoft Visual Studio\2019\Community\VC\Tools\Llvm\bin\clang-cl.exe" @<<
- /nologo -TP $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) /FoCMakeFiles\Debugger.dir\imgui\imgui_widgets.cpp.obj /FdCMakeFiles\Debugger.dir\Debugger.pdb -c D:\CProjects\GC-\src\Debugger\imgui\imgui_widgets.cpp
-<<
-	cd D:\CProjects\GC-\cmake-build-release
-
-src\Debugger\CMakeFiles\Debugger.dir\imgui\imgui_widgets.cpp.i: cmake_force
-	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green "Preprocessing CXX source to CMakeFiles/Debugger.dir/imgui/imgui_widgets.cpp.i"
-	cd D:\CProjects\GC-\cmake-build-release\src\Debugger
-	"C:\PROGRA~2\Microsoft Visual Studio\2019\Community\VC\Tools\Llvm\bin\clang-cl.exe" > CMakeFiles\Debugger.dir\imgui\imgui_widgets.cpp.i @<<
- /nologo -TP $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -E D:\CProjects\GC-\src\Debugger\imgui\imgui_widgets.cpp
-<<
-	cd D:\CProjects\GC-\cmake-build-release
-
-src\Debugger\CMakeFiles\Debugger.dir\imgui\imgui_widgets.cpp.s: cmake_force
-	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green "Compiling CXX source to assembly CMakeFiles/Debugger.dir/imgui/imgui_widgets.cpp.s"
-	cd D:\CProjects\GC-\cmake-build-release\src\Debugger
-	"C:\PROGRA~2\Microsoft Visual Studio\2019\Community\VC\Tools\Llvm\bin\clang-cl.exe" @<<
- /nologo -TP $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) /FoNUL /FAs /FaCMakeFiles\Debugger.dir\imgui\imgui_widgets.cpp.s /c D:\CProjects\GC-\src\Debugger\imgui\imgui_widgets.cpp
-<<
-	cd D:\CProjects\GC-\cmake-build-release
-
 src\Debugger\CMakeFiles\Debugger.dir\debugger.cpp.obj: src\Debugger\CMakeFiles\Debugger.dir\flags.make
 src\Debugger\CMakeFiles\Debugger.dir\debugger.cpp.obj: ..\src\Debugger\debugger.cpp
-	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green --progress-dir=D:\CProjects\GC-\cmake-build-release\CMakeFiles --progress-num=$(CMAKE_PROGRESS_7) "Building CXX object src/Debugger/CMakeFiles/Debugger.dir/debugger.cpp.obj"
+	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green --progress-dir=D:\CProjects\GC-\cmake-build-release\CMakeFiles --progress-num=$(CMAKE_PROGRESS_3) "Building CXX object src/Debugger/CMakeFiles/Debugger.dir/debugger.cpp.obj"
 	cd D:\CProjects\GC-\cmake-build-release\src\Debugger
 	"C:\PROGRA~2\Microsoft Visual Studio\2019\Community\VC\Tools\Llvm\bin\clang-cl.exe" @<<
  /nologo -TP $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) /FoCMakeFiles\Debugger.dir\debugger.cpp.obj /FdCMakeFiles\Debugger.dir\Debugger.pdb -c D:\CProjects\GC-\src\Debugger\debugger.cpp
@@ -238,7 +138,7 @@ src\Debugger\CMakeFiles\Debugger.dir\debugger.cpp.s: cmake_force
 
 src\Debugger\CMakeFiles\Debugger.dir\widgets\menubar.cpp.obj: src\Debugger\CMakeFiles\Debugger.dir\flags.make
 src\Debugger\CMakeFiles\Debugger.dir\widgets\menubar.cpp.obj: ..\src\Debugger\widgets\menubar.cpp
-	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green --progress-dir=D:\CProjects\GC-\cmake-build-release\CMakeFiles --progress-num=$(CMAKE_PROGRESS_8) "Building CXX object src/Debugger/CMakeFiles/Debugger.dir/widgets/menubar.cpp.obj"
+	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green --progress-dir=D:\CProjects\GC-\cmake-build-release\CMakeFiles --progress-num=$(CMAKE_PROGRESS_4) "Building CXX object src/Debugger/CMakeFiles/Debugger.dir/widgets/menubar.cpp.obj"
 	cd D:\CProjects\GC-\cmake-build-release\src\Debugger
 	"C:\PROGRA~2\Microsoft Visual Studio\2019\Community\VC\Tools\Llvm\bin\clang-cl.exe" @<<
  /nologo -TP $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) /FoCMakeFiles\Debugger.dir\widgets\menubar.cpp.obj /FdCMakeFiles\Debugger.dir\Debugger.pdb -c D:\CProjects\GC-\src\Debugger\widgets\menubar.cpp
@@ -263,7 +163,7 @@ src\Debugger\CMakeFiles\Debugger.dir\widgets\menubar.cpp.s: cmake_force
 
 src\Debugger\CMakeFiles\Debugger.dir\widgets\disassemble.c.obj: src\Debugger\CMakeFiles\Debugger.dir\flags.make
 src\Debugger\CMakeFiles\Debugger.dir\widgets\disassemble.c.obj: ..\src\Debugger\widgets\disassemble.c
-	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green --progress-dir=D:\CProjects\GC-\cmake-build-release\CMakeFiles --progress-num=$(CMAKE_PROGRESS_9) "Building C object src/Debugger/CMakeFiles/Debugger.dir/widgets/disassemble.c.obj"
+	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green --progress-dir=D:\CProjects\GC-\cmake-build-release\CMakeFiles --progress-num=$(CMAKE_PROGRESS_5) "Building C object src/Debugger/CMakeFiles/Debugger.dir/widgets/disassemble.c.obj"
 	cd D:\CProjects\GC-\cmake-build-release\src\Debugger
 	"C:\PROGRA~2\Microsoft Visual Studio\2019\Community\VC\Tools\Llvm\bin\clang-cl.exe" @<<
  /nologo $(C_DEFINES) $(C_INCLUDES) $(C_FLAGS) /FoCMakeFiles\Debugger.dir\widgets\disassemble.c.obj /FdCMakeFiles\Debugger.dir\Debugger.pdb -c D:\CProjects\GC-\src\Debugger\widgets\disassemble.c
@@ -288,12 +188,8 @@ src\Debugger\CMakeFiles\Debugger.dir\widgets\disassemble.c.s: cmake_force
 
 # Object files for target Debugger
 Debugger_OBJECTS = \
-"CMakeFiles\Debugger.dir\imgui\imgui.cpp.obj" \
-"CMakeFiles\Debugger.dir\imgui\imgui_demo.cpp.obj" \
-"CMakeFiles\Debugger.dir\imgui\imgui_draw.cpp.obj" \
 "CMakeFiles\Debugger.dir\imgui\imgui_impl_opengl3.cpp.obj" \
 "CMakeFiles\Debugger.dir\imgui\imgui_impl_sdl.cpp.obj" \
-"CMakeFiles\Debugger.dir\imgui\imgui_widgets.cpp.obj" \
 "CMakeFiles\Debugger.dir\debugger.cpp.obj" \
 "CMakeFiles\Debugger.dir\widgets\menubar.cpp.obj" \
 "CMakeFiles\Debugger.dir\widgets\disassemble.c.obj"
@@ -301,18 +197,14 @@ Debugger_OBJECTS = \
 # External object files for target Debugger
 Debugger_EXTERNAL_OBJECTS =
 
-src\Debugger\Debugger.lib: src\Debugger\CMakeFiles\Debugger.dir\imgui\imgui.cpp.obj
-src\Debugger\Debugger.lib: src\Debugger\CMakeFiles\Debugger.dir\imgui\imgui_demo.cpp.obj
-src\Debugger\Debugger.lib: src\Debugger\CMakeFiles\Debugger.dir\imgui\imgui_draw.cpp.obj
 src\Debugger\Debugger.lib: src\Debugger\CMakeFiles\Debugger.dir\imgui\imgui_impl_opengl3.cpp.obj
 src\Debugger\Debugger.lib: src\Debugger\CMakeFiles\Debugger.dir\imgui\imgui_impl_sdl.cpp.obj
-src\Debugger\Debugger.lib: src\Debugger\CMakeFiles\Debugger.dir\imgui\imgui_widgets.cpp.obj
 src\Debugger\Debugger.lib: src\Debugger\CMakeFiles\Debugger.dir\debugger.cpp.obj
 src\Debugger\Debugger.lib: src\Debugger\CMakeFiles\Debugger.dir\widgets\menubar.cpp.obj
 src\Debugger\Debugger.lib: src\Debugger\CMakeFiles\Debugger.dir\widgets\disassemble.c.obj
 src\Debugger\Debugger.lib: src\Debugger\CMakeFiles\Debugger.dir\build.make
 src\Debugger\Debugger.lib: src\Debugger\CMakeFiles\Debugger.dir\objects1.rsp
-	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green --bold --progress-dir=D:\CProjects\GC-\cmake-build-release\CMakeFiles --progress-num=$(CMAKE_PROGRESS_10) "Linking CXX static library Debugger.lib"
+	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green --bold --progress-dir=D:\CProjects\GC-\cmake-build-release\CMakeFiles --progress-num=$(CMAKE_PROGRESS_6) "Linking CXX static library Debugger.lib"
 	cd D:\CProjects\GC-\cmake-build-release\src\Debugger
 	$(CMAKE_COMMAND) -P CMakeFiles\Debugger.dir\cmake_clean_target.cmake
 	cd D:\CProjects\GC-\cmake-build-release

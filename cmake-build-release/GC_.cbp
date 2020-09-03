@@ -5,7 +5,7 @@
 		<Option title="GC_"/>
 		<Option makefile_is_custom="1"/>
 		<Option compiler="clang"/>
-		<Option virtualFolders="CMake Files\;CMake Files\..\;CMake Files\..\..\;CMake Files\..\..\vcpkg\;CMake Files\..\..\vcpkg\vcpkg\;CMake Files\..\..\vcpkg\vcpkg\scripts\;CMake Files\..\..\vcpkg\vcpkg\scripts\buildsystems\;CMake Files\..\..\vcpkg\vcpkg\installed\;CMake Files\..\..\vcpkg\vcpkg\installed\x86-windows\;CMake Files\..\..\vcpkg\vcpkg\installed\x86-windows\share\;CMake Files\..\..\vcpkg\vcpkg\installed\x86-windows\share\sdl2\;CMake Files\..\..\vcpkg\vcpkg\installed\x86-windows\share\gl3w\;CMake Files\src\;CMake Files\src\Core\;CMake Files\src\Core\PPC\;CMake Files\src\Core\PPC\Registers\;CMake Files\src\Debugger\;CMake Files\src\Loader\;"/>
+		<Option virtualFolders="CMake Files\;CMake Files\..\;CMake Files\..\..\;CMake Files\..\..\vcpkg\;CMake Files\..\..\vcpkg\vcpkg\;CMake Files\..\..\vcpkg\vcpkg\scripts\;CMake Files\..\..\vcpkg\vcpkg\scripts\buildsystems\;CMake Files\..\..\vcpkg\vcpkg\installed\;CMake Files\..\..\vcpkg\vcpkg\installed\x86-windows\;CMake Files\..\..\vcpkg\vcpkg\installed\x86-windows\share\;CMake Files\..\..\vcpkg\vcpkg\installed\x86-windows\share\imgui\;CMake Files\..\..\vcpkg\vcpkg\installed\x86-windows\share\sdl2\;CMake Files\..\..\vcpkg\vcpkg\installed\x86-windows\share\gl3w\;CMake Files\src\;CMake Files\src\Core\;CMake Files\src\Core\PPC\;CMake Files\src\Core\PPC\Registers\;CMake Files\src\Debugger\;CMake Files\src\Loader\;"/>
 		<Build>
 			<Target title="all">
 				<Option working_dir="D:/CProjects/GC-/cmake-build-release"/>
@@ -434,21 +434,6 @@
 		<Unit filename="D:/CProjects/GC-/src/Debugger/debugger.h">
 			<Option target="Debugger"/>
 		</Unit>
-		<Unit filename="D:/CProjects/GC-/src/Debugger/imgui/imconfig.h">
-			<Option target="Debugger"/>
-		</Unit>
-		<Unit filename="D:/CProjects/GC-/src/Debugger/imgui/imgui.cpp">
-			<Option target="Debugger"/>
-		</Unit>
-		<Unit filename="D:/CProjects/GC-/src/Debugger/imgui/imgui.h">
-			<Option target="Debugger"/>
-		</Unit>
-		<Unit filename="D:/CProjects/GC-/src/Debugger/imgui/imgui_demo.cpp">
-			<Option target="Debugger"/>
-		</Unit>
-		<Unit filename="D:/CProjects/GC-/src/Debugger/imgui/imgui_draw.cpp">
-			<Option target="Debugger"/>
-		</Unit>
 		<Unit filename="D:/CProjects/GC-/src/Debugger/imgui/imgui_impl_opengl3.cpp">
 			<Option target="Debugger"/>
 		</Unit>
@@ -459,21 +444,6 @@
 			<Option target="Debugger"/>
 		</Unit>
 		<Unit filename="D:/CProjects/GC-/src/Debugger/imgui/imgui_impl_sdl.h">
-			<Option target="Debugger"/>
-		</Unit>
-		<Unit filename="D:/CProjects/GC-/src/Debugger/imgui/imgui_internal.h">
-			<Option target="Debugger"/>
-		</Unit>
-		<Unit filename="D:/CProjects/GC-/src/Debugger/imgui/imgui_widgets.cpp">
-			<Option target="Debugger"/>
-		</Unit>
-		<Unit filename="D:/CProjects/GC-/src/Debugger/imgui/imstb_rectpack.h">
-			<Option target="Debugger"/>
-		</Unit>
-		<Unit filename="D:/CProjects/GC-/src/Debugger/imgui/imstb_textedit.h">
-			<Option target="Debugger"/>
-		</Unit>
-		<Unit filename="D:/CProjects/GC-/src/Debugger/imgui/imstb_truetype.h">
 			<Option target="Debugger"/>
 		</Unit>
 		<Unit filename="D:/CProjects/GC-/src/Debugger/widgets/console.h">
@@ -520,6 +490,15 @@
 		</Unit>
 		<Unit filename="D:/CProjects/GC-/../../vcpkg/vcpkg/scripts/buildsystems/vcpkg.cmake">
 			<Option virtualFolder="CMake Files\..\..\vcpkg\vcpkg\scripts\buildsystems\"/>
+		</Unit>
+		<Unit filename="D:/CProjects/GC-/../../vcpkg/vcpkg/installed/x86-windows/share/imgui/imgui-config-debug.cmake">
+			<Option virtualFolder="CMake Files\..\..\vcpkg\vcpkg\installed\x86-windows\share\imgui\"/>
+		</Unit>
+		<Unit filename="D:/CProjects/GC-/../../vcpkg/vcpkg/installed/x86-windows/share/imgui/imgui-config-release.cmake">
+			<Option virtualFolder="CMake Files\..\..\vcpkg\vcpkg\installed\x86-windows\share\imgui\"/>
+		</Unit>
+		<Unit filename="D:/CProjects/GC-/../../vcpkg/vcpkg/installed/x86-windows/share/imgui/imgui-config.cmake">
+			<Option virtualFolder="CMake Files\..\..\vcpkg\vcpkg\installed\x86-windows\share\imgui\"/>
 		</Unit>
 		<Unit filename="D:/CProjects/GC-/../../vcpkg/vcpkg/installed/x86-windows/share/sdl2/SDL2Config.cmake">
 			<Option virtualFolder="CMake Files\..\..\vcpkg\vcpkg\installed\x86-windows\share\sdl2\"/>

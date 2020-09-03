@@ -23,12 +23,8 @@ set(CMAKE_C_TARGET_INCLUDE_PATH
   )
 set(CMAKE_DEPENDS_CHECK_CXX
   "D:/CProjects/GC-/src/Debugger/debugger.cpp" "D:/CProjects/GC-/cmake-build-release/src/Debugger/CMakeFiles/Debugger.dir/debugger.cpp.obj"
-  "D:/CProjects/GC-/src/Debugger/imgui/imgui.cpp" "D:/CProjects/GC-/cmake-build-release/src/Debugger/CMakeFiles/Debugger.dir/imgui/imgui.cpp.obj"
-  "D:/CProjects/GC-/src/Debugger/imgui/imgui_demo.cpp" "D:/CProjects/GC-/cmake-build-release/src/Debugger/CMakeFiles/Debugger.dir/imgui/imgui_demo.cpp.obj"
-  "D:/CProjects/GC-/src/Debugger/imgui/imgui_draw.cpp" "D:/CProjects/GC-/cmake-build-release/src/Debugger/CMakeFiles/Debugger.dir/imgui/imgui_draw.cpp.obj"
   "D:/CProjects/GC-/src/Debugger/imgui/imgui_impl_opengl3.cpp" "D:/CProjects/GC-/cmake-build-release/src/Debugger/CMakeFiles/Debugger.dir/imgui/imgui_impl_opengl3.cpp.obj"
   "D:/CProjects/GC-/src/Debugger/imgui/imgui_impl_sdl.cpp" "D:/CProjects/GC-/cmake-build-release/src/Debugger/CMakeFiles/Debugger.dir/imgui/imgui_impl_sdl.cpp.obj"
-  "D:/CProjects/GC-/src/Debugger/imgui/imgui_widgets.cpp" "D:/CProjects/GC-/cmake-build-release/src/Debugger/CMakeFiles/Debugger.dir/imgui/imgui_widgets.cpp.obj"
   "D:/CProjects/GC-/src/Debugger/widgets/menubar.cpp" "D:/CProjects/GC-/cmake-build-release/src/Debugger/CMakeFiles/Debugger.dir/widgets/menubar.cpp.obj"
   )
 set(CMAKE_CXX_COMPILER_ID "Clang")

@@ -176,105 +176,6 @@ debugger.cpp.s:
 	cd D:\CProjects\GC-\cmake-build-release\src\Debugger
 .PHONY : debugger.cpp.s
 
-imgui\imgui.obj: imgui\imgui.cpp.obj
-
-.PHONY : imgui\imgui.obj
-
-# target to build an object file
-imgui\imgui.cpp.obj:
-	cd D:\CProjects\GC-\cmake-build-release
-	$(MAKE) $(MAKESILENT) -f src\Debugger\CMakeFiles\Debugger.dir\build.make /nologo -$(MAKEFLAGS) src\Debugger\CMakeFiles\Debugger.dir\imgui\imgui.cpp.obj
-	cd D:\CProjects\GC-\cmake-build-release\src\Debugger
-.PHONY : imgui\imgui.cpp.obj
-
-imgui\imgui.i: imgui\imgui.cpp.i
-
-.PHONY : imgui\imgui.i
-
-# target to preprocess a source file
-imgui\imgui.cpp.i:
-	cd D:\CProjects\GC-\cmake-build-release
-	$(MAKE) $(MAKESILENT) -f src\Debugger\CMakeFiles\Debugger.dir\build.make /nologo -$(MAKEFLAGS) src\Debugger\CMakeFiles\Debugger.dir\imgui\imgui.cpp.i
-	cd D:\CProjects\GC-\cmake-build-release\src\Debugger
-.PHONY : imgui\imgui.cpp.i
-
-imgui\imgui.s: imgui\imgui.cpp.s
-
-.PHONY : imgui\imgui.s
-
-# target to generate assembly for a file
-imgui\imgui.cpp.s:
-	cd D:\CProjects\GC-\cmake-build-release
-	$(MAKE) $(MAKESILENT) -f src\Debugger\CMakeFiles\Debugger.dir\build.make /nologo -$(MAKEFLAGS) src\Debugger\CMakeFiles\Debugger.dir\imgui\imgui.cpp.s
-	cd D:\CProjects\GC-\cmake-build-release\src\Debugger
-.PHONY : imgui\imgui.cpp.s
-
-imgui\imgui_demo.obj: imgui\imgui_demo.cpp.obj
-
-.PHONY : imgui\imgui_demo.obj
-
-# target to build an object file
-imgui\imgui_demo.cpp.obj:
-	cd D:\CProjects\GC-\cmake-build-release
-	$(MAKE) $(MAKESILENT) -f src\Debugger\CMakeFiles\Debugger.dir\build.make /nologo -$(MAKEFLAGS) src\Debugger\CMakeFiles\Debugger.dir\imgui\imgui_demo.cpp.obj
-	cd D:\CProjects\GC-\cmake-build-release\src\Debugger
-.PHONY : imgui\imgui_demo.cpp.obj
-
-imgui\imgui_demo.i: imgui\imgui_demo.cpp.i
-
-.PHONY : imgui\imgui_demo.i
-
-# target to preprocess a source file
-imgui\imgui_demo.cpp.i:
-	cd D:\CProjects\GC-\cmake-build-release
-	$(MAKE) $(MAKESILENT) -f src\Debugger\CMakeFiles\Debugger.dir\build.make /nologo -$(MAKEFLAGS) src\Debugger\CMakeFiles\Debugger.dir\imgui\imgui_demo.cpp.i
-	cd D:\CProjects\GC-\cmake-build-release\src\Debugger
-.PHONY : imgui\imgui_demo.cpp.i
-
-imgui\imgui_demo.s: imgui\imgui_demo.cpp.s
-
-.PHONY : imgui\imgui_demo.s
-
-# target to generate assembly for a file
-imgui\imgui_demo.cpp.s:
-	cd D:\CProjects\GC-\cmake-build-release
-	$(MAKE) $(MAKESILENT) -f src\Debugger\CMakeFiles\Debugger.dir\build.make /nologo -$(MAKEFLAGS) src\Debugger\CMakeFiles\Debugger.dir\imgui\imgui_demo.cpp.s
-	cd D:\CProjects\GC-\cmake-build-release\src\Debugger
-.PHONY : imgui\imgui_demo.cpp.s
-
-imgui\imgui_draw.obj: imgui\imgui_draw.cpp.obj
-
-.PHONY : imgui\imgui_draw.obj
-
-# target to build an object file
-imgui\imgui_draw.cpp.obj:
-	cd D:\CProjects\GC-\cmake-build-release
-	$(MAKE) $(MAKESILENT) -f src\Debugger\CMakeFiles\Debugger.dir\build.make /nologo -$(MAKEFLAGS) src\Debugger\CMakeFiles\Debugger.dir\imgui\imgui_draw.cpp.obj
-	cd D:\CProjects\GC-\cmake-build-release\src\Debugger
-.PHONY : imgui\imgui_draw.cpp.obj
-
-imgui\imgui_draw.i: imgui\imgui_draw.cpp.i
-
-.PHONY : imgui\imgui_draw.i
-
-# target to preprocess a source file
-imgui\imgui_draw.cpp.i:
-	cd D:\CProjects\GC-\cmake-build-release
-	$(MAKE) $(MAKESILENT) -f src\Debugger\CMakeFiles\Debugger.dir\build.make /nologo -$(MAKEFLAGS) src\Debugger\CMakeFiles\Debugger.dir\imgui\imgui_draw.cpp.i
-	cd D:\CProjects\GC-\cmake-build-release\src\Debugger
-.PHONY : imgui\imgui_draw.cpp.i
-
-imgui\imgui_draw.s: imgui\imgui_draw.cpp.s
-
-.PHONY : imgui\imgui_draw.s
-
-# target to generate assembly for a file
-imgui\imgui_draw.cpp.s:
-	cd D:\CProjects\GC-\cmake-build-release
-	$(MAKE) $(MAKESILENT) -f src\Debugger\CMakeFiles\Debugger.dir\build.make /nologo -$(MAKEFLAGS) src\Debugger\CMakeFiles\Debugger.dir\imgui\imgui_draw.cpp.s
-	cd D:\CProjects\GC-\cmake-build-release\src\Debugger
-.PHONY : imgui\imgui_draw.cpp.s
-
 imgui\imgui_impl_opengl3.obj: imgui\imgui_impl_opengl3.cpp.obj
 
 .PHONY : imgui\imgui_impl_opengl3.obj
@@ -340,39 +241,6 @@ imgui\imgui_impl_sdl.cpp.s:
 	$(MAKE) $(MAKESILENT) -f src\Debugger\CMakeFiles\Debugger.dir\build.make /nologo -$(MAKEFLAGS) src\Debugger\CMakeFiles\Debugger.dir\imgui\imgui_impl_sdl.cpp.s
 	cd D:\CProjects\GC-\cmake-build-release\src\Debugger
 .PHONY : imgui\imgui_impl_sdl.cpp.s
-
-imgui\imgui_widgets.obj: imgui\imgui_widgets.cpp.obj
-
-.PHONY : imgui\imgui_widgets.obj
-
-# target to build an object file
-imgui\imgui_widgets.cpp.obj:
-	cd D:\CProjects\GC-\cmake-build-release
-	$(MAKE) $(MAKESILENT) -f src\Debugger\CMakeFiles\Debugger.dir\build.make /nologo -$(MAKEFLAGS) src\Debugger\CMakeFiles\Debugger.dir\imgui\imgui_widgets.cpp.obj
-	cd D:\CProjects\GC-\cmake-build-release\src\Debugger
-.PHONY : imgui\imgui_widgets.cpp.obj
-
-imgui\imgui_widgets.i: imgui\imgui_widgets.cpp.i
-
-.PHONY : imgui\imgui_widgets.i
-
-# target to preprocess a source file
-imgui\imgui_widgets.cpp.i:
-	cd D:\CProjects\GC-\cmake-build-release
-	$(MAKE) $(MAKESILENT) -f src\Debugger\CMakeFiles\Debugger.dir\build.make /nologo -$(MAKEFLAGS) src\Debugger\CMakeFiles\Debugger.dir\imgui\imgui_widgets.cpp.i
-	cd D:\CProjects\GC-\cmake-build-release\src\Debugger
-.PHONY : imgui\imgui_widgets.cpp.i
-
-imgui\imgui_widgets.s: imgui\imgui_widgets.cpp.s
-
-.PHONY : imgui\imgui_widgets.s
-
-# target to generate assembly for a file
-imgui\imgui_widgets.cpp.s:
-	cd D:\CProjects\GC-\cmake-build-release
-	$(MAKE) $(MAKESILENT) -f src\Debugger\CMakeFiles\Debugger.dir\build.make /nologo -$(MAKEFLAGS) src\Debugger\CMakeFiles\Debugger.dir\imgui\imgui_widgets.cpp.s
-	cd D:\CProjects\GC-\cmake-build-release\src\Debugger
-.PHONY : imgui\imgui_widgets.cpp.s
 
 widgets\disassemble.obj: widgets\disassemble.c.obj
 
@@ -452,24 +320,12 @@ help:
 	@echo ... debugger.obj
 	@echo ... debugger.i
 	@echo ... debugger.s
-	@echo ... imgui/imgui.obj
-	@echo ... imgui/imgui.i
-	@echo ... imgui/imgui.s
-	@echo ... imgui/imgui_demo.obj
-	@echo ... imgui/imgui_demo.i
-	@echo ... imgui/imgui_demo.s
-	@echo ... imgui/imgui_draw.obj
-	@echo ... imgui/imgui_draw.i
-	@echo ... imgui/imgui_draw.s
 	@echo ... imgui/imgui_impl_opengl3.obj
 	@echo ... imgui/imgui_impl_opengl3.i
 	@echo ... imgui/imgui_impl_opengl3.s
 	@echo ... imgui/imgui_impl_sdl.obj
 	@echo ... imgui/imgui_impl_sdl.i
 	@echo ... imgui/imgui_impl_sdl.s
-	@echo ... imgui/imgui_widgets.obj
-	@echo ... imgui/imgui_widgets.i
-	@echo ... imgui/imgui_widgets.s
 	@echo ... widgets/disassemble.obj
 	@echo ... widgets/disassemble.i
 	@echo ... widgets/disassemble.s
