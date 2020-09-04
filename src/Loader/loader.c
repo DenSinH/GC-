@@ -9,18 +9,22 @@
 
 
 u8* load_IPL_file(const char *file_name) {
+    // open file
     FILE* file;
     fopen_s(&file, file_name, "rb");
     if (!file) log_fatal("Failed Loader file read");
 
+    // find size
     fseek(file, 0, SEEK_END);
     size_t file_size = ftell(file);
     rewind(file);
 
+    // checks
     if (file_size < IPL_ROM_END) {
         log_fatal("Invalid Loader file: too short");
     }
 
+    // copy file into memory
     fseek(file, IPL_HEADER_END, SEEK_SET);
 
     u8* IPL = malloc(IPL_DATA_LENGTH);
@@ -93,6 +97,7 @@ u8* decrypt_IPL(const char file_name[]) {
 
 
 void dump_IPL(u8* IPL, const char file_name[]) {
+    // dump decrypted IPL (from memory location) to file
     FILE* file;
     fopen_s(&file, file_name, "wb");
 
@@ -108,6 +113,7 @@ void free_IPL(u8* IPL) {
 }
 
 void decrypt_IPL_to(const char file_name[], u8* target) {
+    // decrypt IPL file to a memory location
     u8* IPL = decrypt_IPL(file_name);
     memcpy_s(target, IPL_DATA_LENGTH - IPL_CODE_START, IPL + IPL_CODE_START, IPL_DATA_LENGTH - IPL_CODE_START);
     free_IPL(IPL);
@@ -115,6 +121,9 @@ void decrypt_IPL_to(const char file_name[], u8* target) {
 
 
 u32 load_DOL_to(const char file_name[], u8* target) {
+    // parse and load a DOL file to a memory location
+    // todo: don't assume memory location >= 80000000
+    // open the file
     FILE* file;
     fopen_s(&file, file_name, "rb");
     if (!file) log_fatal("Failed DOL file read");
@@ -125,12 +134,15 @@ u32 load_DOL_to(const char file_name[], u8* target) {
 
     u8* DOL = malloc(file_size);
 
+    // read the file
     fread(DOL, 1, file_size, file);
     fclose(file);
     log_info("[DOL] read 0x%x bytes", file_size);
 
+    // parse it
     s_DOLData data = parse_DOL_header(DOL);
 
+    // copy the relevant sections
     for (int i = 0; i < 7; i++) {
         if (!data.TextSize[i]) continue;
 
@@ -155,6 +167,7 @@ u32 load_DOL_to(const char file_name[], u8* target) {
         memcpy(target + data.DataAddress[i], DOL + data.DataOffset[i], data.DataSize[i]);
     }
 
+    // clear the BSS section
     if (data.BSSAddress < 0x80000000 || data.BSSAddress + data.BSSSize >= 0x81800000) {
         log_fatal("[DOL] unimplemented BSS section offset: %08x (+ %08x)", data.BSSAddress, data.BSSSize);
     }

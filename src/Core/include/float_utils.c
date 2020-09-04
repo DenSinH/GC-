@@ -4,7 +4,7 @@
 #include <immintrin.h>
 #include <limits.h>
 
-s_float_result float_round_to_int(s_FPSCR* FPSCR, bit_double value, e_RN_modes rounding_mode) {
+s_float_result float_round_to_int(s_FPSCR* FPSCR, bit_double value) {
     s_float_result result;
 
     if (isnan(value.d)) {
@@ -28,13 +28,7 @@ s_float_result float_round_to_int(s_FPSCR* FPSCR, bit_double value, e_RN_modes r
         result.value.u = 0x80000000;
     }
     else {
-        switch (rounding_mode) {
-            case RN_ROUND_TOWARD_ZERO:
-                result.value.u = (u32)value.d;
-                break;
-            default:
-                log_fatal("Unimplemented rounding mode: %d", rounding_mode);
-        }
+        result.value.u = (u32)value.d;
     }
 
     if (value.d == result.value.u) {

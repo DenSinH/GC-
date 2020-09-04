@@ -2,6 +2,7 @@
 
 
 s_DOLData parse_DOL_header(u8* DOL) {
+    // info on DOL format: https://wiibrew.org/wiki/DOL
     s_DOLData data;
     for (int i = 0; i < 7; i++) {
         data.TextOffset[i] = BIG_ENDIAN32(DOL, 4  * i);

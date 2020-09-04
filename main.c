@@ -16,6 +16,7 @@ void exception_handler() {
 
     dump_Gekko_mem_range(&global_system->cpu, 0, 0x1700000);
 
+    // keep open the screen to still be able to check the register/memory contents (unstable)
     while (!global_system->shutdown) {
         sleep_ms(16);
     }

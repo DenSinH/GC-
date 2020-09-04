@@ -49,6 +49,26 @@
 #define log_mmu(message, ...) { }
 #endif
 
+#if COMPONENT_FLAGS & COMPONENT_HW_REG
+#define log_hw_reg(message, ...) {                        \
+        CONSOLE_BLUE();                                \
+        fprintf(stdout, "[HW regs]: "message "\n",  ##__VA_ARGS__); \
+        CONSOLE_RESTORE();                             \
+    }
+#else
+#define log_hw_reg(message, ...) { }
+#endif
+
+#if COMPONENT_FLAGS & COMPONENT_CP
+#define log_cp(message, ...) {                        \
+        CONSOLE_GREEN();                                \
+        fprintf(stdout, "[CP]: "message "\n",  ##__VA_ARGS__); \
+        CONSOLE_RESTORE();                             \
+    }
+#else
+#define log_cp(message, ...) { }
+#endif
+
 #if VERBOSITY <= VERBOSITY_ALL
 #define log(message, ...) {                        \
         CONSOLE_BLUE();                                \

@@ -21,7 +21,7 @@ u8 read8(s_MMU* mmu, u32 address) {
 
     switch (address >> 20) {
         case 0xcc0:
-            log_warn("Hardware register byte read access: %x", address);
+            log_hw_reg("Hardware register byte read access: %x", address);
             return HW_reg_read8(mmu->HW_regs_ptr, address);
         case 0xe00:
             log_fatal("L2 Cache access: %x", address);
@@ -44,7 +44,7 @@ u16 read16(s_MMU* mmu, u32 address) {
 
     switch (address >> 20) {
         case 0xcc0:
-            log_warn("Hardware register halfword read access: %x", address);
+            log_hw_reg("Hardware register halfword read access: %x", address);
             return HW_reg_read16(mmu->HW_regs_ptr, address);
         case 0xe00:
             log_fatal("L2 Cache access: %x", address);
@@ -67,7 +67,7 @@ u32 read32(s_MMU* mmu, u32 address) {
 
     switch (address >> 20) {
         case 0xcc0:
-            log_warn("Hardware register word read access: %x", address);
+            log_hw_reg("Hardware register word read access: %x", address);
             return HW_reg_read32(mmu->HW_regs_ptr, address);
         case 0xe00:
             log_fatal("L2 Cache access: %x", address);
@@ -91,8 +91,7 @@ u64 read64(s_MMU* mmu, u32 address) {
 
     switch (address >> 20) {
         case 0xcc0:
-            log_warn("Hardware register double word read access: %x", address);
-            // remember: big endian
+            log_hw_reg("Hardware register double word read access: %x", address);
             return HW_reg_read64(mmu->HW_regs_ptr, address);
         case 0xe00:
             log_fatal("L2 Cache access: %x", address);
@@ -114,7 +113,7 @@ void write8(s_MMU* mmu, u32 address, u8 value) {
 
     switch (address >> 20) {
         case 0xcc0:
-            log_warn("Hardware register byte write access: %x (%02x)", address, value);
+            log_hw_reg("Hardware register byte write access: %x (%02x)", address, value);
             HW_reg_write8(mmu->HW_regs_ptr, address, value);
             return;
         case 0xe00:
@@ -139,7 +138,7 @@ void write16(s_MMU* mmu, u32 address, u16 value) {
 
     switch (address >> 20) {
         case 0xcc0:
-            log_warn("Hardware register halfword write access: %x (%04x)", address, value);
+            log_hw_reg("Hardware register halfword write access: %x (%04x)", address, value);
             HW_reg_write16(mmu->HW_regs_ptr, address, value);
             return;
         case 0xe00:
@@ -164,7 +163,7 @@ void write32(s_MMU* mmu, u32 address, u32 value) {
 
     switch (address >> 20) {
         case 0xcc0:
-            log_warn("Hardware register word write access: %x (%08x)", address, value);
+            log_hw_reg("Hardware register word write access: %x (%08x)", address, value);
             HW_reg_write32(mmu->HW_regs_ptr, address, value);
             return;
         case 0xe00:
@@ -189,7 +188,7 @@ void write64(s_MMU* mmu, u32 address, u64 value) {
 
     switch (address >> 20) {
         case 0xcc0:
-            log_warn("Hardware register double word write access: %x (%016llx)", address, value);
+            log_hw_reg("Hardware register double word write access: %x (%016llx)", address, value);
             HW_reg_write64(mmu->HW_regs_ptr, address, value);
             return;
         case 0xe00:

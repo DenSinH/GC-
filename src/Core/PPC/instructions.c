@@ -1,5 +1,6 @@
 #include "instructions.h"
 
+// this builds much much faster than having them all separate
 #include "instructions/unimplemented.c"
 #include "instructions/integer_arithmetic.c"
 #include "instructions/integer_compare.c"

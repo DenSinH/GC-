@@ -5,8 +5,7 @@ INLINE_GEKKO_INSTR(fctiwz) {
     GEKKO_INSTR_HEADER
     log_cpu("fctiwz %x", instruction.raw);
 
-    s_float_result result = float_round_to_int(&cpu->FPSCR, cpu->FPR[instruction.general_DAB.B].PS0,
-                                               RN_ROUND_TOWARD_ZERO);
+    s_float_result result = float_round_to_int(&cpu->FPSCR, cpu->FPR[instruction.general_DAB.B].PS0);
 
     if (!((cpu->FPSCR.VE && result.exception) || (cpu->FPSCR.ZX && cpu->FPSCR.ZE))) {
         // FPRF undefined

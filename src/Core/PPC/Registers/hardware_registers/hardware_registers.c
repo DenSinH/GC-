@@ -18,6 +18,8 @@ void init_HW_regs(s_hardware_registers* HW_regs) {
     HW_regs->AI.system = HW_regs->system;
     HW_regs->GX_FIFO.system = HW_regs->system;
 
+    HW_regs->GX_FIFO.CP_ptr = &HW_regs->CP;
+
     init_CP(&HW_regs->CP);
     init_PE(&HW_regs->PE);
     init_VI(&HW_regs->VI);
@@ -83,37 +85,38 @@ HW_REG_WRITE_TEMPLATE_SIGNATURE(_size) { \
     u32 masked_address = address & 0x3ff; \
     switch (address & 0x0000fc00) { \
         case 0x0000: \
-            SECTION_WRITE_TEMPLATE(CP, 8, 1); \
+            SECTION_WRITE_TEMPLATE(CP, _size, 1); \
             break; \
         case 0x1000: \
-            SECTION_WRITE_TEMPLATE(PE, 8, 1); \
+            SECTION_WRITE_TEMPLATE(PE, _size, 1); \
             break; \
         case 0x2000: \
-            SECTION_WRITE_TEMPLATE(VI, 8, 2); \
+            SECTION_WRITE_TEMPLATE(VI, _size, 2); \
             break; \
         case 0x3000: \
-            SECTION_WRITE_TEMPLATE(PI, 8, 2); \
+            SECTION_WRITE_TEMPLATE(PI, _size, 2); \
             break; \
         case 0x4000: \
-            SECTION_WRITE_TEMPLATE(MI, 8, 2); \
+            SECTION_WRITE_TEMPLATE(MI, _size, 2); \
             break; \
         case 0x5000: \
-            SECTION_WRITE_TEMPLATE(DSP, 8, 1); \
+            SECTION_WRITE_TEMPLATE(DSP, _size, 1); \
             break; \
         case 0x6000: \
-            SECTION_WRITE_TEMPLATE(DI, 8, 2); \
+            SECTION_WRITE_TEMPLATE(DI, _size, 2); \
             break; \
         case 0x6400: \
-            SECTION_WRITE_TEMPLATE(SI, 8, 2); \
+            SECTION_WRITE_TEMPLATE(SI, _size, 2); \
             break; \
         case 0x6800: \
-            SECTION_WRITE_TEMPLATE(EXI, 8, 2); \
+            SECTION_WRITE_TEMPLATE(EXI, _size, 2); \
             break; \
         case 0x6c00: \
-            SECTION_WRITE_TEMPLATE(AI, 8, 2); \
+            SECTION_WRITE_TEMPLATE(AI, _size, 2); \
             break; \
         case 0x8000: \
-            WRITE ## _size(HW_regs->GX_FIFO.buffer, masked_address, value); \
+            /* Write to the end of the buffer of the GX FIFO and always call the write callback */ \
+            WRITE ## _size(HW_regs->GX_FIFO.buffer, HW_regs->GX_FIFO.buffer_size, value); \
             HW_regs->GX_FIFO.write(&HW_regs->GX_FIFO, masked_address, _size); \
             break; \
         default: \
