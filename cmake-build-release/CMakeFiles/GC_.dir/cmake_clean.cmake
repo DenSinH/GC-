@@ -1,5 +1,5 @@
 file(REMOVE_RECURSE
-  "CMakeFiles/GC_.dir/debugthread.c.obj"
+  "CMakeFiles/GC_.dir/UIthread.c.obj"
   "CMakeFiles/GC_.dir/main.c.obj"
   "GC_.exe"
   "GC_.exe.manifest"

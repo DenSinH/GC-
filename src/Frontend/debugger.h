@@ -10,7 +10,7 @@
 #ifdef __cplusplus
 extern "C" {
 #endif
-int debugger_run();
+int ui_run();
 void debugger_init(
         bool* shutdown,
         uint32_t* PC,

@@ -29,7 +29,7 @@ inline void load_CP_reg(u8 RID, u32 value) {
 }
 
 inline void load_XF_regs(u16 length, u16 base_addr, u8* values_buffer) {
-    log_cp("Load %d XF registers starting at %04x", length, base_addr);
+    log_cp("Load %d XF registers starting at %04x (first value %08x)", length, base_addr, READ32(values_buffer, 0));
 }
 
 inline void load_INDX(e_CP_cmd opcode, u16 index, u8 length, u16 base_addr) {
@@ -102,6 +102,7 @@ inline void feed_CP(s_CP* CP, u8 data) {
         case CP_cmd_QUADS ... CP_cmd_MAX:
             // all drawing commands
             // todo: unstub
+            log_cp("Data for primitive (%02x, stubbed)", data);
             if (CP->argc >= 2 && CP->argc == 2 + (READ16(CP->args, 0) << 1)) {
                 // from the demo it seems like there are only 2 bytes of data per vertex
                 log_cp("Draw primitive (%02x, stubbed)", CP->command & 0xf8);

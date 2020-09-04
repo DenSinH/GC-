@@ -6,15 +6,15 @@ find_library(Capstone capstone_dll REQUIRED)
 find_path(Capstone_INCLUDE_DIR capstone.h PATH_SUFFIXES capstone)
 set(Capstone_INCLUDE_DIR ${Capstone_INCLUDE_DIR}/../)
 
-set(DEBUGGER_SRCS
+set(FRONTEND_SRCS
                imgui/imgui_impl_opengl3.cpp
                imgui/imgui_impl_sdl.cpp
-        debugger.cpp
+        frontend.cpp
         widgets/menubar.cpp
         widgets/disassemble.c
         )
 
-set(DEBUGGER_HDRS
+set(FRONTEND_HDRS
                imgui/imgui_impl_opengl3.h
                imgui/imgui_impl_sdl.h
         debugger.h
@@ -27,14 +27,14 @@ set(DEBUGGER_HDRS
         widgets/disassemble.h
         )
 
-add_library(Debugger ${DEBUGGER_SRCS} ${DEBUGGER_HDRS})
+add_library(Frontend ${FRONTEND_SRCS} ${FRONTEND_HDRS})
 
-set_target_properties(Debugger PROPERTIES
+set_target_properties(Frontend PROPERTIES
                       LINKER_LANGUAGE CXX
                       CXX_STANDARD 17
                       CXX_STANDARD_REQUIRED YES
                       CXX_EXTENSIONS ON)
 
-target_link_libraries(Debugger PRIVATE imgui::imgui SDL2::SDL2 SDL2::SDL2main unofficial::gl3w::gl3w)
-target_link_libraries(Debugger PRIVATE ${Capstone})
-target_include_directories(Debugger PRIVATE imgui)
+target_link_libraries(Frontend PRIVATE imgui::imgui SDL2::SDL2 SDL2::SDL2main unofficial::gl3w::gl3w)
+target_link_libraries(Frontend PRIVATE ${Capstone})
+target_include_directories(Frontend PRIVATE imgui)

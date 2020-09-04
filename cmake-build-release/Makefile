@@ -154,17 +154,17 @@ Registers\fast:
 .PHONY : Registers\fast
 
 #=============================================================================
-# Target rules for targets named Debugger
+# Target rules for targets named Frontend
 
 # Build rule for target.
-Debugger: cmake_check_build_system
-	$(MAKE) $(MAKESILENT) -f CMakeFiles\Makefile2 /nologo -$(MAKEFLAGS) Debugger
-.PHONY : Debugger
+Frontend: cmake_check_build_system
+	$(MAKE) $(MAKESILENT) -f CMakeFiles\Makefile2 /nologo -$(MAKEFLAGS) Frontend
+.PHONY : Frontend
 
 # fast build rule for target.
-Debugger\fast:
-	$(MAKE) $(MAKESILENT) -f src\Debugger\CMakeFiles\Debugger.dir\build.make /nologo -$(MAKEFLAGS) src\Debugger\CMakeFiles\Debugger.dir\build
-.PHONY : Debugger\fast
+Frontend\fast:
+	$(MAKE) $(MAKESILENT) -f src\Frontend\CMakeFiles\Frontend.dir\build.make /nologo -$(MAKEFLAGS) src\Frontend\CMakeFiles\Frontend.dir\build
+.PHONY : Frontend\fast
 
 #=============================================================================
 # Target rules for targets named Loader
@@ -179,32 +179,32 @@ Loader\fast:
 	$(MAKE) $(MAKESILENT) -f src\Loader\CMakeFiles\Loader.dir\build.make /nologo -$(MAKEFLAGS) src\Loader\CMakeFiles\Loader.dir\build
 .PHONY : Loader\fast
 
-debugthread.obj: debugthread.c.obj
+UIthread.obj: UIthread.c.obj
 
-.PHONY : debugthread.obj
+.PHONY : UIthread.obj
 
 # target to build an object file
-debugthread.c.obj:
-	$(MAKE) $(MAKESILENT) -f CMakeFiles\GC_.dir\build.make /nologo -$(MAKEFLAGS) CMakeFiles\GC_.dir\debugthread.c.obj
-.PHONY : debugthread.c.obj
+UIthread.c.obj:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles\GC_.dir\build.make /nologo -$(MAKEFLAGS) CMakeFiles\GC_.dir\UIthread.c.obj
+.PHONY : UIthread.c.obj
 
-debugthread.i: debugthread.c.i
+UIthread.i: UIthread.c.i
 
-.PHONY : debugthread.i
+.PHONY : UIthread.i
 
 # target to preprocess a source file
-debugthread.c.i:
-	$(MAKE) $(MAKESILENT) -f CMakeFiles\GC_.dir\build.make /nologo -$(MAKEFLAGS) CMakeFiles\GC_.dir\debugthread.c.i
-.PHONY : debugthread.c.i
+UIthread.c.i:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles\GC_.dir\build.make /nologo -$(MAKEFLAGS) CMakeFiles\GC_.dir\UIthread.c.i
+.PHONY : UIthread.c.i
 
-debugthread.s: debugthread.c.s
+UIthread.s: UIthread.c.s
 
-.PHONY : debugthread.s
+.PHONY : UIthread.s
 
 # target to generate assembly for a file
-debugthread.c.s:
-	$(MAKE) $(MAKESILENT) -f CMakeFiles\GC_.dir\build.make /nologo -$(MAKEFLAGS) CMakeFiles\GC_.dir\debugthread.c.s
-.PHONY : debugthread.c.s
+UIthread.c.s:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles\GC_.dir\build.make /nologo -$(MAKEFLAGS) CMakeFiles\GC_.dir\UIthread.c.s
+.PHONY : UIthread.c.s
 
 main.obj: main.c.obj
 
@@ -242,13 +242,13 @@ help:
 	@echo ... edit_cache
 	@echo ... rebuild_cache
 	@echo ... Core
-	@echo ... Debugger
+	@echo ... Frontend
 	@echo ... GC_
 	@echo ... Loader
 	@echo ... Registers
-	@echo ... debugthread.obj
-	@echo ... debugthread.i
-	@echo ... debugthread.s
+	@echo ... UIthread.obj
+	@echo ... UIthread.i
+	@echo ... UIthread.s
 	@echo ... main.obj
 	@echo ... main.i
 	@echo ... main.s

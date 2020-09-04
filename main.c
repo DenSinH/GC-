@@ -1,4 +1,4 @@
-#include "debugthread.h"
+#include "UIthread.h"
 #include "sleeping.h"
 
 #include <stdio.h>

@@ -1,6 +1,6 @@
 #include "src/Core/system.h"
 #include "src/Core/PPC/MMU.h"
-#include "src/Debugger/debugger.h"
+#include "src/Frontend/debugger.h"
 
 #include "debugging.h"
 #include "default.h"

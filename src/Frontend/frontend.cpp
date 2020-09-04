@@ -84,7 +84,7 @@ void debugger_init(
 }
 
 // Main code
-int debugger_run()
+int ui_run()
 {
     // Setup SDL
     // (Some versions of SDL before <2.0.10 appears to have performance/stalling issues on a minority of Windows systems,

@@ -59,14 +59,14 @@ CMAKE_BINARY_DIR = D:\CProjects\GC-\cmake-build-release
 # The main recursive "all" target.
 all: CMakeFiles\GC_.dir\all
 all: src\Core\all
-all: src\Debugger\all
+all: src\Frontend\all
 all: src\Loader\all
 
 .PHONY : all
 
 # The main recursive "preinstall" target.
 preinstall: src\Core\preinstall
-preinstall: src\Debugger\preinstall
+preinstall: src\Frontend\preinstall
 preinstall: src\Loader\preinstall
 
 .PHONY : preinstall
@@ -74,7 +74,7 @@ preinstall: src\Loader\preinstall
 # The main recursive "clean" target.
 clean: CMakeFiles\GC_.dir\clean
 clean: src\Core\clean
-clean: src\Debugger\clean
+clean: src\Frontend\clean
 clean: src\Loader\clean
 
 .PHONY : clean
@@ -118,22 +118,22 @@ src\Core\PPC\Registers\clean: src\Core\PPC\Registers\CMakeFiles\Registers.dir\cl
 .PHONY : src\Core\PPC\Registers\clean
 
 #=============================================================================
-# Directory level rules for directory src\Debugger
+# Directory level rules for directory src\Frontend
 
 # Recursive "all" directory target.
-src\Debugger\all: src\Debugger\CMakeFiles\Debugger.dir\all
+src\Frontend\all: src\Frontend\CMakeFiles\Frontend.dir\all
 
-.PHONY : src\Debugger\all
+.PHONY : src\Frontend\all
 
 # Recursive "preinstall" directory target.
-src\Debugger\preinstall:
+src\Frontend\preinstall:
 
-.PHONY : src\Debugger\preinstall
+.PHONY : src\Frontend\preinstall
 
 # Recursive "clean" directory target.
-src\Debugger\clean: src\Debugger\CMakeFiles\Debugger.dir\clean
+src\Frontend\clean: src\Frontend\CMakeFiles\Frontend.dir\clean
 
-.PHONY : src\Debugger\clean
+.PHONY : src\Frontend\clean
 
 #=============================================================================
 # Directory level rules for directory src\Loader
@@ -157,10 +157,10 @@ src\Loader\clean: src\Loader\CMakeFiles\Loader.dir\clean
 # Target rules for target CMakeFiles/GC_.dir
 
 # All Build rule for target.
-CMakeFiles\GC_.dir\all: src\Debugger\CMakeFiles\Debugger.dir\all
+CMakeFiles\GC_.dir\all: src\Core\PPC\Registers\CMakeFiles\Registers.dir\all
+CMakeFiles\GC_.dir\all: src\Frontend\CMakeFiles\Frontend.dir\all
 CMakeFiles\GC_.dir\all: src\Loader\CMakeFiles\Loader.dir\all
 CMakeFiles\GC_.dir\all: src\Core\CMakeFiles\Core.dir\all
-CMakeFiles\GC_.dir\all: src\Core\PPC\Registers\CMakeFiles\Registers.dir\all
 	$(MAKE) $(MAKESILENT) -f CMakeFiles\GC_.dir\build.make /nologo -$(MAKEFLAGS) CMakeFiles\GC_.dir\depend
 	$(MAKE) $(MAKESILENT) -f CMakeFiles\GC_.dir\build.make /nologo -$(MAKEFLAGS) CMakeFiles\GC_.dir\build
 	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --progress-dir=D:\CProjects\GC-\cmake-build-release\CMakeFiles --progress-num=15,16,17 "Built target GC_"
@@ -187,8 +187,8 @@ CMakeFiles\GC_.dir\clean:
 # Target rules for target src/Core/CMakeFiles/Core.dir
 
 # All Build rule for target.
-src\Core\CMakeFiles\Core.dir\all: src\Loader\CMakeFiles\Loader.dir\all
 src\Core\CMakeFiles\Core.dir\all: src\Core\PPC\Registers\CMakeFiles\Registers.dir\all
+src\Core\CMakeFiles\Core.dir\all: src\Loader\CMakeFiles\Loader.dir\all
 	$(MAKE) $(MAKESILENT) -f src\Core\CMakeFiles\Core.dir\build.make /nologo -$(MAKEFLAGS) src\Core\CMakeFiles\Core.dir\depend
 	$(MAKE) $(MAKESILENT) -f src\Core\CMakeFiles\Core.dir\build.make /nologo -$(MAKEFLAGS) src\Core\CMakeFiles\Core.dir\build
 	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --progress-dir=D:\CProjects\GC-\cmake-build-release\CMakeFiles --progress-num=1,2,3,4,5,6,7,8 "Built target Core"
@@ -239,31 +239,31 @@ src\Core\PPC\Registers\CMakeFiles\Registers.dir\clean:
 .PHONY : src\Core\PPC\Registers\CMakeFiles\Registers.dir\clean
 
 #=============================================================================
-# Target rules for target src/Debugger/CMakeFiles/Debugger.dir
+# Target rules for target src/Frontend/CMakeFiles/Frontend.dir
 
 # All Build rule for target.
-src\Debugger\CMakeFiles\Debugger.dir\all:
-	$(MAKE) $(MAKESILENT) -f src\Debugger\CMakeFiles\Debugger.dir\build.make /nologo -$(MAKEFLAGS) src\Debugger\CMakeFiles\Debugger.dir\depend
-	$(MAKE) $(MAKESILENT) -f src\Debugger\CMakeFiles\Debugger.dir\build.make /nologo -$(MAKEFLAGS) src\Debugger\CMakeFiles\Debugger.dir\build
-	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --progress-dir=D:\CProjects\GC-\cmake-build-release\CMakeFiles --progress-num=9,10,11,12,13,14 "Built target Debugger"
-.PHONY : src\Debugger\CMakeFiles\Debugger.dir\all
+src\Frontend\CMakeFiles\Frontend.dir\all:
+	$(MAKE) $(MAKESILENT) -f src\Frontend\CMakeFiles\Frontend.dir\build.make /nologo -$(MAKEFLAGS) src\Frontend\CMakeFiles\Frontend.dir\depend
+	$(MAKE) $(MAKESILENT) -f src\Frontend\CMakeFiles\Frontend.dir\build.make /nologo -$(MAKEFLAGS) src\Frontend\CMakeFiles\Frontend.dir\build
+	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --progress-dir=D:\CProjects\GC-\cmake-build-release\CMakeFiles --progress-num=9,10,11,12,13,14 "Built target Frontend"
+.PHONY : src\Frontend\CMakeFiles\Frontend.dir\all
 
 # Build rule for subdir invocation for target.
-src\Debugger\CMakeFiles\Debugger.dir\rule: cmake_check_build_system
+src\Frontend\CMakeFiles\Frontend.dir\rule: cmake_check_build_system
 	$(CMAKE_COMMAND) -E cmake_progress_start D:\CProjects\GC-\cmake-build-release\CMakeFiles 6
-	$(MAKE) $(MAKESILENT) -f CMakeFiles\Makefile2 /nologo -$(MAKEFLAGS) src\Debugger\CMakeFiles\Debugger.dir\all
+	$(MAKE) $(MAKESILENT) -f CMakeFiles\Makefile2 /nologo -$(MAKEFLAGS) src\Frontend\CMakeFiles\Frontend.dir\all
 	$(CMAKE_COMMAND) -E cmake_progress_start D:\CProjects\GC-\cmake-build-release\CMakeFiles 0
-.PHONY : src\Debugger\CMakeFiles\Debugger.dir\rule
+.PHONY : src\Frontend\CMakeFiles\Frontend.dir\rule
 
 # Convenience name for target.
-Debugger: src\Debugger\CMakeFiles\Debugger.dir\rule
+Frontend: src\Frontend\CMakeFiles\Frontend.dir\rule
 
-.PHONY : Debugger
+.PHONY : Frontend
 
 # clean rule for target.
-src\Debugger\CMakeFiles\Debugger.dir\clean:
-	$(MAKE) $(MAKESILENT) -f src\Debugger\CMakeFiles\Debugger.dir\build.make /nologo -$(MAKEFLAGS) src\Debugger\CMakeFiles\Debugger.dir\clean
-.PHONY : src\Debugger\CMakeFiles\Debugger.dir\clean
+src\Frontend\CMakeFiles\Frontend.dir\clean:
+	$(MAKE) $(MAKESILENT) -f src\Frontend\CMakeFiles\Frontend.dir\build.make /nologo -$(MAKEFLAGS) src\Frontend\CMakeFiles\Frontend.dir\clean
+.PHONY : src\Frontend\CMakeFiles\Frontend.dir\clean
 
 #=============================================================================
 # Target rules for target src/Loader/CMakeFiles/Loader.dir

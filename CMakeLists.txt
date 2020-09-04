@@ -26,18 +26,18 @@ add_executable(GC_
         include/helpers.h
         include/flags.h
         include/log.h
-        debugthread.h
-        debugthread.c
+        UIthread.h
+        UIthread.c
         debugging.h
         include/sleeping.h
 )
 
 add_subdirectory(src/Core)
-add_subdirectory(src/Debugger)
+add_subdirectory(src/Frontend)
 add_subdirectory(src/Loader)
 
 # for logging / stuff I want to use in all files
 include_directories(include src/Core/include)
 
 target_link_libraries(GC_ PRIVATE Core)
-target_link_libraries(GC_ PRIVATE Debugger)
+target_link_libraries(GC_ PRIVATE Frontend)

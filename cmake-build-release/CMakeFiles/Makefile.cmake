@@ -36,7 +36,7 @@ set(CMAKE_MAKEFILE_DEPENDS
   "CMakeFiles/3.17.3/CMakeSystem.cmake"
   "../src/Core/CMakeLists.txt"
   "../src/Core/PPC/Registers/CMakeLists.txt"
-  "../src/Debugger/CMakeLists.txt"
+  "../src/Frontend/CMakeLists.txt"
   "../src/Loader/CMakeLists.txt"
   "D:/vcpkg/vcpkg/installed/x86-windows/share/gl3w/gl3wConfig-debug.cmake"
   "D:/vcpkg/vcpkg/installed/x86-windows/share/gl3w/gl3wConfig-release.cmake"
@@ -64,7 +64,7 @@ set(CMAKE_MAKEFILE_PRODUCTS
   "CMakeFiles/CMakeDirectoryInformation.cmake"
   "src/Core/CMakeFiles/CMakeDirectoryInformation.cmake"
   "src/Core/PPC/Registers/CMakeFiles/CMakeDirectoryInformation.cmake"
-  "src/Debugger/CMakeFiles/CMakeDirectoryInformation.cmake"
+  "src/Frontend/CMakeFiles/CMakeDirectoryInformation.cmake"
   "src/Loader/CMakeFiles/CMakeDirectoryInformation.cmake"
   )
 
@@ -73,6 +73,6 @@ set(CMAKE_DEPEND_INFO_FILES
   "CMakeFiles/GC_.dir/DependInfo.cmake"
   "src/Core/CMakeFiles/Core.dir/DependInfo.cmake"
   "src/Core/PPC/Registers/CMakeFiles/Registers.dir/DependInfo.cmake"
-  "src/Debugger/CMakeFiles/Debugger.dir/DependInfo.cmake"
+  "src/Frontend/CMakeFiles/Frontend.dir/DependInfo.cmake"
   "src/Loader/CMakeFiles/Loader.dir/DependInfo.cmake"
   )
