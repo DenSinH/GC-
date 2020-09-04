@@ -1,6 +1,6 @@
 find_package(imgui CONFIG REQUIRED)
 find_package(SDL2 CONFIG REQUIRED)
-find_package(gl3w CONFIG REQUIRED)
+find_package(glad CONFIG REQUIRED)
 
 find_library(Capstone capstone_dll REQUIRED)
 find_path(Capstone_INCLUDE_DIR capstone.h PATH_SUFFIXES capstone)
@@ -27,6 +27,7 @@ set(FRONTEND_HDRS
         widgets/disassemble.h
         )
 
+add_subdirectory(Renderer)
 add_library(Frontend ${FRONTEND_SRCS} ${FRONTEND_HDRS})
 
 set_target_properties(Frontend PROPERTIES
@@ -35,6 +36,7 @@ set_target_properties(Frontend PROPERTIES
                       CXX_STANDARD_REQUIRED YES
                       CXX_EXTENSIONS ON)
 
-target_link_libraries(Frontend PRIVATE imgui::imgui SDL2::SDL2 SDL2::SDL2main unofficial::gl3w::gl3w)
+target_link_libraries(Frontend PRIVATE imgui::imgui SDL2::SDL2 SDL2::SDL2main glad::glad)
 target_link_libraries(Frontend PRIVATE ${Capstone})
+target_link_libraries(Frontend PRIVATE Renderer)
 target_include_directories(Frontend PRIVATE imgui)

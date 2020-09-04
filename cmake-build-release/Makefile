@@ -167,6 +167,19 @@ Frontend\fast:
 .PHONY : Frontend\fast
 
 #=============================================================================
+# Target rules for targets named Renderer
+
+# Build rule for target.
+Renderer: cmake_check_build_system
+	$(MAKE) $(MAKESILENT) -f CMakeFiles\Makefile2 /nologo -$(MAKEFLAGS) Renderer
+.PHONY : Renderer
+
+# fast build rule for target.
+Renderer\fast:
+	$(MAKE) $(MAKESILENT) -f src\Frontend\Renderer\CMakeFiles\Renderer.dir\build.make /nologo -$(MAKEFLAGS) src\Frontend\Renderer\CMakeFiles\Renderer.dir\build
+.PHONY : Renderer\fast
+
+#=============================================================================
 # Target rules for targets named Loader
 
 # Build rule for target.
@@ -246,6 +259,7 @@ help:
 	@echo ... GC_
 	@echo ... Loader
 	@echo ... Registers
+	@echo ... Renderer
 	@echo ... UIthread.obj
 	@echo ... UIthread.i
 	@echo ... UIthread.s

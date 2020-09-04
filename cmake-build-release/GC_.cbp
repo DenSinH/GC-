@@ -5,7 +5,7 @@
 		<Option title="GC_"/>
 		<Option makefile_is_custom="1"/>
 		<Option compiler="clang"/>
-		<Option virtualFolders="CMake Files\;CMake Files\..\;CMake Files\..\..\;CMake Files\..\..\vcpkg\;CMake Files\..\..\vcpkg\vcpkg\;CMake Files\..\..\vcpkg\vcpkg\scripts\;CMake Files\..\..\vcpkg\vcpkg\scripts\buildsystems\;CMake Files\..\..\vcpkg\vcpkg\installed\;CMake Files\..\..\vcpkg\vcpkg\installed\x86-windows\;CMake Files\..\..\vcpkg\vcpkg\installed\x86-windows\share\;CMake Files\..\..\vcpkg\vcpkg\installed\x86-windows\share\imgui\;CMake Files\..\..\vcpkg\vcpkg\installed\x86-windows\share\sdl2\;CMake Files\..\..\vcpkg\vcpkg\installed\x86-windows\share\gl3w\;CMake Files\src\;CMake Files\src\Core\;CMake Files\src\Core\PPC\;CMake Files\src\Core\PPC\Registers\;CMake Files\src\Frontend\;CMake Files\src\Loader\;"/>
+		<Option virtualFolders="CMake Files\;CMake Files\..\;CMake Files\..\..\;CMake Files\..\..\vcpkg\;CMake Files\..\..\vcpkg\vcpkg\;CMake Files\..\..\vcpkg\vcpkg\scripts\;CMake Files\..\..\vcpkg\vcpkg\scripts\buildsystems\;CMake Files\..\..\vcpkg\vcpkg\installed\;CMake Files\..\..\vcpkg\vcpkg\installed\x86-windows\;CMake Files\..\..\vcpkg\vcpkg\installed\x86-windows\share\;CMake Files\..\..\vcpkg\vcpkg\installed\x86-windows\share\imgui\;CMake Files\..\..\vcpkg\vcpkg\installed\x86-windows\share\sdl2\;CMake Files\..\..\vcpkg\vcpkg\installed\x86-windows\share\glad\;CMake Files\src\;CMake Files\src\Core\;CMake Files\src\Core\PPC\;CMake Files\src\Core\PPC\Registers\;CMake Files\src\Frontend\;CMake Files\src\Frontend\Renderer\;CMake Files\src\Loader\;"/>
 		<Build>
 			<Target title="all">
 				<Option working_dir="D:/CProjects/GC-/cmake-build-release"/>
@@ -179,8 +179,10 @@
 					<Add option="-DNDEBUG"/>
 					<Add option="-DBOOST_DISABLE_ASSERTS"/>
 					<Add directory="D:/CProjects/GC-/src/Frontend/imgui"/>
+					<Add directory="D:/CProjects/GC-/src/Frontend/Renderer"/>
 					<Add directory="D:/vcpkg/vcpkg/installed/x86-windows/include"/>
 					<Add directory="D:/vcpkg/vcpkg/installed/x86-windows/include/SDL2"/>
+					<Add directory="D:/vcpkg/vcpkg/installed/x86-windows/include/glad"/>
 				</Compiler>
 				<MakeCommands>
 					<Build command="nmake /NOLOGO /f D:\CProjects\GC-\cmake-build-release\src\Frontend\Makefile VERBOSE=1 Frontend"/>
@@ -199,14 +201,58 @@
 					<Add option="-DNDEBUG"/>
 					<Add option="-DBOOST_DISABLE_ASSERTS"/>
 					<Add directory="D:/CProjects/GC-/src/Frontend/imgui"/>
+					<Add directory="D:/CProjects/GC-/src/Frontend/Renderer"/>
 					<Add directory="D:/vcpkg/vcpkg/installed/x86-windows/include"/>
 					<Add directory="D:/vcpkg/vcpkg/installed/x86-windows/include/SDL2"/>
+					<Add directory="D:/vcpkg/vcpkg/installed/x86-windows/include/glad"/>
 				</Compiler>
 				<MakeCommands>
 					<Build command="nmake /NOLOGO /f D:\CProjects\GC-\cmake-build-release\src\Frontend\Makefile VERBOSE=1 Frontend/fast"/>
 					<CompileFile command="nmake /NOLOGO /f D:\CProjects\GC-\cmake-build-release\src\Frontend\Makefile VERBOSE=1 &quot;$file&quot;"/>
 					<Clean command="nmake /NOLOGO /f D:\CProjects\GC-\cmake-build-release\src\Frontend\Makefile VERBOSE=1 clean"/>
 					<DistClean command="nmake /NOLOGO /f D:\CProjects\GC-\cmake-build-release\src\Frontend\Makefile VERBOSE=1 clean"/>
+				</MakeCommands>
+			</Target>
+			<Target title="Renderer">
+				<Option output="D:/CProjects/GC-/cmake-build-release/src/Frontend/Renderer/Renderer.lib" prefix_auto="0" extension_auto="0"/>
+				<Option working_dir="D:/CProjects/GC-/cmake-build-release/src/Frontend/Renderer"/>
+				<Option object_output="./"/>
+				<Option type="2"/>
+				<Option compiler="clang"/>
+				<Compiler>
+					<Add option="-DNDEBUG"/>
+					<Add option="-DBOOST_DISABLE_ASSERTS"/>
+					<Add directory="D:/CProjects/GC-/src/Frontend/Renderer"/>
+					<Add directory="D:/vcpkg/vcpkg/installed/x86-windows/include/SDL2"/>
+					<Add directory="D:/vcpkg/vcpkg/installed/x86-windows/include/glad"/>
+					<Add directory="D:/vcpkg/vcpkg/installed/x86-windows/include"/>
+				</Compiler>
+				<MakeCommands>
+					<Build command="nmake /NOLOGO /f D:\CProjects\GC-\cmake-build-release\src\Frontend\Renderer\Makefile VERBOSE=1 Renderer"/>
+					<CompileFile command="nmake /NOLOGO /f D:\CProjects\GC-\cmake-build-release\src\Frontend\Renderer\Makefile VERBOSE=1 &quot;$file&quot;"/>
+					<Clean command="nmake /NOLOGO /f D:\CProjects\GC-\cmake-build-release\src\Frontend\Renderer\Makefile VERBOSE=1 clean"/>
+					<DistClean command="nmake /NOLOGO /f D:\CProjects\GC-\cmake-build-release\src\Frontend\Renderer\Makefile VERBOSE=1 clean"/>
+				</MakeCommands>
+			</Target>
+			<Target title="Renderer/fast">
+				<Option output="D:/CProjects/GC-/cmake-build-release/src/Frontend/Renderer/Renderer.lib" prefix_auto="0" extension_auto="0"/>
+				<Option working_dir="D:/CProjects/GC-/cmake-build-release/src/Frontend/Renderer"/>
+				<Option object_output="./"/>
+				<Option type="2"/>
+				<Option compiler="clang"/>
+				<Compiler>
+					<Add option="-DNDEBUG"/>
+					<Add option="-DBOOST_DISABLE_ASSERTS"/>
+					<Add directory="D:/CProjects/GC-/src/Frontend/Renderer"/>
+					<Add directory="D:/vcpkg/vcpkg/installed/x86-windows/include/SDL2"/>
+					<Add directory="D:/vcpkg/vcpkg/installed/x86-windows/include/glad"/>
+					<Add directory="D:/vcpkg/vcpkg/installed/x86-windows/include"/>
+				</Compiler>
+				<MakeCommands>
+					<Build command="nmake /NOLOGO /f D:\CProjects\GC-\cmake-build-release\src\Frontend\Renderer\Makefile VERBOSE=1 Renderer/fast"/>
+					<CompileFile command="nmake /NOLOGO /f D:\CProjects\GC-\cmake-build-release\src\Frontend\Renderer\Makefile VERBOSE=1 &quot;$file&quot;"/>
+					<Clean command="nmake /NOLOGO /f D:\CProjects\GC-\cmake-build-release\src\Frontend\Renderer\Makefile VERBOSE=1 clean"/>
+					<DistClean command="nmake /NOLOGO /f D:\CProjects\GC-\cmake-build-release\src\Frontend\Renderer\Makefile VERBOSE=1 clean"/>
 				</MakeCommands>
 			</Target>
 			<Target title="Loader">
@@ -428,6 +474,18 @@
 		<Unit filename="D:/CProjects/GC-/src/Core/system.h">
 			<Option target="Core"/>
 		</Unit>
+		<Unit filename="D:/CProjects/GC-/src/Frontend/Renderer/renderer_backend.c">
+			<Option target="Renderer"/>
+		</Unit>
+		<Unit filename="D:/CProjects/GC-/src/Frontend/Renderer/renderer_backend.h">
+			<Option target="Renderer"/>
+		</Unit>
+		<Unit filename="D:/CProjects/GC-/src/Frontend/Renderer/renderer_frontend.c">
+			<Option target="Renderer"/>
+		</Unit>
+		<Unit filename="D:/CProjects/GC-/src/Frontend/Renderer/renderer_frontend.h">
+			<Option target="Renderer"/>
+		</Unit>
 		<Unit filename="D:/CProjects/GC-/src/Frontend/debugger.h">
 			<Option target="Frontend"/>
 		</Unit>
@@ -518,14 +576,20 @@
 		<Unit filename="D:/CProjects/GC-/../../vcpkg/vcpkg/installed/x86-windows/share/sdl2/vcpkg-cmake-wrapper.cmake">
 			<Option virtualFolder="CMake Files\..\..\vcpkg\vcpkg\installed\x86-windows\share\sdl2\"/>
 		</Unit>
-		<Unit filename="D:/CProjects/GC-/../../vcpkg/vcpkg/installed/x86-windows/share/gl3w/gl3wConfig-debug.cmake">
-			<Option virtualFolder="CMake Files\..\..\vcpkg\vcpkg\installed\x86-windows\share\gl3w\"/>
+		<Unit filename="D:/CProjects/GC-/../../vcpkg/vcpkg/installed/x86-windows/share/glad/gladConfig.cmake">
+			<Option virtualFolder="CMake Files\..\..\vcpkg\vcpkg\installed\x86-windows\share\glad\"/>
 		</Unit>
-		<Unit filename="D:/CProjects/GC-/../../vcpkg/vcpkg/installed/x86-windows/share/gl3w/gl3wConfig-release.cmake">
-			<Option virtualFolder="CMake Files\..\..\vcpkg\vcpkg\installed\x86-windows\share\gl3w\"/>
+		<Unit filename="D:/CProjects/GC-/../../vcpkg/vcpkg/installed/x86-windows/share/glad/gladConfigVersion.cmake">
+			<Option virtualFolder="CMake Files\..\..\vcpkg\vcpkg\installed\x86-windows\share\glad\"/>
 		</Unit>
-		<Unit filename="D:/CProjects/GC-/../../vcpkg/vcpkg/installed/x86-windows/share/gl3w/gl3wConfig.cmake">
-			<Option virtualFolder="CMake Files\..\..\vcpkg\vcpkg\installed\x86-windows\share\gl3w\"/>
+		<Unit filename="D:/CProjects/GC-/../../vcpkg/vcpkg/installed/x86-windows/share/glad/gladTargets-debug.cmake">
+			<Option virtualFolder="CMake Files\..\..\vcpkg\vcpkg\installed\x86-windows\share\glad\"/>
+		</Unit>
+		<Unit filename="D:/CProjects/GC-/../../vcpkg/vcpkg/installed/x86-windows/share/glad/gladTargets-release.cmake">
+			<Option virtualFolder="CMake Files\..\..\vcpkg\vcpkg\installed\x86-windows\share\glad\"/>
+		</Unit>
+		<Unit filename="D:/CProjects/GC-/../../vcpkg/vcpkg/installed/x86-windows/share/glad/gladTargets.cmake">
+			<Option virtualFolder="CMake Files\..\..\vcpkg\vcpkg\installed\x86-windows\share\glad\"/>
 		</Unit>
 		<Unit filename="D:/CProjects/GC-/src/Core/CMakeLists.txt">
 			<Option virtualFolder="CMake Files\src\Core\"/>
@@ -535,6 +599,9 @@
 		</Unit>
 		<Unit filename="D:/CProjects/GC-/src/Frontend/CMakeLists.txt">
 			<Option virtualFolder="CMake Files\src\Frontend\"/>
+		</Unit>
+		<Unit filename="D:/CProjects/GC-/src/Frontend/Renderer/CMakeLists.txt">
+			<Option virtualFolder="CMake Files\src\Frontend\Renderer\"/>
 		</Unit>
 		<Unit filename="D:/CProjects/GC-/src/Loader/CMakeLists.txt">
 			<Option virtualFolder="CMake Files\src\Loader\"/>

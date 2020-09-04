@@ -213,6 +213,9 @@ bool    ImGui_ImplOpenGL3_Init(const char* glsl_version)
     return true;
 }
 
+// this fixes segfaults, not sure why...
+#undef GL_SAMPLER_BINDING
+
 void    ImGui_ImplOpenGL3_Shutdown()
 {
     ImGui_ImplOpenGL3_DestroyDeviceObjects();

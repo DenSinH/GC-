@@ -231,8 +231,17 @@ GC__BINARY_DIR:STATIC=D:/CProjects/GC-/cmake-build-release
 //Value Computed by CMake
 GC__SOURCE_DIR:STATIC=D:/CProjects/GC-
 
+//Path to a library.
+SDL2MAIN_LIBRARY:FILEPATH=D:/vcpkg/vcpkg/installed/x86-windows/lib/manual-link/SDL2main.lib
+
 //The directory containing a CMake configuration file for SDL2.
 SDL2_DIR:PATH=D:/vcpkg/vcpkg/installed/x86-windows/share/sdl2
+
+//Path to a file.
+SDL2_INCLUDE_DIR:PATH=D:/vcpkg/vcpkg/installed/x86-windows/include/SDL2
+
+//Where the SDL2 Library can be found
+SDL2_LIBRARY:STRING=D:/vcpkg/vcpkg/installed/x86-windows/lib/manual-link/SDL2main.lib;D:/vcpkg/vcpkg/installed/x86-windows/lib/SDL2.lib
 
 //Automatically copy dependencies into the output directory for
 // executables.
@@ -253,6 +262,9 @@ _VCPKG_INSTALLED_DIR:PATH=D:/vcpkg/vcpkg/installed
 
 //The directory containing a CMake configuration file for gl3w.
 gl3w_DIR:PATH=D:/vcpkg/vcpkg/installed/x86-windows/share/gl3w
+
+//The directory containing a CMake configuration file for glad.
+glad_DIR:PATH=D:/vcpkg/vcpkg/installed/x86-windows/share/glad
 
 //The directory containing a CMake configuration file for imgui.
 imgui_DIR:PATH=D:/vcpkg/vcpkg/installed/x86-windows/share/imgui
@@ -344,6 +356,8 @@ CMAKE_GENERATOR_INSTANCE:INTERNAL=
 CMAKE_GENERATOR_PLATFORM:INTERNAL=
 //Name of generator toolset.
 CMAKE_GENERATOR_TOOLSET:INTERNAL=
+//Have include pthread.h
+CMAKE_HAVE_PTHREAD_H:INTERNAL=
 //Source directory with the top level CMakeLists.txt file for this
 // project
 CMAKE_HOME_DIRECTORY:INTERNAL=D:/CProjects/GC-
@@ -364,7 +378,7 @@ CMAKE_MODULE_LINKER_FLAGS_RELWITHDEBINFO-ADVANCED:INTERNAL=1
 //ADVANCED property for variable: CMAKE_MT
 CMAKE_MT-ADVANCED:INTERNAL=1
 //number of local generators
-CMAKE_NUMBER_OF_MAKEFILES:INTERNAL=5
+CMAKE_NUMBER_OF_MAKEFILES:INTERNAL=6
 //Platform information initialized
 CMAKE_PLATFORM_INFO_INITIALIZED:INTERNAL=1
 //ADVANCED property for variable: CMAKE_RC_COMPILER
@@ -410,6 +424,11 @@ CMAKE_STATIC_LINKER_FLAGS_RELWITHDEBINFO-ADVANCED:INTERNAL=1
 CMAKE_TOOLCHAIN_FILE-ADVANCED:INTERNAL=1
 //ADVANCED property for variable: CMAKE_VERBOSE_MAKEFILE
 CMAKE_VERBOSE_MAKEFILE-ADVANCED:INTERNAL=1
+//Details about finding SDL2
+FIND_PACKAGE_MESSAGE_DETAILS_SDL2:INTERNAL=[D:/vcpkg/vcpkg/installed/x86-windows/lib/manual-link/SDL2main.lib;D:/vcpkg/vcpkg/installed/x86-windows/lib/SDL2.lib][D:/vcpkg/vcpkg/installed/x86-windows/include/SDL2][v()]
+//Details about finding Threads
+FIND_PACKAGE_MESSAGE_DETAILS_Threads:INTERNAL=[TRUE][v()]
+SDL2_LIBRARY_TEMP:INTERNAL=D:/vcpkg/vcpkg/installed/x86-windows/lib/manual-link/SDL2main.lib;D:/vcpkg/vcpkg/installed/x86-windows/lib/SDL2.lib
 //ADVANCED property for variable: VCPKG_VERBOSE
 VCPKG_VERBOSE-ADVANCED:INTERNAL=1
 //_vcpkg_get_directory_name_of_file_above: _VCPKG_ROOT_DIR

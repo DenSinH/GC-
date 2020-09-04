@@ -37,10 +37,13 @@ set(CMAKE_MAKEFILE_DEPENDS
   "../src/Core/CMakeLists.txt"
   "../src/Core/PPC/Registers/CMakeLists.txt"
   "../src/Frontend/CMakeLists.txt"
+  "../src/Frontend/Renderer/CMakeLists.txt"
   "../src/Loader/CMakeLists.txt"
-  "D:/vcpkg/vcpkg/installed/x86-windows/share/gl3w/gl3wConfig-debug.cmake"
-  "D:/vcpkg/vcpkg/installed/x86-windows/share/gl3w/gl3wConfig-release.cmake"
-  "D:/vcpkg/vcpkg/installed/x86-windows/share/gl3w/gl3wConfig.cmake"
+  "D:/vcpkg/vcpkg/installed/x86-windows/share/glad/gladConfig.cmake"
+  "D:/vcpkg/vcpkg/installed/x86-windows/share/glad/gladConfigVersion.cmake"
+  "D:/vcpkg/vcpkg/installed/x86-windows/share/glad/gladTargets-debug.cmake"
+  "D:/vcpkg/vcpkg/installed/x86-windows/share/glad/gladTargets-release.cmake"
+  "D:/vcpkg/vcpkg/installed/x86-windows/share/glad/gladTargets.cmake"
   "D:/vcpkg/vcpkg/installed/x86-windows/share/imgui/imgui-config-debug.cmake"
   "D:/vcpkg/vcpkg/installed/x86-windows/share/imgui/imgui-config-release.cmake"
   "D:/vcpkg/vcpkg/installed/x86-windows/share/imgui/imgui-config.cmake"
@@ -65,6 +68,7 @@ set(CMAKE_MAKEFILE_PRODUCTS
   "src/Core/CMakeFiles/CMakeDirectoryInformation.cmake"
   "src/Core/PPC/Registers/CMakeFiles/CMakeDirectoryInformation.cmake"
   "src/Frontend/CMakeFiles/CMakeDirectoryInformation.cmake"
+  "src/Frontend/Renderer/CMakeFiles/CMakeDirectoryInformation.cmake"
   "src/Loader/CMakeFiles/CMakeDirectoryInformation.cmake"
   )
 
@@ -74,5 +78,6 @@ set(CMAKE_DEPEND_INFO_FILES
   "src/Core/CMakeFiles/Core.dir/DependInfo.cmake"
   "src/Core/PPC/Registers/CMakeFiles/Registers.dir/DependInfo.cmake"
   "src/Frontend/CMakeFiles/Frontend.dir/DependInfo.cmake"
+  "src/Frontend/Renderer/CMakeFiles/Renderer.dir/DependInfo.cmake"
   "src/Loader/CMakeFiles/Loader.dir/DependInfo.cmake"
   )
