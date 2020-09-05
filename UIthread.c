@@ -1,5 +1,5 @@
 #include "UIthread.h"
-#include "src/Frontend/debugger.h"
+#include "src/Frontend/interface.h"
 
 #ifdef _WIN32
 

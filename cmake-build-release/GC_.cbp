@@ -488,10 +488,16 @@
 		<Unit filename="D:/CProjects/GC-/src/Frontend/Renderer/renderer_frontend.h">
 			<Option target="Renderer"/>
 		</Unit>
+		<Unit filename="D:/CProjects/GC-/src/Frontend/debugger.cpp">
+			<Option target="Frontend"/>
+		</Unit>
 		<Unit filename="D:/CProjects/GC-/src/Frontend/debugger.h">
 			<Option target="Frontend"/>
 		</Unit>
 		<Unit filename="D:/CProjects/GC-/src/Frontend/frontend.cpp">
+			<Option target="Frontend"/>
+		</Unit>
+		<Unit filename="D:/CProjects/GC-/src/Frontend/frontend.h">
 			<Option target="Frontend"/>
 		</Unit>
 		<Unit filename="D:/CProjects/GC-/src/Frontend/imgui/imgui_impl_opengl3.cpp">
@@ -504,6 +510,9 @@
 			<Option target="Frontend"/>
 		</Unit>
 		<Unit filename="D:/CProjects/GC-/src/Frontend/imgui/imgui_impl_sdl.h">
+			<Option target="Frontend"/>
+		</Unit>
+		<Unit filename="D:/CProjects/GC-/src/Frontend/interface.h">
 			<Option target="Frontend"/>
 		</Unit>
 		<Unit filename="D:/CProjects/GC-/src/Frontend/widgets/console.h">

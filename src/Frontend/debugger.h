@@ -1,28 +1,12 @@
 #pragma once
 
-#include <stdbool.h>
-#include <stdint.h>
+#include <glad/glad.h>
+#include <SDL.h>
 
 #undef SHOW_EXAMPLE_MENU
-#define CONSOLE_COMMAND(name) void name(char** args, int argc, char* output)
-#define MAX_OUTPUT_LENGTH 0x100
 
-#ifdef __cplusplus
-extern "C" {
-#endif
-int ui_run();
-void debugger_init(
-        bool* shutdown,
-        uint32_t* PC,
-        uint8_t* memory,
-        uint64_t mem_size,
-        uint32_t (*valid_address_mask)(uint32_t),
-        uint64_t* timer,
-        uint8_t (*mem_read)(const uint8_t* data, uint64_t off)
-);
-void add_command(const char* command, const char* description, CONSOLE_COMMAND((*callback)));
-void add_register_tab(const char* name);
-void add_register_data(char* name, const void* value, bool islong, int tab);
-#ifdef __cplusplus
-}
-#endif
+bool get_shutdown();
+void set_shutdown(bool value);
+
+void debugger_video_init(const char* glsl_version, SDL_Window* window, SDL_GLContext* gl_context);
+void debugger_render();

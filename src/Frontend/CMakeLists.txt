@@ -12,12 +12,11 @@ set(FRONTEND_SRCS
         frontend.cpp
         widgets/menubar.cpp
         widgets/disassemble.c
-        )
+        debugger.cpp)
 
 set(FRONTEND_HDRS
                imgui/imgui_impl_opengl3.h
                imgui/imgui_impl_sdl.h
-        debugger.h
         widgets/memory_viewer.h
         widgets/console.h
         widgets/menubar.h
@@ -25,7 +24,10 @@ set(FRONTEND_HDRS
         widgets/disassembly_viewer.h
         widgets/overlay.h
         widgets/disassemble.h
-        )
+        debugger.h
+        frontend.h
+        interface.h
+)
 
 add_subdirectory(Renderer)
 add_library(Frontend ${FRONTEND_SRCS} ${FRONTEND_HDRS})

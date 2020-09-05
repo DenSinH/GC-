@@ -11,6 +11,18 @@ src/Core/CMakeFiles/Core.dir/PPC/Gekko.c.obj
  ../include/default.h
  ../include/flags.h
  ../include/log.h
+ ../src/Core/HWregs/AudioStreamingInterface.h
+ ../src/Core/HWregs/CommandProcessor.h
+ ../src/Core/HWregs/DVDInterface.h
+ ../src/Core/HWregs/DigitalSoundProcessorInterface.h
+ ../src/Core/HWregs/ExternalInterface.h
+ ../src/Core/HWregs/GX_FIFO.h
+ ../src/Core/HWregs/MemoryInterface.h
+ ../src/Core/HWregs/PixelEngine.h
+ ../src/Core/HWregs/ProcessorInterface.h
+ ../src/Core/HWregs/SerialInterface.h
+ ../src/Core/HWregs/VideoInterface.h
+ ../src/Core/HWregs/hardware_registers.h
  ../src/Core/PPC/Registers/FPSCR.h
  ../src/Core/include/core_utils.h
  ../src/Core/include/float_utils.h
@@ -28,24 +40,24 @@ src/Core/CMakeFiles/Core.dir/PPC/Gekko.c.obj
  D:/CProjects/GC-/src/Core/PPC/Registers/TBR.h
  D:/CProjects/GC-/src/Core/PPC/Registers/WPAR.h
  D:/CProjects/GC-/src/Core/PPC/Registers/XER.h
- D:/CProjects/GC-/src/Core/PPC/Registers/hardware_registers/AudioStreamingInterface.h
- D:/CProjects/GC-/src/Core/PPC/Registers/hardware_registers/CommandProcessor.h
- D:/CProjects/GC-/src/Core/PPC/Registers/hardware_registers/DVDInterface.h
- D:/CProjects/GC-/src/Core/PPC/Registers/hardware_registers/DigitalSoundProcessorInterface.h
- D:/CProjects/GC-/src/Core/PPC/Registers/hardware_registers/ExternalInterface.h
- D:/CProjects/GC-/src/Core/PPC/Registers/hardware_registers/GX_FIFO.h
- D:/CProjects/GC-/src/Core/PPC/Registers/hardware_registers/MemoryInterface.h
- D:/CProjects/GC-/src/Core/PPC/Registers/hardware_registers/PixelEngine.h
- D:/CProjects/GC-/src/Core/PPC/Registers/hardware_registers/ProcessorInterface.h
- D:/CProjects/GC-/src/Core/PPC/Registers/hardware_registers/SerialInterface.h
- D:/CProjects/GC-/src/Core/PPC/Registers/hardware_registers/VideoInterface.h
- D:/CProjects/GC-/src/Core/PPC/Registers/hardware_registers/hardware_registers.h
  D:/CProjects/GC-/src/Core/PPC/gekko_instruction.h
 src/Core/CMakeFiles/Core.dir/PPC/Gekko_init.c.obj
  ../include/default.h
  ../include/flags.h
  ../include/helpers.h
  ../include/log.h
+ ../src/Core/HWregs/AudioStreamingInterface.h
+ ../src/Core/HWregs/CommandProcessor.h
+ ../src/Core/HWregs/DVDInterface.h
+ ../src/Core/HWregs/DigitalSoundProcessorInterface.h
+ ../src/Core/HWregs/ExternalInterface.h
+ ../src/Core/HWregs/GX_FIFO.h
+ ../src/Core/HWregs/MemoryInterface.h
+ ../src/Core/HWregs/PixelEngine.h
+ ../src/Core/HWregs/ProcessorInterface.h
+ ../src/Core/HWregs/SerialInterface.h
+ ../src/Core/HWregs/VideoInterface.h
+ ../src/Core/HWregs/hardware_registers.h
  ../src/Core/PPC/Registers/FPSCR.h
  ../src/Core/include/core_utils.h
  ../src/Core/include/float_utils.h
@@ -64,18 +76,6 @@ src/Core/CMakeFiles/Core.dir/PPC/Gekko_init.c.obj
  D:/CProjects/GC-/src/Core/PPC/Registers/TBR.h
  D:/CProjects/GC-/src/Core/PPC/Registers/WPAR.h
  D:/CProjects/GC-/src/Core/PPC/Registers/XER.h
- D:/CProjects/GC-/src/Core/PPC/Registers/hardware_registers/AudioStreamingInterface.h
- D:/CProjects/GC-/src/Core/PPC/Registers/hardware_registers/CommandProcessor.h
- D:/CProjects/GC-/src/Core/PPC/Registers/hardware_registers/DVDInterface.h
- D:/CProjects/GC-/src/Core/PPC/Registers/hardware_registers/DigitalSoundProcessorInterface.h
- D:/CProjects/GC-/src/Core/PPC/Registers/hardware_registers/ExternalInterface.h
- D:/CProjects/GC-/src/Core/PPC/Registers/hardware_registers/GX_FIFO.h
- D:/CProjects/GC-/src/Core/PPC/Registers/hardware_registers/MemoryInterface.h
- D:/CProjects/GC-/src/Core/PPC/Registers/hardware_registers/PixelEngine.h
- D:/CProjects/GC-/src/Core/PPC/Registers/hardware_registers/ProcessorInterface.h
- D:/CProjects/GC-/src/Core/PPC/Registers/hardware_registers/SerialInterface.h
- D:/CProjects/GC-/src/Core/PPC/Registers/hardware_registers/VideoInterface.h
- D:/CProjects/GC-/src/Core/PPC/Registers/hardware_registers/hardware_registers.h
  D:/CProjects/GC-/src/Core/PPC/gekko_instruction.h
  D:/CProjects/GC-/src/Core/PPC/instructions.h
  D:/CProjects/GC-/src/Core/system.h
@@ -83,28 +83,40 @@ src/Core/CMakeFiles/Core.dir/PPC/MMU.c.obj
  ../include/default.h
  ../include/flags.h
  ../include/log.h
+ ../src/Core/HWregs/AudioStreamingInterface.h
+ ../src/Core/HWregs/CommandProcessor.h
+ ../src/Core/HWregs/DVDInterface.h
+ ../src/Core/HWregs/DigitalSoundProcessorInterface.h
+ ../src/Core/HWregs/ExternalInterface.h
+ ../src/Core/HWregs/GX_FIFO.h
+ ../src/Core/HWregs/MemoryInterface.h
+ ../src/Core/HWregs/PixelEngine.h
+ ../src/Core/HWregs/ProcessorInterface.h
+ ../src/Core/HWregs/SerialInterface.h
+ ../src/Core/HWregs/VideoInterface.h
+ ../src/Core/HWregs/hardware_registers.h
  ../src/Core/include/core_utils.h
  ../src/Core/include/hwreg_utils.h
  D:/CProjects/GC-/src/Core/PPC/MMU.c
  D:/CProjects/GC-/src/Core/PPC/MMU.h
  D:/CProjects/GC-/src/Core/PPC/Registers/TBR.h
- D:/CProjects/GC-/src/Core/PPC/Registers/hardware_registers/AudioStreamingInterface.h
- D:/CProjects/GC-/src/Core/PPC/Registers/hardware_registers/CommandProcessor.h
- D:/CProjects/GC-/src/Core/PPC/Registers/hardware_registers/DVDInterface.h
- D:/CProjects/GC-/src/Core/PPC/Registers/hardware_registers/DigitalSoundProcessorInterface.h
- D:/CProjects/GC-/src/Core/PPC/Registers/hardware_registers/ExternalInterface.h
- D:/CProjects/GC-/src/Core/PPC/Registers/hardware_registers/GX_FIFO.h
- D:/CProjects/GC-/src/Core/PPC/Registers/hardware_registers/MemoryInterface.h
- D:/CProjects/GC-/src/Core/PPC/Registers/hardware_registers/PixelEngine.h
- D:/CProjects/GC-/src/Core/PPC/Registers/hardware_registers/ProcessorInterface.h
- D:/CProjects/GC-/src/Core/PPC/Registers/hardware_registers/SerialInterface.h
- D:/CProjects/GC-/src/Core/PPC/Registers/hardware_registers/VideoInterface.h
- D:/CProjects/GC-/src/Core/PPC/Registers/hardware_registers/hardware_registers.h
 src/Core/CMakeFiles/Core.dir/PPC/instructions.c.obj
  ../include/default.h
  ../include/flags.h
  ../include/helpers.h
  ../include/log.h
+ ../src/Core/HWregs/AudioStreamingInterface.h
+ ../src/Core/HWregs/CommandProcessor.h
+ ../src/Core/HWregs/DVDInterface.h
+ ../src/Core/HWregs/DigitalSoundProcessorInterface.h
+ ../src/Core/HWregs/ExternalInterface.h
+ ../src/Core/HWregs/GX_FIFO.h
+ ../src/Core/HWregs/MemoryInterface.h
+ ../src/Core/HWregs/PixelEngine.h
+ ../src/Core/HWregs/ProcessorInterface.h
+ ../src/Core/HWregs/SerialInterface.h
+ ../src/Core/HWregs/VideoInterface.h
+ ../src/Core/HWregs/hardware_registers.h
  ../src/Core/PPC/Gekko.h
  ../src/Core/PPC/MMU.h
  ../src/Core/PPC/Registers/CR.h
@@ -116,18 +128,6 @@ src/Core/CMakeFiles/Core.dir/PPC/instructions.c.obj
  ../src/Core/PPC/Registers/TBR.h
  ../src/Core/PPC/Registers/WPAR.h
  ../src/Core/PPC/Registers/XER.h
- ../src/Core/PPC/Registers/hardware_registers/AudioStreamingInterface.h
- ../src/Core/PPC/Registers/hardware_registers/CommandProcessor.h
- ../src/Core/PPC/Registers/hardware_registers/DVDInterface.h
- ../src/Core/PPC/Registers/hardware_registers/DigitalSoundProcessorInterface.h
- ../src/Core/PPC/Registers/hardware_registers/ExternalInterface.h
- ../src/Core/PPC/Registers/hardware_registers/GX_FIFO.h
- ../src/Core/PPC/Registers/hardware_registers/MemoryInterface.h
- ../src/Core/PPC/Registers/hardware_registers/PixelEngine.h
- ../src/Core/PPC/Registers/hardware_registers/ProcessorInterface.h
- ../src/Core/PPC/Registers/hardware_registers/SerialInterface.h
- ../src/Core/PPC/Registers/hardware_registers/VideoInterface.h
- ../src/Core/PPC/Registers/hardware_registers/hardware_registers.h
  ../src/Core/PPC/instructions.h
  ../src/Core/include/core_utils.h
  ../src/Core/include/float_utils.h
@@ -158,6 +158,40 @@ src/Core/CMakeFiles/Core.dir/PPC/instructions.c.obj
  D:/CProjects/GC-/src/Core/PPC/instructions/paired_single_misc.c
  D:/CProjects/GC-/src/Core/PPC/instructions/trap_and_control.c
  D:/CProjects/GC-/src/Core/PPC/instructions/unimplemented.c
+src/Core/CMakeFiles/Core.dir/PPC/registers/SPR.c.obj
+ ../include/default.h
+ ../include/flags.h
+ ../include/log.h
+ ../src/Core/HWregs/AudioStreamingInterface.h
+ ../src/Core/HWregs/CommandProcessor.h
+ ../src/Core/HWregs/DVDInterface.h
+ ../src/Core/HWregs/DigitalSoundProcessorInterface.h
+ ../src/Core/HWregs/ExternalInterface.h
+ ../src/Core/HWregs/GX_FIFO.h
+ ../src/Core/HWregs/MemoryInterface.h
+ ../src/Core/HWregs/PixelEngine.h
+ ../src/Core/HWregs/ProcessorInterface.h
+ ../src/Core/HWregs/SerialInterface.h
+ ../src/Core/HWregs/VideoInterface.h
+ ../src/Core/HWregs/hardware_registers.h
+ ../src/Core/PPC/Registers/FPSCR.h
+ ../src/Core/include/core_utils.h
+ ../src/Core/include/float_utils.h
+ ../src/Core/include/hwreg_utils.h
+ D:/CProjects/GC-/src/Core/PPC/Gekko.h
+ D:/CProjects/GC-/src/Core/PPC/MMU.h
+ D:/CProjects/GC-/src/Core/PPC/Registers/CR.h
+ D:/CProjects/GC-/src/Core/PPC/Registers/FPR.h
+ D:/CProjects/GC-/src/Core/PPC/Registers/FPSCR.h
+ D:/CProjects/GC-/src/Core/PPC/Registers/GQR.h
+ D:/CProjects/GC-/src/Core/PPC/Registers/HID.h
+ D:/CProjects/GC-/src/Core/PPC/Registers/MSR.h
+ D:/CProjects/GC-/src/Core/PPC/Registers/SPR.c
+ D:/CProjects/GC-/src/Core/PPC/Registers/SPR.h
+ D:/CProjects/GC-/src/Core/PPC/Registers/TBR.h
+ D:/CProjects/GC-/src/Core/PPC/Registers/WPAR.h
+ D:/CProjects/GC-/src/Core/PPC/Registers/XER.h
+ D:/CProjects/GC-/src/Core/PPC/gekko_instruction.h
 src/Core/CMakeFiles/Core.dir/include/float_utils.c.obj
  ../include/default.h
  ../include/flags.h
@@ -170,6 +204,18 @@ src/Core/CMakeFiles/Core.dir/system.c.obj
  ../include/flags.h
  ../include/log.h
  ../include/sleeping.h
+ ../src/Core/HWregs/AudioStreamingInterface.h
+ ../src/Core/HWregs/CommandProcessor.h
+ ../src/Core/HWregs/DVDInterface.h
+ ../src/Core/HWregs/DigitalSoundProcessorInterface.h
+ ../src/Core/HWregs/ExternalInterface.h
+ ../src/Core/HWregs/GX_FIFO.h
+ ../src/Core/HWregs/MemoryInterface.h
+ ../src/Core/HWregs/PixelEngine.h
+ ../src/Core/HWregs/ProcessorInterface.h
+ ../src/Core/HWregs/SerialInterface.h
+ ../src/Core/HWregs/VideoInterface.h
+ ../src/Core/HWregs/hardware_registers.h
  ../src/Core/PPC/Registers/FPSCR.h
  ../src/Core/include/core_utils.h
  ../src/Core/include/float_utils.h
@@ -186,18 +232,6 @@ src/Core/CMakeFiles/Core.dir/system.c.obj
  D:/CProjects/GC-/src/Core/PPC/Registers/TBR.h
  D:/CProjects/GC-/src/Core/PPC/Registers/WPAR.h
  D:/CProjects/GC-/src/Core/PPC/Registers/XER.h
- D:/CProjects/GC-/src/Core/PPC/Registers/hardware_registers/AudioStreamingInterface.h
- D:/CProjects/GC-/src/Core/PPC/Registers/hardware_registers/CommandProcessor.h
- D:/CProjects/GC-/src/Core/PPC/Registers/hardware_registers/DVDInterface.h
- D:/CProjects/GC-/src/Core/PPC/Registers/hardware_registers/DigitalSoundProcessorInterface.h
- D:/CProjects/GC-/src/Core/PPC/Registers/hardware_registers/ExternalInterface.h
- D:/CProjects/GC-/src/Core/PPC/Registers/hardware_registers/GX_FIFO.h
- D:/CProjects/GC-/src/Core/PPC/Registers/hardware_registers/MemoryInterface.h
- D:/CProjects/GC-/src/Core/PPC/Registers/hardware_registers/PixelEngine.h
- D:/CProjects/GC-/src/Core/PPC/Registers/hardware_registers/ProcessorInterface.h
- D:/CProjects/GC-/src/Core/PPC/Registers/hardware_registers/SerialInterface.h
- D:/CProjects/GC-/src/Core/PPC/Registers/hardware_registers/VideoInterface.h
- D:/CProjects/GC-/src/Core/PPC/Registers/hardware_registers/hardware_registers.h
  D:/CProjects/GC-/src/Core/PPC/gekko_instruction.h
  D:/CProjects/GC-/src/Core/system.c
  D:/CProjects/GC-/src/Core/system.h

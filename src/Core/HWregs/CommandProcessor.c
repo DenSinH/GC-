@@ -37,7 +37,7 @@ inline void load_XF_regs(s_CP* CP, u16 length, u16 base_addr, const u8* values_b
 #endif
 
     for (int i = 0; i < length; i++) {
-        CP->internalXFregs[i - INTERNAL_XF_REGISTER_BASE] = READ32(values_buffer, i << 2);
+        CP->internalXFregs[base_addr + i - INTERNAL_XF_REGISTER_BASE] = READ32(values_buffer, i << 2);
     }
 }
 

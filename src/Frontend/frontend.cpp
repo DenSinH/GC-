@@ -1,67 +1,11 @@
-#include "imgui.h"
-#include "imgui_impl_sdl.h"
-#include "imgui_impl_opengl3.h"
+#include "frontend.h"
 #include "debugger.h"
-#include "widgets/menubar.h"
-#include "widgets/overlay.h"
-#include "widgets/console.h"
-#include "widgets/register_viewer.h"
-#include "widgets/disassembly_viewer.h"
-#include "widgets/memory_viewer.h"
-
 #include "Renderer/renderer_frontend.h"
+
 #include <stdio.h>
 #include <SDL.h>
 #include <thread>
-#include <glad/glad.h>
 
-
-static struct s_debugger {
-    ConsoleWidget console;
-    RegisterViewer register_viewer;
-    DisassemblyViewer disassembly_viewer;
-    Overlay overlay;
-    MemoryViewer memory_viewer;
-} Debugger;
-
-static struct s_frontend {
-    bool* shutdown;
-} Frontend;
-
-void add_command(const char* command, const char* description, CONSOLE_COMMAND((*callback))) {
-    Debugger.console.AddCommand(s_console_command {
-            .command = command,
-            .description = description,
-            .callback = callback
-    });
-}
-
-void add_register_tab(const char* name){
-    Debugger.register_viewer.AddRegisterTab(name);
-}
-
-void add_register_data(char* name, const void* value, bool islong, int tab) {
-    Debugger.register_viewer.AddRegister(name, value, islong, tab);
-}
-
-void debugger_init(
-        bool* shutdown,
-        uint32_t* PC,
-        uint8_t* memory,
-        uint64_t mem_size,
-        uint32_t (*valid_address_mask)(uint32_t),
-        uint64_t* timer,
-        uint8_t (*mem_read)(const uint8_t* data, uint64_t off)
-        ) {
-    Frontend.shutdown = shutdown;
-    Debugger.disassembly_viewer.PC = PC;
-    Debugger.disassembly_viewer.memory = memory;
-    Debugger.disassembly_viewer.valid_address_mask = valid_address_mask;
-    Debugger.overlay.timer = timer;
-    Debugger.memory_viewer.mem_data = memory;
-    Debugger.memory_viewer.mem_size = mem_size;
-    Debugger.memory_viewer.ReadFn = mem_read;
-}
 
 const char *vertexShaderSource =
         "#version 330 core\n"
@@ -80,12 +24,9 @@ const char *fragmentShaderSource =
         "    FragColor = vec4(1.0f, 0.5f, 0.2f, 1.0f);\n"
         "}\0";
 
-// Main code
-int ui_run()
+
+extern "C" int ui_run()
 {
-    // Setup SDL
-    // (Some versions of SDL before <2.0.10 appears to have performance/stalling issues on a minority of Windows systems,
-    // depending on whether SDL_INIT_GAMECONTROLLER is enabled or disabled.. updating to latest version of SDL is recommended!)
     if (SDL_Init(SDL_INIT_VIDEO | SDL_INIT_TIMER | SDL_INIT_GAMECONTROLLER) != 0)
     {
         printf("Error: %s\n", SDL_GetError());
@@ -121,40 +62,9 @@ int ui_run()
     SDL_GL_MakeCurrent(window, gl_context);
     SDL_GL_SetSwapInterval(1); // Enable vsync
 
-    // Initialize OpenGL loader
-    bool err = gladLoadGLLoader((GLADloadproc)SDL_GL_GetProcAddress) == 0;
-    if (err)
-    {
-        fprintf(stderr, "Failed to initialize OpenGL loader!\n");
-        return 1;
-    }
-
-    // Setup Dear ImGui context
-    IMGUI_CHECKVERSION();
-    ImGui::CreateContext();
-    ImGuiIO& io = ImGui::GetIO(); (void)io;
-
-    Debugger.overlay.io = &io;
-    //io.ConfigFlags |= ImGuiConfigFlags_NavEnableKeyboard;     // Enable Keyboard Controls
-    //io.ConfigFlags |= ImGuiConfigFlags_NavEnableGamepad;      // Enable Gamepad Controls
-
-    // Setup Dear ImGui style
-    ImGui::StyleColorsDark();
-
-    // Setup Platform/Renderer bindings
-    ImGui_ImplSDL2_InitForOpenGL(window, gl_context);
-    ImGui_ImplOpenGL3_Init(glsl_version);
-
-    // Our state
-    bool show_console = true;
-    bool show_register_viewer = true;
-    bool show_hw_register_viewer = true;
-    bool show_disassembly_viewer = true;
-    bool show_overlay = false;
-    bool show_memory_viewer = true;
+    debugger_video_init(glsl_version, window, &gl_context);
 
     // set up openGL stuff
-
     // create shader
     unsigned int vertexShader;
     vertexShader = glCreateShader(GL_VERTEX_SHADER);
@@ -235,7 +145,7 @@ int ui_run()
     glBindBuffer(VBO, 0);
 
     // Main loop
-    while (!(*Frontend.shutdown))
+    while (!get_shutdown())
     {
         // Get events
         SDL_Event event;
@@ -243,9 +153,9 @@ int ui_run()
         {
             ImGui_ImplSDL2_ProcessEvent(&event);
             if (event.type == SDL_QUIT)
-                *Frontend.shutdown = true;
+                set_shutdown(true);
             if (event.type == SDL_WINDOWEVENT && event.window.event == SDL_WINDOWEVENT_CLOSE && event.window.windowID == SDL_GetWindowID(window))
-                *Frontend.shutdown = true;
+                set_shutdown(true);
         }
 
         // Start the Dear ImGui frame
@@ -253,32 +163,11 @@ int ui_run()
         ImGui_ImplSDL2_NewFrame(window);
         ImGui::NewFrame();
 
-        // render the widgets
-        ShowMenuBar(
-                &show_console,
-                &show_register_viewer,
-                &show_disassembly_viewer,
-                &show_memory_viewer,
-                &show_overlay
-                );
-        if (show_console)
-            Debugger.console.Draw(&show_console);
-        if (show_register_viewer)
-            Debugger.register_viewer.Draw(&show_register_viewer);
-        if (show_disassembly_viewer)
-            Debugger.disassembly_viewer.Draw(&show_disassembly_viewer);
-        if (show_overlay)
-            Debugger.overlay.Draw(&show_overlay);
-        if (show_memory_viewer)
-            Debugger.memory_viewer.Draw(&show_memory_viewer);
+        debugger_render();
 
 #ifdef SHOW_EXAMPLE_MENU
         ImGui::ShowDemoWindow(NULL);
 #endif
-
-        // Rendering
-        ImGui::Render();
-        glViewport(0, 0, (int)io.DisplaySize.x, (int)io.DisplaySize.y);
         s_color backdrop = get_backdrop();
         glClearColor(backdrop.r, backdrop.g, backdrop.b, 1.0f);
         glClear(GL_COLOR_BUFFER_BIT);
@@ -288,11 +177,10 @@ int ui_run()
         glBindVertexArray(VAO);
         glDrawArrays(GL_TRIANGLES, 0, 6);
 
-        unsigned error = glGetError();
-        if (error) {
-            printf("Error: %08x\n", error);
-        }
-        /* /triangle */
+//        unsigned error = glGetError();
+//        if (error) {
+//            printf("Error: %08x\n", error);
+//        }
 
         ImGui_ImplOpenGL3_RenderDrawData(ImGui::GetDrawData());
 
