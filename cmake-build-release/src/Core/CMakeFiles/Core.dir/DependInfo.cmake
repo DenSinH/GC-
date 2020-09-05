@@ -9,6 +9,7 @@ set(CMAKE_DEPENDS_CHECK_C
   "D:/CProjects/GC-/src/Core/PPC/Gekko_init.c" "D:/CProjects/GC-/cmake-build-release/src/Core/CMakeFiles/Core.dir/PPC/Gekko_init.c.obj"
   "D:/CProjects/GC-/src/Core/PPC/MMU.c" "D:/CProjects/GC-/cmake-build-release/src/Core/CMakeFiles/Core.dir/PPC/MMU.c.obj"
   "D:/CProjects/GC-/src/Core/PPC/instructions.c" "D:/CProjects/GC-/cmake-build-release/src/Core/CMakeFiles/Core.dir/PPC/instructions.c.obj"
+  "D:/CProjects/GC-/src/Core/PPC/Registers/SPR.c" "D:/CProjects/GC-/cmake-build-release/src/Core/CMakeFiles/Core.dir/PPC/registers/SPR.c.obj"
   "D:/CProjects/GC-/src/Core/include/float_utils.c" "D:/CProjects/GC-/cmake-build-release/src/Core/CMakeFiles/Core.dir/include/float_utils.c.obj"
   "D:/CProjects/GC-/src/Core/system.c" "D:/CProjects/GC-/cmake-build-release/src/Core/CMakeFiles/Core.dir/system.c.obj"
   )
@@ -26,13 +27,13 @@ set(CMAKE_C_TARGET_INCLUDE_PATH
   "../src/Core/./include"
   "../src/Core"
   "../src/Loader"
-  "../src/Core/PPC/Registers"
+  "../src/Core/HWregs"
   )
 
 # Targets to which this target links.
 set(CMAKE_TARGET_LINKED_INFO_FILES
   "D:/CProjects/GC-/cmake-build-release/src/Loader/CMakeFiles/Loader.dir/DependInfo.cmake"
-  "D:/CProjects/GC-/cmake-build-release/src/Core/PPC/Registers/CMakeFiles/Registers.dir/DependInfo.cmake"
+  "D:/CProjects/GC-/cmake-build-release/src/Core/HWregs/CMakeFiles/Registers.dir/DependInfo.cmake"
   )
 
 # Fortran module output directory.

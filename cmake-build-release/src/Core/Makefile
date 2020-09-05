@@ -275,6 +275,39 @@ PPC\MMU.c.s:
 	cd D:\CProjects\GC-\cmake-build-release\src\Core
 .PHONY : PPC\MMU.c.s
 
+PPC\Registers\SPR.obj: PPC\Registers\SPR.c.obj
+
+.PHONY : PPC\Registers\SPR.obj
+
+# target to build an object file
+PPC\Registers\SPR.c.obj:
+	cd D:\CProjects\GC-\cmake-build-release
+	$(MAKE) $(MAKESILENT) -f src\Core\CMakeFiles\Core.dir\build.make /nologo -$(MAKEFLAGS) src\Core\CMakeFiles\Core.dir\PPC\Registers\SPR.c.obj
+	cd D:\CProjects\GC-\cmake-build-release\src\Core
+.PHONY : PPC\Registers\SPR.c.obj
+
+PPC\Registers\SPR.i: PPC\Registers\SPR.c.i
+
+.PHONY : PPC\Registers\SPR.i
+
+# target to preprocess a source file
+PPC\Registers\SPR.c.i:
+	cd D:\CProjects\GC-\cmake-build-release
+	$(MAKE) $(MAKESILENT) -f src\Core\CMakeFiles\Core.dir\build.make /nologo -$(MAKEFLAGS) src\Core\CMakeFiles\Core.dir\PPC\Registers\SPR.c.i
+	cd D:\CProjects\GC-\cmake-build-release\src\Core
+.PHONY : PPC\Registers\SPR.c.i
+
+PPC\Registers\SPR.s: PPC\Registers\SPR.c.s
+
+.PHONY : PPC\Registers\SPR.s
+
+# target to generate assembly for a file
+PPC\Registers\SPR.c.s:
+	cd D:\CProjects\GC-\cmake-build-release
+	$(MAKE) $(MAKESILENT) -f src\Core\CMakeFiles\Core.dir\build.make /nologo -$(MAKEFLAGS) src\Core\CMakeFiles\Core.dir\PPC\Registers\SPR.c.s
+	cd D:\CProjects\GC-\cmake-build-release\src\Core
+.PHONY : PPC\Registers\SPR.c.s
+
 PPC\instructions.obj: PPC\instructions.c.obj
 
 .PHONY : PPC\instructions.obj
@@ -395,6 +428,9 @@ help:
 	@echo ... PPC/MMU.obj
 	@echo ... PPC/MMU.i
 	@echo ... PPC/MMU.s
+	@echo ... PPC/Registers/SPR.obj
+	@echo ... PPC/Registers/SPR.i
+	@echo ... PPC/Registers/SPR.s
 	@echo ... PPC/instructions.obj
 	@echo ... PPC/instructions.i
 	@echo ... PPC/instructions.s

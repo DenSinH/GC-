@@ -4,9 +4,9 @@ D:/CProjects/GC-/cmake-build-release/CMakeFiles/rebuild_cache.dir
 D:/CProjects/GC-/cmake-build-release/src/Core/CMakeFiles/Core.dir
 D:/CProjects/GC-/cmake-build-release/src/Core/CMakeFiles/edit_cache.dir
 D:/CProjects/GC-/cmake-build-release/src/Core/CMakeFiles/rebuild_cache.dir
-D:/CProjects/GC-/cmake-build-release/src/Core/PPC/Registers/CMakeFiles/Registers.dir
-D:/CProjects/GC-/cmake-build-release/src/Core/PPC/Registers/CMakeFiles/edit_cache.dir
-D:/CProjects/GC-/cmake-build-release/src/Core/PPC/Registers/CMakeFiles/rebuild_cache.dir
+D:/CProjects/GC-/cmake-build-release/src/Core/HWregs/CMakeFiles/Registers.dir
+D:/CProjects/GC-/cmake-build-release/src/Core/HWregs/CMakeFiles/edit_cache.dir
+D:/CProjects/GC-/cmake-build-release/src/Core/HWregs/CMakeFiles/rebuild_cache.dir
 D:/CProjects/GC-/cmake-build-release/src/Frontend/CMakeFiles/rebuild_cache.dir
 D:/CProjects/GC-/cmake-build-release/src/Frontend/CMakeFiles/Frontend.dir
 D:/CProjects/GC-/cmake-build-release/src/Frontend/CMakeFiles/edit_cache.dir

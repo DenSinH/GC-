@@ -3,6 +3,7 @@ file(REMOVE_RECURSE
   "CMakeFiles/Core.dir/PPC/Gekko.c.obj"
   "CMakeFiles/Core.dir/PPC/Gekko_init.c.obj"
   "CMakeFiles/Core.dir/PPC/MMU.c.obj"
+  "CMakeFiles/Core.dir/PPC/Registers/SPR.c.obj"
   "CMakeFiles/Core.dir/PPC/instructions.c.obj"
   "CMakeFiles/Core.dir/include/float_utils.c.obj"
   "CMakeFiles/Core.dir/system.c.obj"

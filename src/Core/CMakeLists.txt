@@ -6,6 +6,17 @@ add_library(Core STATIC
         PPC/Gekko_init.c
         PPC/MMU.h
         PPC/MMU.c
+        PPC/Registers/CR.h
+        PPC/Registers/MSR.h
+        PPC/Registers/FPSCR.h
+        PPC/Registers/XER.h
+        PPC/Registers/GQR.h
+        PPC/Registers/HID.h
+        PPC/Registers/FPR.h
+        PPC/Registers/SPR.h
+        PPC/Registers/WPAR.h
+        PPC/Registers/SPR.c
+        PPC/Registers/TBR.h
         system.h
         system.c
         Breakpoints/breakpoints.h
@@ -16,12 +27,12 @@ add_library(Core STATIC
         include/core_utils.h
 )
 
+add_subdirectory(HWregs)
+
 # for logging / stuff I want to use in all files
 include_directories(../../include ./include)
 
 set_target_properties(Core PROPERTIES LINKER_LANGUAGE C)
-
-add_subdirectory(PPC/Registers)
 
 target_link_libraries(Core Loader)
 target_link_libraries(Core Registers)

@@ -7,7 +7,7 @@ add_library(
         renderer_frontend.c
         renderer_backend.h
         renderer_backend.c
-)
+        renderer_common.c renderer_common.h)
 
 set_target_properties(Renderer PROPERTIES LINKER_LANGUAGE C)
 

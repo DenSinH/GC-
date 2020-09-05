@@ -36,8 +36,12 @@ void add_command(const char* command, const char* description, CONSOLE_COMMAND((
     });
 }
 
-void add_register_data(char* name, const void* value, bool islong) {
-    Debugger.register_viewer.AddRegister(name, value, islong);
+void add_register_tab(const char* name){
+    Debugger.register_viewer.AddRegisterTab(name);
+}
+
+void add_register_data(char* name, const void* value, bool islong, int tab) {
+    Debugger.register_viewer.AddRegister(name, value, islong, tab);
 }
 
 void debugger_init(
@@ -58,6 +62,23 @@ void debugger_init(
     Debugger.memory_viewer.mem_size = mem_size;
     Debugger.memory_viewer.ReadFn = mem_read;
 }
+
+const char *vertexShaderSource =
+        "#version 330 core\n"
+        "layout (location = 0) in vec3 aPos;\n"
+        "void main()\n"
+        "{\n"
+        "   gl_Position = vec4(aPos.x, aPos.y, aPos.z, 1.0);\n"
+        "}\0";
+
+const char *fragmentShaderSource =
+        "#version 330 core\n"
+        "out vec4 FragColor;\n"
+        "\n"
+        "void main()\n"
+        "{\n"
+        "    FragColor = vec4(1.0f, 0.5f, 0.2f, 1.0f);\n"
+        "}\0";
 
 // Main code
 int ui_run()
@@ -94,7 +115,7 @@ int ui_run()
     SDL_GL_SetAttribute(SDL_GL_STENCIL_SIZE, 8);
     SDL_GL_SetAttribute( SDL_GL_ACCELERATED_VISUAL, 1 );
 
-    SDL_WindowFlags window_flags = (SDL_WindowFlags)(SDL_WINDOW_OPENGL | SDL_WINDOW_RESIZABLE | SDL_WINDOW_ALLOW_HIGHDPI);
+    SDL_WindowFlags window_flags = (SDL_WindowFlags)(SDL_WINDOW_OPENGL | SDL_WINDOW_SHOWN | SDL_WINDOW_RESIZABLE | SDL_WINDOW_ALLOW_HIGHDPI);
     SDL_Window* window = SDL_CreateWindow("GC-", SDL_WINDOWPOS_CENTERED, SDL_WINDOWPOS_CENTERED, 1280, 720, window_flags);
     SDL_GLContext gl_context = SDL_GL_CreateContext(window);
     SDL_GL_MakeCurrent(window, gl_context);
@@ -127,9 +148,91 @@ int ui_run()
     // Our state
     bool show_console = true;
     bool show_register_viewer = true;
+    bool show_hw_register_viewer = true;
     bool show_disassembly_viewer = true;
     bool show_overlay = false;
     bool show_memory_viewer = true;
+
+    // set up openGL stuff
+
+    // create shader
+    unsigned int vertexShader;
+    vertexShader = glCreateShader(GL_VERTEX_SHADER);
+
+    // compile it
+    glShaderSource(vertexShader, 1, &vertexShaderSource, NULL);
+    glCompileShader(vertexShader);
+
+    // debugging
+    int  success;
+    char infoLog[512];
+    glGetShaderiv(vertexShader, GL_COMPILE_STATUS, &success);
+    if(!success)
+    {
+        glGetShaderInfoLog(vertexShader, 512, NULL, infoLog);
+        printf("Vertex shader compilation failed: %s\n", infoLog);
+    }
+
+    // create and compile fragmentshader
+    unsigned int fragmentShader;
+    fragmentShader = glCreateShader(GL_FRAGMENT_SHADER);
+    glShaderSource(fragmentShader, 1, &fragmentShaderSource, NULL);
+    glCompileShader(fragmentShader);
+
+    // debugging
+    glGetShaderiv(fragmentShader, GL_COMPILE_STATUS, &success);
+    if(!success)
+    {
+        glGetShaderInfoLog(fragmentShader, 512, NULL, infoLog);
+        printf("Fragment shader compilation failed: %s\n", infoLog);
+    }
+
+    // create program object
+    unsigned int shaderProgram;
+    shaderProgram = glCreateProgram();
+    glAttachShader(shaderProgram, vertexShader);
+    glAttachShader(shaderProgram, fragmentShader);
+    glLinkProgram(shaderProgram);
+
+    // debugging
+    glGetProgramiv(shaderProgram, GL_LINK_STATUS, &success);
+    if(!success) {
+        glGetProgramInfoLog(shaderProgram, 512, NULL, infoLog);
+        printf("Shader program linking failed: %s\n", infoLog);
+    }
+
+    // now that we have linked the shaders we dont need them anymore
+    glDeleteShader(vertexShader);
+    glDeleteShader(fragmentShader);
+
+    float vertices[] =
+            {
+                    -0.5f, -0.5f, 0.0f,
+                    0.5f, -0.5f, 0.0f,
+                    0.0f,  0.5f, 0.0f,
+
+                    -0.5f, 0.5f, 0.0f,
+                    0.5f, 0.5f, 0.0f,
+                    0.0f, -0.5f, 0.0f
+            };
+
+
+    // Setup OpenGL buffers
+    unsigned int VBO;
+    glGenBuffers(1, &VBO);                // create buffer
+
+    // Setup OpenGL vertex array object
+    unsigned int VAO;
+    glGenVertexArrays(1, &VAO);
+    glBindVertexArray(VAO);
+
+    glBindBuffer(GL_ARRAY_BUFFER, VBO);   // bind to array buffer
+    glBufferData(GL_ARRAY_BUFFER, sizeof(vertices), vertices, GL_STATIC_DRAW);  // buffer data
+
+    // set vertex attribute pointers to the right format
+    glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 3 * sizeof(float), (void*)0);
+    glEnableVertexAttribArray(0);
+    glBindBuffer(VBO, 0);
 
     // Main loop
     while (!(*Frontend.shutdown))
@@ -179,7 +282,20 @@ int ui_run()
         s_color backdrop = get_backdrop();
         glClearColor(backdrop.r, backdrop.g, backdrop.b, 1.0f);
         glClear(GL_COLOR_BUFFER_BIT);
+
+        /* draw triangle */
+        glUseProgram(shaderProgram);
+        glBindVertexArray(VAO);
+        glDrawArrays(GL_TRIANGLES, 0, 6);
+
+        unsigned error = glGetError();
+        if (error) {
+            printf("Error: %08x\n", error);
+        }
+        /* /triangle */
+
         ImGui_ImplOpenGL3_RenderDrawData(ImGui::GetDrawData());
+
         SDL_GL_SwapWindow(window);
     }
 

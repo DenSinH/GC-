@@ -7,6 +7,8 @@
 extern "C" {
 #endif
 
+void render();
+
 #ifdef __cplusplus
 }
 #endif

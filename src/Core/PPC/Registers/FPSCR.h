@@ -29,7 +29,7 @@ typedef union s_FPSCR {
         unsigned VXCVI: 1;    // Invalid op exception for integer convert
         unsigned VXSQRT: 1;   // Invalid op exception for square root
         unsigned VXSOFT: 1;   // Invalid op exception for software request
-        unsigned reserved: 1; // Result flags
+        unsigned reserved: 1;
         unsigned FPRF: 5;     // Result flags
         unsigned FI: 1;       // Fraction inexact
         unsigned FR: 1;       // Fraction rounded

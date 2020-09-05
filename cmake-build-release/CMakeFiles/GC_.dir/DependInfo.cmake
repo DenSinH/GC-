@@ -21,7 +21,7 @@ set(CMAKE_C_TARGET_INCLUDE_PATH
   "../src/Core/include"
   "../src/Core"
   "../src/Loader"
-  "../src/Core/PPC/Registers"
+  "../src/Core/HWregs"
   )
 
 # Targets to which this target links.
@@ -29,7 +29,7 @@ set(CMAKE_TARGET_LINKED_INFO_FILES
   "D:/CProjects/GC-/cmake-build-release/src/Core/CMakeFiles/Core.dir/DependInfo.cmake"
   "D:/CProjects/GC-/cmake-build-release/src/Frontend/CMakeFiles/Frontend.dir/DependInfo.cmake"
   "D:/CProjects/GC-/cmake-build-release/src/Loader/CMakeFiles/Loader.dir/DependInfo.cmake"
-  "D:/CProjects/GC-/cmake-build-release/src/Core/PPC/Registers/CMakeFiles/Registers.dir/DependInfo.cmake"
+  "D:/CProjects/GC-/cmake-build-release/src/Core/HWregs/CMakeFiles/Registers.dir/DependInfo.cmake"
   "D:/CProjects/GC-/cmake-build-release/src/Frontend/Renderer/CMakeFiles/Renderer.dir/DependInfo.cmake"
   )
 

@@ -134,67 +134,90 @@ static void init() {
 
     char name[32];
 
-    add_register_data("PC", &global_system->cpu.PC, false);
-    add_register_data("LR", &global_system->cpu.LR, false);
-    add_register_data("SP", &global_system->cpu.SP, false);
-    add_register_data("CR", &global_system->cpu.CR, false);
+    add_register_tab("Gekko");
 
-    add_register_data("MSR", &global_system->cpu.MSR, false);
-    add_register_data("XER", &global_system->cpu.XER, false);
-    add_register_data("CTR", &global_system->cpu.CTR, false);
-    add_register_data("FPSCR", &global_system->cpu.FPSCR, false);
+    add_register_data("PC", &global_system->cpu.PC, false, 0);
+    add_register_data("LR", &global_system->cpu.LR, false, 0);
+    add_register_data("SP", &global_system->cpu.SP, false, 0);
+    add_register_data("CR", &global_system->cpu.CR, false, 0);
 
-    add_register_data("", NULL, false);
+    add_register_data("MSR", &global_system->cpu.MSR, false, 0);
+    add_register_data("XER", &global_system->cpu.XER, false, 0);
+    add_register_data("CTR", &global_system->cpu.CTR, false, 0);
+    add_register_data("FPSCR", &global_system->cpu.FPSCR, false, 0);
+
+    add_register_data("", NULL, false, 0);
 
     for (int i = 0; i < 32; i++) {
         sprintf(name, "GPR%02d", i);
-        add_register_data(name, &global_system->cpu.GPR[i], false);
+        add_register_data(name, &global_system->cpu.GPR[i], false, 0);
     }
 
-    add_register_data("", NULL, false);
+    add_register_data("", NULL, false, 0);
 
-    add_register_data("HID0", &global_system->cpu.HID[0], false);
-    add_register_data("HID1", &global_system->cpu.HID[1], false);
-    add_register_data("HID2", &global_system->cpu.HID2, false);
-    add_register_data("WPAR", &global_system->cpu.WPAR, false);
+    add_register_data("HID0", &global_system->cpu.HID[0], false, 0);
+    add_register_data("HID1", &global_system->cpu.HID[1], false, 0);
+    add_register_data("HID2", &global_system->cpu.HID2, false, 0);
+    add_register_data("WPAR", &global_system->cpu.WPAR, false, 0);
 
-    add_register_data("DEC", &global_system->cpu.DEC, false);
-    add_register_data("SRR0", &global_system->cpu.SRR0, false);
-    add_register_data("SRR1", &global_system->cpu.SRR1, false);
+    add_register_data("DEC", &global_system->cpu.DEC, false, 0);
+    add_register_data("SRR0", &global_system->cpu.SRR0, false, 0);
+    add_register_data("SRR1", &global_system->cpu.SRR1, false, 0);
 
-    add_register_data("", NULL, false);
+    add_register_data("", NULL, false, 0);
 
     for (int i = 0; i < 8; i++) {
         sprintf(name, "GQR%02d", i);
-        add_register_data(name, &global_system->cpu.GQR[i], false);
+        add_register_data(name, &global_system->cpu.GQR[i], false, 0);
     }
 
-    add_register_data("", NULL, false);
+    add_register_data("", NULL, false, 0);
 
     for (int i = 0; i < 32; i++) {
         sprintf(name, "FPR%02d:PS0", i);
-        add_register_data(name, &global_system->cpu.FPR[i].PS0, true);
+        add_register_data(name, &global_system->cpu.FPR[i].PS0, true, 0);
         sprintf(name, "FPR%02d:PS1", i);
-        add_register_data(name, &global_system->cpu.FPR[i].PS1, true);
+        add_register_data(name, &global_system->cpu.FPR[i].PS1, true, 0);
     }
 
-    add_register_data("", NULL, false);
+    add_register_data("", NULL, false, 0);
 
     for (int i = 0; i < 4; i++) {
         sprintf(name, "IBAT%02d", i);
-        add_register_data(name, &global_system->cpu.IMMU.BAT[i], true);
+        add_register_data(name, &global_system->cpu.IMMU.BAT[i], true, 0);
     }
 
     for (int i = 0; i < 4; i++) {
         sprintf(name, "DBAT%02d", i);
-        add_register_data(name, &global_system->cpu.DMMU.BAT[i], true);
+        add_register_data(name, &global_system->cpu.DMMU.BAT[i], true, 0);
     }
 
-    add_register_data("", NULL, false);
+    add_register_data("", NULL, false, 0);
 
     for (int i = 0; i < 16; i++) {
         sprintf(name, "SR%02d", i);
-        add_register_data(name, &global_system->cpu.SR[i], false);
+        add_register_data(name, &global_system->cpu.SR[i], false, 0);
+    }
+
+    add_register_tab("internal CP");
+
+    for (int i = 0; i < INTERNAL_CP_REGISTER_SIZE; i++) {
+        sprintf(name, "CP 0x%02x", INTERNAL_CP_REGISTER_BASE + i);
+        add_register_data(name, &global_system->cpu.HW_regs.CP.internalCPregs[i], false, 1);
+    }
+
+    add_register_tab("internal BP");
+
+    for (int i = 0; i < INTERNAL_BP_REGISTER_SIZE; i++) {
+        sprintf(name, "BP 0x%02x", i);
+        add_register_data(name, &global_system->cpu.HW_regs.CP.internalBPregs[i], false, 2);
+    }
+
+    add_register_tab("internal XF");
+
+    for (int i = 0; i < INTERNAL_XF_REGISTER_SIZE; i++) {
+        sprintf(name, "XF 0x%02x", INTERNAL_XF_REGISTER_BASE + i);
+        add_register_data(name, &global_system->cpu.HW_regs.CP.internalXFregs[i], false, 3);
     }
 
     add_command("RESET", "Resets the system. Add 'pause/freeze/break' to freeze on reload.", reset_system);

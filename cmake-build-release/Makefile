@@ -150,7 +150,7 @@ Registers: cmake_check_build_system
 
 # fast build rule for target.
 Registers\fast:
-	$(MAKE) $(MAKESILENT) -f src\Core\PPC\Registers\CMakeFiles\Registers.dir\build.make /nologo -$(MAKEFLAGS) src\Core\PPC\Registers\CMakeFiles\Registers.dir\build
+	$(MAKE) $(MAKESILENT) -f src\Core\HWregs\CMakeFiles\Registers.dir\build.make /nologo -$(MAKEFLAGS) src\Core\HWregs\CMakeFiles\Registers.dir\build
 .PHONY : Registers\fast
 
 #=============================================================================

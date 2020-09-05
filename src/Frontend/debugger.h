@@ -21,7 +21,8 @@ void debugger_init(
         uint8_t (*mem_read)(const uint8_t* data, uint64_t off)
 );
 void add_command(const char* command, const char* description, CONSOLE_COMMAND((*callback)));
-void add_register_data(char* name, const void* value, bool islong);
+void add_register_tab(const char* name);
+void add_register_data(char* name, const void* value, bool islong, int tab);
 #ifdef __cplusplus
 }
 #endif
