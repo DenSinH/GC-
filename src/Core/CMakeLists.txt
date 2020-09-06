@@ -24,10 +24,10 @@ add_library(Core STATIC
         PPC/gekko_instruction.h
         include/float_utils.h
         include/float_utils.c
-        include/core_utils.h
-)
+        include/core_utils.h)
 
 add_subdirectory(HWregs)
+add_subdirectory(Flipper)
 
 # for logging / stuff I want to use in all files
 include_directories(../../include ./include)
@@ -35,6 +35,7 @@ include_directories(../../include ./include)
 set_target_properties(Core PROPERTIES LINKER_LANGUAGE C)
 
 target_link_libraries(Core Loader)
-target_link_libraries(Core Registers)
+target_link_libraries(Core HWregs)
+target_link_libraries(Core Flipper)
 
 target_include_directories(Core PUBLIC ${CMAKE_CURRENT_SOURCE_DIR})

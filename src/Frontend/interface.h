@@ -11,7 +11,8 @@
 extern "C" {
 #endif
 int ui_run();
-void debugger_init(
+
+void frontend_init(
         bool* shutdown,
         uint32_t* PC,
         uint8_t* memory,
@@ -20,9 +21,13 @@ void debugger_init(
         uint64_t* timer,
         uint8_t (*mem_read)(const uint8_t* data, uint64_t off)
 );
+
 void add_command(const char* command, const char* description, CONSOLE_COMMAND((*callback)));
 void add_register_tab(const char* name);
 void add_register_data(char* name, const void* value, bool islong, int tab);
+
+void bind_video_init(void (*initializer)());
+void bind_video_render(void (*initializer)());
 #ifdef __cplusplus
 }
 #endif

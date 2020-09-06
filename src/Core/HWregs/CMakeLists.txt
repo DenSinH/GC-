@@ -1,4 +1,4 @@
-add_library(Registers STATIC
+add_library(HWregs STATIC
         hardware_registers.h
         hardware_registers.c
         CommandProcessor.h
@@ -29,6 +29,6 @@ add_library(Registers STATIC
 # for logging / stuff I want to use in all files
 include_directories(../../../include ../include)
 
-set_target_properties(Registers PROPERTIES LINKER_LANGUAGE C)
+set_target_properties(HWregs PROPERTIES LINKER_LANGUAGE C)
 
-target_include_directories(Registers PUBLIC ${CMAKE_CURRENT_SOURCE_DIR})
+target_include_directories(HWregs PUBLIC ${CMAKE_CURRENT_SOURCE_DIR})

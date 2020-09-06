@@ -28,12 +28,15 @@ set(CMAKE_C_TARGET_INCLUDE_PATH
   "../src/Core"
   "../src/Loader"
   "../src/Core/HWregs"
+  "../src/Core/Flipper"
+  "D:/vcpkg/vcpkg/installed/x86-windows/include/SDL2"
   )
 
 # Targets to which this target links.
 set(CMAKE_TARGET_LINKED_INFO_FILES
   "D:/CProjects/GC-/cmake-build-release/src/Loader/CMakeFiles/Loader.dir/DependInfo.cmake"
-  "D:/CProjects/GC-/cmake-build-release/src/Core/HWregs/CMakeFiles/Registers.dir/DependInfo.cmake"
+  "D:/CProjects/GC-/cmake-build-release/src/Core/HWregs/CMakeFiles/HWregs.dir/DependInfo.cmake"
+  "D:/CProjects/GC-/cmake-build-release/src/Core/Flipper/CMakeFiles/Flipper.dir/DependInfo.cmake"
   )
 
 # Fortran module output directory.

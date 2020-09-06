@@ -9,7 +9,7 @@ required settings:
  
 ### Todo:
 
- - `__builtin_bswap3` for memory reads
+ - `__builtin_bswap32` for memory reads
  
 ### Instructions
 #### Integer Arithmetic Instructions

@@ -1,4 +1,0 @@
-#ifndef GC__RENDERER_COMMON_H
-#define GC__RENDERER_COMMON_H
-
-#endif //GC__RENDERER_COMMON_H

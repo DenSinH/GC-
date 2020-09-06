@@ -141,17 +141,30 @@ Core\fast:
 .PHONY : Core\fast
 
 #=============================================================================
-# Target rules for targets named Registers
+# Target rules for targets named HWregs
 
 # Build rule for target.
-Registers: cmake_check_build_system
-	$(MAKE) $(MAKESILENT) -f CMakeFiles\Makefile2 /nologo -$(MAKEFLAGS) Registers
-.PHONY : Registers
+HWregs: cmake_check_build_system
+	$(MAKE) $(MAKESILENT) -f CMakeFiles\Makefile2 /nologo -$(MAKEFLAGS) HWregs
+.PHONY : HWregs
 
 # fast build rule for target.
-Registers\fast:
-	$(MAKE) $(MAKESILENT) -f src\Core\HWregs\CMakeFiles\Registers.dir\build.make /nologo -$(MAKEFLAGS) src\Core\HWregs\CMakeFiles\Registers.dir\build
-.PHONY : Registers\fast
+HWregs\fast:
+	$(MAKE) $(MAKESILENT) -f src\Core\HWregs\CMakeFiles\HWregs.dir\build.make /nologo -$(MAKEFLAGS) src\Core\HWregs\CMakeFiles\HWregs.dir\build
+.PHONY : HWregs\fast
+
+#=============================================================================
+# Target rules for targets named Flipper
+
+# Build rule for target.
+Flipper: cmake_check_build_system
+	$(MAKE) $(MAKESILENT) -f CMakeFiles\Makefile2 /nologo -$(MAKEFLAGS) Flipper
+.PHONY : Flipper
+
+# fast build rule for target.
+Flipper\fast:
+	$(MAKE) $(MAKESILENT) -f src\Core\Flipper\CMakeFiles\Flipper.dir\build.make /nologo -$(MAKEFLAGS) src\Core\Flipper\CMakeFiles\Flipper.dir\build
+.PHONY : Flipper\fast
 
 #=============================================================================
 # Target rules for targets named Frontend
@@ -165,19 +178,6 @@ Frontend: cmake_check_build_system
 Frontend\fast:
 	$(MAKE) $(MAKESILENT) -f src\Frontend\CMakeFiles\Frontend.dir\build.make /nologo -$(MAKEFLAGS) src\Frontend\CMakeFiles\Frontend.dir\build
 .PHONY : Frontend\fast
-
-#=============================================================================
-# Target rules for targets named Renderer
-
-# Build rule for target.
-Renderer: cmake_check_build_system
-	$(MAKE) $(MAKESILENT) -f CMakeFiles\Makefile2 /nologo -$(MAKEFLAGS) Renderer
-.PHONY : Renderer
-
-# fast build rule for target.
-Renderer\fast:
-	$(MAKE) $(MAKESILENT) -f src\Frontend\Renderer\CMakeFiles\Renderer.dir\build.make /nologo -$(MAKEFLAGS) src\Frontend\Renderer\CMakeFiles\Renderer.dir\build
-.PHONY : Renderer\fast
 
 #=============================================================================
 # Target rules for targets named Loader
@@ -255,11 +255,11 @@ help:
 	@echo ... edit_cache
 	@echo ... rebuild_cache
 	@echo ... Core
+	@echo ... Flipper
 	@echo ... Frontend
 	@echo ... GC_
+	@echo ... HWregs
 	@echo ... Loader
-	@echo ... Registers
-	@echo ... Renderer
 	@echo ... UIthread.obj
 	@echo ... UIthread.i
 	@echo ... UIthread.s

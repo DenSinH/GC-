@@ -69,8 +69,11 @@ typedef struct s_CP {
     bool fetching;  // true: needs args; false: needs command;
 
     // put arguments in a buffer, also in serial
-    u8 args[32 * 32];  // length for commands is limited to 16 (times 32 bits), so we need more than this
+    u8 args[32 * 32];  // length for normal commands is limited to 16 (times 32 bits), so we need more than this
     u8 argc;
+    u8 draw_argc[8];   // expected length of arguments (in bytes) for each of the formats that can be specified
+    bool draw_argc_valid[8];  // keep track of whether we need to recalculate the value
+    // initial values for draw_argc are 0, since when VCD == 0, nothing is enabled and no arguments will be sent
 } s_CP;
 
 

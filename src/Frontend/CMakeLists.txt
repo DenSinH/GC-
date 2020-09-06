@@ -29,7 +29,6 @@ set(FRONTEND_HDRS
         interface.h
 )
 
-add_subdirectory(Renderer)
 add_library(Frontend ${FRONTEND_SRCS} ${FRONTEND_HDRS})
 
 set_target_properties(Frontend PROPERTIES
@@ -40,5 +39,4 @@ set_target_properties(Frontend PROPERTIES
 
 target_link_libraries(Frontend PRIVATE imgui::imgui SDL2::SDL2 SDL2::SDL2main glad::glad)
 target_link_libraries(Frontend PRIVATE ${Capstone})
-target_link_libraries(Frontend PRIVATE Renderer)
 target_include_directories(Frontend PRIVATE imgui)

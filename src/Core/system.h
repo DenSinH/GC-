@@ -2,6 +2,7 @@
 #define GC__SYSTEM_H
 
 #include "PPC/Gekko.h"
+#include "Flipper/Flipper.h"
 
 #include "default.h"
 #include "flags.h"
@@ -11,6 +12,8 @@
 typedef struct s_GameCube {
     u8 memory[0x1800000];
     s_Gekko cpu;
+    s_Flipper flipper;
+    s_hardware_registers HW_regs;
 
     bool shutdown;
 

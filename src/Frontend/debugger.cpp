@@ -9,6 +9,13 @@
 #include "widgets/disassembly_viewer.h"
 #include "widgets/memory_viewer.h"
 
+static bool show_console = true;
+static bool show_register_viewer = true;
+static bool show_hw_register_viewer = true;
+static bool show_disassembly_viewer = true;
+static bool show_overlay = false;
+static bool show_memory_viewer = true;
+
 // Our state
 static struct s_debugger {
     ConsoleWidget console;
@@ -17,27 +24,6 @@ static struct s_debugger {
     Overlay overlay;
     MemoryViewer memory_viewer;
 } Debugger;
-
-static struct s_frontend {
-    ImGuiIO io;
-    bool* shutdown;
-} Frontend;
-
-static bool show_console = true;
-static bool show_register_viewer = true;
-static bool show_hw_register_viewer = true;
-static bool show_disassembly_viewer = true;
-static bool show_overlay = false;
-static bool show_memory_viewer = true;
-
-
-bool get_shutdown() {
-    return *Frontend.shutdown;
-}
-
-void set_shutdown(bool value) {
-    *Frontend.shutdown = value;
-}
 
 void add_command(const char* command, const char* description, CONSOLE_COMMAND((*callback))) {
     Debugger.console.AddCommand(s_console_command {
@@ -56,7 +42,6 @@ void add_register_data(char* name, const void* value, bool islong, int tab) {
 }
 
 void debugger_init(
-        bool* shutdown,
         uint32_t* PC,
         uint8_t* memory,
         uint64_t mem_size,
@@ -64,7 +49,6 @@ void debugger_init(
         uint64_t* timer,
         uint8_t (*mem_read)(const uint8_t* data, uint64_t off)
 ) {
-    Frontend.shutdown = shutdown;
     Debugger.disassembly_viewer.PC = PC;
     Debugger.disassembly_viewer.memory = memory;
     Debugger.disassembly_viewer.valid_address_mask = valid_address_mask;
@@ -79,9 +63,8 @@ void debugger_video_init(const char* glsl_version, SDL_Window* window, SDL_GLCon
 // Setup Dear ImGui context
     IMGUI_CHECKVERSION();
     ImGui::CreateContext();
-    Frontend.io = ImGui::GetIO();
 
-    Debugger.overlay.io = &Frontend.io;
+    Debugger.overlay.io = frontend_set_io();
     //io.ConfigFlags |= ImGuiConfigFlags_NavEnableKeyboard;     // Enable Keyboard Controls
     //io.ConfigFlags |= ImGuiConfigFlags_NavEnableGamepad;      // Enable Gamepad Controls
 
@@ -123,5 +106,4 @@ void debugger_render() {
 
     // Rendering
     ImGui::Render();
-    glViewport(0, 0, (int)Frontend.io.DisplaySize.x, (int)Frontend.io.DisplaySize.y);
 }

@@ -14,6 +14,11 @@ s_GameCube* init_system() {
     memset(GameCube, 0x00, sizeof(struct s_GameCube));
     GameCube->cpu.system = GameCube;
     init_Gekko(&GameCube->cpu);
+    init_Flipper(&GameCube->flipper);
+
+    GameCube->HW_regs.system = GameCube;
+    init_HW_regs(&GameCube->HW_regs);
+    GameCube->cpu.IMMU.HW_regs_ptr = GameCube->cpu.DMMU.HW_regs_ptr = &GameCube->HW_regs;
 
 #ifdef DO_BREAKPOINTS
     // todo: overflow differs here:

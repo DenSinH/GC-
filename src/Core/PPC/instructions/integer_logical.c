@@ -1,4 +1,5 @@
 #include "PPC/instructions.h"
+#include "helpers.h"
 
 
 GEKKO_INSTR(ori) {
@@ -122,14 +123,8 @@ INLINE_GEKKO_INSTR(extsb) {
 INLINE_GEKKO_INSTR(cntlzw) {
     GEKKO_INSTR_HEADER
     log_cpu("cntlzw %08x", instruction.raw);
-    u8 n;
-    for (n = 0; n < 32; n++) {
-        if (cpu->GPR[instruction.general_SAB.S] & (0x80000000 >> n)) {
-            break;
-        }
-    }
 
-    cpu->GPR[instruction.general_SAB.A] = n;
+    cpu->GPR[instruction.general_SAB.A] = ctlz(cpu->GPR[instruction.general_SAB.S]);
 
     if (instruction.general_SAB.Rc) {
         UPDATE_CR0_RESULT32(cpu, cpu->GPR[instruction.general_SAB.A]);

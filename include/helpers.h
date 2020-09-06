@@ -28,5 +28,33 @@ static inline u32 MASK(x, y) {
     return ((int32_t)(x - y - 1) >> 31) ^ (mask_x ^ mask_y);
 }
 
+static inline u32 popcount(u32 x)
+{
+#if __has_builtin(__builtin_popcount)
+    return __builtin_popcount(x);
+#else
+    u32 count = 0;
+    for (; x != 0; x &= x - 1)
+        count++;
+    return count;
+#endif
+}
+
+static inline u32 ctlz(u32 x)
+{
+#if __has_builtin(__builtin_clz)
+    return x ? __builtin_clz(x) : 32;
+#else
+    // todo: binary search
+    u8 n;
+    for (n = 0; n < 32; n++) {
+        if (x & (0x80000000 >> n)) {
+            break;
+        }
+    }
+    return n;
+#endif
+}
+
 
 #endif //GC__HELPERS_H

@@ -1,6 +1,6 @@
 #pragma once
 
-#include "../debugger.h"
+#include "../interface.h"
 
 #include "imgui.h"
 

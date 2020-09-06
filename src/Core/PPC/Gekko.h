@@ -34,7 +34,6 @@
 
 typedef struct s_Gekko {
     struct s_GameCube* system;
-    s_hardware_registers HW_regs;
 
     u32 GPR[32];      // General purpose Registers
     s_FPR FPR[32];    // Floating-point Registers

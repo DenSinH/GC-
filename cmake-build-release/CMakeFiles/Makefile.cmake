@@ -35,9 +35,9 @@ set(CMAKE_MAKEFILE_DEPENDS
   "CMakeFiles/3.17.3/CMakeRCCompiler.cmake"
   "CMakeFiles/3.17.3/CMakeSystem.cmake"
   "../src/Core/CMakeLists.txt"
+  "../src/Core/Flipper/CMakeLists.txt"
   "../src/Core/HWregs/CMakeLists.txt"
   "../src/Frontend/CMakeLists.txt"
-  "../src/Frontend/Renderer/CMakeLists.txt"
   "../src/Loader/CMakeLists.txt"
   "D:/vcpkg/vcpkg/installed/x86-windows/share/glad/gladConfig.cmake"
   "D:/vcpkg/vcpkg/installed/x86-windows/share/glad/gladConfigVersion.cmake"
@@ -67,8 +67,8 @@ set(CMAKE_MAKEFILE_PRODUCTS
   "CMakeFiles/CMakeDirectoryInformation.cmake"
   "src/Core/CMakeFiles/CMakeDirectoryInformation.cmake"
   "src/Core/HWregs/CMakeFiles/CMakeDirectoryInformation.cmake"
+  "src/Core/Flipper/CMakeFiles/CMakeDirectoryInformation.cmake"
   "src/Frontend/CMakeFiles/CMakeDirectoryInformation.cmake"
-  "src/Frontend/Renderer/CMakeFiles/CMakeDirectoryInformation.cmake"
   "src/Loader/CMakeFiles/CMakeDirectoryInformation.cmake"
   )
 
@@ -76,8 +76,8 @@ set(CMAKE_MAKEFILE_PRODUCTS
 set(CMAKE_DEPEND_INFO_FILES
   "CMakeFiles/GC_.dir/DependInfo.cmake"
   "src/Core/CMakeFiles/Core.dir/DependInfo.cmake"
-  "src/Core/HWregs/CMakeFiles/Registers.dir/DependInfo.cmake"
+  "src/Core/HWregs/CMakeFiles/HWregs.dir/DependInfo.cmake"
+  "src/Core/Flipper/CMakeFiles/Flipper.dir/DependInfo.cmake"
   "src/Frontend/CMakeFiles/Frontend.dir/DependInfo.cmake"
-  "src/Frontend/Renderer/CMakeFiles/Renderer.dir/DependInfo.cmake"
   "src/Loader/CMakeFiles/Loader.dir/DependInfo.cmake"
   )

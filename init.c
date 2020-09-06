@@ -118,11 +118,22 @@ static u32 valid_address_check(u32 address) {
     }
 }
 
+static void frontend_video_init() {
+    video_init_Flipper(&global_system->flipper);
+}
+
+static void frontend_render() {
+    render_Flipper(&global_system->flipper);
+}
+
 
 static void init() {
     global_system = init_system();
 
-    debugger_init(
+    bind_video_init(frontend_video_init);
+    bind_video_render(frontend_render);
+
+    frontend_init(
             &global_system->shutdown,
             &global_system->cpu.PC,
             global_system->cpu.DMMU.memory_ptr,
@@ -203,21 +214,21 @@ static void init() {
 
     for (int i = 0; i < INTERNAL_CP_REGISTER_SIZE; i++) {
         sprintf(name, "CP 0x%02x", INTERNAL_CP_REGISTER_BASE + i);
-        add_register_data(name, &global_system->cpu.HW_regs.CP.internalCPregs[i], false, 1);
+        add_register_data(name, &global_system->HW_regs.CP.internalCPregs[i], false, 1);
     }
 
     add_register_tab("internal BP");
 
     for (int i = 0; i < INTERNAL_BP_REGISTER_SIZE; i++) {
         sprintf(name, "BP 0x%02x", i);
-        add_register_data(name, &global_system->cpu.HW_regs.CP.internalBPregs[i], false, 2);
+        add_register_data(name, &global_system->HW_regs.CP.internalBPregs[i], false, 2);
     }
 
     add_register_tab("internal XF");
 
     for (int i = 0; i < INTERNAL_XF_REGISTER_SIZE; i++) {
         sprintf(name, "XF 0x%02x", INTERNAL_XF_REGISTER_BASE + i);
-        add_register_data(name, &global_system->cpu.HW_regs.CP.internalXFregs[i], false, 3);
+        add_register_data(name, &global_system->HW_regs.CP.internalXFregs[i], false, 3);
     }
 
     add_command("RESET", "Resets the system. Add 'pause/freeze/break' to freeze on reload.", reset_system);
