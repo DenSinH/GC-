@@ -1,4 +1,4 @@
-#include "PPC/instructions.h"
+#include "instructions.h"
 
 GEKKO_INSTR(instr_000100) {
     // note: for this aggregate instruction, some have 5 bits to signify the instruction, others 10

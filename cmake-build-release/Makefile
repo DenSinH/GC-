@@ -154,6 +154,19 @@ HWregs\fast:
 .PHONY : HWregs\fast
 
 #=============================================================================
+# Target rules for targets named PPC
+
+# Build rule for target.
+PPC: cmake_check_build_system
+	$(MAKE) $(MAKESILENT) -f CMakeFiles\Makefile2 /nologo -$(MAKEFLAGS) PPC
+.PHONY : PPC
+
+# fast build rule for target.
+PPC\fast:
+	$(MAKE) $(MAKESILENT) -f src\Core\PPC\CMakeFiles\PPC.dir\build.make /nologo -$(MAKEFLAGS) src\Core\PPC\CMakeFiles\PPC.dir\build
+.PHONY : PPC\fast
+
+#=============================================================================
 # Target rules for targets named Flipper
 
 # Build rule for target.
@@ -260,6 +273,7 @@ help:
 	@echo ... GC_
 	@echo ... HWregs
 	@echo ... Loader
+	@echo ... PPC
 	@echo ... UIthread.obj
 	@echo ... UIthread.i
 	@echo ... UIthread.s

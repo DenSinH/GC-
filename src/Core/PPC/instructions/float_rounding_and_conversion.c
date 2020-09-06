@@ -1,4 +1,4 @@
-#include "PPC/instructions.h"
+#include "instructions.h"
 #include "float_utils.h"
 
 INLINE_GEKKO_INSTR(fctiwz) {

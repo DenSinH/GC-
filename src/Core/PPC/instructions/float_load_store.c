@@ -1,6 +1,6 @@
-#include "PPC/instructions.h"
+#include "instructions.h"
 
-#include "PPC/MMU.h"
+#include "MMU.h"
 
 GEKKO_INSTR(stfd) {
     GEKKO_INSTR_HEADER

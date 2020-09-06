@@ -1,4 +1,4 @@
-#include "PPC/instructions.h"
+#include "instructions.h"
 
 INLINE_GEKKO_INSTR(mcrf) {
     GEKKO_INSTR_HEADER

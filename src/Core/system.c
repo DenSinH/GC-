@@ -4,7 +4,7 @@
 #include <stdbool.h>
 
 #include "system.h"
-#include "PPC/Gekko.h"
+#include "Gekko.h"
 #include "sleeping.h"
 
 #include "flags.h"

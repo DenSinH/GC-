@@ -5,7 +5,7 @@
 		<Option title="GC_"/>
 		<Option makefile_is_custom="1"/>
 		<Option compiler="clang"/>
-		<Option virtualFolders="CMake Files\;CMake Files\..\;CMake Files\..\..\;CMake Files\..\..\vcpkg\;CMake Files\..\..\vcpkg\vcpkg\;CMake Files\..\..\vcpkg\vcpkg\scripts\;CMake Files\..\..\vcpkg\vcpkg\scripts\buildsystems\;CMake Files\..\..\vcpkg\vcpkg\installed\;CMake Files\..\..\vcpkg\vcpkg\installed\x86-windows\;CMake Files\..\..\vcpkg\vcpkg\installed\x86-windows\share\;CMake Files\..\..\vcpkg\vcpkg\installed\x86-windows\share\sdl2\;CMake Files\..\..\vcpkg\vcpkg\installed\x86-windows\share\glad\;CMake Files\..\..\vcpkg\vcpkg\installed\x86-windows\share\imgui\;CMake Files\src\;CMake Files\src\Core\;CMake Files\src\Core\HWregs\;CMake Files\src\Core\Flipper\;CMake Files\src\Frontend\;CMake Files\src\Loader\;"/>
+		<Option virtualFolders="CMake Files\;CMake Files\..\;CMake Files\..\..\;CMake Files\..\..\vcpkg\;CMake Files\..\..\vcpkg\vcpkg\;CMake Files\..\..\vcpkg\vcpkg\scripts\;CMake Files\..\..\vcpkg\vcpkg\scripts\buildsystems\;CMake Files\..\..\vcpkg\vcpkg\installed\;CMake Files\..\..\vcpkg\vcpkg\installed\x86-windows\;CMake Files\..\..\vcpkg\vcpkg\installed\x86-windows\share\;CMake Files\..\..\vcpkg\vcpkg\installed\x86-windows\share\sdl2\;CMake Files\..\..\vcpkg\vcpkg\installed\x86-windows\share\glad\;CMake Files\..\..\vcpkg\vcpkg\installed\x86-windows\share\imgui\;CMake Files\src\;CMake Files\src\Core\;CMake Files\src\Core\HWregs\;CMake Files\src\Core\PPC\;CMake Files\src\Core\Flipper\;CMake Files\src\Frontend\;CMake Files\src\Loader\;"/>
 		<Build>
 			<Target title="all">
 				<Option working_dir="D:/CProjects/GC-/cmake-build-release"/>
@@ -37,12 +37,18 @@
 					<Add option="-DNDEBUG"/>
 					<Add option="-DBOOST_DISABLE_ASSERTS"/>
 					<Add directory="D:/CProjects/GC-/include"/>
-					<Add directory="D:/CProjects/GC-/src/Core/include"/>
-					<Add directory="D:/CProjects/GC-/src/Core"/>
-					<Add directory="D:/CProjects/GC-/src/Loader"/>
+					<Add directory="D:/CProjects/GC-/src/Core/./include"/>
+					<Add directory="D:/CProjects/GC-/src/Core/HWregs/../include"/>
 					<Add directory="D:/CProjects/GC-/src/Core/HWregs"/>
+					<Add directory="D:/CProjects/GC-/src/Core/PPC"/>
+					<Add directory="D:/CProjects/GC-/src/Core/PPC/../include"/>
 					<Add directory="D:/CProjects/GC-/src/Core/Flipper"/>
 					<Add directory="D:/vcpkg/vcpkg/installed/x86-windows/include/SDL2"/>
+					<Add directory="D:/vcpkg/vcpkg/installed/x86-windows/include/glad"/>
+					<Add directory="D:/vcpkg/vcpkg/installed/x86-windows/include"/>
+					<Add directory="D:/CProjects/GC-/src/Core"/>
+					<Add directory="D:/CProjects/GC-/src/Loader"/>
+					<Add directory="D:/CProjects/GC-/src/Frontend/imgui"/>
 				</Compiler>
 				<MakeCommands>
 					<Build command="nmake /NOLOGO /f D:\CProjects\GC-\cmake-build-release\Makefile VERBOSE=1 GC_"/>
@@ -61,12 +67,18 @@
 					<Add option="-DNDEBUG"/>
 					<Add option="-DBOOST_DISABLE_ASSERTS"/>
 					<Add directory="D:/CProjects/GC-/include"/>
-					<Add directory="D:/CProjects/GC-/src/Core/include"/>
-					<Add directory="D:/CProjects/GC-/src/Core"/>
-					<Add directory="D:/CProjects/GC-/src/Loader"/>
+					<Add directory="D:/CProjects/GC-/src/Core/./include"/>
+					<Add directory="D:/CProjects/GC-/src/Core/HWregs/../include"/>
 					<Add directory="D:/CProjects/GC-/src/Core/HWregs"/>
+					<Add directory="D:/CProjects/GC-/src/Core/PPC"/>
+					<Add directory="D:/CProjects/GC-/src/Core/PPC/../include"/>
 					<Add directory="D:/CProjects/GC-/src/Core/Flipper"/>
 					<Add directory="D:/vcpkg/vcpkg/installed/x86-windows/include/SDL2"/>
+					<Add directory="D:/vcpkg/vcpkg/installed/x86-windows/include/glad"/>
+					<Add directory="D:/vcpkg/vcpkg/installed/x86-windows/include"/>
+					<Add directory="D:/CProjects/GC-/src/Core"/>
+					<Add directory="D:/CProjects/GC-/src/Loader"/>
+					<Add directory="D:/CProjects/GC-/src/Frontend/imgui"/>
 				</Compiler>
 				<MakeCommands>
 					<Build command="nmake /NOLOGO /f D:\CProjects\GC-\cmake-build-release\Makefile VERBOSE=1 GC_/fast"/>
@@ -94,13 +106,18 @@
 				<Compiler>
 					<Add option="-DNDEBUG"/>
 					<Add option="-DBOOST_DISABLE_ASSERTS"/>
-					<Add directory="D:/CProjects/GC-/src/Core/../../include"/>
+					<Add directory="D:/CProjects/GC-/include"/>
 					<Add directory="D:/CProjects/GC-/src/Core/./include"/>
-					<Add directory="D:/CProjects/GC-/src/Core"/>
-					<Add directory="D:/CProjects/GC-/src/Loader"/>
+					<Add directory="D:/CProjects/GC-/src/Core/HWregs/../include"/>
 					<Add directory="D:/CProjects/GC-/src/Core/HWregs"/>
+					<Add directory="D:/CProjects/GC-/src/Core/PPC"/>
+					<Add directory="D:/CProjects/GC-/src/Core/PPC/../include"/>
 					<Add directory="D:/CProjects/GC-/src/Core/Flipper"/>
 					<Add directory="D:/vcpkg/vcpkg/installed/x86-windows/include/SDL2"/>
+					<Add directory="D:/vcpkg/vcpkg/installed/x86-windows/include/glad"/>
+					<Add directory="D:/vcpkg/vcpkg/installed/x86-windows/include"/>
+					<Add directory="D:/CProjects/GC-/src/Core"/>
+					<Add directory="D:/CProjects/GC-/src/Loader"/>
 				</Compiler>
 				<MakeCommands>
 					<Build command="nmake /NOLOGO /f D:\CProjects\GC-\cmake-build-release\src\Core\Makefile VERBOSE=1 Core"/>
@@ -118,13 +135,18 @@
 				<Compiler>
 					<Add option="-DNDEBUG"/>
 					<Add option="-DBOOST_DISABLE_ASSERTS"/>
-					<Add directory="D:/CProjects/GC-/src/Core/../../include"/>
+					<Add directory="D:/CProjects/GC-/include"/>
 					<Add directory="D:/CProjects/GC-/src/Core/./include"/>
-					<Add directory="D:/CProjects/GC-/src/Core"/>
-					<Add directory="D:/CProjects/GC-/src/Loader"/>
+					<Add directory="D:/CProjects/GC-/src/Core/HWregs/../include"/>
 					<Add directory="D:/CProjects/GC-/src/Core/HWregs"/>
+					<Add directory="D:/CProjects/GC-/src/Core/PPC"/>
+					<Add directory="D:/CProjects/GC-/src/Core/PPC/../include"/>
 					<Add directory="D:/CProjects/GC-/src/Core/Flipper"/>
 					<Add directory="D:/vcpkg/vcpkg/installed/x86-windows/include/SDL2"/>
+					<Add directory="D:/vcpkg/vcpkg/installed/x86-windows/include/glad"/>
+					<Add directory="D:/vcpkg/vcpkg/installed/x86-windows/include"/>
+					<Add directory="D:/CProjects/GC-/src/Core"/>
+					<Add directory="D:/CProjects/GC-/src/Loader"/>
 				</Compiler>
 				<MakeCommands>
 					<Build command="nmake /NOLOGO /f D:\CProjects\GC-\cmake-build-release\src\Core\Makefile VERBOSE=1 Core/fast"/>
@@ -142,7 +164,7 @@
 				<Compiler>
 					<Add option="-DNDEBUG"/>
 					<Add option="-DBOOST_DISABLE_ASSERTS"/>
-					<Add directory="D:/CProjects/GC-/src/Core/HWregs/../../../include"/>
+					<Add directory="D:/CProjects/GC-/include"/>
 					<Add directory="D:/CProjects/GC-/src/Core/HWregs/../include"/>
 					<Add directory="D:/CProjects/GC-/src/Core/HWregs"/>
 				</Compiler>
@@ -162,7 +184,7 @@
 				<Compiler>
 					<Add option="-DNDEBUG"/>
 					<Add option="-DBOOST_DISABLE_ASSERTS"/>
-					<Add directory="D:/CProjects/GC-/src/Core/HWregs/../../../include"/>
+					<Add directory="D:/CProjects/GC-/include"/>
 					<Add directory="D:/CProjects/GC-/src/Core/HWregs/../include"/>
 					<Add directory="D:/CProjects/GC-/src/Core/HWregs"/>
 				</Compiler>
@@ -171,6 +193,46 @@
 					<CompileFile command="nmake /NOLOGO /f D:\CProjects\GC-\cmake-build-release\src\Core\HWregs\Makefile VERBOSE=1 &quot;$file&quot;"/>
 					<Clean command="nmake /NOLOGO /f D:\CProjects\GC-\cmake-build-release\src\Core\HWregs\Makefile VERBOSE=1 clean"/>
 					<DistClean command="nmake /NOLOGO /f D:\CProjects\GC-\cmake-build-release\src\Core\HWregs\Makefile VERBOSE=1 clean"/>
+				</MakeCommands>
+			</Target>
+			<Target title="PPC">
+				<Option output="D:/CProjects/GC-/cmake-build-release/src/Core/PPC/PPC.lib" prefix_auto="0" extension_auto="0"/>
+				<Option working_dir="D:/CProjects/GC-/cmake-build-release/src/Core/PPC"/>
+				<Option object_output="./"/>
+				<Option type="2"/>
+				<Option compiler="clang"/>
+				<Compiler>
+					<Add option="-DNDEBUG"/>
+					<Add option="-DBOOST_DISABLE_ASSERTS"/>
+					<Add directory="D:/CProjects/GC-/src/Core/PPC"/>
+					<Add directory="D:/CProjects/GC-/src/Core/PPC/../include"/>
+					<Add directory="D:/CProjects/GC-/include"/>
+				</Compiler>
+				<MakeCommands>
+					<Build command="nmake /NOLOGO /f D:\CProjects\GC-\cmake-build-release\src\Core\PPC\Makefile VERBOSE=1 PPC"/>
+					<CompileFile command="nmake /NOLOGO /f D:\CProjects\GC-\cmake-build-release\src\Core\PPC\Makefile VERBOSE=1 &quot;$file&quot;"/>
+					<Clean command="nmake /NOLOGO /f D:\CProjects\GC-\cmake-build-release\src\Core\PPC\Makefile VERBOSE=1 clean"/>
+					<DistClean command="nmake /NOLOGO /f D:\CProjects\GC-\cmake-build-release\src\Core\PPC\Makefile VERBOSE=1 clean"/>
+				</MakeCommands>
+			</Target>
+			<Target title="PPC/fast">
+				<Option output="D:/CProjects/GC-/cmake-build-release/src/Core/PPC/PPC.lib" prefix_auto="0" extension_auto="0"/>
+				<Option working_dir="D:/CProjects/GC-/cmake-build-release/src/Core/PPC"/>
+				<Option object_output="./"/>
+				<Option type="2"/>
+				<Option compiler="clang"/>
+				<Compiler>
+					<Add option="-DNDEBUG"/>
+					<Add option="-DBOOST_DISABLE_ASSERTS"/>
+					<Add directory="D:/CProjects/GC-/src/Core/PPC"/>
+					<Add directory="D:/CProjects/GC-/src/Core/PPC/../include"/>
+					<Add directory="D:/CProjects/GC-/include"/>
+				</Compiler>
+				<MakeCommands>
+					<Build command="nmake /NOLOGO /f D:\CProjects\GC-\cmake-build-release\src\Core\PPC\Makefile VERBOSE=1 PPC/fast"/>
+					<CompileFile command="nmake /NOLOGO /f D:\CProjects\GC-\cmake-build-release\src\Core\PPC\Makefile VERBOSE=1 &quot;$file&quot;"/>
+					<Clean command="nmake /NOLOGO /f D:\CProjects\GC-\cmake-build-release\src\Core\PPC\Makefile VERBOSE=1 clean"/>
+					<DistClean command="nmake /NOLOGO /f D:\CProjects\GC-\cmake-build-release\src\Core\PPC\Makefile VERBOSE=1 clean"/>
 				</MakeCommands>
 			</Target>
 			<Target title="Flipper">
@@ -184,6 +246,7 @@
 					<Add option="-DBOOST_DISABLE_ASSERTS"/>
 					<Add directory="D:/CProjects/GC-/src/Core/Flipper"/>
 					<Add directory="D:/vcpkg/vcpkg/installed/x86-windows/include/SDL2"/>
+					<Add directory="D:/CProjects/GC-/include"/>
 					<Add directory="D:/vcpkg/vcpkg/installed/x86-windows/include/glad"/>
 					<Add directory="D:/vcpkg/vcpkg/installed/x86-windows/include"/>
 				</Compiler>
@@ -205,6 +268,7 @@
 					<Add option="-DBOOST_DISABLE_ASSERTS"/>
 					<Add directory="D:/CProjects/GC-/src/Core/Flipper"/>
 					<Add directory="D:/vcpkg/vcpkg/installed/x86-windows/include/SDL2"/>
+					<Add directory="D:/CProjects/GC-/include"/>
 					<Add directory="D:/vcpkg/vcpkg/installed/x86-windows/include/glad"/>
 					<Add directory="D:/vcpkg/vcpkg/installed/x86-windows/include"/>
 				</Compiler>
@@ -414,61 +478,61 @@
 			<Option target="HWregs"/>
 		</Unit>
 		<Unit filename="D:/CProjects/GC-/src/Core/PPC/Gekko.c">
-			<Option target="Core"/>
+			<Option target="PPC"/>
 		</Unit>
 		<Unit filename="D:/CProjects/GC-/src/Core/PPC/Gekko.h">
-			<Option target="Core"/>
+			<Option target="PPC"/>
 		</Unit>
 		<Unit filename="D:/CProjects/GC-/src/Core/PPC/Gekko_init.c">
-			<Option target="Core"/>
+			<Option target="PPC"/>
 		</Unit>
 		<Unit filename="D:/CProjects/GC-/src/Core/PPC/MMU.c">
-			<Option target="Core"/>
+			<Option target="PPC"/>
 		</Unit>
 		<Unit filename="D:/CProjects/GC-/src/Core/PPC/MMU.h">
-			<Option target="Core"/>
+			<Option target="PPC"/>
 		</Unit>
 		<Unit filename="D:/CProjects/GC-/src/Core/PPC/Registers/CR.h">
-			<Option target="Core"/>
+			<Option target="PPC"/>
 		</Unit>
 		<Unit filename="D:/CProjects/GC-/src/Core/PPC/Registers/FPR.h">
-			<Option target="Core"/>
+			<Option target="PPC"/>
 		</Unit>
 		<Unit filename="D:/CProjects/GC-/src/Core/PPC/Registers/FPSCR.h">
-			<Option target="Core"/>
+			<Option target="PPC"/>
 		</Unit>
 		<Unit filename="D:/CProjects/GC-/src/Core/PPC/Registers/GQR.h">
-			<Option target="Core"/>
+			<Option target="PPC"/>
 		</Unit>
 		<Unit filename="D:/CProjects/GC-/src/Core/PPC/Registers/HID.h">
-			<Option target="Core"/>
+			<Option target="PPC"/>
 		</Unit>
 		<Unit filename="D:/CProjects/GC-/src/Core/PPC/Registers/MSR.h">
-			<Option target="Core"/>
+			<Option target="PPC"/>
 		</Unit>
 		<Unit filename="D:/CProjects/GC-/src/Core/PPC/Registers/SPR.c">
-			<Option target="Core"/>
+			<Option target="PPC"/>
 		</Unit>
 		<Unit filename="D:/CProjects/GC-/src/Core/PPC/Registers/SPR.h">
-			<Option target="Core"/>
+			<Option target="PPC"/>
 		</Unit>
 		<Unit filename="D:/CProjects/GC-/src/Core/PPC/Registers/TBR.h">
-			<Option target="Core"/>
+			<Option target="PPC"/>
 		</Unit>
 		<Unit filename="D:/CProjects/GC-/src/Core/PPC/Registers/WPAR.h">
-			<Option target="Core"/>
+			<Option target="PPC"/>
 		</Unit>
 		<Unit filename="D:/CProjects/GC-/src/Core/PPC/Registers/XER.h">
-			<Option target="Core"/>
+			<Option target="PPC"/>
 		</Unit>
 		<Unit filename="D:/CProjects/GC-/src/Core/PPC/gekko_instruction.h">
-			<Option target="Core"/>
+			<Option target="PPC"/>
 		</Unit>
 		<Unit filename="D:/CProjects/GC-/src/Core/PPC/instructions.c">
-			<Option target="Core"/>
+			<Option target="PPC"/>
 		</Unit>
 		<Unit filename="D:/CProjects/GC-/src/Core/PPC/instructions.h">
-			<Option target="Core"/>
+			<Option target="PPC"/>
 		</Unit>
 		<Unit filename="D:/CProjects/GC-/src/Core/include/core_utils.h">
 			<Option target="Core"/>
@@ -607,6 +671,9 @@
 		</Unit>
 		<Unit filename="D:/CProjects/GC-/src/Core/HWregs/CMakeLists.txt">
 			<Option virtualFolder="CMake Files\src\Core\HWregs\"/>
+		</Unit>
+		<Unit filename="D:/CProjects/GC-/src/Core/PPC/CMakeLists.txt">
+			<Option virtualFolder="CMake Files\src\Core\PPC\"/>
 		</Unit>
 		<Unit filename="D:/CProjects/GC-/src/Core/Flipper/CMakeLists.txt">
 			<Option virtualFolder="CMake Files\src\Core\Flipper\"/>

@@ -37,7 +37,10 @@ add_subdirectory(src/Frontend)
 add_subdirectory(src/Loader)
 
 # for logging / stuff I want to use in all files
-include_directories(include src/Core/include)
+include_directories(include
+        $<TARGET_PROPERTY:Core,INCLUDE_DIRECTORIES>
+        $<TARGET_PROPERTY:Frontend,INCLUDE_DIRECTORIES>
+)
 
 target_link_libraries(GC_ PRIVATE Core)
 target_link_libraries(GC_ PRIVATE Frontend)

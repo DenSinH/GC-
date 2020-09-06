@@ -1,4 +1,4 @@
-#include "PPC/instructions.h"
+#include "instructions.h"
 #include "float_utils.h"
 
 #define F_SET_RESULT_VX !(cpu->FPSCR.VE && result.exception)

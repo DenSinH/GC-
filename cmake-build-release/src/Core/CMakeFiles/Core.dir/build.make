@@ -61,134 +61,9 @@ include src\Core\CMakeFiles\Core.dir\progress.make
 # Include the compile flags for this target's objects.
 include src\Core\CMakeFiles\Core.dir\flags.make
 
-src\Core\CMakeFiles\Core.dir\PPC\Gekko.c.obj: src\Core\CMakeFiles\Core.dir\flags.make
-src\Core\CMakeFiles\Core.dir\PPC\Gekko.c.obj: ..\src\Core\PPC\Gekko.c
-	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green --progress-dir=D:\CProjects\GC-\cmake-build-release\CMakeFiles --progress-num=$(CMAKE_PROGRESS_1) "Building C object src/Core/CMakeFiles/Core.dir/PPC/Gekko.c.obj"
-	cd D:\CProjects\GC-\cmake-build-release\src\Core
-	"C:\PROGRA~2\Microsoft Visual Studio\2019\Community\VC\Tools\Llvm\bin\clang-cl.exe" @<<
- /nologo $(C_DEFINES) $(C_INCLUDES) $(C_FLAGS) /FoCMakeFiles\Core.dir\PPC\Gekko.c.obj /FdCMakeFiles\Core.dir\Core.pdb -c D:\CProjects\GC-\src\Core\PPC\Gekko.c
-<<
-	cd D:\CProjects\GC-\cmake-build-release
-
-src\Core\CMakeFiles\Core.dir\PPC\Gekko.c.i: cmake_force
-	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green "Preprocessing C source to CMakeFiles/Core.dir/PPC/Gekko.c.i"
-	cd D:\CProjects\GC-\cmake-build-release\src\Core
-	"C:\PROGRA~2\Microsoft Visual Studio\2019\Community\VC\Tools\Llvm\bin\clang-cl.exe" > CMakeFiles\Core.dir\PPC\Gekko.c.i @<<
- /nologo $(C_DEFINES) $(C_INCLUDES) $(C_FLAGS) -E D:\CProjects\GC-\src\Core\PPC\Gekko.c
-<<
-	cd D:\CProjects\GC-\cmake-build-release
-
-src\Core\CMakeFiles\Core.dir\PPC\Gekko.c.s: cmake_force
-	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green "Compiling C source to assembly CMakeFiles/Core.dir/PPC/Gekko.c.s"
-	cd D:\CProjects\GC-\cmake-build-release\src\Core
-	"C:\PROGRA~2\Microsoft Visual Studio\2019\Community\VC\Tools\Llvm\bin\clang-cl.exe" @<<
- /nologo $(C_DEFINES) $(C_INCLUDES) $(C_FLAGS) /FoNUL /FAs /FaCMakeFiles\Core.dir\PPC\Gekko.c.s /c D:\CProjects\GC-\src\Core\PPC\Gekko.c
-<<
-	cd D:\CProjects\GC-\cmake-build-release
-
-src\Core\CMakeFiles\Core.dir\PPC\instructions.c.obj: src\Core\CMakeFiles\Core.dir\flags.make
-src\Core\CMakeFiles\Core.dir\PPC\instructions.c.obj: ..\src\Core\PPC\instructions.c
-	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green --progress-dir=D:\CProjects\GC-\cmake-build-release\CMakeFiles --progress-num=$(CMAKE_PROGRESS_2) "Building C object src/Core/CMakeFiles/Core.dir/PPC/instructions.c.obj"
-	cd D:\CProjects\GC-\cmake-build-release\src\Core
-	"C:\PROGRA~2\Microsoft Visual Studio\2019\Community\VC\Tools\Llvm\bin\clang-cl.exe" @<<
- /nologo $(C_DEFINES) $(C_INCLUDES) $(C_FLAGS) /FoCMakeFiles\Core.dir\PPC\instructions.c.obj /FdCMakeFiles\Core.dir\Core.pdb -c D:\CProjects\GC-\src\Core\PPC\instructions.c
-<<
-	cd D:\CProjects\GC-\cmake-build-release
-
-src\Core\CMakeFiles\Core.dir\PPC\instructions.c.i: cmake_force
-	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green "Preprocessing C source to CMakeFiles/Core.dir/PPC/instructions.c.i"
-	cd D:\CProjects\GC-\cmake-build-release\src\Core
-	"C:\PROGRA~2\Microsoft Visual Studio\2019\Community\VC\Tools\Llvm\bin\clang-cl.exe" > CMakeFiles\Core.dir\PPC\instructions.c.i @<<
- /nologo $(C_DEFINES) $(C_INCLUDES) $(C_FLAGS) -E D:\CProjects\GC-\src\Core\PPC\instructions.c
-<<
-	cd D:\CProjects\GC-\cmake-build-release
-
-src\Core\CMakeFiles\Core.dir\PPC\instructions.c.s: cmake_force
-	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green "Compiling C source to assembly CMakeFiles/Core.dir/PPC/instructions.c.s"
-	cd D:\CProjects\GC-\cmake-build-release\src\Core
-	"C:\PROGRA~2\Microsoft Visual Studio\2019\Community\VC\Tools\Llvm\bin\clang-cl.exe" @<<
- /nologo $(C_DEFINES) $(C_INCLUDES) $(C_FLAGS) /FoNUL /FAs /FaCMakeFiles\Core.dir\PPC\instructions.c.s /c D:\CProjects\GC-\src\Core\PPC\instructions.c
-<<
-	cd D:\CProjects\GC-\cmake-build-release
-
-src\Core\CMakeFiles\Core.dir\PPC\Gekko_init.c.obj: src\Core\CMakeFiles\Core.dir\flags.make
-src\Core\CMakeFiles\Core.dir\PPC\Gekko_init.c.obj: ..\src\Core\PPC\Gekko_init.c
-	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green --progress-dir=D:\CProjects\GC-\cmake-build-release\CMakeFiles --progress-num=$(CMAKE_PROGRESS_3) "Building C object src/Core/CMakeFiles/Core.dir/PPC/Gekko_init.c.obj"
-	cd D:\CProjects\GC-\cmake-build-release\src\Core
-	"C:\PROGRA~2\Microsoft Visual Studio\2019\Community\VC\Tools\Llvm\bin\clang-cl.exe" @<<
- /nologo $(C_DEFINES) $(C_INCLUDES) $(C_FLAGS) /FoCMakeFiles\Core.dir\PPC\Gekko_init.c.obj /FdCMakeFiles\Core.dir\Core.pdb -c D:\CProjects\GC-\src\Core\PPC\Gekko_init.c
-<<
-	cd D:\CProjects\GC-\cmake-build-release
-
-src\Core\CMakeFiles\Core.dir\PPC\Gekko_init.c.i: cmake_force
-	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green "Preprocessing C source to CMakeFiles/Core.dir/PPC/Gekko_init.c.i"
-	cd D:\CProjects\GC-\cmake-build-release\src\Core
-	"C:\PROGRA~2\Microsoft Visual Studio\2019\Community\VC\Tools\Llvm\bin\clang-cl.exe" > CMakeFiles\Core.dir\PPC\Gekko_init.c.i @<<
- /nologo $(C_DEFINES) $(C_INCLUDES) $(C_FLAGS) -E D:\CProjects\GC-\src\Core\PPC\Gekko_init.c
-<<
-	cd D:\CProjects\GC-\cmake-build-release
-
-src\Core\CMakeFiles\Core.dir\PPC\Gekko_init.c.s: cmake_force
-	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green "Compiling C source to assembly CMakeFiles/Core.dir/PPC/Gekko_init.c.s"
-	cd D:\CProjects\GC-\cmake-build-release\src\Core
-	"C:\PROGRA~2\Microsoft Visual Studio\2019\Community\VC\Tools\Llvm\bin\clang-cl.exe" @<<
- /nologo $(C_DEFINES) $(C_INCLUDES) $(C_FLAGS) /FoNUL /FAs /FaCMakeFiles\Core.dir\PPC\Gekko_init.c.s /c D:\CProjects\GC-\src\Core\PPC\Gekko_init.c
-<<
-	cd D:\CProjects\GC-\cmake-build-release
-
-src\Core\CMakeFiles\Core.dir\PPC\MMU.c.obj: src\Core\CMakeFiles\Core.dir\flags.make
-src\Core\CMakeFiles\Core.dir\PPC\MMU.c.obj: ..\src\Core\PPC\MMU.c
-	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green --progress-dir=D:\CProjects\GC-\cmake-build-release\CMakeFiles --progress-num=$(CMAKE_PROGRESS_4) "Building C object src/Core/CMakeFiles/Core.dir/PPC/MMU.c.obj"
-	cd D:\CProjects\GC-\cmake-build-release\src\Core
-	"C:\PROGRA~2\Microsoft Visual Studio\2019\Community\VC\Tools\Llvm\bin\clang-cl.exe" @<<
- /nologo $(C_DEFINES) $(C_INCLUDES) $(C_FLAGS) /FoCMakeFiles\Core.dir\PPC\MMU.c.obj /FdCMakeFiles\Core.dir\Core.pdb -c D:\CProjects\GC-\src\Core\PPC\MMU.c
-<<
-	cd D:\CProjects\GC-\cmake-build-release
-
-src\Core\CMakeFiles\Core.dir\PPC\MMU.c.i: cmake_force
-	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green "Preprocessing C source to CMakeFiles/Core.dir/PPC/MMU.c.i"
-	cd D:\CProjects\GC-\cmake-build-release\src\Core
-	"C:\PROGRA~2\Microsoft Visual Studio\2019\Community\VC\Tools\Llvm\bin\clang-cl.exe" > CMakeFiles\Core.dir\PPC\MMU.c.i @<<
- /nologo $(C_DEFINES) $(C_INCLUDES) $(C_FLAGS) -E D:\CProjects\GC-\src\Core\PPC\MMU.c
-<<
-	cd D:\CProjects\GC-\cmake-build-release
-
-src\Core\CMakeFiles\Core.dir\PPC\MMU.c.s: cmake_force
-	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green "Compiling C source to assembly CMakeFiles/Core.dir/PPC/MMU.c.s"
-	cd D:\CProjects\GC-\cmake-build-release\src\Core
-	"C:\PROGRA~2\Microsoft Visual Studio\2019\Community\VC\Tools\Llvm\bin\clang-cl.exe" @<<
- /nologo $(C_DEFINES) $(C_INCLUDES) $(C_FLAGS) /FoNUL /FAs /FaCMakeFiles\Core.dir\PPC\MMU.c.s /c D:\CProjects\GC-\src\Core\PPC\MMU.c
-<<
-	cd D:\CProjects\GC-\cmake-build-release
-
-src\Core\CMakeFiles\Core.dir\PPC\Registers\SPR.c.obj: src\Core\CMakeFiles\Core.dir\flags.make
-src\Core\CMakeFiles\Core.dir\PPC\Registers\SPR.c.obj: ..\src\Core\PPC\Registers\SPR.c
-	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green --progress-dir=D:\CProjects\GC-\cmake-build-release\CMakeFiles --progress-num=$(CMAKE_PROGRESS_5) "Building C object src/Core/CMakeFiles/Core.dir/PPC/Registers/SPR.c.obj"
-	cd D:\CProjects\GC-\cmake-build-release\src\Core
-	"C:\PROGRA~2\Microsoft Visual Studio\2019\Community\VC\Tools\Llvm\bin\clang-cl.exe" @<<
- /nologo $(C_DEFINES) $(C_INCLUDES) $(C_FLAGS) /FoCMakeFiles\Core.dir\PPC\Registers\SPR.c.obj /FdCMakeFiles\Core.dir\Core.pdb -c D:\CProjects\GC-\src\Core\PPC\Registers\SPR.c
-<<
-	cd D:\CProjects\GC-\cmake-build-release
-
-src\Core\CMakeFiles\Core.dir\PPC\Registers\SPR.c.i: cmake_force
-	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green "Preprocessing C source to CMakeFiles/Core.dir/PPC/Registers/SPR.c.i"
-	cd D:\CProjects\GC-\cmake-build-release\src\Core
-	"C:\PROGRA~2\Microsoft Visual Studio\2019\Community\VC\Tools\Llvm\bin\clang-cl.exe" > CMakeFiles\Core.dir\PPC\Registers\SPR.c.i @<<
- /nologo $(C_DEFINES) $(C_INCLUDES) $(C_FLAGS) -E D:\CProjects\GC-\src\Core\PPC\Registers\SPR.c
-<<
-	cd D:\CProjects\GC-\cmake-build-release
-
-src\Core\CMakeFiles\Core.dir\PPC\Registers\SPR.c.s: cmake_force
-	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green "Compiling C source to assembly CMakeFiles/Core.dir/PPC/Registers/SPR.c.s"
-	cd D:\CProjects\GC-\cmake-build-release\src\Core
-	"C:\PROGRA~2\Microsoft Visual Studio\2019\Community\VC\Tools\Llvm\bin\clang-cl.exe" @<<
- /nologo $(C_DEFINES) $(C_INCLUDES) $(C_FLAGS) /FoNUL /FAs /FaCMakeFiles\Core.dir\PPC\Registers\SPR.c.s /c D:\CProjects\GC-\src\Core\PPC\Registers\SPR.c
-<<
-	cd D:\CProjects\GC-\cmake-build-release
-
 src\Core\CMakeFiles\Core.dir\system.c.obj: src\Core\CMakeFiles\Core.dir\flags.make
 src\Core\CMakeFiles\Core.dir\system.c.obj: ..\src\Core\system.c
-	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green --progress-dir=D:\CProjects\GC-\cmake-build-release\CMakeFiles --progress-num=$(CMAKE_PROGRESS_6) "Building C object src/Core/CMakeFiles/Core.dir/system.c.obj"
+	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green --progress-dir=D:\CProjects\GC-\cmake-build-release\CMakeFiles --progress-num=$(CMAKE_PROGRESS_1) "Building C object src/Core/CMakeFiles/Core.dir/system.c.obj"
 	cd D:\CProjects\GC-\cmake-build-release\src\Core
 	"C:\PROGRA~2\Microsoft Visual Studio\2019\Community\VC\Tools\Llvm\bin\clang-cl.exe" @<<
  /nologo $(C_DEFINES) $(C_INCLUDES) $(C_FLAGS) /FoCMakeFiles\Core.dir\system.c.obj /FdCMakeFiles\Core.dir\Core.pdb -c D:\CProjects\GC-\src\Core\system.c
@@ -213,7 +88,7 @@ src\Core\CMakeFiles\Core.dir\system.c.s: cmake_force
 
 src\Core\CMakeFiles\Core.dir\Breakpoints\breakpoints.c.obj: src\Core\CMakeFiles\Core.dir\flags.make
 src\Core\CMakeFiles\Core.dir\Breakpoints\breakpoints.c.obj: ..\src\Core\Breakpoints\breakpoints.c
-	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green --progress-dir=D:\CProjects\GC-\cmake-build-release\CMakeFiles --progress-num=$(CMAKE_PROGRESS_7) "Building C object src/Core/CMakeFiles/Core.dir/Breakpoints/breakpoints.c.obj"
+	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green --progress-dir=D:\CProjects\GC-\cmake-build-release\CMakeFiles --progress-num=$(CMAKE_PROGRESS_2) "Building C object src/Core/CMakeFiles/Core.dir/Breakpoints/breakpoints.c.obj"
 	cd D:\CProjects\GC-\cmake-build-release\src\Core
 	"C:\PROGRA~2\Microsoft Visual Studio\2019\Community\VC\Tools\Llvm\bin\clang-cl.exe" @<<
  /nologo $(C_DEFINES) $(C_INCLUDES) $(C_FLAGS) /FoCMakeFiles\Core.dir\Breakpoints\breakpoints.c.obj /FdCMakeFiles\Core.dir\Core.pdb -c D:\CProjects\GC-\src\Core\Breakpoints\breakpoints.c
@@ -238,7 +113,7 @@ src\Core\CMakeFiles\Core.dir\Breakpoints\breakpoints.c.s: cmake_force
 
 src\Core\CMakeFiles\Core.dir\include\float_utils.c.obj: src\Core\CMakeFiles\Core.dir\flags.make
 src\Core\CMakeFiles\Core.dir\include\float_utils.c.obj: ..\src\Core\include\float_utils.c
-	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green --progress-dir=D:\CProjects\GC-\cmake-build-release\CMakeFiles --progress-num=$(CMAKE_PROGRESS_8) "Building C object src/Core/CMakeFiles/Core.dir/include/float_utils.c.obj"
+	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green --progress-dir=D:\CProjects\GC-\cmake-build-release\CMakeFiles --progress-num=$(CMAKE_PROGRESS_3) "Building C object src/Core/CMakeFiles/Core.dir/include/float_utils.c.obj"
 	cd D:\CProjects\GC-\cmake-build-release\src\Core
 	"C:\PROGRA~2\Microsoft Visual Studio\2019\Community\VC\Tools\Llvm\bin\clang-cl.exe" @<<
  /nologo $(C_DEFINES) $(C_INCLUDES) $(C_FLAGS) /FoCMakeFiles\Core.dir\include\float_utils.c.obj /FdCMakeFiles\Core.dir\Core.pdb -c D:\CProjects\GC-\src\Core\include\float_utils.c
@@ -263,11 +138,6 @@ src\Core\CMakeFiles\Core.dir\include\float_utils.c.s: cmake_force
 
 # Object files for target Core
 Core_OBJECTS = \
-"CMakeFiles\Core.dir\PPC\Gekko.c.obj" \
-"CMakeFiles\Core.dir\PPC\instructions.c.obj" \
-"CMakeFiles\Core.dir\PPC\Gekko_init.c.obj" \
-"CMakeFiles\Core.dir\PPC\MMU.c.obj" \
-"CMakeFiles\Core.dir\PPC\Registers\SPR.c.obj" \
 "CMakeFiles\Core.dir\system.c.obj" \
 "CMakeFiles\Core.dir\Breakpoints\breakpoints.c.obj" \
 "CMakeFiles\Core.dir\include\float_utils.c.obj"
@@ -275,17 +145,12 @@ Core_OBJECTS = \
 # External object files for target Core
 Core_EXTERNAL_OBJECTS =
 
-src\Core\Core.lib: src\Core\CMakeFiles\Core.dir\PPC\Gekko.c.obj
-src\Core\Core.lib: src\Core\CMakeFiles\Core.dir\PPC\instructions.c.obj
-src\Core\Core.lib: src\Core\CMakeFiles\Core.dir\PPC\Gekko_init.c.obj
-src\Core\Core.lib: src\Core\CMakeFiles\Core.dir\PPC\MMU.c.obj
-src\Core\Core.lib: src\Core\CMakeFiles\Core.dir\PPC\Registers\SPR.c.obj
 src\Core\Core.lib: src\Core\CMakeFiles\Core.dir\system.c.obj
 src\Core\Core.lib: src\Core\CMakeFiles\Core.dir\Breakpoints\breakpoints.c.obj
 src\Core\Core.lib: src\Core\CMakeFiles\Core.dir\include\float_utils.c.obj
 src\Core\Core.lib: src\Core\CMakeFiles\Core.dir\build.make
 src\Core\Core.lib: src\Core\CMakeFiles\Core.dir\objects1.rsp
-	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green --bold --progress-dir=D:\CProjects\GC-\cmake-build-release\CMakeFiles --progress-num=$(CMAKE_PROGRESS_9) "Linking C static library Core.lib"
+	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green --bold --progress-dir=D:\CProjects\GC-\cmake-build-release\CMakeFiles --progress-num=$(CMAKE_PROGRESS_4) "Linking C static library Core.lib"
 	cd D:\CProjects\GC-\cmake-build-release\src\Core
 	$(CMAKE_COMMAND) -P CMakeFiles\Core.dir\cmake_clean_target.cmake
 	cd D:\CProjects\GC-\cmake-build-release

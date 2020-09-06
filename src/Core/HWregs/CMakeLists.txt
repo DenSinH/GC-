@@ -27,8 +27,8 @@ add_library(HWregs STATIC
 
 
 # for logging / stuff I want to use in all files
-include_directories(../../../include ../include)
+include_directories(${PROJECT_SOURCE_DIR}/include ../include)
 
 set_target_properties(HWregs PROPERTIES LINKER_LANGUAGE C)
 
-target_include_directories(HWregs PUBLIC ${CMAKE_CURRENT_SOURCE_DIR})
+target_include_directories(HWregs PUBLIC ${CMAKE_CURRENT_SOURCE_DIR} )

@@ -1,7 +1,7 @@
 #ifndef GC__MMU_H
 #define GC__MMU_H
 
-#include "HWregs/hardware_registers.h"
+#include "../HWregs/hardware_registers.h"
 #include "Registers/TBR.h"
 
 #include "default.h"

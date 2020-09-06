@@ -15,7 +15,6 @@
 #include "Registers/FPR.h"
 #include "Registers/TBR.h"
 #include "Registers/WPAR.h"
-#include "HWregs/hardware_registers.h"
 #include "gekko_instruction.h"
 
 #include "default.h"

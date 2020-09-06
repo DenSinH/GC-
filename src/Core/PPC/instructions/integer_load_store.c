@@ -1,4 +1,4 @@
-#include "PPC/instructions.h"
+#include "instructions.h"
 #include "../MMU.h"
 
 GEKKO_INSTR(stw) {

@@ -1,7 +1,7 @@
-#include "PPC/instructions.h"
-#include "PPC/Registers/GQR.h"
-#include "PPC/Registers/HID.h"
-#include "PPC/MMU.h"
+#include "instructions.h"
+#include "Registers/GQR.h"
+#include "Registers/HID.h"
+#include "MMU.h"
 
 #include "helpers.h"
 #include "float_utils.h"
