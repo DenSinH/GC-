@@ -70,13 +70,13 @@
 #endif
 
 #if VERBOSITY <= VERBOSITY_ALL
-#define log(message, ...) {                        \
+#define log_any(message, ...) {                        \
         CONSOLE_BLUE();                                \
         fprintf(stdout, message "\n",  ##__VA_ARGS__); \
         CONSOLE_RESTORE();                             \
     }
 #else
-#define log(message, ...) { }
+#define log_any(message, ...) { }
 #endif
 
 #if VERBOSITY <= VERBOSITY_DEBUG

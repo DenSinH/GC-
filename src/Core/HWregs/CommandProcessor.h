@@ -4,6 +4,7 @@
 #include "default.h"
 #include <stdbool.h>
 #include "hwreg_utils.h"
+#include "core_utils.h"
 
 #define INTERNAL_CP_REGISTER_SIZE 0xa0
 #define INTERNAL_CP_REGISTER_BASE 0x20
@@ -29,6 +30,41 @@ typedef enum e_CP_regs {
     CP_reg_FIFO_bp_lo = 0x3c,
     CP_reg_FIFO_bp_hi = 0x3e,
 } e_CP_regs;
+
+typedef enum e_CP_regs_internal {
+    CP_reg_int_VCD_lo_base = 0x50,
+    CP_reg_int_VCD_hi_base = 0x60,
+    CP_reg_int_VAT_A_base = 0x70,
+    CP_reg_int_VAT_B_base = 0x80,
+    CP_reg_int_VAT_C_base = 0x90,
+    CP_reg_int_vert_ARRAY_BASE = 0xa0,
+    CP_reg_int_nrm_ARRAY_BASE = 0xa1,
+    CP_reg_int_clr0_ARRAY_BASE = 0xa2,
+    CP_reg_int_clr1_ARRAY_BASE = 0xa3,
+
+    CP_reg_int_tex0_ARRAY_BASE = 0xa3,
+    CP_reg_int_tex1_ARRAY_BASE = 0xa4,
+    CP_reg_int_tex2_ARRAY_BASE = 0xa5,
+    CP_reg_int_tex3_ARRAY_BASE = 0xa6,
+    CP_reg_int_tex4_ARRAY_BASE = 0xa7,
+    CP_reg_int_tex5_ARRAY_BASE = 0xa8,
+    CP_reg_int_tex6_ARRAY_BASE = 0xa9,
+    CP_reg_int_tex7_ARRAY_BASE = 0xaa,
+
+    CP_reg_int_vert_ARRAY_STRIDE = 0xb0,
+    CP_reg_int_nrm_ARRAY_STRIDE  = 0xb1,
+    CP_reg_int_clr0_ARRAY_STRIDE = 0xb2,
+    CP_reg_int_clr1_ARRAY_STRIDE = 0xb3,
+
+    CP_reg_int_tex0_ARRAY_STRIDE = 0xb3,
+    CP_reg_int_tex1_ARRAY_STRIDE = 0xb4,
+    CP_reg_int_tex2_ARRAY_STRIDE = 0xb5,
+    CP_reg_int_tex3_ARRAY_STRIDE = 0xb6,
+    CP_reg_int_tex4_ARRAY_STRIDE = 0xb7,
+    CP_reg_int_tex5_ARRAY_STRIDE = 0xb8,
+    CP_reg_int_tex6_ARRAY_STRIDE = 0xb9,
+    CP_reg_int_tex7_ARRAY_STRIDE = 0xba,
+} e_CP_regs_internal;
 
 // YAGCD: draw commands also take an argument in the bottom 3 bits
 typedef enum e_CP_cmd {
@@ -183,9 +219,8 @@ typedef union s_VAT_C {
 typedef struct s_draw_arg {
     e_draw_args arg;
     bool direct;
-    u8 direct_size;
-    u8 indirect_size;
-    u8* buffer;
+    u8 direct_stride;
+    void* direct_buffer;
 } s_draw_arg;
 
 
@@ -211,8 +246,7 @@ typedef struct s_CP {
     u16 vertex_count;
     u8 sub_argc;
     u8 draw_arg_buffer[0x400][21]; // buffers for each of the arguments specified; size is just an arbitrary (large) value
-    u8 draw_arg_index[22][8]; // index of draw_arg in the argument/length buffer for at most 21 argument types
-    u8 draw_arg_len[21][8];   // expected length of arguments (in bytes) for each of the data arguments that can be specified, for each of the formats
+    s_draw_arg draw_args[21][8]; // index of draw_arg in the argument/length buffer for at most 21 argument types
     bool draw_argc_valid[8];  // keep track of whether we need to recalculate the value for arg_len
     // initial values for draw_argc are 0, since when VCD == 0, nothing is enabled and no arguments will be sent
 } s_CP;
@@ -220,5 +254,18 @@ typedef struct s_CP {
 
 HW_REG_INIT_FUNCTION(CP);
 void execute_buffer(s_CP* CP, const u8* buffer_ptr, u8 buffer_size);
+
+static inline u32 get_CP_reg(s_CP* CP, e_CP_regs reg_hi, e_CP_regs reg_lo) {
+    return (READ16(CP->regs, reg_hi) << 16) | READ16(CP->regs, reg_lo);
+}
+
+static inline u32 get_internal_CP_reg(s_CP* CP, e_CP_regs_internal reg) {
+    return CP->internalCPregs[reg - INTERNAL_CP_REGISTER_BASE];
+}
+
+static inline void set_CP_reg(s_CP* CP, e_CP_regs reg_hi, e_CP_regs reg_lo, u32 value) {
+    WRITE16(CP->regs, reg_hi, value >> 16);
+    WRITE16(CP->regs, reg_lo, value & 0xffff);
+}
 
 #endif //GC__COMMANDPROCESSOR_H

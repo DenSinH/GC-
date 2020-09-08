@@ -1,8 +1,9 @@
 #include "CommandProcessor.h"
-#include "core_utils.h"
 #include "log.h"
 #include "flags.h"
 #include "helpers.h"
+#include "../system.h"
+#include "../Flipper/Flipper.h"
 
 #ifdef CHECK_CP_COMMAND
 #include <assert.h>
@@ -15,17 +16,8 @@ HW_REG_INIT_FUNCTION(CP) {
     }
 }
 
-u32 get_CP_reg(s_CP* CP, e_CP_regs reg_hi, e_CP_regs reg_lo) {
-    return (READ16(CP->regs, reg_hi) << 16) | READ16(CP->regs, reg_lo);
-}
-
-void set_CP_reg(s_CP* CP, e_CP_regs reg_hi, e_CP_regs reg_lo, u32 value) {
-    WRITE16(CP->regs, reg_hi, value >> 16);
-    WRITE16(CP->regs, reg_lo, value & 0xffff);
-}
-
 // indexed by VAT.POSCNT, VAT.POSFMT
-static const u8 coord_argc[2][8] = {
+static const u8 coord_stride[2][8] = {
         // POSCNT = 0
         { 3, 3, 6, 6, 12, 0, 0, 0 },
         // POSCNT = 1
@@ -33,7 +25,7 @@ static const u8 coord_argc[2][8] = {
 };
 
 // indexed by VAT.NRMCNT, VAT.NRMFMT
-static const u8 norm_argc[2][8] = {
+static const u8 nrm_stride[2][8] = {
         // POSCNT = 0
         { 0, 3, 0, 6, 12, 0, 0, 0 },
         // POSCNT = 1
@@ -41,7 +33,7 @@ static const u8 norm_argc[2][8] = {
 };
 
 // indexed by VAT.COLxCNT, VAT.COLxFMT (poscnt actually does not impact this)
-static const u8 color_argc[2][8] = {
+static const u8 color_stride[2][8] = {
         // POSCNT = 0
         { 2, 3, 4, 2, 3, 4, 0, 0 },
         // POSCNT = 1
@@ -49,58 +41,65 @@ static const u8 color_argc[2][8] = {
 };
 
 // indexed by VAT.TEXxCNT, VAT.TEXxFMT
-static const u8 tex_argc[2][8] = {
+static const u8 tex_stride[2][8] = {
         // POSCNT = 0
         { 1, 1, 2, 2, 4, 0, 0, 0 },
         // POSCNT = 1
         { 2, 2, 4, 4, 8, 0, 0, 0 }
 };
 
-#define VERTEX_ATTRIBUTE_ARGC(VCD_attr, draw_arg, lut, cnt, fmt) \
-if (VCD_attr) { \
-    CP->draw_arg_index[format][used_arg_index] = draw_arg; \
-    if ((VCD_attr) != 1) { \
-        CP->draw_arg_len[format][used_arg_index++] = (VCD_attr) - 1; \
-    } \
-    else { \
-        CP->draw_arg_len[format][used_arg_index++] = lut[cnt][fmt]; \
-    } \
-} \
+#define ADD_DRAW_ARG(_mode, _arg, _lut, _cnt, _fmt) \
+if (_mode) { \
+    CP->draw_args[format][used_arg] = (s_draw_arg) { \
+        .arg = (_arg), \
+        .direct = (_mode) == 1, \
+        .direct_stride = (_mode) == 1 ? _lut[_cnt][_fmt] : (_mode) - 1, \
+        .direct_buffer = CP->draw_arg_buffer[used_arg] \
+    }; \
+    used_arg++; \
+}
 
 void update_CP_draw_argc(s_CP* CP, int format) {
-    s_VCD_lo VCD_lo = { .raw = CP->internalCPregs[0x50 + format - INTERNAL_CP_REGISTER_BASE] };
-    s_VCD_hi VCD_hi = { .raw = CP->internalCPregs[0x60 + format - INTERNAL_CP_REGISTER_BASE] };
-    s_VAT_A VAT_A = { .raw = CP->internalCPregs[0x70 + format - INTERNAL_CP_REGISTER_BASE] };
-    s_VAT_B VAT_B = { .raw = CP->internalCPregs[0x80 + format - INTERNAL_CP_REGISTER_BASE] };
-    s_VAT_C VAT_C = { .raw = CP->internalCPregs[0x90 + format - INTERNAL_CP_REGISTER_BASE] };
+    s_VCD_lo VCD_lo = { .raw = get_internal_CP_reg(CP, CP_reg_int_VCD_lo_base + format) };
+    s_VCD_hi VCD_hi = { .raw = get_internal_CP_reg(CP, CP_reg_int_VCD_hi_base + format) };
+    s_VAT_A VAT_A = { .raw = get_internal_CP_reg(CP, CP_reg_int_VAT_A_base + format) };
+    s_VAT_B VAT_B = { .raw = get_internal_CP_reg(CP, CP_reg_int_VAT_B_base + format) };
+    s_VAT_C VAT_C = { .raw = get_internal_CP_reg(CP, CP_reg_int_VAT_C_base + format) };
 
-    int used_arg_index = 0;
-    for (int arg_index = 0; arg_index <= draw_arg_TEX7MTXIDX; arg_index++) {
-        if (VCD_lo.raw & (1 << arg_index)) {
+    int used_arg = 0;
+    for (int draw_arg = 0; draw_arg <= draw_arg_TEX7MTXIDX; draw_arg++) {
+        if (VCD_lo.raw & (1 << draw_arg)) {
             // these parameters are of size 1 if present
-            CP->draw_arg_index[format][used_arg_index] = arg_index;
-            CP->draw_arg_len[format][used_arg_index++] = 1;
+            CP->draw_args[format][used_arg] = (s_draw_arg) {
+                    .arg = draw_arg,
+                    .direct = true,
+                    .direct_stride = 1,
+                    .direct_buffer = CP->draw_arg_buffer[used_arg]
+            };
+            used_arg++;
         }
     }
 
-    VERTEX_ATTRIBUTE_ARGC(VCD_lo.POS, draw_arg_POS, coord_argc, VAT_A.POSCNT, VAT_A.POSFMT)
-    VERTEX_ATTRIBUTE_ARGC(VCD_lo.NRM, draw_arg_NRM, norm_argc, VAT_A.NRMCNT, VAT_A.NRMFMT)
-    VERTEX_ATTRIBUTE_ARGC(VCD_lo.COL0, draw_arg_CLR0, color_argc, VAT_A.COL0CNT, VAT_A.COL0FMT)
-    VERTEX_ATTRIBUTE_ARGC(VCD_lo.COL1, draw_arg_CLR1, color_argc, VAT_A.COL1CNT, VAT_A.COL1FMT)
+    ADD_DRAW_ARG(VCD_lo.POS, draw_arg_POS, coord_stride, VAT_A.POSCNT, VAT_A.POSFMT)
+    ADD_DRAW_ARG(VCD_lo.NRM, draw_arg_NRM, nrm_stride, VAT_A.NRMCNT, VAT_A.NRMFMT)
+    ADD_DRAW_ARG(VCD_lo.COL0, draw_arg_CLR0, color_stride, VAT_A.COL0CNT, VAT_A.COL0FMT)
+    ADD_DRAW_ARG(VCD_lo.COL1, draw_arg_CLR1, color_stride, VAT_A.COL1CNT, VAT_A.COL1FMT)
 
-    VERTEX_ATTRIBUTE_ARGC(VCD_hi.TEX0, draw_arg_TEX0, color_argc, VAT_A.TEX0CNT, VAT_A.TEX0FMT)
-    VERTEX_ATTRIBUTE_ARGC(VCD_hi.TEX1, draw_arg_TEX1, color_argc, VAT_B.TEX1CNT, VAT_B.TEX1FMT)
-    VERTEX_ATTRIBUTE_ARGC(VCD_hi.TEX2, draw_arg_TEX2, color_argc, VAT_B.TEX2CNT, VAT_B.TEX2FMT)
-    VERTEX_ATTRIBUTE_ARGC(VCD_hi.TEX3, draw_arg_TEX3, color_argc, VAT_B.TEX3CNT, VAT_B.TEX3FMT)
-    VERTEX_ATTRIBUTE_ARGC(VCD_hi.TEX4, draw_arg_TEX4, color_argc, VAT_B.TEX4CNT, VAT_B.TEX4FMT)
-    VERTEX_ATTRIBUTE_ARGC(VCD_hi.TEX5, draw_arg_TEX5, color_argc, VAT_C.TEX5CNT, VAT_C.TEX5FMT)
-    VERTEX_ATTRIBUTE_ARGC(VCD_hi.TEX6, draw_arg_TEX6, color_argc, VAT_C.TEX6CNT, VAT_C.TEX6FMT)
-    VERTEX_ATTRIBUTE_ARGC(VCD_hi.TEX7, draw_arg_TEX7, color_argc, VAT_C.TEX7CNT, VAT_C.TEX7FMT)
+    ADD_DRAW_ARG(VCD_hi.TEX0, draw_arg_TEX0, tex_stride, VAT_A.TEX0CNT, VAT_A.TEX0FMT)
+    ADD_DRAW_ARG(VCD_hi.TEX1, draw_arg_TEX1, tex_stride, VAT_B.TEX1CNT, VAT_B.TEX1FMT)
+    ADD_DRAW_ARG(VCD_hi.TEX2, draw_arg_TEX2, tex_stride, VAT_B.TEX2CNT, VAT_B.TEX2FMT)
+    ADD_DRAW_ARG(VCD_hi.TEX3, draw_arg_TEX3, tex_stride, VAT_B.TEX3CNT, VAT_B.TEX3FMT)
+    ADD_DRAW_ARG(VCD_hi.TEX4, draw_arg_TEX4, tex_stride, VAT_B.TEX4CNT, VAT_B.TEX4FMT)
+    ADD_DRAW_ARG(VCD_hi.TEX5, draw_arg_TEX5, tex_stride, VAT_C.TEX5CNT, VAT_C.TEX5FMT)
+    ADD_DRAW_ARG(VCD_hi.TEX6, draw_arg_TEX6, tex_stride, VAT_C.TEX6CNT, VAT_C.TEX6FMT)
+    ADD_DRAW_ARG(VCD_hi.TEX7, draw_arg_TEX7, tex_stride, VAT_C.TEX7CNT, VAT_C.TEX7FMT)
 
-    CP->draw_arg_index[format][used_arg_index] = draw_arg_UNUSED;
+    CP->draw_args[format][used_arg].arg = draw_arg_UNUSED;
     CP->draw_argc_valid[format] = true;
-    for (int i = 0; i < used_arg_index; i++) {
-        log_cp("Expecting %i bytes for argument %d", CP->draw_arg_len[format][i], CP->draw_arg_index[format][i]);
+    log_cp("FMT %d, CNT %d, stride %d\n", VAT_A.POSFMT, VAT_A.POSCNT,
+           (VCD_lo.POS) == 1 ? coord_stride[VAT_A.POSCNT][VAT_A.POSFMT] : (VCD_lo.POS) - 1);
+    for (int i = 0; i < used_arg; i++) {
+        log_cp("Expecting %i bytes for argument %d", CP->draw_args[format][i].direct_stride, CP->draw_args[format][i].arg);
     }
 }
 
@@ -200,41 +199,35 @@ inline void feed_CP(s_CP* CP, u8 data) {
             break;
         case CP_cmd_QUADS ... CP_cmd_MAX:
             // all drawing commands
-            log_cp("data %d", data)
+            log_cp("data %02x", data)
             if (CP->argc >= 2) {
                 // split the arguments over the different buffers
                 size_t current_draw_arg = CP->argc - 2;
                 size_t format = CP->command & 7;
 
-                // buffer argument as LE in the next buffer
                 CP->draw_arg_buffer[current_draw_arg][
-                        (CP->vertex_count + 1) * CP->draw_arg_len[format][current_draw_arg] - (++CP->sub_argc)
+                        CP->vertex_count * CP->draw_args[format][current_draw_arg].direct_stride + CP->sub_argc++
                 ] = data;
 
                 // go to next argument
-                if (CP->sub_argc == CP->draw_arg_len[format][current_draw_arg]) {
-                    CP->sub_argc = 0;
+                if (CP->sub_argc < CP->draw_args[format][current_draw_arg].direct_stride)
+                    break;
 
-                    // go to next vertex
-                    if (CP->draw_arg_index[format][++CP->argc - 2] == draw_arg_UNUSED) {  // last argument signifier
-                        CP->argc = 2;
+                CP->sub_argc = 0;
 
-                        // done
-                        if (++CP->vertex_count == READ16(CP->args, 0)) {
-                            log_cp("Drawing primitive %02x", CP->command);
+                // go to next vertex
+                if (CP->draw_args[format][++CP->argc - 2].arg != draw_arg_UNUSED)  // last argument signifier
+                    break;
 
-                            for (int i = 0; CP->draw_arg_index[format][i] != draw_arg_UNUSED; i++) {
-                                for (int v = 0; v < CP->vertex_count; v++) {
-                                    log_cp("first byte for vertex %d, argument %d: %02x", v, i, CP->draw_arg_buffer[i][
-                                            v * CP->draw_arg_len[format][i]
-                                    ]);
-                                }
-                            }
+                CP->argc = 2;
 
-                            CP->vertex_count = 0;
-                            CP->fetching = false;
-                        }
-                    }
+                // done
+                if (++CP->vertex_count == READ16(CP->args, 0)) {
+                    log_cp("Drawing primitive %02x", CP->command);
+                    queue_draw_Flipper(&CP->system->flipper, READ16(CP->args, 0), CP->command);
+
+                    CP->vertex_count = 0;
+                    CP->fetching = false;
                 }
             }
             else {

@@ -1,4 +1,5 @@
 #include "Flipper.h"
+#include "../HWregs/CommandProcessor.h"
 #include "../system.h"
 
 #include "shaders/shaders.h"
@@ -114,7 +115,6 @@ static void init_buffers(s_Flipper* flipper) {
 
     // unbind
     glBindBuffer(GL_ARRAY_BUFFER, 0);
-    glBindVertexArray(0);
 }
 
 void video_init_Flipper(s_Flipper* flipper) {
@@ -127,54 +127,125 @@ void video_init_Flipper(s_Flipper* flipper) {
     flipper->VAT_B_location = glGetUniformLocation(flipper->shaderProgram, "VAT_B");
     flipper->VAT_C_location = glGetUniformLocation(flipper->shaderProgram, "VAT_C");
 
-    float vertices[] =
-    {
-            -0.5f, -0.5f, 0.0f,
-            0.5f, -0.5f, 0.0f,
-            0.0f,  0.5f,
-    };
+    init_buffers(flipper);
+}
 
+void queue_draw_Flipper(s_Flipper* flipper, u16 n_vertices, u8 command) {
+    flipper->n_vertices = n_vertices;
+    flipper->command = command;
+}
+
+static const GLenum draw_commands[8] = {
+        GL_QUADS, NULL, GL_TRIANGLES, GL_TRIANGLE_STRIP,
+        GL_TRIANGLE_FAN, GL_LINES, GL_LINE_STRIP, GL_POINTS
+};
+
+void draw_Flipper(s_Flipper* flipper) {
+    u8 format = flipper->command & 7;
+    bool direct = true;
+
+    s_VCD_lo VCD_lo = { .raw = get_internal_CP_reg(flipper->CP, CP_reg_int_VCD_lo_base + format) };;
+    s_VCD_hi VCD_hi = { .raw = get_internal_CP_reg(flipper->CP, CP_reg_int_VCD_hi_base + format) };;
+    s_VAT_A VAT_A = { .raw = get_internal_CP_reg(flipper->CP, CP_reg_int_VAT_A_base + format) };
+    s_VAT_B VAT_B = { .raw = get_internal_CP_reg(flipper->CP, CP_reg_int_VAT_B_base + format) };
+    s_VAT_C VAT_C = { .raw = get_internal_CP_reg(flipper->CP, CP_reg_int_VAT_C_base + format) };
+
+//    float vertices[] =
+//    {
+//        -0.5f, -0.5f, 0.0f,
+//        0.5f, -0.5f, 0.0f,
+//        0.0f,  0.5f,
+//    };
+//
     u32 colors[] = {
             0xffffffff,
             0xffffffff,
             0xffffffff,
     };
+//
+//    glBindVertexArray(flipper->VAO);
+//    glBindBuffer(GL_ARRAY_BUFFER, flipper->VBOs[draw_arg_POS]);   // bind to array buffer
+//    glBufferData(GL_ARRAY_BUFFER, sizeof(vertices), vertices, GL_STATIC_DRAW);  // buffer data
+//
+//    glBindBuffer(GL_ARRAY_BUFFER, flipper->VBOs[draw_arg_CLR0]);   // bind to array buffer
+//    glBufferData(GL_ARRAY_BUFFER, sizeof(colors), colors, GL_STATIC_DRAW);  // buffer data
+//    flipper->draw_ready = true;
+//    return;
 
-    init_buffers(flipper);
-    glBindBuffer(GL_ARRAY_BUFFER, flipper->VBOs[draw_arg_POS]);   // bind to array buffer
-    glBufferData(GL_ARRAY_BUFFER, sizeof(vertices), vertices, GL_STATIC_DRAW);  // buffer data
-
-    glBindBuffer(GL_ARRAY_BUFFER, flipper->VBOs[draw_arg_CLR0]);   // bind to array buffer
-    glBufferData(GL_ARRAY_BUFFER, sizeof(colors), colors, GL_STATIC_DRAW);  // buffer data
-}
-
-void draw_Flipper(s_Flipper* flipper, u16 n_vertices, u8 command) {
-    u8 format = command & 7;
-
-    s_VCD_lo VCD_lo = { .raw = flipper->CP->internalCPregs[0x50 + format - INTERNAL_CP_REGISTER_BASE] };
-    s_VCD_hi VCD_hi = { .raw = flipper->CP->internalCPregs[0x60 + format - INTERNAL_CP_REGISTER_BASE] };
-    s_VAT_A VAT_A = { .raw = flipper->CP->internalCPregs[0x70 + format - INTERNAL_CP_REGISTER_BASE] };
-    s_VAT_B VAT_B = { .raw = flipper->CP->internalCPregs[0x80 + format - INTERNAL_CP_REGISTER_BASE] };
-    s_VAT_C VAT_C = { .raw = flipper->CP->internalCPregs[0x90 + format - INTERNAL_CP_REGISTER_BASE] };
-
-    for (int i = 0; flipper->CP->draw_arg_index[format][i] != draw_arg_UNUSED; i++) {
-        switch (flipper->CP->draw_arg_index[format][i]) {
+    s_draw_arg draw_arg;
+    for (int i = 0; (draw_arg = flipper->CP->draw_args[format][i]).arg != draw_arg_UNUSED; i++) {
+        printf("got draw arg %x\n", flipper->command);
+        memcpy_rev(flipper->temp_buffer, draw_arg.direct_buffer, flipper->n_vertices * draw_arg.direct_stride);
+        switch (draw_arg.arg) {
             case draw_arg_POS:
+                if (draw_arg.direct) {
+                    // now the temp buffer holds vertex data
+                    glBindBuffer(GL_ARRAY_BUFFER, flipper->VBOs[draw_arg_POS]);
+                    glBufferData(GL_ARRAY_BUFFER, flipper->n_vertices * draw_arg.direct_stride, flipper->temp_buffer, GL_STATIC_DRAW);
+                }
+                else {
+                    // now the temp buffer holds index data
+                    glBindBuffer(GL_ARRAY_BUFFER, flipper->EBO);
+                    glBufferData(GL_ARRAY_BUFFER, flipper->n_vertices * draw_arg.direct_stride, flipper->temp_buffer, GL_STATIC_DRAW);
 
+                    direct = false;
+                    u32 stride = get_internal_CP_reg(flipper->CP, CP_reg_int_vert_ARRAY_STRIDE);
+                    void* array = flipper->memory + MASK_24MB(get_internal_CP_reg(flipper->CP, CP_reg_int_vert_ARRAY_BASE));
+
+                    memcpy_rev(flipper->temp_buffer, array, flipper->n_vertices * stride);
+                    glBindBuffer(GL_ARRAY_BUFFER, flipper->VBOs[draw_arg_POS]);
+                    glBufferData(GL_ARRAY_BUFFER, flipper->n_vertices * stride, flipper->temp_buffer, GL_STATIC_DRAW);
+                }
+                break;
+            case draw_arg_CLR0:
+//                if (draw_arg.direct) {
+//                    // now the temp buffer holds vertex data
+//                    glBindBuffer(GL_ARRAY_BUFFER, flipper->VBOs[draw_arg_CLR0]);
+//                    glBufferData(GL_ARRAY_BUFFER, flipper->n_vertices * draw_arg.direct_stride, flipper->temp_buffer, GL_STATIC_DRAW);
+//                }
+//                else {
+//                    // now the temp buffer holds index data
+//                    glBindBuffer(GL_ARRAY_BUFFER, flipper->EBO);
+//                    glBufferData(GL_ARRAY_BUFFER, flipper->n_vertices * draw_arg.direct_stride, flipper->temp_buffer, GL_STATIC_DRAW);
+                    u32 stride = get_internal_CP_reg(flipper->CP, CP_reg_int_clr0_ARRAY_STRIDE);
+                    void* array = flipper->memory + MASK_24MB(get_internal_CP_reg(flipper->CP, CP_reg_int_clr0_ARRAY_BASE));
+
+                    memcpy_rev(flipper->temp_buffer, array, flipper->n_vertices * stride);
+                    for (int j = 0; j < flipper->n_vertices * stride; j++) {
+                        printf("%02d: %02x\n", j, flipper->temp_buffer[j]);
+                    }
+                    glBindBuffer(GL_ARRAY_BUFFER, flipper->VBOs[draw_arg_CLR0]);
+                    glBufferData(GL_ARRAY_BUFFER, flipper->n_vertices * stride, flipper->temp_buffer, GL_STATIC_DRAW);
+//                }
+                break;
+            default:
+                break;
         }
     }
+
+    flipper->draw_ready = true;
 }
 
 bool first = true;
 void render_Flipper(s_Flipper* flipper) {
 
-    glClearColor(flipper->backdrop.r, flipper->backdrop.g, flipper->backdrop.b, 1.0f);
-    glClear(GL_COLOR_BUFFER_BIT);
+    if (flipper->n_vertices) {
+        // wait for drawing until we are in the drawing thread
+        draw_Flipper(flipper);
+        flipper->n_vertices = 0;
+    }
 
-    glUseProgram(flipper->shaderProgram);
-    glBindVertexArray(flipper->VAO);
-    glUniform1ui(flipper->VCD_location, 1);
-    glDrawArrays(GL_TRIANGLES, 0, 3);
+    if (flipper->draw_ready) {
+        glClearColor(flipper->backdrop.r, flipper->backdrop.g, flipper->backdrop.b, 1.0f);
+        glClear(GL_COLOR_BUFFER_BIT);
+
+        glUseProgram(flipper->shaderProgram);
+        glBindVertexArray(flipper->VAO);
+
+        glUniform1ui(flipper->VCD_location, 1);
+        // glDrawArrays(draw_commands[(flipper->command >> 4) & 7], 0, 3);
+        glDrawArrays(GL_TRIANGLES, 0, 3);
+    }
 
     unsigned error = glGetError();
     if (error && first) {

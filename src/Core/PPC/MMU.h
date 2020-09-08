@@ -8,8 +8,6 @@
 #include "core_utils.h"
 #include "flags.h"
 
-#define MASK_24MB(_address) (((_address) & 0x01000000) | ((_address) & 0x7fffff))
-
 typedef enum {
     BAT0L = 0,
     BAT0U = 1,

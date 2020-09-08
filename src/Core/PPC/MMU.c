@@ -9,7 +9,6 @@
  * I assume the basic "Theory 1" from https://dolphin-emu.org/blog/2016/09/06/booting-the-final-gc-game/
  * With this basic assumption, I only need to check if the address < 0xc800 0000 and I just mirror it down
  * */
-u32 stubber = 0xffffffff;
 
 u8 read8(s_MMU* mmu, u32 address) {
     mmu->TBR_ptr->raw++;

@@ -30,13 +30,8 @@ out vec4 vertexColor;
 
 void main()
 {
-    gl_Position = vec4(pos_3d_f32.xy, 0.0, 1.0);
-    if (VCD == 0) {
-        vertexColor = vec4(clr0_rgba8888);
-    }
-    else {
-        vertexColor = vec4(1.0, 0.0, 0.0, 1.0);
-    }
+    gl_Position = vec4(pos_3d_s16.zyx / 2147483647.0, 1.0);
+    vertexColor = vec4(clr0_rgba8888.wzyx / 2147483647.0);
 }
 
 // END vertexShaderSource

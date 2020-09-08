@@ -10,6 +10,8 @@ static void memcpy_rev(void* dest, void* src, size_t size) {
     }
 }
 
+#define MASK_24MB(_address) (((_address) & 0x01000000) | ((_address) & 0x7fffff))
+
 // todo: builtins/intrinsics
 #define READ8(array, address) array[(address)]
 #define READ16(array, address) ((array[(address)] << 8) | array[(address) + 1])

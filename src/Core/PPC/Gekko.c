@@ -86,7 +86,7 @@ void dump_Gekko_mem_range(s_Gekko* cpu, u32 start, u32 end) {
 }
 
 void dump_Gekko_stack_trace(s_Gekko* cpu) {
-    // dump Gekko call stack (if enabled) to log line
+    // dump Gekko call stack (if enabled) to log_any line
 #ifdef DO_CALL_STACK
     memset(cpu->log_line, 0x00, sizeof(cpu->log_line));
     char r32_format[sizeof(R32_FORMAT) + 1] = R32_FORMAT;
