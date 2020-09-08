@@ -16,6 +16,7 @@ struct Overlay
     uint64_t* timer;
     uint64_t prev_time;
     std::list<s_overlay_info> info;
+    char gfx_info[0x200];
     char buffer[MAX_OVERLAY_INFO_LENGTH];
     int corner;
 
@@ -40,7 +41,7 @@ struct Overlay
             ImGui::SetNextWindowPos(window_pos, ImGuiCond_Always, window_pos_pivot);
         }
 
-        ImGui::SetNextWindowBgAlpha(0.35f); // Transparent background
+        ImGui::SetNextWindowBgAlpha(0.50f); // Transparent background
         ImGuiWindowFlags window_flags = ImGuiWindowFlags_NoDecoration | ImGuiWindowFlags_AlwaysAutoResize | ImGuiWindowFlags_NoSavedSettings | ImGuiWindowFlags_NoFocusOnAppearing | ImGuiWindowFlags_NoNav;
 
         if (corner != -1)
@@ -53,6 +54,10 @@ struct Overlay
             uint64_t time = *this->timer;
             ImGui::Text("CPU ticks/s: %.1f\n", ((double)(time - this->prev_time)) / io->DeltaTime );
             this->prev_time = time;
+
+            ImGui::Separator();
+            ImGui::Text("%s\n", gfx_info);
+            ImGui::Separator();
 
 
             std::list<s_overlay_info> :: iterator info_iter;

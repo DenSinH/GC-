@@ -44,6 +44,7 @@
 					<Add directory="D:/CProjects/GC-/src/Core/PPC/../include"/>
 					<Add directory="D:/CProjects/GC-/src/Core/Flipper"/>
 					<Add directory="D:/vcpkg/vcpkg/installed/x86-windows/include/SDL2"/>
+					<Add directory="D:/CProjects/GC-/src/Core/Flipper/../include"/>
 					<Add directory="D:/vcpkg/vcpkg/installed/x86-windows/include/glad"/>
 					<Add directory="D:/vcpkg/vcpkg/installed/x86-windows/include"/>
 					<Add directory="D:/CProjects/GC-/src/Core"/>
@@ -74,6 +75,7 @@
 					<Add directory="D:/CProjects/GC-/src/Core/PPC/../include"/>
 					<Add directory="D:/CProjects/GC-/src/Core/Flipper"/>
 					<Add directory="D:/vcpkg/vcpkg/installed/x86-windows/include/SDL2"/>
+					<Add directory="D:/CProjects/GC-/src/Core/Flipper/../include"/>
 					<Add directory="D:/vcpkg/vcpkg/installed/x86-windows/include/glad"/>
 					<Add directory="D:/vcpkg/vcpkg/installed/x86-windows/include"/>
 					<Add directory="D:/CProjects/GC-/src/Core"/>
@@ -114,6 +116,7 @@
 					<Add directory="D:/CProjects/GC-/src/Core/PPC/../include"/>
 					<Add directory="D:/CProjects/GC-/src/Core/Flipper"/>
 					<Add directory="D:/vcpkg/vcpkg/installed/x86-windows/include/SDL2"/>
+					<Add directory="D:/CProjects/GC-/src/Core/Flipper/../include"/>
 					<Add directory="D:/vcpkg/vcpkg/installed/x86-windows/include/glad"/>
 					<Add directory="D:/vcpkg/vcpkg/installed/x86-windows/include"/>
 					<Add directory="D:/CProjects/GC-/src/Core"/>
@@ -143,6 +146,7 @@
 					<Add directory="D:/CProjects/GC-/src/Core/PPC/../include"/>
 					<Add directory="D:/CProjects/GC-/src/Core/Flipper"/>
 					<Add directory="D:/vcpkg/vcpkg/installed/x86-windows/include/SDL2"/>
+					<Add directory="D:/CProjects/GC-/src/Core/Flipper/../include"/>
 					<Add directory="D:/vcpkg/vcpkg/installed/x86-windows/include/glad"/>
 					<Add directory="D:/vcpkg/vcpkg/installed/x86-windows/include"/>
 					<Add directory="D:/CProjects/GC-/src/Core"/>
@@ -247,6 +251,7 @@
 					<Add directory="D:/CProjects/GC-/src/Core/Flipper"/>
 					<Add directory="D:/vcpkg/vcpkg/installed/x86-windows/include/SDL2"/>
 					<Add directory="D:/CProjects/GC-/include"/>
+					<Add directory="D:/CProjects/GC-/src/Core/Flipper/../include"/>
 					<Add directory="D:/vcpkg/vcpkg/installed/x86-windows/include/glad"/>
 					<Add directory="D:/vcpkg/vcpkg/installed/x86-windows/include"/>
 				</Compiler>
@@ -269,6 +274,7 @@
 					<Add directory="D:/CProjects/GC-/src/Core/Flipper"/>
 					<Add directory="D:/vcpkg/vcpkg/installed/x86-windows/include/SDL2"/>
 					<Add directory="D:/CProjects/GC-/include"/>
+					<Add directory="D:/CProjects/GC-/src/Core/Flipper/../include"/>
 					<Add directory="D:/vcpkg/vcpkg/installed/x86-windows/include/glad"/>
 					<Add directory="D:/vcpkg/vcpkg/installed/x86-windows/include"/>
 				</Compiler>
@@ -397,6 +403,9 @@
 			<Option target="Flipper"/>
 		</Unit>
 		<Unit filename="D:/CProjects/GC-/src/Core/Flipper/Flipper.h">
+			<Option target="Flipper"/>
+		</Unit>
+		<Unit filename="D:/CProjects/GC-/src/Core/Flipper/shaders/GX_constants.h">
 			<Option target="Flipper"/>
 		</Unit>
 		<Unit filename="D:/CProjects/GC-/src/Core/Flipper/shaders/shaders.h">

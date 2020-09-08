@@ -82,6 +82,19 @@ void debugger_video_init(const char* glsl_version, SDL_Window* window, SDL_GLCon
     // Setup Platform/Renderer bindings
     ImGui_ImplSDL2_InitForOpenGL(window, gl_context);
     ImGui_ImplOpenGL3_Init(glsl_version);
+
+    // report init info
+    sprintf(Debugger.overlay.gfx_info,
+            "OpenGL Info\n"
+            "    Version: %s\n"
+            "     Vendor: %s\n"
+            "   Renderer: %s\n"
+            "    Shading: %s\n",
+            glGetString(GL_VERSION),
+            glGetString(GL_VENDOR),
+            glGetString(GL_RENDERER),
+            glGetString(GL_SHADING_LANGUAGE_VERSION)
+    );
 }
 
 void debugger_render() {

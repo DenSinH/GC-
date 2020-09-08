@@ -53,6 +53,142 @@ typedef enum e_CP_cmd {
     CP_cmd_MAX = 0xbf   // used for the switch case
 } e_CP_cmd;
 
+typedef enum e_draw_args {
+    draw_arg_PNMTXIDX = 0,
+    draw_arg_TEX0MTXIDX = 1,
+    draw_arg_TEX1MTXIDX = 2,
+    draw_arg_TEX2MTXIDX = 3,
+    draw_arg_TEX3MTXIDX = 4,
+    draw_arg_TEX4MTXIDX = 5,
+    draw_arg_TEX5MTXIDX = 6,
+    draw_arg_TEX6MTXIDX = 7,
+    draw_arg_TEX7MTXIDX = 8,
+    draw_arg_POS = 9,
+    draw_arg_NRM = 10,
+    draw_arg_CLR0 = 11,
+    draw_arg_CLR1 = 12,
+    draw_arg_TEX0 = 13,
+    draw_arg_TEX1 = 14,
+    draw_arg_TEX2 = 15,
+    draw_arg_TEX3 = 16,
+    draw_arg_TEX4 = 17,
+    draw_arg_TEX5 = 18,
+    draw_arg_TEX6 = 19,
+    draw_arg_TEX7 = 20,
+    draw_arg_UNUSED = 0xff
+} e_draw_args;
+
+
+typedef union s_VCD_lo {
+    struct {
+        unsigned PMIDX: 1;
+        unsigned T0MIDX: 1;
+        unsigned T1MIDX: 1;
+        unsigned T2MIDX: 1;
+        unsigned T3MIDX: 1;
+        unsigned T4MIDX: 1;
+        unsigned T5MIDX: 1;
+        unsigned T6MIDX: 1;
+        unsigned T7MIDX: 1;
+        unsigned POS: 2;
+        unsigned NRM: 2;
+        unsigned COL0: 2;
+        unsigned COL1: 2;
+        unsigned: 15;
+    };
+
+    struct {
+        unsigned xxmidx: 9;
+        unsigned: 23;
+    };
+
+    u32 raw;
+} s_VCD_lo;
+
+typedef union s_VCD_hi {
+    struct {
+        unsigned TEX0: 2;
+        unsigned TEX1: 2;
+        unsigned TEX2: 2;
+        unsigned TEX3: 2;
+        unsigned TEX4: 2;
+        unsigned TEX5: 2;
+        unsigned TEX6: 2;
+        unsigned TEX7: 2;
+        unsigned: 16;
+    };
+
+    struct {
+        unsigned tex_coords: 16;
+        unsigned: 16;
+    };
+
+    u32 raw;
+} s_VCD_hi;
+
+typedef union s_VAT_A {
+    struct {
+        unsigned POSCNT: 1;
+        unsigned POSFMT: 3;
+        unsigned POSSHFT: 5;
+        unsigned NRMCNT: 1;
+        unsigned NRMFMT: 3;
+        unsigned COL0CNT: 1;
+        unsigned COL0FMT: 3;
+        unsigned COL1CNT: 1;
+        unsigned COL1FMT: 3;
+        unsigned TEX0CNT: 1;
+        unsigned TEX0FMT: 3;
+        unsigned TEX0SHFT: 5;
+        unsigned BYTEDEQUANT: 1;
+        unsigned NORMALINDEX3: 1;
+    };
+    u32 raw;
+} s_VAT_A;
+
+typedef union s_VAT_B {
+    struct {
+        unsigned TEX1CNT: 1;
+        unsigned TEX1FMT: 3;
+        unsigned TEX1SHFT: 5;
+        unsigned TEX2CNT: 1;
+        unsigned TEX2FMT: 3;
+        unsigned TEX2SHFT: 5;
+        unsigned TEX3CNT: 1;
+        unsigned TEX3FMT: 3;
+        unsigned TEX3SHFT: 5;
+        unsigned TEX4CNT: 1;
+        unsigned TEX4FMT: 3;
+        unsigned VCACHE_ENHANCE: 1;  // always 1
+    };
+    u32 raw;
+} s_VAT_B;
+
+typedef union s_VAT_C {
+    struct {
+        unsigned TEX4SHFT: 5;
+        unsigned TEX5CNT: 1;
+        unsigned TEX5FMT: 3;
+        unsigned TEX5SHFT: 5;
+        unsigned TEX6CNT: 1;
+        unsigned TEX6FMT: 3;
+        unsigned TEX6SHFT: 5;
+        unsigned TEX7CNT: 1;
+        unsigned TEX7FMT: 3;
+        unsigned TEX7SHFT: 5;
+    };
+    u32 raw;
+} s_VAT_C;
+
+typedef struct s_draw_arg {
+    e_draw_args arg;
+    bool direct;
+    u8 direct_size;
+    u8 indirect_size;
+    u8* buffer;
+} s_draw_arg;
+
+
 typedef struct s_CP {
     // external function
     u8 regs[0x80];
@@ -71,8 +207,13 @@ typedef struct s_CP {
     // put arguments in a buffer, also in serial
     u8 args[32 * 32];  // length for normal commands is limited to 16 (times 32 bits), so we need more than this
     u8 argc;
-    u8 draw_argc[8];   // expected length of arguments (in bytes) for each of the formats that can be specified
-    bool draw_argc_valid[8];  // keep track of whether we need to recalculate the value
+
+    u16 vertex_count;
+    u8 sub_argc;
+    u8 draw_arg_buffer[0x400][21]; // buffers for each of the arguments specified; size is just an arbitrary (large) value
+    u8 draw_arg_index[22][8]; // index of draw_arg in the argument/length buffer for at most 21 argument types
+    u8 draw_arg_len[21][8];   // expected length of arguments (in bytes) for each of the data arguments that can be specified, for each of the formats
+    bool draw_argc_valid[8];  // keep track of whether we need to recalculate the value for arg_len
     // initial values for draw_argc are 0, since when VCD == 0, nothing is enabled and no arguments will be sent
 } s_CP;
 

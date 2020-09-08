@@ -1,6 +1,15 @@
 #ifndef GC__CORE_UTILS_H
 #define GC__CORE_UTILS_H
 
+static void memcpy_rev(void* dest, void* src, size_t size) {
+    char *d = dest;
+    const char *s = src + size - 1;
+
+    while (size--) {
+        *d++ = *s--;
+    }
+}
+
 // todo: builtins/intrinsics
 #define READ8(array, address) array[(address)]
 #define READ16(array, address) ((array[(address)] << 8) | array[(address) + 1])

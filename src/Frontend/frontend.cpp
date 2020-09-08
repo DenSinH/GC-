@@ -45,24 +45,6 @@ void bind_video_render(void (*render)()) {
     Frontend.render = render;
 }
 
-//const char *vertexShaderSource =
-//        "#version 330 core\n"
-//        "layout (location = 0) in vec3 aPos;\n"
-//        "void main()\n"
-//        "{\n"
-//        "   gl_Position = vec4(aPos.x, aPos.y, aPos.z, 1.0);\n"
-//        "}\0";
-//
-//const char *fragmentShaderSource =
-//        "#version 330 core\n"
-//        "out vec4 FragColor;\n"
-//        "\n"
-//        "void main()\n"
-//        "{\n"
-//        "    FragColor = vec4(1.0f, 0.5f, 0.2f, 1.0f);\n"
-//        "}\0";
-
-
 int ui_run() {
     if (SDL_Init(SDL_INIT_VIDEO | SDL_INIT_TIMER | SDL_INIT_GAMECONTROLLER) != 0) {
         printf("Error: %s\n", SDL_GetError());
@@ -71,15 +53,13 @@ int ui_run() {
 
     // Decide GL+GLSL versions
 #if __APPLE__
-    // GL 3.2 Core + GLSL 150
-    const char* glsl_version = "#version 150";
+    const char* glsl_version = "#version 400";
     SDL_GL_SetAttribute(SDL_GL_CONTEXT_FLAGS, SDL_GL_CONTEXT_FORWARD_COMPATIBLE_FLAG); // Always required on Mac
     SDL_GL_SetAttribute(SDL_GL_CONTEXT_PROFILE_MASK, SDL_GL_CONTEXT_PROFILE_CORE);
     SDL_GL_SetAttribute(SDL_GL_CONTEXT_MAJOR_VERSION, 3);
     SDL_GL_SetAttribute(SDL_GL_CONTEXT_MINOR_VERSION, 2);
 #else
-    // GL 3.0 + GLSL 130
-    const char *glsl_version = "#version 130";
+    const char *glsl_version = "#version 400";
     SDL_GL_SetAttribute(SDL_GL_CONTEXT_FLAGS, 0);
     SDL_GL_SetAttribute(SDL_GL_CONTEXT_PROFILE_MASK, SDL_GL_CONTEXT_PROFILE_CORE);
     SDL_GL_SetAttribute(SDL_GL_CONTEXT_MAJOR_VERSION, 3);

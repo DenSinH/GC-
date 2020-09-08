@@ -15,108 +15,6 @@ HW_REG_INIT_FUNCTION(CP) {
     }
 }
 
-typedef union s_VCD_lo {
-    struct {
-        unsigned PMIDX: 1;
-        unsigned T0MIDX: 1;
-        unsigned T1MIDX: 1;
-        unsigned T2MIDX: 1;
-        unsigned T3MIDX: 1;
-        unsigned T4MIDX: 1;
-        unsigned T5MIDX: 1;
-        unsigned T6MIDX: 1;
-        unsigned T7MIDX: 1;
-        unsigned POS: 2;
-        unsigned NRM: 2;
-        unsigned COL0: 2;
-        unsigned COL1: 2;
-        unsigned: 15;
-    };
-
-    struct {
-        unsigned xxmidx: 9;
-        unsigned: 23;
-    };
-
-    u32 raw;
-} s_VCD_lo;
-
-typedef union s_VCD_hi {
-    struct {
-        unsigned TEX0: 2;
-        unsigned TEX1: 2;
-        unsigned TEX2: 2;
-        unsigned TEX3: 2;
-        unsigned TEX4: 2;
-        unsigned TEX5: 2;
-        unsigned TEX6: 2;
-        unsigned TEX7: 2;
-        unsigned: 16;
-    };
-
-    struct {
-        unsigned tex_coords: 16;
-        unsigned: 16;
-    };
-
-    u32 raw;
-} s_VCD_hi;
-
-typedef union s_VAT_A {
-    struct {
-        unsigned POSCNT: 1;
-        unsigned POSFMT: 3;
-        unsigned POSSHFT: 5;
-        unsigned NRMCNT: 1;
-        unsigned NRMFMT: 3;
-        unsigned COL0CNT: 1;
-        unsigned COL0FMT: 3;
-        unsigned COL1CNT: 1;
-        unsigned COL1FMT: 3;
-        unsigned TEX0CNT: 1;
-        unsigned TEX0FMT: 3;
-        unsigned TEX0SHFT: 5;
-        unsigned BYTEDEQUANT: 1;
-        unsigned NORMALINDEX3: 1;
-    };
-    u32 raw;
-} s_VAT_A;
-
-typedef union s_VAT_B {
-    struct {
-        unsigned TEX1CNT: 1;
-        unsigned TEX1FMT: 3;
-        unsigned TEX1SHFT: 5;
-        unsigned TEX2CNT: 1;
-        unsigned TEX2FMT: 3;
-        unsigned TEX2SHFT: 5;
-        unsigned TEX3CNT: 1;
-        unsigned TEX3FMT: 3;
-        unsigned TEX3SHFT: 5;
-        unsigned TEX4CNT: 1;
-        unsigned TEX4FMT: 3;
-        unsigned VCACHE_ENHANCE: 1;  // always 1
-    };
-    u32 raw;
-} s_VAT_B;
-
-typedef union s_VAT_C {
-    struct {
-        unsigned TEX4SHFT: 5;
-        unsigned TEX5CNT: 1;
-        unsigned TEX5FMT: 3;
-        unsigned TEX5SHFT: 5;
-        unsigned TEX6CNT: 1;
-        unsigned TEX6FMT: 3;
-        unsigned TEX6SHFT: 5;
-        unsigned TEX7CNT: 1;
-        unsigned TEX7FMT: 3;
-        unsigned TEX7SHFT: 5;
-    };
-    u32 raw;
-} s_VAT_C;
-
-
 u32 get_CP_reg(s_CP* CP, e_CP_regs reg_hi, e_CP_regs reg_lo) {
     return (READ16(CP->regs, reg_hi) << 16) | READ16(CP->regs, reg_lo);
 }
@@ -158,33 +56,52 @@ static const u8 tex_argc[2][8] = {
         { 2, 2, 4, 4, 8, 0, 0, 0 }
 };
 
-#define VERTEX_ATTRIBUTE_ARGC(attribute, lut, cnt, fmt) if (attribute) { if (attribute != 1) { argc += attribute - 1; } else { argc += lut[cnt][fmt]; } }
+#define VERTEX_ATTRIBUTE_ARGC(VCD_attr, draw_arg, lut, cnt, fmt) \
+if (VCD_attr) { \
+    CP->draw_arg_index[format][used_arg_index] = draw_arg; \
+    if ((VCD_attr) != 1) { \
+        CP->draw_arg_len[format][used_arg_index++] = (VCD_attr) - 1; \
+    } \
+    else { \
+        CP->draw_arg_len[format][used_arg_index++] = lut[cnt][fmt]; \
+    } \
+} \
 
-void update_CP_draw_argc(s_CP* CP, int index) {
-    s_VCD_lo VCD_lo = { .raw = CP->internalCPregs[0x50 + index - INTERNAL_CP_REGISTER_BASE] };
-    s_VCD_hi VCD_hi = { .raw = CP->internalCPregs[0x60 + index - INTERNAL_CP_REGISTER_BASE] };
-    s_VAT_A VAT_A = { .raw = CP->internalCPregs[0x70 + index - INTERNAL_CP_REGISTER_BASE] };
-    s_VAT_B VAT_B = { .raw = CP->internalCPregs[0x80 + index - INTERNAL_CP_REGISTER_BASE] };
-    s_VAT_C VAT_C = { .raw = CP->internalCPregs[0x90 + index - INTERNAL_CP_REGISTER_BASE] };
+void update_CP_draw_argc(s_CP* CP, int format) {
+    s_VCD_lo VCD_lo = { .raw = CP->internalCPregs[0x50 + format - INTERNAL_CP_REGISTER_BASE] };
+    s_VCD_hi VCD_hi = { .raw = CP->internalCPregs[0x60 + format - INTERNAL_CP_REGISTER_BASE] };
+    s_VAT_A VAT_A = { .raw = CP->internalCPregs[0x70 + format - INTERNAL_CP_REGISTER_BASE] };
+    s_VAT_B VAT_B = { .raw = CP->internalCPregs[0x80 + format - INTERNAL_CP_REGISTER_BASE] };
+    s_VAT_C VAT_C = { .raw = CP->internalCPregs[0x90 + format - INTERNAL_CP_REGISTER_BASE] };
 
-    u8 argc = popcount(VCD_lo.xxmidx);  // 1 byte per xxmidx variable (always indexed)
-    VERTEX_ATTRIBUTE_ARGC(VCD_lo.POS, coord_argc, VAT_A.POSCNT, VAT_A.POSFMT)
-    VERTEX_ATTRIBUTE_ARGC(VCD_lo.NRM, norm_argc, VAT_A.NRMCNT, VAT_A.NRMFMT)
-    VERTEX_ATTRIBUTE_ARGC(VCD_lo.COL0, color_argc, VAT_A.COL0CNT, VAT_A.COL0FMT)
-    VERTEX_ATTRIBUTE_ARGC(VCD_lo.COL1, color_argc, VAT_A.COL1CNT, VAT_A.COL1FMT)
+    int used_arg_index = 0;
+    for (int arg_index = 0; arg_index <= draw_arg_TEX7MTXIDX; arg_index++) {
+        if (VCD_lo.raw & (1 << arg_index)) {
+            // these parameters are of size 1 if present
+            CP->draw_arg_index[format][used_arg_index] = arg_index;
+            CP->draw_arg_len[format][used_arg_index++] = 1;
+        }
+    }
 
-    VERTEX_ATTRIBUTE_ARGC(VCD_hi.TEX0, color_argc, VAT_A.TEX0CNT, VAT_A.TEX0FMT)
-    VERTEX_ATTRIBUTE_ARGC(VCD_hi.TEX1, color_argc, VAT_B.TEX1CNT, VAT_B.TEX1FMT)
-    VERTEX_ATTRIBUTE_ARGC(VCD_hi.TEX2, color_argc, VAT_B.TEX2CNT, VAT_B.TEX2FMT)
-    VERTEX_ATTRIBUTE_ARGC(VCD_hi.TEX3, color_argc, VAT_B.TEX3CNT, VAT_B.TEX3FMT)
-    VERTEX_ATTRIBUTE_ARGC(VCD_hi.TEX4, color_argc, VAT_B.TEX4CNT, VAT_B.TEX4FMT)
-    VERTEX_ATTRIBUTE_ARGC(VCD_hi.TEX5, color_argc, VAT_C.TEX5CNT, VAT_C.TEX5FMT)
-    VERTEX_ATTRIBUTE_ARGC(VCD_hi.TEX6, color_argc, VAT_C.TEX6CNT, VAT_C.TEX6FMT)
-    VERTEX_ATTRIBUTE_ARGC(VCD_hi.TEX7, color_argc, VAT_C.TEX7CNT, VAT_C.TEX7FMT)
+    VERTEX_ATTRIBUTE_ARGC(VCD_lo.POS, draw_arg_POS, coord_argc, VAT_A.POSCNT, VAT_A.POSFMT)
+    VERTEX_ATTRIBUTE_ARGC(VCD_lo.NRM, draw_arg_NRM, norm_argc, VAT_A.NRMCNT, VAT_A.NRMFMT)
+    VERTEX_ATTRIBUTE_ARGC(VCD_lo.COL0, draw_arg_CLR0, color_argc, VAT_A.COL0CNT, VAT_A.COL0FMT)
+    VERTEX_ATTRIBUTE_ARGC(VCD_lo.COL1, draw_arg_CLR1, color_argc, VAT_A.COL1CNT, VAT_A.COL1FMT)
 
-    CP->draw_argc[index] = argc;
-    CP->draw_argc_valid[index] = true;
-    log_cp("Expecting %d bytes per vertex", argc);
+    VERTEX_ATTRIBUTE_ARGC(VCD_hi.TEX0, draw_arg_TEX0, color_argc, VAT_A.TEX0CNT, VAT_A.TEX0FMT)
+    VERTEX_ATTRIBUTE_ARGC(VCD_hi.TEX1, draw_arg_TEX1, color_argc, VAT_B.TEX1CNT, VAT_B.TEX1FMT)
+    VERTEX_ATTRIBUTE_ARGC(VCD_hi.TEX2, draw_arg_TEX2, color_argc, VAT_B.TEX2CNT, VAT_B.TEX2FMT)
+    VERTEX_ATTRIBUTE_ARGC(VCD_hi.TEX3, draw_arg_TEX3, color_argc, VAT_B.TEX3CNT, VAT_B.TEX3FMT)
+    VERTEX_ATTRIBUTE_ARGC(VCD_hi.TEX4, draw_arg_TEX4, color_argc, VAT_B.TEX4CNT, VAT_B.TEX4FMT)
+    VERTEX_ATTRIBUTE_ARGC(VCD_hi.TEX5, draw_arg_TEX5, color_argc, VAT_C.TEX5CNT, VAT_C.TEX5FMT)
+    VERTEX_ATTRIBUTE_ARGC(VCD_hi.TEX6, draw_arg_TEX6, color_argc, VAT_C.TEX6CNT, VAT_C.TEX6FMT)
+    VERTEX_ATTRIBUTE_ARGC(VCD_hi.TEX7, draw_arg_TEX7, color_argc, VAT_C.TEX7CNT, VAT_C.TEX7FMT)
+
+    CP->draw_arg_index[format][used_arg_index] = draw_arg_UNUSED;
+    CP->draw_argc_valid[format] = true;
+    for (int i = 0; i < used_arg_index; i++) {
+        log_cp("Expecting %i bytes for argument %d", CP->draw_arg_len[format][i], CP->draw_arg_index[format][i]);
+    }
 }
 
 inline void load_CP_reg(s_CP* CP, u8 RID, u32 value) {
@@ -231,11 +148,11 @@ inline void load_BP_reg(s_CP* CP, u32 value) {
 inline void feed_CP(s_CP* CP, u8 data) {
     // feed from the buffer from some index
     // always read argument (we never get here with a NOP anyway)
-    CP->args[CP->argc++] = data;
     switch (CP->command) {
         case CP_cmd_NOP:
             log_fatal("Uncaught NOP in argument feeding");
         case CP_cmd_load_CP_reg:
+            CP->args[CP->argc++] = data;
             if (CP->argc == 5) {
                 // 8bit RID + 32 bit value
                 load_CP_reg(CP, CP->args[0], READ32(CP->args, 1));
@@ -243,6 +160,7 @@ inline void feed_CP(s_CP* CP, u8 data) {
             }
             break;
         case CP_cmd_load_XF_reg:
+            CP->args[CP->argc++] = data;
             if (CP->argc >= 2 && CP->argc == 2 + 2 + ((1 + READ16(CP->args, 0)) << 2)) {
                 // 16bit (length - 1) + 16bit (1st addr) + 32bit * length (values)
                 // in args we correct for the -1, and so do we do this for the buffer (starts at index 4)
@@ -254,6 +172,7 @@ inline void feed_CP(s_CP* CP, u8 data) {
         case CP_cmd_load_INDX_B:
         case CP_cmd_load_INDX_C:
         case CP_cmd_load_INDX_D:
+            CP->args[CP->argc++] = data;
             if (CP->argc == 4) {
                 // 16bit (index value) + 4bit (length - 1) + 12bit (1st address)
                 u16 length_and_base_address = READ16(CP->args, 2);
@@ -262,6 +181,7 @@ inline void feed_CP(s_CP* CP, u8 data) {
             }
             break;
         case CP_cmd_call_DL:
+            CP->args[CP->argc++] = data;
             if (CP->argc == 8) {
                 // 32bit (list addr) + 32bit (list size)
                 call_DL(CP, READ32(CP->args, 0), READ32(CP->args, 4));
@@ -271,6 +191,7 @@ inline void feed_CP(s_CP* CP, u8 data) {
         case CP_cmd_inval_vertex_cache:
             log_fatal("Uncaught invalidate vertex cache instruction in argument feeding");
         case CP_cmd_load_BP_reg:
+            CP->args[CP->argc++] = data;
             if (CP->argc == 4) {
                 // 8bit (reg addr) + 24bit (value)
                 load_BP_reg(CP, READ32(CP->args, 0));
@@ -279,10 +200,45 @@ inline void feed_CP(s_CP* CP, u8 data) {
             break;
         case CP_cmd_QUADS ... CP_cmd_MAX:
             // all drawing commands
-            if (CP->argc >= 2 && CP->argc == 2 + (READ16(CP->args, 0) * CP->draw_argc[CP->command & 7])) {
-                // todo: actually draw primitive
-                log_cp("Draw primitive (%02x)", CP->command);
-                CP->fetching = false;
+            log_cp("data %d", data)
+            if (CP->argc >= 2) {
+                // split the arguments over the different buffers
+                size_t current_draw_arg = CP->argc - 2;
+                size_t format = CP->command & 7;
+
+                // buffer argument as LE in the next buffer
+                CP->draw_arg_buffer[current_draw_arg][
+                        (CP->vertex_count + 1) * CP->draw_arg_len[format][current_draw_arg] - (++CP->sub_argc)
+                ] = data;
+
+                // go to next argument
+                if (CP->sub_argc == CP->draw_arg_len[format][current_draw_arg]) {
+                    CP->sub_argc = 0;
+
+                    // go to next vertex
+                    if (CP->draw_arg_index[format][++CP->argc - 2] == draw_arg_UNUSED) {  // last argument signifier
+                        CP->argc = 2;
+
+                        // done
+                        if (++CP->vertex_count == READ16(CP->args, 0)) {
+                            log_cp("Drawing primitive %02x", CP->command);
+
+                            for (int i = 0; CP->draw_arg_index[format][i] != draw_arg_UNUSED; i++) {
+                                for (int v = 0; v < CP->vertex_count; v++) {
+                                    log_cp("first byte for vertex %d, argument %d: %02x", v, i, CP->draw_arg_buffer[i][
+                                            v * CP->draw_arg_len[format][i]
+                                    ]);
+                                }
+                            }
+
+                            CP->vertex_count = 0;
+                            CP->fetching = false;
+                        }
+                    }
+                }
+            }
+            else {
+                CP->args[CP->argc++] = data;
             }
             break;
         default:

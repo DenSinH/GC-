@@ -4,8 +4,17 @@ import sys
 
 SCRIPT, *_ = sys.argv
 SHADER_DIR = f"{os.path.dirname(SCRIPT)}/raw"
+CONSTANTS = f"{os.path.dirname(SCRIPT)}/GX_constants.h"
 SHADER_H = "#ifndef GC__SHADER_H\n" \
            "#define GC__SHADER_H"
+
+with open(CONSTANTS, "r") as f:
+    constants = {}
+    for line in f.readlines():
+        match = re.match(r"^.*?(\w+).*=.*?(\w+).*$", line)
+        if not match:
+            continue
+        constants[match.group(1)] = match.group(2)
 
 for file in os.listdir(SHADER_DIR):
     with open(os.path.join(SHADER_DIR, file), "r") as f:
@@ -27,7 +36,11 @@ for file in os.listdir(SHADER_DIR):
             i += 1
 
         while i < len(content) and not re.match(f".*END\\s+{shader_name}", content[i]):
-            shader.append(f'"{content[i]}\\n"')
+            line = content[i]
+            for const, value in constants.items():
+                line = re.sub(f"%{const}%", value, line)
+
+            shader.append(f'"{line}\\n"')
             i += 1
 
         if i == len(content):

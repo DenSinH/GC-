@@ -21,6 +21,11 @@ Thought: buffer the arguments in different arrays as well, then load them
 into different buffers in flipper (VBO or EBO depending on direct/indirect)
 and bind the appropriate ones to render
 
+different VBO/EBOs, one VAO, multiple glVertexAttribute calls, increment every time, indices are not per buffer
+
+use a bool to signify whether flipper is drawing or not, return that on CP[0] reads
+
+
 DenSinHToday at 10:23 AM
 
 Oh wait I have an idea

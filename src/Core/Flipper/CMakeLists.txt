@@ -31,10 +31,10 @@ add_library(
         shaders/shaders.h
         Flipper.c
         Flipper.h
-)
+        shaders/GX_constants.h)
 
 set_target_properties(Flipper PROPERTIES LINKER_LANGUAGE C)
 
-target_include_directories(Flipper PUBLIC ${CMAKE_CURRENT_SOURCE_DIR} ${SDL2_INCLUDE_DIR} ${GLAD_INCLUDE_DIR} ${PROJECT_SOURCE_DIR}/include)
+target_include_directories(Flipper PUBLIC ${CMAKE_CURRENT_SOURCE_DIR} ${SDL2_INCLUDE_DIR} ${GLAD_INCLUDE_DIR} ${PROJECT_SOURCE_DIR}/include ../include)
 
 target_link_libraries(Flipper PRIVATE ${SDL2_LIBRARY} glad::glad)
