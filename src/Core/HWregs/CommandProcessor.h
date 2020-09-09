@@ -5,6 +5,7 @@
 #include <stdbool.h>
 #include "hwreg_utils.h"
 #include "core_utils.h"
+#include "../Flipper/shaders/GX_constants.h"
 
 #define INTERNAL_CP_REGISTER_SIZE 0xa0
 #define INTERNAL_CP_REGISTER_BASE 0x20
@@ -88,32 +89,6 @@ typedef enum e_CP_cmd {
     CP_cmd_POINTS = 0xb8,
     CP_cmd_MAX = 0xbf   // used for the switch case
 } e_CP_cmd;
-
-typedef enum e_draw_args {
-    draw_arg_PNMTXIDX = 0,
-    draw_arg_TEX0MTXIDX = 1,
-    draw_arg_TEX1MTXIDX = 2,
-    draw_arg_TEX2MTXIDX = 3,
-    draw_arg_TEX3MTXIDX = 4,
-    draw_arg_TEX4MTXIDX = 5,
-    draw_arg_TEX5MTXIDX = 6,
-    draw_arg_TEX6MTXIDX = 7,
-    draw_arg_TEX7MTXIDX = 8,
-    draw_arg_POS = 9,
-    draw_arg_NRM = 10,
-    draw_arg_CLR0 = 11,
-    draw_arg_CLR1 = 12,
-    draw_arg_TEX0 = 13,
-    draw_arg_TEX1 = 14,
-    draw_arg_TEX2 = 15,
-    draw_arg_TEX3 = 16,
-    draw_arg_TEX4 = 17,
-    draw_arg_TEX5 = 18,
-    draw_arg_TEX6 = 19,
-    draw_arg_TEX7 = 20,
-    draw_arg_UNUSED = 0xff
-} e_draw_args;
-
 
 typedef union s_VCD_lo {
     struct {
@@ -239,15 +214,38 @@ typedef struct s_draw_arg {
  *  medium we could say 0x100 vertices, giving a buffer of size (69 * 0x100 = ) 0x4500 bytes
  *  large we could way anything else, but we should probably limit it to like 0x400 vertices or whatever, giving us
  *  0x18000 bytes
+ *
+ *  For the data, we can do another calculation. Indexing can happen with either int8s or int16s. In case of an int8,
+ *  I will not even bother to find the min/max indices in the data, and just copy the whole possible array space for
+ *  the vectors. Since for now I am not concerning myself with normals yet, this would limit me to 12 * 0x100 bytes per
+ *  argument at most.
+ *
+ *  If indexing happens through int16s, I am going to check what the min and max indices are, and buffer that data only,
+ *  This can give quite a bit more data.
+ *
+ *  Fortunately, stuff like matrices are rather small, and I might not even buffer that. This would mean I probably want
+ *  to buffer the (texture) coordinates, colors and normals. For now, I'd want a buffer of size at most
+ *  12 * 12 * (max data instances), which is way too much. In the shader I will leave the data array shapeless.
+ *  So a buffer of 512kb should be more then plenty
+ *
+ *  I will also only keep track of the offsets for the arguments into the data array for only the
+ *  non-matrix index arguments
  * */
 
 #define DRAW_COMMAND_ARG_BUFFER_SIZE_SMALL 0x1140
 #define DRAW_COMMAND_ARG_BUFFER_SIZE_MED 0x4500
 #define DRAW_COMMAND_ARG_BUFFER_SIZE_LARGE 0x18000
 
+#define DRAW_COMMAND_DATA_BUFFER_SIZE 0x80000
+
 typedef struct s_draw_command_small {
-    u16 vertices;  // number of vertices
+    u32 vertices;              // number of vertices
+    u32 vertex_stride;         // stride for one whole vertex
+    i32 arg_offset[21];        // strides for arguments into the args array
+    i32 data_offset[12];       // might be negative for correcting for min index
+    u32 data_size;             // to save space copying it to the GPU, this is variable in the shader anyways
     u8 args[DRAW_COMMAND_ARG_BUFFER_SIZE_SMALL];
+    u8 data[DRAW_COMMAND_DATA_BUFFER_SIZE];
 } s_draw_command_small;
 
 
@@ -268,14 +266,11 @@ typedef struct s_CP {
 
     // put arguments in a buffer, also in serial
     u8 args[32 * 32];  // length for normal commands is limited to 16 (times 32 bits), so we need more than this
-    u8 argc;
+    u32 argc;
 
-    u16 vertex_count;
-    u8 sub_argc;
-    u8 draw_arg_buffer[0x400][21]; // buffers for each of the arguments specified; size is just an arbitrary (large) value
-    s_draw_arg draw_args[21][8]; // index of draw_arg in the argument/length buffer for at most 21 argument types
-    bool draw_argc_valid[8];  // keep track of whether we need to recalculate the value for arg_len
-    // initial values for draw_argc are 0, since when VCD == 0, nothing is enabled and no arguments will be sent
+    // todo: draw_command_mid, large
+    u8 arg_size[21]; // sizes of individual (direct) arguments of current draw command
+    s_draw_command_small draw_command_small;
 } s_CP;
 
 

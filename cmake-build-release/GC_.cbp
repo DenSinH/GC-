@@ -43,6 +43,7 @@
 					<Add directory="D:/CProjects/GC-/src/Core/PPC"/>
 					<Add directory="D:/CProjects/GC-/src/Core/PPC/../include"/>
 					<Add directory="D:/CProjects/GC-/src/Core/Flipper"/>
+					<Add directory="D:/CProjects/GC-/src/Core/Flipper/include"/>
 					<Add directory="D:/vcpkg/vcpkg/installed/x86-windows/include/SDL2"/>
 					<Add directory="D:/CProjects/GC-/src/Core/Flipper/../include"/>
 					<Add directory="D:/vcpkg/vcpkg/installed/x86-windows/include/glad"/>
@@ -74,6 +75,7 @@
 					<Add directory="D:/CProjects/GC-/src/Core/PPC"/>
 					<Add directory="D:/CProjects/GC-/src/Core/PPC/../include"/>
 					<Add directory="D:/CProjects/GC-/src/Core/Flipper"/>
+					<Add directory="D:/CProjects/GC-/src/Core/Flipper/include"/>
 					<Add directory="D:/vcpkg/vcpkg/installed/x86-windows/include/SDL2"/>
 					<Add directory="D:/CProjects/GC-/src/Core/Flipper/../include"/>
 					<Add directory="D:/vcpkg/vcpkg/installed/x86-windows/include/glad"/>
@@ -115,6 +117,7 @@
 					<Add directory="D:/CProjects/GC-/src/Core/PPC"/>
 					<Add directory="D:/CProjects/GC-/src/Core/PPC/../include"/>
 					<Add directory="D:/CProjects/GC-/src/Core/Flipper"/>
+					<Add directory="D:/CProjects/GC-/src/Core/Flipper/include"/>
 					<Add directory="D:/vcpkg/vcpkg/installed/x86-windows/include/SDL2"/>
 					<Add directory="D:/CProjects/GC-/src/Core/Flipper/../include"/>
 					<Add directory="D:/vcpkg/vcpkg/installed/x86-windows/include/glad"/>
@@ -145,6 +148,7 @@
 					<Add directory="D:/CProjects/GC-/src/Core/PPC"/>
 					<Add directory="D:/CProjects/GC-/src/Core/PPC/../include"/>
 					<Add directory="D:/CProjects/GC-/src/Core/Flipper"/>
+					<Add directory="D:/CProjects/GC-/src/Core/Flipper/include"/>
 					<Add directory="D:/vcpkg/vcpkg/installed/x86-windows/include/SDL2"/>
 					<Add directory="D:/CProjects/GC-/src/Core/Flipper/../include"/>
 					<Add directory="D:/vcpkg/vcpkg/installed/x86-windows/include/glad"/>
@@ -249,6 +253,7 @@
 					<Add option="-DNDEBUG"/>
 					<Add option="-DBOOST_DISABLE_ASSERTS"/>
 					<Add directory="D:/CProjects/GC-/src/Core/Flipper"/>
+					<Add directory="D:/CProjects/GC-/src/Core/Flipper/include"/>
 					<Add directory="D:/vcpkg/vcpkg/installed/x86-windows/include/SDL2"/>
 					<Add directory="D:/CProjects/GC-/include"/>
 					<Add directory="D:/CProjects/GC-/src/Core/Flipper/../include"/>
@@ -272,6 +277,7 @@
 					<Add option="-DNDEBUG"/>
 					<Add option="-DBOOST_DISABLE_ASSERTS"/>
 					<Add directory="D:/CProjects/GC-/src/Core/Flipper"/>
+					<Add directory="D:/CProjects/GC-/src/Core/Flipper/include"/>
 					<Add directory="D:/vcpkg/vcpkg/installed/x86-windows/include/SDL2"/>
 					<Add directory="D:/CProjects/GC-/include"/>
 					<Add directory="D:/CProjects/GC-/src/Core/Flipper/../include"/>

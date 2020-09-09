@@ -9,6 +9,7 @@
 #define FLIPPER_SCREEN_HEIGHT 720
 
 #define FLIPPER_TEMP_BUFFER_SIZE 0x10000
+#define FLIPPER_INDEX_ARRAY_SIZE 0x8000
 
 typedef struct s_Flipper {
 
@@ -25,11 +26,8 @@ typedef struct s_Flipper {
 
     u16 n_vertices;
     u8 command;
-    u8 temp_buffer[FLIPPER_TEMP_BUFFER_SIZE];
+    unsigned int VAO, VBO, SSBO;  // VBO will just hold the index, the actual vector is calculated in the shader
 
-    unsigned int VBOs[21];
-    unsigned int EBO;
-    unsigned int VAO;
     u32 VCD_lo, VCD_hi, VAT_A, VAT_B, VAT_C;
     int VCD_lo_location, VCD_hi_location, VAT_A_location, VAT_B_location, VAT_C_location;
     unsigned int shaderProgram;
@@ -38,7 +36,7 @@ typedef struct s_Flipper {
 void init_Flipper(s_Flipper* flipper);
 
 void video_init_Flipper(s_Flipper* gpu);
-void queue_draw_Flipper(s_Flipper* flipper, u16 n_vertices, u8 command);
+void queue_draw_Flipper(s_Flipper* flipper, u8 command);
 struct s_framebuffer render_Flipper(s_Flipper* flipper);
 
 #endif //GC__FLIPPER_H

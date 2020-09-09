@@ -24,6 +24,7 @@ set(CMAKE_C_TARGET_INCLUDE_PATH
   "../src/Core/PPC"
   "../src/Core/PPC/../include"
   "../src/Core/Flipper"
+  "../src/Core/Flipper/include"
   "D:/vcpkg/vcpkg/installed/x86-windows/include/SDL2"
   "../src/Core/Flipper/../include"
   "D:/vcpkg/vcpkg/installed/x86-windows/include/glad"
