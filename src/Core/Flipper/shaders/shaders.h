@@ -13,10 +13,10 @@ const char* fragmentShaderSource =
 "}\n";
 
 
-// vertexShaderSource (from vertex.vert, lines 0 to 38)
+// vertexShaderSource (from vertex.vert, lines 0 to 39)
 const char* vertexShaderSource = 
 "#version 400 core\n"
-"uniform uint VCD;\n"
+"uniform uint VCD_lo, VCD_hi;\n"
 "uniform uint VAT_A;\n"
 "uniform uint VAT_B;\n"
 "uniform uint VAT_C;\n"
@@ -34,21 +34,22 @@ const char* vertexShaderSource =
 "layout (location = 8) in ivec3 pos_3d_s16;\n"
 "layout (location = 9) in vec3  pos_3d_f32;\n"
 "\n"
-"if (true) {\n"
-"    // layout (location = 10)   in uvec1 clr0_rgb565;\n"
-"    layout (location = 11)   in uvec3 clr0_rgb888;\n"
-"    layout (location = 12)  in uvec4 clr0_rgb888x;\n"
-"    layout (location = 13) in uvec2 clr0_rgba4444;\n"
-"    // layout (location = 14) in uvec1 clr0_rgba6666;\n"
-"    layout (location = 15) in uvec4 clr0_rgba8888;\n"
-"}\n"
+"// layout (location = 10)   in uvec1 clr0_rgb565;\n"
+"layout (location = 11)   in uvec3 clr0_rgb888;\n"
+"layout (location = 12)  in uvec4 clr0_rgb888x;\n"
+"layout (location = 13) in uvec2 clr0_rgba4444;\n"
+"// layout (location = 14) in uvec1 clr0_rgba6666;\n"
+"layout (location = 15) in uvec4 clr0_rgba8888;\n"
 "\n"
 "out vec4 vertexColor;\n"
 "\n"
 "void main()\n"
 "{\n"
-"    gl_Position = vec4(pos_3d_s16.zyx / 2147483647.0, 1.0);\n"
-"    vertexColor = vec4(clr0_rgba8888.wzyx / 2147483647.0);\n"
+"    uint POSSHFT = bitfieldExtract(VAT_A, 4, 5);\n"
+"    vec4 unscaledPosition = vec4(pos_3d_s16.zyx / 2147483648.0, 1.0);\n"
+"\n"
+"    gl_Position = unscaledPosition * pow(2, -POSSHFT);\n"
+"    vertexColor = vec4(clr0_rgba8888.wzyx / 1073741824.0);\n"
 "}\n";
 
 #endif  // GC__SHADER_H

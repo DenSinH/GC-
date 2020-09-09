@@ -1,5 +1,6 @@
 #include "frontend.h"
 #include "debugger.h"
+#include "interface.h"
 
 #include <stdio.h>
 #include <SDL.h>
@@ -10,7 +11,7 @@ static struct s_frontend {
     ImGuiIO io;
     bool* shutdown;
     void (*video_init)();
-    void (*render)();
+    s_framebuffer (*render)();
 } Frontend;
 
 ImGuiIO *frontend_set_io() {
@@ -41,7 +42,7 @@ void bind_video_init(void (*initializer)()) {
     Frontend.video_init = initializer;
 }
 
-void bind_video_render(void (*render)()) {
+void bind_video_render(s_framebuffer (*render)()) {
     Frontend.render = render;
 }
 
@@ -101,14 +102,25 @@ int ui_run() {
         ImGui_ImplSDL2_NewFrame(window);
         ImGui::NewFrame();
 
+        glClearColor(0, 0, 0, 1.0f);
+        glClear(GL_COLOR_BUFFER_BIT);
+
         debugger_render();
-        glViewport(0, 0, (int) Frontend.io.DisplaySize.x, (int) Frontend.io.DisplaySize.y);
 
 #ifdef SHOW_EXAMPLE_MENU
         ImGui::ShowDemoWindow(NULL);
 #endif
         // render actual emulation
-        Frontend.render();
+        s_framebuffer emu_framebuffer = Frontend.render();
+        glBindFramebuffer(GL_DRAW_FRAMEBUFFER, 0);
+        glBindFramebuffer(GL_READ_FRAMEBUFFER, emu_framebuffer.id);
+        glBlitFramebuffer(0, 0,
+                          emu_framebuffer.width, emu_framebuffer.height,
+                          0, 0,
+                          emu_framebuffer.width, emu_framebuffer.height,
+                          GL_COLOR_BUFFER_BIT, GL_NEAREST
+        );
+        glViewport(0, 0, (int) Frontend.io.DisplaySize.x, (int) Frontend.io.DisplaySize.y);
 
         // then draw the imGui stuff over it
         ImGui_ImplOpenGL3_RenderDrawData(ImGui::GetDrawData());

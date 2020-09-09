@@ -122,8 +122,8 @@ static void frontend_video_init() {
     video_init_Flipper(&global_system->flipper);
 }
 
-static void frontend_render() {
-    render_Flipper(&global_system->flipper);
+static s_framebuffer frontend_render() {
+    return render_Flipper(&global_system->flipper);
 }
 
 

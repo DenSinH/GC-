@@ -10,18 +10,6 @@ CMakeFiles/GC_.dir/main.c.obj
  ../include/flags.h
  ../include/log.h
  ../include/sleeping.h
- ../src/Core/HWregs/AudioStreamingInterface.h
- ../src/Core/HWregs/CommandProcessor.h
- ../src/Core/HWregs/DVDInterface.h
- ../src/Core/HWregs/DigitalSoundProcessorInterface.h
- ../src/Core/HWregs/ExternalInterface.h
- ../src/Core/HWregs/GX_FIFO.h
- ../src/Core/HWregs/MemoryInterface.h
- ../src/Core/HWregs/PixelEngine.h
- ../src/Core/HWregs/ProcessorInterface.h
- ../src/Core/HWregs/SerialInterface.h
- ../src/Core/HWregs/VideoInterface.h
- ../src/Core/HWregs/hardware_registers.h
  ../src/Core/PPC/Registers/FPSCR.h
  ../src/Core/include/core_utils.h
  ../src/Core/include/float_utils.h
@@ -31,6 +19,19 @@ CMakeFiles/GC_.dir/main.c.obj
  D:/CProjects/GC-/init.c
  D:/CProjects/GC-/main.c
  D:/CProjects/GC-/src/Core/Breakpoints/breakpoints.h
+ D:/CProjects/GC-/src/Core/Flipper/Flipper.h
+ D:/CProjects/GC-/src/Core/HWregs/AudioStreamingInterface.h
+ D:/CProjects/GC-/src/Core/HWregs/CommandProcessor.h
+ D:/CProjects/GC-/src/Core/HWregs/DVDInterface.h
+ D:/CProjects/GC-/src/Core/HWregs/DigitalSoundProcessorInterface.h
+ D:/CProjects/GC-/src/Core/HWregs/ExternalInterface.h
+ D:/CProjects/GC-/src/Core/HWregs/GX_FIFO.h
+ D:/CProjects/GC-/src/Core/HWregs/MemoryInterface.h
+ D:/CProjects/GC-/src/Core/HWregs/PixelEngine.h
+ D:/CProjects/GC-/src/Core/HWregs/ProcessorInterface.h
+ D:/CProjects/GC-/src/Core/HWregs/SerialInterface.h
+ D:/CProjects/GC-/src/Core/HWregs/VideoInterface.h
+ D:/CProjects/GC-/src/Core/HWregs/hardware_registers.h
  D:/CProjects/GC-/src/Core/PPC/Gekko.h
  D:/CProjects/GC-/src/Core/PPC/MMU.h
  D:/CProjects/GC-/src/Core/PPC/Registers/CR.h

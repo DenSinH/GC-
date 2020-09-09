@@ -1,7 +1,7 @@
 // BEGIN vertexShaderSource
 
 #version 400 core
-uniform uint VCD;
+uniform uint VCD_lo, VCD_hi;
 uniform uint VAT_A;
 uniform uint VAT_B;
 uniform uint VAT_C;
@@ -30,8 +30,11 @@ out vec4 vertexColor;
 
 void main()
 {
-    gl_Position = vec4(pos_3d_s16.zyx / 2147483647.0, 1.0);
-    vertexColor = vec4(clr0_rgba8888.wzyx / 2147483647.0);
+    uint POSSHFT = bitfieldExtract(VAT_A, 4, 5);
+    vec4 unscaledPosition = vec4(pos_3d_s16.zyx / 2147483648.0, 1.0);
+
+    gl_Position = unscaledPosition * pow(2, -POSSHFT);
+    vertexColor = vec4(clr0_rgba8888.wzyx / 1073741824.0);
 }
 
 // END vertexShaderSource

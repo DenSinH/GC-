@@ -223,6 +223,33 @@ typedef struct s_draw_arg {
     void* direct_buffer;
 } s_draw_arg;
 
+/* The Math:
+ *
+ * For a draw command, we have at most 21 arguments:
+ *  - 9 pos/tex matrix indices, at most 1 byte each
+ *  - 1 positions arg, at most 12 bytes
+ *  - 1 normals arg, at most 36 bytes
+ *  - 2 color args, each at most 4 bytes
+ *  - 8 texture coordinate args, each at most 8 bytes
+ *
+ *  so in total: at most 69 bytes per vertex (nice)
+ *
+ *  We can set a limit for small/medium/large commands to save unnecessary copying to the GPU of argument buffer data
+ *  Say we set the limit for small commands to 0x40 vertices, we get a buffer size of (69 * 0x40 = ) 0x1140 bytes
+ *  medium we could say 0x100 vertices, giving a buffer of size (69 * 0x100 = ) 0x4500 bytes
+ *  large we could way anything else, but we should probably limit it to like 0x400 vertices or whatever, giving us
+ *  0x18000 bytes
+ * */
+
+#define DRAW_COMMAND_ARG_BUFFER_SIZE_SMALL 0x1140
+#define DRAW_COMMAND_ARG_BUFFER_SIZE_MED 0x4500
+#define DRAW_COMMAND_ARG_BUFFER_SIZE_LARGE 0x18000
+
+typedef struct s_draw_command_small {
+    u16 vertices;  // number of vertices
+    u8 args[DRAW_COMMAND_ARG_BUFFER_SIZE_SMALL];
+} s_draw_command_small;
+
 
 typedef struct s_CP {
     // external function
