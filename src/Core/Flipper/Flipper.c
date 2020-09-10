@@ -194,8 +194,12 @@ struct s_framebuffer render_Flipper(s_Flipper* flipper){
         glBindVertexArray(flipper->VAO);
 
         // pass relevant registers as uniforms
-        glUniform1ui(flipper->VCD_lo_location, flipper->VCD_lo);
-        glUniform1ui(flipper->VAT_A_location, flipper->VAT_A);
+        u8 format = flipper->command & 7;
+        glUniform1ui(flipper->VCD_lo_location, get_internal_CP_reg(flipper->CP, CP_reg_int_VCD_lo_base + format));
+        glUniform1ui(flipper->VCD_hi_location, get_internal_CP_reg(flipper->CP, CP_reg_int_VCD_hi_base + format));
+        glUniform1ui(flipper->VAT_A_location, get_internal_CP_reg(flipper->CP, CP_reg_int_VAT_A_base + format));
+        glUniform1ui(flipper->VAT_B_location, get_internal_CP_reg(flipper->CP, CP_reg_int_VAT_B_base + format));
+        glUniform1ui(flipper->VAT_C_location, get_internal_CP_reg(flipper->CP, CP_reg_int_VAT_C_base + format));
 
         log_flipper("Drawing command %02x, vertices %d", flipper->command, flipper->n_vertices)
         if ((flipper->command & 0xf8) == 0x80) {

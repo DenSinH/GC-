@@ -37,7 +37,7 @@ s_GameCube* init_system() {
     return GameCube;
 }
 
-#define TEST_DOL "D:\\CProjects\\GCResources\\GameCubeResources\\Tests\\Triangle\\Triangle.dol"
+#define TEST_DOL "D:\\CProjects\\GCResources\\GameCubeResources\\Tests\\Shapes\\Shapes.dol"
 // #define TEST_DOL "D:\\CProjects\\GCResources\\GameCubeResources\\Tests\\GCTests\\GCTests.dol"
 #define STEP_ON_BREAK
 

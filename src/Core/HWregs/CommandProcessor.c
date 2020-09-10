@@ -128,7 +128,7 @@ static inline void send_draw_command(s_CP* CP) {
     log_cp("Sent draw command to flipper");
     // we still need to buffer the indirect data, we do that here
     u32 data_offset = 0;
-    size_t stride;
+    size_t stride, size;
     i16 min_index, max_index;
     for (e_draw_args draw_arg = draw_arg_POS; draw_arg <= draw_arg_TEX7; draw_arg++) {
         if (CP->draw_command_small.arg_offset[draw_arg] < 0) {
@@ -168,18 +168,25 @@ static inline void send_draw_command(s_CP* CP) {
 
         // calculate data offset, account for min_index not being 0
         CP->draw_command_small.data_offset[draw_arg - draw_arg_POS] = data_offset - min_index;
+        size = stride * (((max_index - min_index) & ~3) + 4);   // align by 4 bytes
 
         // copy data
         memcpy(
                 &CP->draw_command_small.data[data_offset],
                 CP->system->memory + get_internal_CP_reg(CP, CP_reg_int_vert_ARRAY_BASE + draw_arg - draw_arg_POS) + min_index,
-                stride * (max_index - min_index + 1)
+                size
         );
         log_cp("copied array for argument %d (%04x bytes, index %x -> %x (stride %d)) to offset %x",
-               draw_arg, stride * (max_index - min_index + 1), min_index, max_index, stride, data_offset)
-        data_offset += stride * (max_index - min_index + 1);
+               draw_arg, size, min_index, max_index, stride, data_offset)
+        data_offset += size;
     }
     CP->draw_command_small.data_size = data_offset;
+
+    memcpy(
+            &CP->draw_command_small.data_stride,
+            &CP->internalCPregs[CP_reg_int_vert_ARRAY_STRIDE - INTERNAL_CP_REGISTER_BASE],
+            12 * sizeof(u32)
+    );
 
     queue_draw_Flipper(&CP->system->flipper, CP->command);
 }

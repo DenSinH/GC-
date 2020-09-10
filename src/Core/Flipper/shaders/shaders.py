@@ -36,7 +36,8 @@ for file in os.listdir(SHADER_DIR):
             i += 1
 
         while i < len(content) and not re.match(f".*END\\s+{shader_name}", content[i]):
-            line = content[i]
+            # escape backslashes and quotes
+            line = content[i].replace("\\", "\\\\").replace("\"", "\\\"")
             for const, value in constants.items():
                 line = re.sub(f"%{const}%", value, line)
 

@@ -243,6 +243,7 @@ typedef struct s_draw_command_small {
     u32 vertex_stride;         // stride for one whole vertex
     i32 arg_offset[21];        // strides for arguments into the args array
     i32 data_offset[12];       // might be negative for correcting for min index
+    u32 data_stride[12];       // ARRAY_STRIDE registers
     u32 data_size;             // to save space copying it to the GPU, this is variable in the shader anyways
     u8 args[DRAW_COMMAND_ARG_BUFFER_SIZE_SMALL];
     u8 data[DRAW_COMMAND_DATA_BUFFER_SIZE];
