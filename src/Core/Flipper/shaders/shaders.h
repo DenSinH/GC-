@@ -13,7 +13,7 @@ const char* fragmentShaderSource =
 "}\n";
 
 
-// vertexShaderSource (from vertex.vert, lines 0 to 112)
+// vertexShaderSource (from vertex.vert, lines 0 to 118)
 const char* vertexShaderSource = 
 "#version 430 core\n"
 "const uint draw_arg_POS = 9;\n"
@@ -85,14 +85,20 @@ const char* vertexShaderSource =
 "\n"
 "        gl_Position = vec4(x / 32.0, y / 32.0, z / 32.0, 1.0);\n"
 "//        switch (gl_VertexID) {\n"
-"//            case 0:\n"
+"//            case 4:\n"
 "//                gl_Position = vec4(-0.5, -0.5, 0.0, 1.0);\n"
 "//                break;\n"
-"//            case 1:\n"
+"//            case 5:\n"
 "//                gl_Position = vec4(0.5, -0.5, 0.0, 1.0);\n"
 "//                break;\n"
-"//            case 2:\n"
+"//            case 6:\n"
 "//                gl_Position = vec4(0.0, 0.5, 0.0, 1.0);\n"
+"//                break;\n"
+"//            case 7:\n"
+"//                gl_Position = vec4(0.5, 0.5, 0.0, 1.0);\n"
+"//                break;\n"
+"//            default:\n"
+"//                gl_Position = vec4(x / 32.0, y / 32.0, z / 32.0, 1.0);\n"
 "//                break;\n"
 "//        }\n"
 "    }\n"

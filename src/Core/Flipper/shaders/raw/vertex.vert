@@ -70,14 +70,20 @@ void main()
 
         gl_Position = vec4(x / 32.0, y / 32.0, z / 32.0, 1.0);
 //        switch (gl_VertexID) {
-//            case 0:
+//            case 4:
 //                gl_Position = vec4(-0.5, -0.5, 0.0, 1.0);
 //                break;
-//            case 1:
+//            case 5:
 //                gl_Position = vec4(0.5, -0.5, 0.0, 1.0);
 //                break;
-//            case 2:
+//            case 6:
 //                gl_Position = vec4(0.0, 0.5, 0.0, 1.0);
+//                break;
+//            case 7:
+//                gl_Position = vec4(0.5, 0.5, 0.0, 1.0);
+//                break;
+//            default:
+//                gl_Position = vec4(x / 32.0, y / 32.0, z / 32.0, 1.0);
 //                break;
 //        }
     }

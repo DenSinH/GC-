@@ -11,6 +11,9 @@
 #include <glad.h>
 
 
+static u16 quad_EBO[FLIPPER_QUAD_INDEX_ARRAY_SIZE];
+
+
 void init_Flipper(s_Flipper* flipper) {
     flipper->memory = flipper->system->memory;
     flipper->CP = &flipper->system->HW_regs.CP;
@@ -18,7 +21,20 @@ void init_Flipper(s_Flipper* flipper) {
     flipper->backdrop.r = 0.45;
     flipper->backdrop.g = 0.55f;
     flipper->backdrop.b = 0.60f;
+
+    int i = 0;
+    for (u16 v = 0; i + 6 < FLIPPER_QUAD_INDEX_ARRAY_SIZE; v += 4) {
+        // triangle fan structure
+        quad_EBO[i++] = v;
+        quad_EBO[i++] = v + 1;
+        quad_EBO[i++] = v + 2;
+        quad_EBO[i++] = v;
+        quad_EBO[i++] = v + 2;
+        quad_EBO[i++] = v + 3;
+    }
 }
+
+#define QUAD_EBO_COUNT(n_vertices) (((n_vertices) >> 2) * 6)
 
 static void debug_shader_init(s_Flipper* flipper, unsigned int shader) {
 #ifndef NDEBUG
@@ -108,39 +124,12 @@ static void init_buffers(s_Flipper* flipper) {
 
     glBindBuffer(GL_SHADER_STORAGE_BUFFER, flipper->SSBO);
     glBindBufferBase(GL_SHADER_STORAGE_BUFFER, 3, flipper->SSBO);
-//
-//    /* set up POS buffer */
-//    glBindBuffer(GL_ARRAY_BUFFER, flipper->VBOs[draw_arg_POS]);
-//    glVertexAttribPointer(POS_2D_U8, 2, GL_UNSIGNED_BYTE, GL_FALSE, 2 * sizeof(u8), (void*)0);
-//    glVertexAttribPointer(POS_2D_S8, 2, GL_BYTE, GL_FALSE, 2 * sizeof(i8), (void*)0);
-//    glVertexAttribPointer(POS_2D_U16, 2, GL_UNSIGNED_SHORT, GL_FALSE, 2 * sizeof(u16), (void*)0);
-//    glVertexAttribPointer(POS_2D_S16, 2, GL_SHORT, GL_FALSE, 2 * sizeof(i16), (void*)0);
-//    glVertexAttribPointer(POS_2D_F32, 2, GL_FLOAT, GL_FALSE, 2 * sizeof(float), (void*)0);
-//
-//    glVertexAttribPointer(POS_3D_U8, 3, GL_UNSIGNED_BYTE, GL_FALSE, 3 * sizeof(u8), (void*)0);
-//    glVertexAttribPointer(POS_3D_S8, 3, GL_BYTE, GL_FALSE, 3 * sizeof(i8), (void*)0);
-//    glVertexAttribPointer(POS_3D_U16, 3, GL_UNSIGNED_SHORT, GL_FALSE, 3 * sizeof(u16), (void*)0);
-//    glVertexAttribPointer(POS_3D_S16, 3, GL_SHORT, GL_FALSE, 3 * sizeof(i16), (void*)0);
-//    glVertexAttribPointer(POS_3D_F32, 3, GL_FLOAT, GL_FALSE, 3 * sizeof(float), (void*)0);
-//
-//    for (e_VA_locations i = 0; i <= POS_3D_F32; i++) {
-//        glEnableVertexAttribArray(i);
-//    }
-//
-//    /* set up CLR0 buffer */
-//    glBindBuffer(GL_ARRAY_BUFFER, flipper->VBOs[draw_arg_CLR0]);
-//    glVertexAttribPointer(CLR0_rgb565, 1, GL_UNSIGNED_SHORT, GL_FALSE, sizeof(u16), (void*)0);
-//    glVertexAttribPointer(CLR0_rgb888, 3, GL_UNSIGNED_BYTE, GL_FALSE, 3 * sizeof(u8), (void*)0);
-//    glVertexAttribPointer(CLR0_rgb888x, 4, GL_UNSIGNED_BYTE, GL_FALSE, 4 * sizeof(u8), (void*)0);
-//    glVertexAttribPointer(CLR0_rgba4444, 2, GL_UNSIGNED_BYTE, GL_FALSE, 2 * sizeof(u8), (void*)0);
-//    glVertexAttribPointer(CLR0_rgba6666, 1, GL_UNSIGNED_INT, GL_FALSE, sizeof(u32), (void*)0);
-//    glVertexAttribPointer(CLR0_rgba8888, 4, GL_UNSIGNED_BYTE, GL_FALSE, 4 * sizeof(u8), (void*)0);
-//
-//    for (e_VA_locations i = CLR0_rgb565; i <= CLR0_rgba8888; i++) {
-//        glEnableVertexAttribArray(i);
-//    }
-//
-//    // unbind
+
+    // bind the quad EBO to the VAO
+    glGenBuffers(1, &flipper->EBO);
+    glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, flipper->EBO);
+
+    glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, 0);
     glBindBuffer(GL_ARRAY_BUFFER, 0);
 }
 
@@ -159,14 +148,9 @@ void video_init_Flipper(s_Flipper* flipper) {
 }
 
 void queue_draw_Flipper(s_Flipper* flipper, u8 command) {
-    flipper->n_vertices = 3;
+    flipper->n_vertices = flipper->CP->draw_command_small.vertices;
     flipper->command = command;
 }
-
-static const GLenum draw_commands[8] = {
-        GL_QUADS, 0, GL_TRIANGLES, GL_TRIANGLE_STRIP,
-        GL_TRIANGLE_FAN, GL_LINES, GL_LINE_STRIP, GL_POINTS
-};
 
 void draw_Flipper(s_Flipper* flipper) {
     log_flipper("drawing");
@@ -183,86 +167,13 @@ void draw_Flipper(s_Flipper* flipper) {
     glBindBuffer(GL_SHADER_STORAGE_BUFFER, 0);
     log_flipper("buffer %x bytes of command data",
                 sizeof(s_draw_command_small) - DRAW_COMMAND_DATA_BUFFER_SIZE + flipper->CP->draw_command_small.data_size)
-
-//    u8 format = flipper->command & 7;
-//    bool direct = true;
-//
-//    s_VCD_lo VCD_lo = { .raw = flipper->VCD_lo = get_internal_CP_reg(flipper->CP, CP_reg_int_VCD_lo_base + format) };
-//    s_VCD_hi VCD_hi = { .raw = get_internal_CP_reg(flipper->CP, CP_reg_int_VCD_hi_base + format) };
-//    s_VAT_A VAT_A = { .raw = flipper->VAT_A = get_internal_CP_reg(flipper->CP, CP_reg_int_VAT_A_base + format) };
-//    s_VAT_B VAT_B = { .raw = get_internal_CP_reg(flipper->CP, CP_reg_int_VAT_B_base + format) };
-//    s_VAT_C VAT_C = { .raw = get_internal_CP_reg(flipper->CP, CP_reg_int_VAT_C_base + format) };
-//
-//    float vertices[] =
-//    {
-//        -0.5f, -0.5f, 0.0f,
-//        0.5f, -0.5f, 0.0f,
-//        0.0f,  0.5f,
-//    };
-//
-//    u32 colors[] = {
-//            0xffffffff,
-//            0xffffffff,
-//            0xffffffff,
-//    };
-//
-//    glBindVertexArray(flipper->VAO);
-//    glBindBuffer(GL_ARRAY_BUFFER, flipper->VBOs[draw_arg_POS]);   // bind to array buffer
-//    glBufferData(GL_ARRAY_BUFFER, sizeof(vertices), vertices, GL_STATIC_DRAW);  // buffer data
-//
-//    glBindBuffer(GL_ARRAY_BUFFER, flipper->VBOs[draw_arg_CLR0]);   // bind to array buffer
-//    glBufferData(GL_ARRAY_BUFFER, sizeof(colors), colors, GL_STATIC_DRAW);  // buffer data
-//    flipper->draw_ready = true;
-//    return;
-//
-//    s_draw_arg draw_arg;
-//    for (int i = 0; (draw_arg = flipper->CP->draw_args[format][i]).arg != draw_arg_UNUSED; i++) {
-//        printf("got draw arg %x\n", flipper->command);
-//        memcpy_rev(flipper->temp_buffer, draw_arg.direct_buffer, flipper->n_vertices * draw_arg.direct_stride);
-//        switch (draw_arg.arg) {
-//            case draw_arg_POS:
-//                if (draw_arg.direct) {
-//                    // now the temp buffer holds vertex data
-//                    glBindBuffer(GL_ARRAY_BUFFER, flipper->VBOs[draw_arg_POS]);
-//                    glBufferData(GL_ARRAY_BUFFER, flipper->n_vertices * draw_arg.direct_stride, flipper->temp_buffer, GL_STATIC_DRAW);
-//                }
-//                else {
-//                    // now the temp buffer holds index data
-//                    glBindBuffer(GL_ARRAY_BUFFER, flipper->EBO);
-//                    glBufferData(GL_ARRAY_BUFFER, flipper->n_vertices * draw_arg.direct_stride, flipper->temp_buffer, GL_STATIC_DRAW);
-//
-//                    direct = false;
-//                    u32 stride = get_internal_CP_reg(flipper->CP, CP_reg_int_vert_ARRAY_STRIDE);
-//                    void* array = flipper->memory + MASK_24MB(get_internal_CP_reg(flipper->CP, CP_reg_int_vert_ARRAY_BASE));
-//
-//                    memcpy_rev(flipper->temp_buffer, array, flipper->n_vertices * stride);
-//                    glBindBuffer(GL_ARRAY_BUFFER, flipper->VBOs[draw_arg_POS]);
-//                    glBufferData(GL_ARRAY_BUFFER, flipper->n_vertices * stride, flipper->temp_buffer, GL_STATIC_DRAW);
-//                }
-//                break;
-//            case draw_arg_CLR0:
-//                if (draw_arg.direct) {
-//                    // now the temp buffer holds vertex data
-//                    glBindBuffer(GL_ARRAY_BUFFER, flipper->VBOs[draw_arg_CLR0]);
-//                    glBufferData(GL_ARRAY_BUFFER, flipper->n_vertices * draw_arg.direct_stride, flipper->temp_buffer, GL_STATIC_DRAW);
-//                }
-//                else {
-//                    // now the temp buffer holds index data
-////                    glBindBuffer(GL_ARRAY_BUFFER, flipper->EBO);
-////                    glBufferData(GL_ARRAY_BUFFER, flipper->n_vertices * draw_arg.direct_stride, flipper->temp_buffer, GL_STATIC_DRAW);
-//                    u32 stride = get_internal_CP_reg(flipper->CP, CP_reg_int_clr0_ARRAY_STRIDE);
-//                    void* array = flipper->memory + MASK_24MB(get_internal_CP_reg(flipper->CP, CP_reg_int_clr0_ARRAY_BASE));
-//
-//                    memcpy_rev(flipper->temp_buffer, array, flipper->n_vertices * stride);
-//                    glBindBuffer(GL_ARRAY_BUFFER, flipper->VBOs[draw_arg_CLR0]);
-//                    glBufferData(GL_ARRAY_BUFFER, flipper->n_vertices * stride, flipper->temp_buffer, GL_STATIC_DRAW);
-//                }
-//                break;
-//            default:
-//                break;
-//        }
-//    }
 }
+
+// GL_QUADS is depricated, we have to separate case this by using an EBO for the vertices
+static const GLenum draw_commands[8] = {
+        0, 0, GL_TRIANGLES, GL_TRIANGLE_STRIP,
+        GL_TRIANGLE_FAN, GL_LINES, GL_LINE_STRIP, GL_POINTS
+};
 
 bool first = true;
 struct s_framebuffer render_Flipper(s_Flipper* flipper){
@@ -282,10 +193,27 @@ struct s_framebuffer render_Flipper(s_Flipper* flipper){
         glUseProgram(flipper->shaderProgram);
         glBindVertexArray(flipper->VAO);
 
+        // pass relevant registers as uniforms
         glUniform1ui(flipper->VCD_lo_location, flipper->VCD_lo);
         glUniform1ui(flipper->VAT_A_location, flipper->VAT_A);
-        // glDrawArrays(draw_commands[(flipper->command >> 4) & 7], 0, 3);
-        glDrawArrays(GL_TRIANGLES, 0, 3);
+
+        log_flipper("Drawing command %02x, vertices %d", flipper->command, flipper->n_vertices)
+        if ((flipper->command & 0xf8) == 0x80) {
+            // quads need separate case
+            for (int i = 0; i < QUAD_EBO_COUNT(flipper->n_vertices); i++) {
+                printf("%02d: %d\n", i, quad_EBO[i]);
+            }
+
+            glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, flipper->EBO);
+            glBufferData(GL_ELEMENT_ARRAY_BUFFER, sizeof(u16) * QUAD_EBO_COUNT(flipper->n_vertices),
+                         quad_EBO, GL_STATIC_DRAW);
+            glDrawElements(GL_TRIANGLES, QUAD_EBO_COUNT(flipper->n_vertices), GL_UNSIGNED_SHORT, 0);
+            glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, 0);
+        }
+        else {
+            glDrawArrays(draw_commands[(flipper->command >> 3) & 7], 0, flipper->n_vertices);
+        }
+
         flipper->n_vertices = 0;
         flipper->current_framebuffer ^= true;  // frameswap for the emulator
     }
