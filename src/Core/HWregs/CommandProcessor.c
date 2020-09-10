@@ -108,20 +108,35 @@ static inline void load_CP_reg(s_CP* CP, u8 RID, u32 value) {
 //    }
 }
 
+const static u8 XF_addr_to_section[] = { 0, 0xff, 0xff, 0xff, 1, 2, 3, 0xff };
+
 static inline void load_XF_regs(s_CP* CP, u16 length, u16 base_addr, const u8* values_buffer) {
     log_cp("Load %d XF registers starting at %04x (first value %08x)", length, base_addr, READ32(values_buffer, 0));
 
+    if (base_addr > INTERNAL_XF_REGISTER_BASE) {
 #ifdef CHECK_CP_COMMAND
-    assert(base_addr - INTERNAL_XF_REGISTER_BASE + length <= INTERNAL_XF_REGISTER_SIZE  /* invalid RID for CP command */);
+        assert(base_addr - INTERNAL_XF_REGISTER_BASE + length <= INTERNAL_XF_REGISTER_SIZE  /* invalid RID for CP command */);
 #endif
-
-    for (int i = 0; i < length; i++) {
-        CP->internalXFregs[base_addr + i - INTERNAL_XF_REGISTER_BASE] = READ32(values_buffer, i << 2);
+        for (int i = 0; i < length; i++) {
+            CP->internalXFregs[base_addr + i - INTERNAL_XF_REGISTER_BASE] = READ32(values_buffer, i << 2);
+        }
+    }
+    else {
+        /*
+         * base address is either 0 - 0xff / 0x400 - 0x4ff / 0x500 - 0x5ff / 0x600 - 0x6ff
+         * so we check ((base_addr + 0x100) >> 8) & 3 for the section
+         * */
+        u8 section = XF_addr_to_section[base_addr >> 8];
+        for (int i = 0; i < length; i++) {
+            log_cp("loaded %08x", READ32(values_buffer, i << 2));
+            CP->internalXFmem[section][(base_addr & 0xff) + i] = READ32(values_buffer, i << 2);
+        }
     }
 }
 
 static inline void load_INDX(s_CP* CP, e_CP_cmd opcode, u16 index, u8 length, u16 base_addr) {
     log_cp("Load %d XF indexed (%02x, index value %02x) starting at %04x", length, opcode, index, base_addr);
+    // todo
 }
 
 static inline void send_draw_command(s_CP* CP) {
@@ -193,6 +208,7 @@ static inline void send_draw_command(s_CP* CP) {
 
 static inline void call_DL(s_CP* CP, u32 list_addr, u32 list_size) {
     log_cp("Call DL at %08x of size %08x", list_addr, list_size);
+    // we can basically just call the execute_buffer function but then on data in memory
 }
 
 static inline void load_BP_reg(s_CP* CP, u32 value) {

@@ -217,18 +217,49 @@ static void init() {
         add_register_data(name, &global_system->HW_regs.CP.internalCPregs[i], false, 1);
     }
 
-    add_register_tab("internal BP");
+    add_register_tab("BP regs");
 
     for (int i = 0; i < INTERNAL_BP_REGISTER_SIZE; i++) {
         sprintf(name, "BP 0x%02x", i);
         add_register_data(name, &global_system->HW_regs.CP.internalBPregs[i], false, 2);
     }
 
-    add_register_tab("internal XF");
+    add_register_tab("XF regs");
 
     for (int i = 0; i < INTERNAL_XF_REGISTER_SIZE; i++) {
         sprintf(name, "XF 0x%02x", INTERNAL_XF_REGISTER_BASE + i);
         add_register_data(name, &global_system->HW_regs.CP.internalXFregs[i], false, 3);
+    }
+
+    add_register_tab("XF mem");
+
+    for (int i = 0; i < 0x100; i++) {
+        sprintf(name, "XFA[0x%02x]", i);
+        add_register_data(name, &global_system->HW_regs.CP.internalXFmem[0][i], false, 4);
+    }
+
+    add_register_data("", NULL, false, 4);
+    add_register_data("", NULL, false, 4);
+
+    for (int i = 0; i < 0x60; i++) {
+        sprintf(name, "XFB[0x%02x]", i);
+        add_register_data(name, &global_system->HW_regs.CP.internalXFmem[1][i], false, 4);
+    }
+
+    add_register_data("", NULL, false, 4);
+    add_register_data("", NULL, false, 4);
+
+    for (int i = 0; i < 0x100; i++) {
+        sprintf(name, "XFC[0x%02x]", i);
+        add_register_data(name, &global_system->HW_regs.CP.internalXFmem[2][i], false, 4);
+    }
+
+    add_register_data("", NULL, false, 4);
+    add_register_data("", NULL, false, 4);
+
+    for (int i = 0; i < 0x80; i++) {
+        sprintf(name, "XFD[0x%02x]", i);
+        add_register_data(name, &global_system->HW_regs.CP.internalXFmem[3][i], false, 4);
     }
 
     add_command("RESET", "Resets the system. Add 'pause/freeze/break' to freeze on reload.", reset_system);

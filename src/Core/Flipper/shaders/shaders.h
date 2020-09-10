@@ -13,7 +13,7 @@ const char* fragmentShaderSource =
 "}\n";
 
 
-// vertexShaderSource (from vertex.vert, lines 0 to 346)
+// vertexShaderSource (from vertex.vert, lines 0 to 347)
 const char* vertexShaderSource = 
 "#version 430 core\n"
 "\n"
@@ -202,6 +202,7 @@ const char* vertexShaderSource =
 "            }\n"
 "        }\n"
 "\n"
+"        // todo: POSSHFT\n"
 "        if (POSCNT) {\n"
 "            // 3D\n"
 "            gl_Position = vec4(position.xyz / 32.0, 1.0);\n"

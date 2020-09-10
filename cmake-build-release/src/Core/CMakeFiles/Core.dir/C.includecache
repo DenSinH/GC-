@@ -32,6 +32,8 @@ time.h
 unistd.h
 -
 
+../src/Core/Flipper/shaders/GX_constants.h
+
 ../src/Core/HWregs/AudioStreamingInterface.h
 default.h
 ../src/Core/HWregs/default.h
@@ -47,6 +49,8 @@ hwreg_utils.h
 ../src/Core/HWregs/hwreg_utils.h
 core_utils.h
 ../src/Core/HWregs/core_utils.h
+../Flipper/shaders/GX_constants.h
+../src/Core/Flipper/shaders/GX_constants.h
 
 ../src/Core/HWregs/DVDInterface.h
 default.h

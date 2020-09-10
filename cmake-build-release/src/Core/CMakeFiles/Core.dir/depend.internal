@@ -19,6 +19,7 @@ src/Core/CMakeFiles/Core.dir/system.c.obj
  ../include/flags.h
  ../include/log.h
  ../include/sleeping.h
+ ../src/Core/Flipper/shaders/GX_constants.h
  ../src/Core/HWregs/AudioStreamingInterface.h
  ../src/Core/HWregs/CommandProcessor.h
  ../src/Core/HWregs/DVDInterface.h

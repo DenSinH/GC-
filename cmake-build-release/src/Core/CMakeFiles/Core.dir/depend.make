@@ -18,6 +18,7 @@ src\Core\CMakeFiles\Core.dir\system.c.obj: ..\include\default.h
 src\Core\CMakeFiles\Core.dir\system.c.obj: ..\include\flags.h
 src\Core\CMakeFiles\Core.dir\system.c.obj: ..\include\log.h
 src\Core\CMakeFiles\Core.dir\system.c.obj: ..\include\sleeping.h
+src\Core\CMakeFiles\Core.dir\system.c.obj: ..\src\Core\Flipper\shaders\GX_constants.h
 src\Core\CMakeFiles\Core.dir\system.c.obj: ..\src\Core\HWregs\AudioStreamingInterface.h
 src\Core\CMakeFiles\Core.dir\system.c.obj: ..\src\Core\HWregs\CommandProcessor.h
 src\Core\CMakeFiles\Core.dir\system.c.obj: ..\src\Core\HWregs\DVDInterface.h

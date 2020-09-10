@@ -187,6 +187,7 @@ void main()
             }
         }
 
+        // todo: POSSHFT
         if (POSCNT) {
             // 3D
             gl_Position = vec4(position.xyz / 32.0, 1.0);

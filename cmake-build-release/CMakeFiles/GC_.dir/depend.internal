@@ -20,6 +20,7 @@ CMakeFiles/GC_.dir/main.c.obj
  D:/CProjects/GC-/main.c
  D:/CProjects/GC-/src/Core/Breakpoints/breakpoints.h
  D:/CProjects/GC-/src/Core/Flipper/Flipper.h
+ D:/CProjects/GC-/src/Core/Flipper/shaders/GX_constants.h
  D:/CProjects/GC-/src/Core/HWregs/AudioStreamingInterface.h
  D:/CProjects/GC-/src/Core/HWregs/CommandProcessor.h
  D:/CProjects/GC-/src/Core/HWregs/DVDInterface.h

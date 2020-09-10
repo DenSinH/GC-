@@ -7,12 +7,6 @@
 #include "core_utils.h"
 #include "../Flipper/shaders/GX_constants.h"
 
-#define INTERNAL_CP_REGISTER_SIZE 0xa0
-#define INTERNAL_CP_REGISTER_BASE 0x20
-#define INTERNAL_BP_REGISTER_SIZE 0x100
-#define INTERNAL_XF_REGISTER_SIZE 0x58
-#define INTERNAL_XF_REGISTER_BASE 0x1000
-
 typedef enum e_CP_regs {
     CP_reg_FIFO_base_lo = 0x20,
     CP_reg_FIFO_base_hi = 0x22,
@@ -249,6 +243,12 @@ typedef struct s_draw_command_small {
     u8 data[DRAW_COMMAND_DATA_BUFFER_SIZE];
 } s_draw_command_small;
 
+#define INTERNAL_CP_REGISTER_SIZE 0xa0
+#define INTERNAL_CP_REGISTER_BASE 0x20
+#define INTERNAL_BP_REGISTER_SIZE 0x100
+#define INTERNAL_XF_REGISTER_SIZE 0x58
+#define INTERNAL_XF_MEM_SIZE 0x100
+#define INTERNAL_XF_REGISTER_BASE 0x1000
 
 typedef struct s_CP {
     // external function
@@ -261,6 +261,13 @@ typedef struct s_CP {
     u32 internalCPregs[INTERNAL_CP_REGISTER_SIZE];
     u32 internalBPregs[INTERNAL_BP_REGISTER_SIZE];
     u32 internalXFregs[INTERNAL_XF_REGISTER_SIZE];
+    u32 internalXFmem[4][INTERNAL_XF_MEM_SIZE];    // 4 regions, A, B, C, D
+    /*
+     * Region A: position matrix memory (0x100 words)
+     * Region B: normal matrix memory (0x20 * 3 words)
+     * Region C: dual texture transform matrices (64 * 4 words)
+     * Region D: light memory (only 20 msbits for each word, minimum 3 word write, 0x80 words)
+     * */
 
     e_CP_cmd command;
     bool fetching;  // true: needs args; false: needs command;

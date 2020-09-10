@@ -37,28 +37,24 @@ void init_Flipper(s_Flipper* flipper) {
 #define QUAD_EBO_COUNT(n_vertices) (((n_vertices) >> 2) * 6)
 
 static void debug_shader_init(s_Flipper* flipper, unsigned int shader) {
-#ifndef NDEBUG
     int  success;
     glGetShaderiv(shader, GL_COMPILE_STATUS, &success);
     if(!success)
     {
         char infoLog[512];
         glGetShaderInfoLog(shader, 512, NULL, infoLog);
-        printf("Vertex shader compilation failed: %s\n", infoLog);
+        log_fatal("Vertex shader compilation failed: %s\n", infoLog);
     }
-#endif
 }
 
 static void debug_program_init(s_Flipper* flipper, unsigned int program) {
-#ifndef NDEBUG
     int  success;
     glGetProgramiv(flipper->shaderProgram, GL_LINK_STATUS, &success);
     if(!success) {
         char infoLog[512];
         glGetProgramInfoLog(flipper->shaderProgram, 512, NULL, infoLog);
-        printf("Shader program linking failed: %s\n", infoLog);
+        log_fatal("Shader program linking failed: %s\n", infoLog);
     }
-#endif
 }
 
 static void init_framebuffer(s_Flipper* flipper) {
@@ -203,11 +199,7 @@ struct s_framebuffer render_Flipper(s_Flipper* flipper){
 
         log_flipper("Drawing command %02x, vertices %d", flipper->command, flipper->n_vertices)
         if ((flipper->command & 0xf8) == 0x80) {
-            // quads need separate case
-            for (int i = 0; i < QUAD_EBO_COUNT(flipper->n_vertices); i++) {
-                printf("%02d: %d\n", i, quad_EBO[i]);
-            }
-
+            // quads need separate case for the indices since GL_QUADS is deprecated
             glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, flipper->EBO);
             glBufferData(GL_ELEMENT_ARRAY_BUFFER, sizeof(u16) * QUAD_EBO_COUNT(flipper->n_vertices),
                          quad_EBO, GL_STATIC_DRAW);

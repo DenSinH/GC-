@@ -19,6 +19,7 @@ CMakeFiles\GC_.dir\main.c.obj: ..\init.c
 CMakeFiles\GC_.dir\main.c.obj: ..\main.c
 CMakeFiles\GC_.dir\main.c.obj: ..\src\Core\Breakpoints\breakpoints.h
 CMakeFiles\GC_.dir\main.c.obj: ..\src\Core\Flipper\Flipper.h
+CMakeFiles\GC_.dir\main.c.obj: ..\src\Core\Flipper\shaders\GX_constants.h
 CMakeFiles\GC_.dir\main.c.obj: ..\src\Core\HWregs\AudioStreamingInterface.h
 CMakeFiles\GC_.dir\main.c.obj: ..\src\Core\HWregs\CommandProcessor.h
 CMakeFiles\GC_.dir\main.c.obj: ..\src\Core\HWregs\DVDInterface.h
