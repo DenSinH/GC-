@@ -156,26 +156,27 @@ void video_init_Flipper(s_Flipper* flipper) {
     init_buffers(flipper);
 }
 
-void queue_draw_Flipper(s_Flipper* flipper, u8 command) {
-    flipper->n_vertices = flipper->CP->draw_command_small.vertices;
-    flipper->command = command;
-}
+// GL_QUADS is depricated, we have to separate case this by using an EBO for the vertices
+static const GLenum draw_commands[8] = {
+        0, 0, GL_TRIANGLES, GL_TRIANGLE_STRIP,
+        GL_TRIANGLE_FAN, GL_LINES, GL_LINE_STRIP, GL_POINTS
+};
 
-void draw_Flipper(s_Flipper* flipper) {
+void draw_Flipper(s_Flipper* flipper, s_draw_command_small* command) {
     glBindVertexArray(flipper->VAO);
 
     // buffer command data
     glBindBuffer(GL_SHADER_STORAGE_BUFFER, flipper->command_SSBO);
     glBufferData(
             GL_SHADER_STORAGE_BUFFER,
-            sizeof(s_draw_command_small) - DRAW_COMMAND_DATA_BUFFER_SIZE + flipper->CP->draw_command_small.data_size,
-            &flipper->CP->draw_command_small,
+            sizeof(s_draw_command_small) - DRAW_COMMAND_DATA_BUFFER_SIZE + command->data_size,
+            command,
             GL_STATIC_COPY
     );
 
     // todo: cache this somehow?
     log_flipper("buffer %x bytes of command data",
-                sizeof(s_draw_command_small) - DRAW_COMMAND_DATA_BUFFER_SIZE + flipper->CP->draw_command_small.data_size)
+                sizeof(s_draw_command_small) - DRAW_COMMAND_DATA_BUFFER_SIZE + command->data_size)
 
     glBindBuffer(GL_SHADER_STORAGE_BUFFER, flipper->XF_SSBO);
     glBufferData(
@@ -188,14 +189,36 @@ void draw_Flipper(s_Flipper* flipper) {
     log_flipper("loaded %x bytes of XF data", sizeof(flipper->CP->internalXFmem) + sizeof(flipper->CP->internalXFregs));
 
     glBindBuffer(GL_SHADER_STORAGE_BUFFER, 0);
+    glUseProgram(flipper->shaderProgram);
+    glBindVertexArray(flipper->VAO);
+
+    // pass relevant registers as uniforms
+    u8 format = command->command & 7;
+    glUniform1ui(flipper->VCD_lo_location, get_internal_CP_reg(flipper->CP, CP_reg_int_VCD_lo_base + format));
+    glUniform1ui(flipper->VCD_hi_location, get_internal_CP_reg(flipper->CP, CP_reg_int_VCD_hi_base + format));
+    glUniform1ui(flipper->VAT_A_location, get_internal_CP_reg(flipper->CP, CP_reg_int_VAT_A_base + format));
+    glUniform1ui(flipper->VAT_B_location, get_internal_CP_reg(flipper->CP, CP_reg_int_VAT_B_base + format));
+    glUniform1ui(flipper->VAT_C_location, get_internal_CP_reg(flipper->CP, CP_reg_int_VAT_C_base + format));
+
+    glUniform1ui(flipper->MATIDX_REG_A_location, get_internal_CP_reg(flipper->CP, CP_reg_int_MATIDX_REG_A));
+    glUniform1ui(flipper->MATIDX_REG_B_location, get_internal_CP_reg(flipper->CP, CP_reg_int_MATIDX_REG_B));
+
+    log_flipper("Drawing command %02x, vertices %d", command->command, command->vertices)
+    if ((command->command & 0xf8) == 0x80) {
+        // quads need separate case for the indices since GL_QUADS is deprecated
+        glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, flipper->EBO);
+        glBufferData(GL_ELEMENT_ARRAY_BUFFER, sizeof(u16) * QUAD_EBO_COUNT(command->vertices),
+                     quad_EBO, GL_STATIC_DRAW);
+        glDrawElements(GL_TRIANGLES, QUAD_EBO_COUNT(command->vertices), GL_UNSIGNED_SHORT, 0);
+        glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, 0);
+    }
+    else {
+        glDrawArrays(draw_commands[(command->command >> 3) & 7], 0, command->vertices);
+    }
+
 }
 
-// GL_QUADS is depricated, we have to separate case this by using an EBO for the vertices
-static const GLenum draw_commands[8] = {
-        0, 0, GL_TRIANGLES, GL_TRIANGLE_STRIP,
-        GL_TRIANGLE_FAN, GL_LINES, GL_LINE_STRIP, GL_POINTS
-};
-
+/* render thread */
 bool first = true;
 struct s_framebuffer render_Flipper(s_Flipper* flipper){
 
@@ -208,37 +231,18 @@ struct s_framebuffer render_Flipper(s_Flipper* flipper){
     //    glClearColor(flipper->backdrop.r, flipper->backdrop.g, flipper->backdrop.b, 1.0f);
     //    glClear(GL_COLOR_BUFFER_BIT);
 
-    if (flipper->n_vertices) {
-        // wait for drawing until we are in the drawing thread
-        draw_Flipper(flipper);
-        glUseProgram(flipper->shaderProgram);
-        glBindVertexArray(flipper->VAO);
+    if (!flipper->CP->draw_command_available[flipper->draw_command_index]) {
 
-        // pass relevant registers as uniforms
-        u8 format = flipper->command & 7;
-        glUniform1ui(flipper->VCD_lo_location, get_internal_CP_reg(flipper->CP, CP_reg_int_VCD_lo_base + format));
-        glUniform1ui(flipper->VCD_hi_location, get_internal_CP_reg(flipper->CP, CP_reg_int_VCD_hi_base + format));
-        glUniform1ui(flipper->VAT_A_location, get_internal_CP_reg(flipper->CP, CP_reg_int_VAT_A_base + format));
-        glUniform1ui(flipper->VAT_B_location, get_internal_CP_reg(flipper->CP, CP_reg_int_VAT_B_base + format));
-        glUniform1ui(flipper->VAT_C_location, get_internal_CP_reg(flipper->CP, CP_reg_int_VAT_C_base + format));
-
-        glUniform1ui(flipper->MATIDX_REG_A_location, get_internal_CP_reg(flipper->CP, CP_reg_int_MATIDX_REG_A));
-        glUniform1ui(flipper->MATIDX_REG_B_location, get_internal_CP_reg(flipper->CP, CP_reg_int_MATIDX_REG_B));
-
-        log_flipper("Drawing command %02x, vertices %d", flipper->command, flipper->n_vertices)
-        if ((flipper->command & 0xf8) == 0x80) {
-            // quads need separate case for the indices since GL_QUADS is deprecated
-            glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, flipper->EBO);
-            glBufferData(GL_ELEMENT_ARRAY_BUFFER, sizeof(u16) * QUAD_EBO_COUNT(flipper->n_vertices),
-                         quad_EBO, GL_STATIC_DRAW);
-            glDrawElements(GL_TRIANGLES, QUAD_EBO_COUNT(flipper->n_vertices), GL_UNSIGNED_SHORT, 0);
-            glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, 0);
-        }
-        else {
-            glDrawArrays(draw_commands[(flipper->command >> 3) & 7], 0, flipper->n_vertices);
+        while (!flipper->CP->draw_command_available[flipper->draw_command_index]) {
+            log_flipper("Processing draw command %d", flipper->draw_command_index);
+            // draw and set draw command to available in CP
+            draw_Flipper(flipper, &flipper->CP->draw_command[flipper->draw_command_index]);
+            flipper->CP->draw_command_available[flipper->draw_command_index++] = true;
+            if (flipper->draw_command_index == MAX_DRAW_COMMANDS) {
+                flipper->draw_command_index = 0;
+            }
         }
 
-        flipper->n_vertices = 0;
         flipper->current_framebuffer ^= true;  // frameswap for the emulator
     }
 

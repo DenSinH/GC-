@@ -24,8 +24,7 @@ typedef struct s_Flipper {
     unsigned int framebuffer[2];
     bool current_framebuffer;
 
-    u16 n_vertices;
-    u8 command;
+    u32 draw_command_index;
     // todo: UBO for XF mem
     unsigned int VAO, EBO, command_SSBO, XF_SSBO;  // VBO will just hold the index, the actual vector is calculated in the shader
 
@@ -37,7 +36,6 @@ typedef struct s_Flipper {
 void init_Flipper(s_Flipper* flipper);
 
 void video_init_Flipper(s_Flipper* gpu);
-void queue_draw_Flipper(s_Flipper* flipper, u8 command);
 struct s_framebuffer render_Flipper(s_Flipper* flipper);
 
 #endif //GC__FLIPPER_H

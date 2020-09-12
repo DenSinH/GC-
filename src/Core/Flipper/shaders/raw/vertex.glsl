@@ -16,11 +16,12 @@ const int extract_offset[4] = { 0, 8, 16, 24 };
 layout (std430, binding = 3) buffer command_SSBO
 {
     uint vertices;
+    uint _command;
     uint vertex_stride;
     int arg_offsets[21];
     int data_offsets[12];
     uint array_strides[12];
-    uint _;  // data_size: I don't actually need this in the shader
+    uint _data_size;  // data_size: I don't actually need this in the shader
     uint args[0x1140 >> 2];     // todo: generalize this
     uint data[];
 };

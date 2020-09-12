@@ -13,7 +13,7 @@ const char* fragmentShaderSource =
 "}\n";
 
 
-// transformationShaderSource (from trafo.glsl, lines 0 to 38)
+// transformationShaderSource (from trafo.glsl, lines 0 to 39)
 const char* transformationShaderSource = 
 "#version 430 core\n"
 "\n"
@@ -36,6 +36,7 @@ const char* transformationShaderSource =
 "        XF_regs[0x21], XF_regs[0x23], XF_regs[0x25], 0  // fourth column\n"
 "    );\n"
 "\n"
+"    // matrices can be accessed per row\n"
 "    uint posmtx_base = posidx << 2;\n"
 "    mat4 modelview = mat4(\n"
 "        XF_A[posidx + 0], XF_A[posidx + 4], XF_A[posidx + 8], 0,\n"
@@ -52,7 +53,7 @@ const char* transformationShaderSource =
 "}\n";
 
 
-// vertexShaderSource (from vertex.glsl, lines 0 to 355)
+// vertexShaderSource (from vertex.glsl, lines 0 to 356)
 const char* vertexShaderSource = 
 "#version 430 core\n"
 "\n"
@@ -70,11 +71,12 @@ const char* vertexShaderSource =
 "layout (std430, binding = 3) buffer command_SSBO\n"
 "{\n"
 "    uint vertices;\n"
+"    uint _command;\n"
 "    uint vertex_stride;\n"
 "    int arg_offsets[21];\n"
 "    int data_offsets[12];\n"
 "    uint array_strides[12];\n"
-"    uint _;  // data_size: I don't actually need this in the shader\n"
+"    uint _data_size;  // data_size: I don't actually need this in the shader\n"
 "    uint args[0x1140 >> 2];     // todo: generalize this\n"
 "    uint data[];\n"
 "};\n"

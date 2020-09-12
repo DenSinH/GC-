@@ -3,7 +3,6 @@
 #include "flags.h"
 #include "helpers.h"
 #include "../system.h"
-#include "../Flipper/Flipper.h"
 
 #include <limits.h>
 
@@ -13,6 +12,10 @@
 
 
 HW_REG_INIT_FUNCTION(CP) {
+    for (int i = 0; i < MAX_DRAW_COMMANDS; i++) {
+        CP->draw_command_available[i] = true;
+    }
+
 //    for (int i = 0; i < 8; i++) {
 //        CP->draw_argc_valid[i] = true;
 //    }
@@ -53,11 +56,11 @@ static const u8 tex_stride[2][8] = {
 #define ADD_DRAW_ARG(_mode, _arg, _lut, _cnt, _fmt) \
 if (_mode) {                                        \
     log_cp("arg %d enabled, offset %d", _arg, offset)                                                \
-    CP->draw_command_small.arg_offset[_arg] = offset; \
+    CP->current_draw_command.arg_offset[_arg] = offset; \
     offset += (CP->arg_size[_arg] = (((_mode) == 1) ? _lut[_cnt][_fmt] : (_mode) - 1)); \
 } \
 else {  \
-    CP->draw_command_small.arg_offset[_arg] = -1; \
+    CP->current_draw_command.arg_offset[_arg] = -1; \
 }
 
 void update_CP_draw_argc(s_CP* CP, int format) {
@@ -71,7 +74,7 @@ void update_CP_draw_argc(s_CP* CP, int format) {
     size_t offset = 0;
     for (; draw_arg <= draw_arg_TEX7MTXIDX; draw_arg++) {
         // these parameters are of size 1 if present
-        CP->draw_command_small.arg_offset[draw_arg] = (VCD_lo.raw & (1 << draw_arg)) ? offset++ : -1;
+        CP->current_draw_command.arg_offset[draw_arg] = (VCD_lo.raw & (1 << draw_arg)) ? offset++ : -1;
     }
 
     ADD_DRAW_ARG(VCD_lo.POS, draw_arg_POS, coord_stride, VAT_A.POSCNT, VAT_A.POSFMT)
@@ -88,11 +91,11 @@ void update_CP_draw_argc(s_CP* CP, int format) {
     ADD_DRAW_ARG(VCD_hi.TEX6, draw_arg_TEX6, tex_stride, VAT_C.TEX6CNT, VAT_C.TEX6FMT)
     ADD_DRAW_ARG(VCD_hi.TEX7, draw_arg_TEX7, tex_stride, VAT_C.TEX7CNT, VAT_C.TEX7FMT)
 
-    CP->draw_command_small.vertex_stride = offset;
+    CP->current_draw_command.vertex_stride = offset;
 //    CP->draw_argc_valid[format] = true;
     log_cp("Expecting %d bytes per vertex", offset);
 //    for (int i = draw_arg_PNMTXIDX; i < draw_arg_TEX7; i++) {
-//        log_cp("Argument %d: offset %d", i, CP->draw_command_small.arg_offset[i])
+//        log_cp("Argument %d: offset %d", i, CP->current_draw_command.arg_offset[i])
 //    }
 }
 
@@ -140,13 +143,12 @@ static inline void load_INDX(s_CP* CP, e_CP_cmd opcode, u16 index, u8 length, u1
 }
 
 static inline void send_draw_command(s_CP* CP) {
-    log_cp("Sent draw command to flipper");
     // we still need to buffer the indirect data, we do that here
     u32 data_offset = 0;
     size_t stride, size;
     i16 min_index, max_index;
     for (e_draw_args draw_arg = draw_arg_POS; draw_arg <= draw_arg_TEX7; draw_arg++) {
-        if (CP->draw_command_small.arg_offset[draw_arg] < 0) {
+        if (CP->current_draw_command.arg_offset[draw_arg] < 0) {
             // direct data
             continue;
         }
@@ -155,25 +157,25 @@ static inline void send_draw_command(s_CP* CP) {
 
         // calculate min and max indices for array
         if (CP->arg_size[draw_arg] == 1) {
-            min_index = max_index = (i16)(i8)READ8(CP->draw_command_small.args, CP->draw_command_small.arg_offset[draw_arg]);
+            min_index = max_index = (i16)(i8)READ8(CP->current_draw_command.args, CP->current_draw_command.arg_offset[draw_arg]);
         }
         else {
-            min_index = max_index = READ16(CP->draw_command_small.args, CP->draw_command_small.arg_offset[draw_arg]);
+            min_index = max_index = READ16(CP->current_draw_command.args, CP->current_draw_command.arg_offset[draw_arg]);
         }
         i16 index;
         // loop over arguments corresponding to array indices for <draw_arg>
         for (
-            int v = CP->draw_command_small.arg_offset[draw_arg];
-            v < CP->draw_command_small.arg_offset[draw_arg] + CP->draw_command_small.vertices * CP->draw_command_small.vertex_stride;
-            v += CP->draw_command_small.vertex_stride
+            int v = CP->current_draw_command.arg_offset[draw_arg];
+            v < CP->current_draw_command.arg_offset[draw_arg] + CP->current_draw_command.vertices * CP->current_draw_command.vertex_stride;
+            v += CP->current_draw_command.vertex_stride
         ) {
 
             // read index
             if (CP->arg_size[draw_arg] == 1) {
-                index = (i16)(i8)READ8(CP->draw_command_small.args, v);
+                index = (i16)(i8)READ8(CP->current_draw_command.args, v);
             }
             else {
-                index = READ16(CP->draw_command_small.args, v);
+                index = READ16(CP->current_draw_command.args, v);
             }
 
             // compare
@@ -182,12 +184,12 @@ static inline void send_draw_command(s_CP* CP) {
         }
 
         // calculate data offset, account for min_index not being 0
-        CP->draw_command_small.data_offset[draw_arg - draw_arg_POS] = data_offset - min_index;
+        CP->current_draw_command.data_offset[draw_arg - draw_arg_POS] = data_offset - min_index;
         size = stride * (((max_index - min_index) & ~3) + 4);   // align by 4 bytes
 
         // copy data
         memcpy(
-                &CP->draw_command_small.data[data_offset],
+                &CP->current_draw_command.data[data_offset],
                 CP->system->memory + get_internal_CP_reg(CP, CP_reg_int_vert_ARRAY_BASE + draw_arg - draw_arg_POS) + min_index,
                 size
         );
@@ -195,15 +197,20 @@ static inline void send_draw_command(s_CP* CP) {
                draw_arg, size, min_index, max_index, stride, data_offset)
         data_offset += size;
     }
-    CP->draw_command_small.data_size = data_offset;
+    CP->current_draw_command.data_size = data_offset;
 
     memcpy(
-            &CP->draw_command_small.data_stride,
+            &CP->current_draw_command.data_stride,
             &CP->internalCPregs[CP_reg_int_vert_ARRAY_STRIDE - INTERNAL_CP_REGISTER_BASE],
             12 * sizeof(u32)
     );
 
-    queue_draw_Flipper(&CP->system->flipper, CP->command);
+    log_cp("Draw command %d sent", CP->draw_command_index);
+    CP->draw_command_available[CP->draw_command_index++] = false;  // signify that draw command is used
+    if (CP->draw_command_index == MAX_DRAW_COMMANDS) {
+        CP->draw_command_index = 0;
+    }
+    // draw is automatically queued by setting draw_command_available to false
 }
 
 static inline void call_DL(s_CP* CP, u32 list_addr, u32 list_size) {
@@ -277,16 +284,16 @@ inline void feed_CP(s_CP* CP, u8 data) {
             // all drawing commands
             if (CP->argc == 0) {
                 CP->argc++;
-                CP->draw_command_small.vertices = data << 8;
+                CP->current_draw_command.vertices = data << 8;
             }
             else if (CP->argc == 1) {
-                CP->draw_command_small.vertices |= data;
+                CP->current_draw_command.vertices |= data;
                 CP->argc++;
             }
             else {
-                CP->draw_command_small.args[CP->argc++ - 2] = data;  // first 2 bytes were number of vertices
+                CP->current_draw_command.args[CP->argc++ - 2] = data;  // first 2 bytes were number of vertices
 
-                if ((CP->argc - 2) == CP->draw_command_small.vertex_stride * CP->draw_command_small.vertices) {
+                if ((CP->argc - 2) == CP->current_draw_command.vertex_stride * CP->current_draw_command.vertices) {
                     send_draw_command(CP);
                     CP->fetching = false;
                 }
@@ -315,6 +322,10 @@ void execute_buffer(s_CP* CP, const u8* buffer_ptr, u8 buffer_size) {
             CP->fetching = CP->command != CP_cmd_NOP && CP->command != CP_cmd_inval_vertex_cache;
             if (CP->command >= CP_cmd_QUADS /* && !CP->draw_argc_valid[CP->command & 7] */) {
                 update_CP_draw_argc(CP, CP->command & 7);
+                CP->current_draw_command.command = CP->command;
+                if (!CP->draw_command_available[CP->draw_command_index]) {
+                    // todo: wait until draw commands finished
+                }
             }
         }
         else {

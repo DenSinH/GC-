@@ -236,6 +236,7 @@ typedef struct s_draw_arg {
 
 typedef struct s_draw_command_small {
     u32 vertices;              // number of vertices
+    u32 command;               // actual command
     u32 vertex_stride;         // stride for one whole vertex
     i32 arg_offset[21];        // strides for arguments into the args array
     i32 data_offset[12];       // might be negative for correcting for min index
@@ -251,6 +252,9 @@ typedef struct s_draw_command_small {
 #define INTERNAL_XF_REGISTER_SIZE 0x58
 #define INTERNAL_XF_MEM_SIZE 0x100
 #define INTERNAL_XF_REGISTER_BASE 0x1000
+#define MAX_DRAW_COMMANDS 16
+
+#define current_draw_command draw_command[CP->draw_command_index]
 
 typedef struct s_CP {
     // external function
@@ -281,7 +285,9 @@ typedef struct s_CP {
 
     // todo: draw_command_mid, large
     u8 arg_size[21]; // sizes of individual (direct) arguments of current draw command
-    s_draw_command_small draw_command_small;
+    s_draw_command_small draw_command[MAX_DRAW_COMMANDS];
+    u32 draw_command_index;
+    volatile bool draw_command_available[MAX_DRAW_COMMANDS];  // used as flags, set to false by CP, then to true by Flipper
 } s_CP;
 
 
