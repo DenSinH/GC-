@@ -13,7 +13,7 @@ const char* fragmentShaderSource =
 "}\n";
 
 
-// transformationShaderSource (from trafo.glsl, lines 0 to 39)
+// transformationShaderSource (from trafo.glsl, lines 0 to 38)
 const char* transformationShaderSource = 
 "#version 430 core\n"
 "\n"
@@ -27,7 +27,6 @@ const char* transformationShaderSource =
 "};\n"
 "\n"
 "vec4 transform(vec3 position, uint posidx) {\n"
-"    // todo: general position matrix\n"
 "    // this seems to be what libOGC makes from projection matrices\n"
 "    mat4 projection = mat4(\n"
 "        XF_regs[0x20], 0, 0, 0,  // first column\n"

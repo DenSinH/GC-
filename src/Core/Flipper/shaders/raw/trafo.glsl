@@ -12,7 +12,6 @@ layout (std430, binding = 4) buffer XF_SSBO
 };
 
 vec4 transform(vec3 position, uint posidx) {
-    // todo: general position matrix
     // this seems to be what libOGC makes from projection matrices
     mat4 projection = mat4(
         XF_regs[%XF_reg_projection_A%], 0, 0, 0,  // first column

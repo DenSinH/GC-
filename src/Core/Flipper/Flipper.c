@@ -11,16 +11,16 @@
 #include <glad.h>
 
 
+/*
+ * All of this code should run in the rendering thread
+ * */
+
 static u16 quad_EBO[FLIPPER_QUAD_INDEX_ARRAY_SIZE];
 
 
 void init_Flipper(s_Flipper* flipper) {
     flipper->memory = flipper->system->memory;
     flipper->CP = &flipper->system->HW_regs.CP;
-
-    flipper->backdrop.r = 0.45;
-    flipper->backdrop.g = 0.55f;
-    flipper->backdrop.b = 0.60f;
 
     int i = 0;
     for (u16 v = 0; i + 6 < FLIPPER_QUAD_INDEX_ARRAY_SIZE; v += 4) {
@@ -156,6 +156,15 @@ void video_init_Flipper(s_Flipper* flipper) {
     init_buffers(flipper);
 }
 
+void clear_Flipper_buffer(s_Flipper* flipper) {
+    // clear (emulator) framebuffer to the backdrop color
+    u16 AR = (u16)flipper->CP->internal_BP_regs[BP_reg_int_PE_copy_clear_AR];
+    u16 GB = (u16)flipper->CP->internal_BP_regs[BP_reg_int_PE_copy_clear_GB];
+
+    glClearColor((float)(AR & 0xff) / 255.0, (float)(GB >> 8) / 255.0, (float)(GB & 0xff) / 255.0, (float)(AR >> 8) / 255.0);
+    glClear(GL_COLOR_BUFFER_BIT);
+}
+
 // GL_QUADS is depricated, we have to separate case this by using an EBO for the vertices
 static const GLenum draw_commands[8] = {
         0, 0, GL_TRIANGLES, GL_TRIANGLE_STRIP,
@@ -181,12 +190,12 @@ void draw_Flipper(s_Flipper* flipper, s_draw_command_small* command) {
     glBindBuffer(GL_SHADER_STORAGE_BUFFER, flipper->XF_SSBO);
     glBufferData(
             GL_SHADER_STORAGE_BUFFER,
-            sizeof(flipper->CP->internalXFmem) + sizeof(flipper->CP->internalXFregs),
-            &flipper->CP->internalXFmem,
+            sizeof(flipper->CP->internal_XF_mem) + sizeof(flipper->CP->internal_XF_regs),
+            &flipper->CP->internal_XF_mem,
             GL_STATIC_COPY
     );
 
-    log_flipper("loaded %x bytes of XF data", sizeof(flipper->CP->internalXFmem) + sizeof(flipper->CP->internalXFregs));
+    log_flipper("loaded %x bytes of XF data", sizeof(flipper->CP->internal_XF_mem) + sizeof(flipper->CP->internal_XF_regs));
 
     glBindBuffer(GL_SHADER_STORAGE_BUFFER, 0);
     glUseProgram(flipper->shaderProgram);
@@ -218,25 +227,23 @@ void draw_Flipper(s_Flipper* flipper, s_draw_command_small* command) {
 
 }
 
-/* render thread */
 bool first = true;
 struct s_framebuffer render_Flipper(s_Flipper* flipper){
 
     // bind our framebuffer
-    //    glBindTexture(GL_TEXTURE_2D, 0);
-    //    glEnable(GL_TEXTURE_2D);
+    glBindTexture(GL_TEXTURE_2D, 0);
+    glEnable(GL_TEXTURE_2D);
     glBindFramebuffer(GL_FRAMEBUFFER, flipper->framebuffer[flipper->current_framebuffer]);
     glViewport(0, 0, FLIPPER_SCREEN_WIDTH, FLIPPER_SCREEN_HEIGHT);
 
-    //    glClearColor(flipper->backdrop.r, flipper->backdrop.g, flipper->backdrop.b, 1.0f);
-    //    glClear(GL_COLOR_BUFFER_BIT);
-
     if (!flipper->CP->draw_command_available[flipper->draw_command_index]) {
+        clear_Flipper_buffer(flipper);
 
         while (!flipper->CP->draw_command_available[flipper->draw_command_index]) {
             log_flipper("Processing draw command %d", flipper->draw_command_index);
             // draw and set draw command to available in CP
-            draw_Flipper(flipper, &flipper->CP->draw_command[flipper->draw_command_index]);
+            // todo: sync GPU so data in buffers is not overwritten
+            draw_Flipper(flipper, &flipper->CP->draw_command_queue[flipper->draw_command_index]);
             flipper->CP->draw_command_available[flipper->draw_command_index++] = true;
             if (flipper->draw_command_index == MAX_DRAW_COMMANDS) {
                 flipper->draw_command_index = 0;

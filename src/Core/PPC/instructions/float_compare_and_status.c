@@ -23,7 +23,7 @@ INLINE_GEKKO_INSTR(mtfsf) {
 
     // bits 1 and 2 (or as I would call them: 29 and 30) cannot be cleared this way
     cpu->FPSCR.raw = GET_FPR(cpu, instruction.mtfsf.B) & field_mask[instruction.mtfsf.FM] & 0x9fffffff;
-    // todo: GET_FPR? also, floating point exceptions?
+
     if (instruction.mtfsf.Rc) {
         UPDATE_CR1_FROM_FPSCR(cpu->CR, cpu->FPSCR);
     }

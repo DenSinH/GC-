@@ -17,10 +17,6 @@ typedef struct s_Flipper {
     u8* memory;
     struct s_CP* CP;
 
-    struct {
-        float r, g, b;
-    } backdrop;
-
     unsigned int framebuffer[2];
     bool current_framebuffer;
 

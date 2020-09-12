@@ -63,6 +63,11 @@ typedef enum e_CP_regs_internal {
     CP_reg_int_tex7_ARRAY_STRIDE = 0xba,
 } e_CP_regs_internal;
 
+typedef enum e_BP_regs_internal {
+    BP_reg_int_PE_copy_clear_AR = 0x4f,
+    BP_reg_int_PE_copy_clear_GB = 0x50,
+} e_BP_regs_internal;
+
 // YAGCD: draw commands also take an argument in the bottom 3 bits
 typedef enum e_CP_cmd {
     CP_cmd_NOP = 0x00,
@@ -75,6 +80,7 @@ typedef enum e_CP_cmd {
     CP_cmd_call_DL = 0x40,
     CP_cmd_inval_vertex_cache = 0x48,
     CP_cmd_load_BP_reg = 0x61,
+
     /* DRAW COMMANDS: */
     CP_cmd_QUADS = 0x80,
     CP_cmd_TRIANGLES = 0x90,
@@ -254,7 +260,7 @@ typedef struct s_draw_command_small {
 #define INTERNAL_XF_REGISTER_BASE 0x1000
 #define MAX_DRAW_COMMANDS 16
 
-#define current_draw_command draw_command[CP->draw_command_index]
+#define current_draw_command draw_command_queue[CP->draw_command_index]
 
 typedef struct s_CP {
     // external function
@@ -264,11 +270,11 @@ typedef struct s_CP {
     struct s_GameCube* system;
 
     /* internal function */
-    u32 internalCPregs[INTERNAL_CP_REGISTER_SIZE];
-    u32 internalBPregs[INTERNAL_BP_REGISTER_SIZE];
+    u32 internal_CP_regs[INTERNAL_CP_REGISTER_SIZE];
+    u32 internal_BP_regs[INTERNAL_BP_REGISTER_SIZE];
     // ORDER IS IMPORTANT FOR THESE 2 FIELDS (passed to GPU)
-    u32 internalXFmem[4][INTERNAL_XF_MEM_SIZE];    // 4 regions, A, B, C, D
-    u32 internalXFregs[INTERNAL_XF_REGISTER_SIZE];
+    u32 internal_XF_mem[4][INTERNAL_XF_MEM_SIZE];    // 4 regions, A, B, C, D
+    u32 internal_XF_regs[INTERNAL_XF_REGISTER_SIZE];
     /*
      * Region A: position matrix memory (0x100 words)
      * Region B: normal matrix memory (0x20 * 3 words)
@@ -285,7 +291,7 @@ typedef struct s_CP {
 
     // todo: draw_command_mid, large
     u8 arg_size[21]; // sizes of individual (direct) arguments of current draw command
-    s_draw_command_small draw_command[MAX_DRAW_COMMANDS];
+    s_draw_command_small draw_command_queue[MAX_DRAW_COMMANDS];
     u32 draw_command_index;
     volatile bool draw_command_available[MAX_DRAW_COMMANDS];  // used as flags, set to false by CP, then to true by Flipper
 } s_CP;
@@ -299,7 +305,7 @@ static inline u32 get_CP_reg(s_CP* CP, e_CP_regs reg_hi, e_CP_regs reg_lo) {
 }
 
 static inline u32 get_internal_CP_reg(s_CP* CP, e_CP_regs_internal reg) {
-    return CP->internalCPregs[reg - INTERNAL_CP_REGISTER_BASE];
+    return CP->internal_CP_regs[reg - INTERNAL_CP_REGISTER_BASE];
 }
 
 static inline void set_CP_reg(s_CP* CP, e_CP_regs reg_hi, e_CP_regs reg_lo, u32 value) {

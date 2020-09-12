@@ -104,7 +104,7 @@ static inline void load_CP_reg(s_CP* CP, u8 RID, u32 value) {
 #ifdef CHECK_CP_COMMAND
     assert(RID - INTERNAL_CP_REGISTER_BASE < INTERNAL_CP_REGISTER_SIZE  /* invalid RID for CP command */);
 #endif
-    CP->internalCPregs[RID - INTERNAL_CP_REGISTER_BASE] = value;
+    CP->internal_CP_regs[RID - INTERNAL_CP_REGISTER_BASE] = value;
 //    if (RID >= 0x50 && RID < 0x98) {
 //        // invalidate argc because of VAT/VCD update
 //        CP->draw_argc_valid[RID & 7] = false;
@@ -121,7 +121,7 @@ static inline void load_XF_regs(s_CP* CP, u16 length, u16 base_addr, const u8* v
         assert(base_addr - INTERNAL_XF_REGISTER_BASE + length <= INTERNAL_XF_REGISTER_SIZE  /* invalid RID for CP command */);
 #endif
         for (int i = 0; i < length; i++) {
-            CP->internalXFregs[base_addr + i - INTERNAL_XF_REGISTER_BASE] = READ32(values_buffer, i << 2);
+            CP->internal_XF_regs[base_addr + i - INTERNAL_XF_REGISTER_BASE] = READ32(values_buffer, i << 2);
         }
     }
     else {
@@ -132,7 +132,7 @@ static inline void load_XF_regs(s_CP* CP, u16 length, u16 base_addr, const u8* v
         u8 section = XF_addr_to_section[base_addr >> 8];
         for (int i = 0; i < length; i++) {
             log_cp("loaded %08x", READ32(values_buffer, i << 2));
-            CP->internalXFmem[section][(base_addr & 0xff) + i] = READ32(values_buffer, i << 2);
+            CP->internal_XF_mem[section][(base_addr & 0xff) + i] = READ32(values_buffer, i << 2);
         }
     }
 }
@@ -201,7 +201,7 @@ static inline void send_draw_command(s_CP* CP) {
 
     memcpy(
             &CP->current_draw_command.data_stride,
-            &CP->internalCPregs[CP_reg_int_vert_ARRAY_STRIDE - INTERNAL_CP_REGISTER_BASE],
+            &CP->internal_CP_regs[CP_reg_int_vert_ARRAY_STRIDE - INTERNAL_CP_REGISTER_BASE],
             12 * sizeof(u32)
     );
 
@@ -223,7 +223,7 @@ static inline void load_BP_reg(s_CP* CP, u32 value) {
     log_cp("Load BP reg: %08x", value);
 
     // RID is a byte, so it always fits into the range for the internal BP registers
-    CP->internalBPregs[value >> 24] = value;
+    CP->internal_BP_regs[value >> 24] = value;
 
 }
 
@@ -322,10 +322,12 @@ void execute_buffer(s_CP* CP, const u8* buffer_ptr, u8 buffer_size) {
             CP->fetching = CP->command != CP_cmd_NOP && CP->command != CP_cmd_inval_vertex_cache;
             if (CP->command >= CP_cmd_QUADS /* && !CP->draw_argc_valid[CP->command & 7] */) {
                 update_CP_draw_argc(CP, CP->command & 7);
-                CP->current_draw_command.command = CP->command;
-                if (!CP->draw_command_available[CP->draw_command_index]) {
-                    // todo: wait until draw commands finished
+
+                // check if current draw command in queue is available
+                while (!CP->draw_command_available[CP->draw_command_index]) {
+                    // todo: better wait until draw commands finished
                 }
+                CP->current_draw_command.command = CP->command;
             }
         }
         else {

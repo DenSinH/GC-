@@ -16,7 +16,6 @@ typedef enum e_VX  {
     VX_VX     = 1u << 29
 } e_VX;
 
-// todo: bit 20 is 0 (mask out?)
 typedef union s_FPSCR {
     struct {
         unsigned RN: 2;       // floating point rounding control

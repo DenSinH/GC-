@@ -22,15 +22,8 @@ s_GameCube* init_system() {
     GameCube->cpu.IMMU.HW_regs_ptr = GameCube->cpu.DMMU.HW_regs_ptr = &GameCube->HW_regs;
 
 #ifdef DO_BREAKPOINTS
-    // todo: overflow differs here:
 //    add_breakpoint(&GameCube->breakpoints, 0x8000bde0);
 //    add_breakpoint(&GameCube->breakpoints, 0x8000bde4);
-    // todo: overflow differs here (CR2):
-//    add_breakpoint(&GameCube->breakpoints, 0x8000e908);
-//    add_breakpoint(&GameCube->breakpoints, 0x8000e90c);
-    // todo: different word loaded from memory
-//    add_breakpoint(&GameCube->breakpoints, 0x80011f90);
-//    add_breakpoint(&GameCube->breakpoints, 0x80011f94);
 #endif
 
 //    add_breakpoint(&GameCube->breakpoints, 0x80003e38);
