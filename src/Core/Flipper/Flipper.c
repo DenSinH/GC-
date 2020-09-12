@@ -83,13 +83,18 @@ static void init_framebuffer(s_Flipper* flipper) {
 
 static void init_program(s_Flipper* flipper) {
     // create shader
-    unsigned int vertexShader;
+    unsigned int vertexShader, transformationShader;
     vertexShader = glCreateShader(GL_VERTEX_SHADER);
+    transformationShader = glCreateShader(GL_VERTEX_SHADER);
 
     // compile it
     glShaderSource(vertexShader, 1, &vertexShaderSource, NULL);
     glCompileShader(vertexShader);
     debug_shader_init(flipper, vertexShader);
+
+    glShaderSource(transformationShader, 1, &transformationShaderSource, NULL);
+    glCompileShader(transformationShader);
+    debug_shader_init(flipper, transformationShader);
 
     // create and compile fragmentshader
     unsigned int fragmentShader;
@@ -101,6 +106,7 @@ static void init_program(s_Flipper* flipper) {
     // create program object
     flipper->shaderProgram = glCreateProgram();
     glAttachShader(flipper->shaderProgram, vertexShader);
+    glAttachShader(flipper->shaderProgram, transformationShader);
     glAttachShader(flipper->shaderProgram, fragmentShader);
     glLinkProgram(flipper->shaderProgram);
     debug_program_init(flipper, flipper->shaderProgram);
@@ -112,14 +118,18 @@ static void init_program(s_Flipper* flipper) {
 
 static void init_buffers(s_Flipper* flipper) {
     // create buffers
-    glGenBuffers(1, &flipper->SSBO);
+    glGenBuffers(1, &flipper->command_SSBO);
+    glGenBuffers(1, &flipper->XF_SSBO);
 
     // Setup VAO to bind the buffers to
     glGenVertexArrays(1, &flipper->VAO);
     glBindVertexArray(flipper->VAO);
 
-    glBindBuffer(GL_SHADER_STORAGE_BUFFER, flipper->SSBO);
-    glBindBufferBase(GL_SHADER_STORAGE_BUFFER, 3, flipper->SSBO);
+    glBindBuffer(GL_SHADER_STORAGE_BUFFER, flipper->command_SSBO);
+    glBindBufferBase(GL_SHADER_STORAGE_BUFFER, 3, flipper->command_SSBO);
+
+    glBindBuffer(GL_SHADER_STORAGE_BUFFER, flipper->XF_SSBO);
+    glBindBufferBase(GL_SHADER_STORAGE_BUFFER, 4, flipper->XF_SSBO);
 
     // bind the quad EBO to the VAO
     glGenBuffers(1, &flipper->EBO);
@@ -149,20 +159,32 @@ void queue_draw_Flipper(s_Flipper* flipper, u8 command) {
 }
 
 void draw_Flipper(s_Flipper* flipper) {
-    log_flipper("drawing");
     glBindVertexArray(flipper->VAO);
 
     // buffer command data
-    glBindBuffer(GL_SHADER_STORAGE_BUFFER, flipper->SSBO);
+    glBindBuffer(GL_SHADER_STORAGE_BUFFER, flipper->command_SSBO);
     glBufferData(
             GL_SHADER_STORAGE_BUFFER,
             sizeof(s_draw_command_small) - DRAW_COMMAND_DATA_BUFFER_SIZE + flipper->CP->draw_command_small.data_size,
             &flipper->CP->draw_command_small,
             GL_STATIC_COPY
     );
-    glBindBuffer(GL_SHADER_STORAGE_BUFFER, 0);
+
+    // todo: cache this somehow?
     log_flipper("buffer %x bytes of command data",
                 sizeof(s_draw_command_small) - DRAW_COMMAND_DATA_BUFFER_SIZE + flipper->CP->draw_command_small.data_size)
+
+    glBindBuffer(GL_SHADER_STORAGE_BUFFER, flipper->XF_SSBO);
+    glBufferData(
+            GL_SHADER_STORAGE_BUFFER,
+            sizeof(flipper->CP->internalXFmem) + sizeof(flipper->CP->internalXFregs),
+            &flipper->CP->internalXFmem,
+            GL_STATIC_COPY
+    );
+
+    log_flipper("loaded %x bytes of XF data", sizeof(flipper->CP->internalXFmem) + sizeof(flipper->CP->internalXFregs));
+
+    glBindBuffer(GL_SHADER_STORAGE_BUFFER, 0);
 }
 
 // GL_QUADS is depricated, we have to separate case this by using an EBO for the vertices

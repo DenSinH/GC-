@@ -26,4 +26,13 @@ typedef enum e_draw_args {
     draw_arg_UNUSED = 0xff
 } e_draw_args;
 
+typedef enum e_XF_regs {
+    XF_reg_projection_A = 0x20,
+    XF_reg_projection_B = 0x21,
+    XF_reg_projection_C = 0x22,
+    XF_reg_projection_D = 0x23,
+    XF_reg_projection_E = 0x24,
+    XF_reg_projection_F = 0x25,
+} e_XF_regs;
+
 #endif //GC__GX_CONSTANTS_H

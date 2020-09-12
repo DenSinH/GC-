@@ -61,7 +61,7 @@ GEKKO_INSTR(psq_st) {
     s_GQR GQR = cpu->GQR[instruction.paired_single_store.I];
     float scale = quantize_scale[GQR.ST_SCALE];
     double PS0 = cpu->FPR[instruction.paired_single_store.S].PS0.d * scale;
-    double PS1 = cpu->FPR[instruction.paired_single_store.S].PS0.d * scale;
+    double PS1 = cpu->FPR[instruction.paired_single_store.S].PS1.d * scale;
 
     bit_float PS0quantized, PS1quantized;
 

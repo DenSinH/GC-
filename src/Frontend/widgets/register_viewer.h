@@ -25,6 +25,7 @@ typedef struct RegisterViewer
 {
     std::list<s_register_tab> RegisterTabs;
     int columns;
+    bool float_view;
 
     RegisterViewer()
     {
@@ -107,7 +108,8 @@ typedef struct RegisterViewer
 
                     // value
                     if (!reg.islong) {
-                        sprintf(label, "%08x", *((uint32_t*)reg.value));
+                        if (!float_view) sprintf(label, "%08x", *((uint32_t*)reg.value));
+                        else sprintf(label, "%f", *((float*)reg.value));
 
                         if (ImGui::Selectable(label)) {
                             SDL_SetClipboardText(label);
@@ -115,7 +117,8 @@ typedef struct RegisterViewer
                         ImGui::NextColumn();
                     }
                     else {
-                        sprintf(label, "%016" PRIx64, *((uint64_t*)reg.value));
+                        if (!float_view) sprintf(label, "%016" PRIx64, *((uint64_t*)reg.value));
+                        else sprintf(label, "%f", *((double*)reg.value));
 
                         if (ImGui::Selectable(label)) {
                             SDL_SetClipboardText(label);
@@ -129,6 +132,13 @@ typedef struct RegisterViewer
             }
         }
         ImGui::EndTabBar();
+
+        if (ImGui::BeginPopupContextWindow())
+        {
+            if (ImGui::MenuItem("Float view",       NULL, float_view)) float_view ^= true;
+            if (p_open && ImGui::MenuItem("Close")) *p_open = false;
+            ImGui::EndPopup();
+        }
 
         ImGui::End();
     }

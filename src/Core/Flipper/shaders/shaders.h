@@ -1,7 +1,7 @@
 #ifndef GC__SHADER_H
 #define GC__SHADER_H
 
-// fragmentShaderSource (from fragment.vert, lines 0 to 11)
+// fragmentShaderSource (from fragment.glsl, lines 0 to 11)
 const char* fragmentShaderSource = 
 "#version 400 core\n"
 "out vec4 FragColor;\n"
@@ -13,7 +13,45 @@ const char* fragmentShaderSource =
 "}\n";
 
 
-// vertexShaderSource (from vertex.vert, lines 0 to 347)
+// transformationShaderSource (from trafo.glsl, lines 0 to 37)
+const char* transformationShaderSource = 
+"#version 430 core\n"
+"\n"
+"layout (std430, binding = 4) buffer XF_SSBO\n"
+"{\n"
+"    float XF_A[0x100];\n"
+"    float XF_B[0x100];\n"
+"    float XF_C[0x100];\n"
+"    float XF_D[0x100];\n"
+"    float XF_regs[0x58];  // some regs are not floats, but most are\n"
+"};\n"
+"\n"
+"vec4 transform(vec3 position) {\n"
+"\n"
+"    // this seems to be what libOGC makes from projection matrices\n"
+"    mat4 projection = mat4(\n"
+"        XF_regs[0x20], 0, 0, 0,  // first column\n"
+"        0, XF_regs[0x22], 0, 0,  // second column\n"
+"        0, 0, XF_regs[0x24], -1,  // third column\n"
+"        XF_regs[0x21], XF_regs[0x23], XF_regs[0x25], 0  // fourth column\n"
+"    );\n"
+"\n"
+"    mat4 modelview = mat4(\n"
+"        XF_A[0], XF_A[4], XF_A[8], 0,\n"
+"        XF_A[1], XF_A[5], XF_A[9], 0,\n"
+"        XF_A[2], XF_A[6], XF_A[10], 0,\n"
+"        XF_A[3], XF_A[7], XF_A[11], 1\n"
+"    );\n"
+"\n"
+"    vec4 pos = vec4(position, 1);\n"
+"    pos = projection * modelview * pos;\n"
+"    pos /= pos.w;\n"
+"\n"
+"    return pos;\n"
+"}\n";
+
+
+// vertexShaderSource (from vertex.glsl, lines 0 to 345)
 const char* vertexShaderSource = 
 "#version 430 core\n"
 "\n"
@@ -27,10 +65,7 @@ const char* vertexShaderSource =
 "// here, the array is read as little endian\n"
 "const int extract_offset[4] = { 0, 8, 16, 24 };\n"
 "\n"
-"// layout corresponds to that in GX_constants.h\n"
-"layout (location = 0) in uint index;\n"
-"\n"
-"layout (std430, binding = 3) buffer ssbo\n"
+"layout (std430, binding = 3) buffer command_SSBO\n"
 "{\n"
 "    uint vertices;\n"
 "    uint vertex_stride;\n"
@@ -89,6 +124,9 @@ const char* vertexShaderSource =
 "read32s(data);\n"
 "read32(args);\n"
 "read32s(args);\n"
+"\n"
+"// defined in trafo.glsl\n"
+"vec4 transform(vec3 position);\n"
 "\n"
 "void main()\n"
 "{\n"
@@ -203,14 +241,12 @@ const char* vertexShaderSource =
 "        }\n"
 "\n"
 "        // todo: POSSHFT\n"
-"        if (POSCNT) {\n"
-"            // 3D\n"
-"            gl_Position = vec4(position.xyz / 32.0, 1.0);\n"
-"        }\n"
-"        else {\n"
+"        if (!POSCNT) {\n"
 "            // 2D\n"
-"            gl_Position = vec4(position.xy / 32.0, 0.0, 1.0);\n"
+"            position.z = 0;  // todo: what is this value supposed to be?\n"
 "        }\n"
+"\n"
+"        gl_Position = transform(position);\n"
 "#ifdef DEBUG\n"
 "        switch (gl_VertexID) {\n"
 "            case 0:\n"

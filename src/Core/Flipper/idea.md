@@ -485,7 +485,7 @@ lets see.
 with this route, which we are mostly taking because opengl doesn't support multiple indecies per vertex
 I guess you would actually scrap the opengl concept of "index"
 and just have a raw non-indexed draw call pointing at a vertex buffer, which is actually all your index data
-then the shader will take the indices and pull in the actual vertex data from a SSBO
+then the shader will take the indices and pull in the actual vertex data from a command_SSBO
 
 ##### DenSinHToday at 11:31 AM
 what Im thinking seeing this now is: have a struct in the CP that has a short for the vertex count, a buffer for the command data, so that I dont have to parse it at all in the emulator thread, then a separate buffer where I buffer all the arrays its been sent (probably quite a big one), and I just send that to the GPU on draw commands
@@ -535,7 +535,7 @@ glDrawArrays
 ##### DenSinHToday at 11:38 AM
 but that wont work right?
 cause I wouldnt really be buffering anything in VBOs anymore
-cause all the data would be in the SSBO
+cause all the data would be in the command_SSBO
 
 ##### phireToday at 11:39 AM
 the VBO would be the index data from CP
@@ -559,7 +559,7 @@ but in the actual draw command I would be parsing the data anyway
 or like
 in the shader I mean
 wait
-yeah I would want to just buffer the whole command, and the arrays into the SSBO, then send an array of increasing indices to the shader
+yeah I would want to just buffer the whole command, and the arrays into the command_SSBO, then send an array of increasing indices to the shader
 so that in the shader I know where in the data I need to look
 
 ##### phireToday at 11:43 AM

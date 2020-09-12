@@ -1,7 +1,7 @@
 find_package(SDL2 CONFIG REQUIRED)
 find_package(glad CONFIG REQUIRED)
 
-file(GLOB VERT_FILES ${CMAKE_CURRENT_SOURCE_DIR}/shaders/raw/*.vert)
+file(GLOB VERT_FILES ${CMAKE_CURRENT_SOURCE_DIR}/shaders/raw/*.glsl)
 
 if (WIN32)
     add_custom_command(

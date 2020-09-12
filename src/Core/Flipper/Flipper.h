@@ -26,9 +26,10 @@ typedef struct s_Flipper {
 
     u16 n_vertices;
     u8 command;
-    unsigned int VAO, EBO, SSBO;  // VBO will just hold the index, the actual vector is calculated in the shader
+    // todo: UBO for XF mem
+    unsigned int VAO, EBO, command_SSBO, XF_SSBO;  // VBO will just hold the index, the actual vector is calculated in the shader
 
-    int VCD_lo_location, VCD_hi_location, VAT_A_location, VAT_B_location, VAT_C_location;
+    unsigned int VCD_lo_location, VCD_hi_location, VAT_A_location, VAT_B_location, VAT_C_location;
     unsigned int shaderProgram;
 } s_Flipper;
 

@@ -260,8 +260,9 @@ typedef struct s_CP {
     /* internal function */
     u32 internalCPregs[INTERNAL_CP_REGISTER_SIZE];
     u32 internalBPregs[INTERNAL_BP_REGISTER_SIZE];
-    u32 internalXFregs[INTERNAL_XF_REGISTER_SIZE];
+    // ORDER IS IMPORTANT FOR THESE 2 FIELDS (passed to GPU)
     u32 internalXFmem[4][INTERNAL_XF_MEM_SIZE];    // 4 regions, A, B, C, D
+    u32 internalXFregs[INTERNAL_XF_REGISTER_SIZE];
     /*
      * Region A: position matrix memory (0x100 words)
      * Region B: normal matrix memory (0x20 * 3 words)
