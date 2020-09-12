@@ -13,7 +13,7 @@ const char* fragmentShaderSource =
 "}\n";
 
 
-// transformationShaderSource (from trafo.glsl, lines 0 to 37)
+// transformationShaderSource (from trafo.glsl, lines 0 to 38)
 const char* transformationShaderSource = 
 "#version 430 core\n"
 "\n"
@@ -26,8 +26,8 @@ const char* transformationShaderSource =
 "    float XF_regs[0x58];  // some regs are not floats, but most are\n"
 "};\n"
 "\n"
-"vec4 transform(vec3 position) {\n"
-"\n"
+"vec4 transform(vec3 position, uint posidx) {\n"
+"    // todo: general position matrix\n"
 "    // this seems to be what libOGC makes from projection matrices\n"
 "    mat4 projection = mat4(\n"
 "        XF_regs[0x20], 0, 0, 0,  // first column\n"
@@ -36,11 +36,12 @@ const char* transformationShaderSource =
 "        XF_regs[0x21], XF_regs[0x23], XF_regs[0x25], 0  // fourth column\n"
 "    );\n"
 "\n"
+"    uint posmtx_base = posidx << 2;\n"
 "    mat4 modelview = mat4(\n"
-"        XF_A[0], XF_A[4], XF_A[8], 0,\n"
-"        XF_A[1], XF_A[5], XF_A[9], 0,\n"
-"        XF_A[2], XF_A[6], XF_A[10], 0,\n"
-"        XF_A[3], XF_A[7], XF_A[11], 1\n"
+"        XF_A[posidx + 0], XF_A[posidx + 4], XF_A[posidx + 8], 0,\n"
+"        XF_A[posidx + 1], XF_A[posidx + 5], XF_A[posidx + 9], 0,\n"
+"        XF_A[posidx + 2], XF_A[posidx + 6], XF_A[posidx + 10], 0,\n"
+"        XF_A[posidx + 3], XF_A[posidx + 7], XF_A[posidx + 11], 1\n"
 "    );\n"
 "\n"
 "    vec4 pos = vec4(position, 1);\n"
@@ -51,7 +52,7 @@ const char* transformationShaderSource =
 "}\n";
 
 
-// vertexShaderSource (from vertex.glsl, lines 0 to 345)
+// vertexShaderSource (from vertex.glsl, lines 0 to 355)
 const char* vertexShaderSource = 
 "#version 430 core\n"
 "\n"
@@ -61,6 +62,7 @@ const char* vertexShaderSource =
 "\n"
 "uniform uint VCD_lo, VCD_hi;\n"
 "uniform uint VAT_A, VAT_B, VAT_C;\n"
+"uniform uint MATIDX_REG_A, MATIDX_REG_B;\n"
 "\n"
 "// here, the array is read as little endian\n"
 "const int extract_offset[4] = { 0, 8, 16, 24 };\n"
@@ -126,7 +128,7 @@ const char* vertexShaderSource =
 "read32s(args);\n"
 "\n"
 "// defined in trafo.glsl\n"
-"vec4 transform(vec3 position);\n"
+"vec4 transform(vec3 position, uint posidx);\n"
 "\n"
 "void main()\n"
 "{\n"
@@ -246,7 +248,16 @@ const char* vertexShaderSource =
 "            position.z = 0;  // todo: what is this value supposed to be?\n"
 "        }\n"
 "\n"
-"        gl_Position = transform(position);\n"
+"        uint posidx;\n"
+"        if (arg_offsets[0] >= 0) {\n"
+"            // position matrix index value passed (always direct)\n"
+"            posidx = read8_args(arg_offsets[0]);\n"
+"        }\n"
+"        else {\n"
+"            posidx = bitfieldExtract(MATIDX_REG_A, 0, 6);\n"
+"        }\n"
+"\n"
+"        gl_Position = transform(position, posidx);\n"
 "#ifdef DEBUG\n"
 "        switch (gl_VertexID) {\n"
 "            case 0:\n"

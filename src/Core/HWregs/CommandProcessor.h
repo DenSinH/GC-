@@ -27,6 +27,8 @@ typedef enum e_CP_regs {
 } e_CP_regs;
 
 typedef enum e_CP_regs_internal {
+    CP_reg_int_MATIDX_REG_A = 0x30,
+    CP_reg_int_MATIDX_REG_B = 0x40,
     CP_reg_int_VCD_lo_base = 0x50,
     CP_reg_int_VCD_hi_base = 0x60,
     CP_reg_int_VAT_A_base = 0x70,

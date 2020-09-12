@@ -150,6 +150,9 @@ void video_init_Flipper(s_Flipper* flipper) {
     flipper->VAT_B_location = glGetUniformLocation(flipper->shaderProgram, "VAT_B");
     flipper->VAT_C_location = glGetUniformLocation(flipper->shaderProgram, "VAT_C");
 
+    flipper->MATIDX_REG_A_location = glGetUniformLocation(flipper->shaderProgram, "MATIDX_REG_A");
+    flipper->MATIDX_REG_B_location = glGetUniformLocation(flipper->shaderProgram, "MATIDX_REG_B");
+
     init_buffers(flipper);
 }
 
@@ -218,6 +221,9 @@ struct s_framebuffer render_Flipper(s_Flipper* flipper){
         glUniform1ui(flipper->VAT_A_location, get_internal_CP_reg(flipper->CP, CP_reg_int_VAT_A_base + format));
         glUniform1ui(flipper->VAT_B_location, get_internal_CP_reg(flipper->CP, CP_reg_int_VAT_B_base + format));
         glUniform1ui(flipper->VAT_C_location, get_internal_CP_reg(flipper->CP, CP_reg_int_VAT_C_base + format));
+
+        glUniform1ui(flipper->MATIDX_REG_A_location, get_internal_CP_reg(flipper->CP, CP_reg_int_MATIDX_REG_A));
+        glUniform1ui(flipper->MATIDX_REG_B_location, get_internal_CP_reg(flipper->CP, CP_reg_int_MATIDX_REG_B));
 
         log_flipper("Drawing command %02x, vertices %d", flipper->command, flipper->n_vertices)
         if ((flipper->command & 0xf8) == 0x80) {

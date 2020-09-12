@@ -8,6 +8,7 @@ const uint draw_arg_POS = %draw_arg_POS%;
 
 uniform uint VCD_lo, VCD_hi;
 uniform uint VAT_A, VAT_B, VAT_C;
+uniform uint MATIDX_REG_A, MATIDX_REG_B;
 
 // here, the array is read as little endian
 const int extract_offset[4] = { 0, 8, 16, 24 };
@@ -73,7 +74,7 @@ read32(args);
 read32s(args);
 
 // defined in trafo.glsl
-vec4 transform(vec3 position);
+vec4 transform(vec3 position, uint posidx);
 
 void main()
 {
@@ -193,7 +194,16 @@ void main()
             position.z = 0;  // todo: what is this value supposed to be?
         }
 
-        gl_Position = transform(position);
+        uint posidx;
+        if (arg_offsets[%draw_arg_PNMTXIDX%] >= 0) {
+            // position matrix index value passed (always direct)
+            posidx = read8_args(arg_offsets[%draw_arg_PNMTXIDX%]);
+        }
+        else {
+            posidx = bitfieldExtract(MATIDX_REG_A, 0, 6);
+        }
+
+        gl_Position = transform(position, posidx);
 #ifdef DEBUG
         switch (gl_VertexID) {
             case 0:
