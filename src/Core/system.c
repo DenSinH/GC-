@@ -23,15 +23,12 @@ s_GameCube* init_system() {
 
 #ifdef DO_BREAKPOINTS
 //    add_breakpoint(&GameCube->breakpoints, 0x8000bde0);
-//    add_breakpoint(&GameCube->breakpoints, 0x8000bde4);
+//    add_breakpoint(&GameCube->breakpoints, 0x80003d04);
 #endif
-
-//    add_breakpoint(&GameCube->breakpoints, 0x80003e38);
     return GameCube;
 }
 
-#define TEST_DOL "D:\\CProjects\\GCResources\\GameCubeResources\\Tests\\Shapes\\Shapes.dol"
-// #define TEST_DOL "D:\\CProjects\\GCResources\\GameCubeResources\\Tests\\GCTests\\GCTests.dol"
+#define TEST_DOL "D:\\CProjects\\GCResources\\GameCubeResources\\Tests\\Cube\\Cube.dol"
 #define STEP_ON_BREAK
 
 void run_system(s_GameCube* system) {
@@ -51,7 +48,7 @@ void run_system(s_GameCube* system) {
 #if defined(DO_BREAKPOINTS) || defined(DO_DEBUGGER)
         if (check_breakpoints(&system->breakpoints, system->cpu.PC)) {
             dump_Gekko(&system->cpu);
-            log_debug("Hit breakpoint %08x", GameCube->cpu.PC);
+            log_debug("Hit breakpoint %08x", system->cpu.PC);
             system->paused = true;
         }
 #endif

@@ -15,6 +15,7 @@
  * All of this code should run in the rendering thread
  * */
 
+#define FENCE_SYNC_TIMEOUT_NS 0xffffffff  // must fit into a u64
 static u16 quad_EBO[FLIPPER_QUAD_INDEX_ARRAY_SIZE];
 
 
@@ -241,13 +242,19 @@ struct s_framebuffer render_Flipper(s_Flipper* flipper){
 
         while (!flipper->CP->draw_command_available[flipper->draw_command_index]) {
             log_flipper("Processing draw command %d", flipper->draw_command_index);
-            // draw and set draw command to available in CP
-            // todo: sync GPU so data in buffers is not overwritten
+            // wait until either a fail (GL_WAIT_FAILED) or a successful draw command (GL_ALREADY_SIGNALED, GL_TIMEOUT_EXPIRED)
+            // first do a non-blocking check to see if we are already done
+            if (glClientWaitSync(flipper->fence, GL_SYNC_FLUSH_COMMANDS_BIT, 0) != GL_ALREADY_SIGNALED) {
+                while (glClientWaitSync(flipper->fence, GL_SYNC_FLUSH_COMMANDS_BIT, FENCE_SYNC_TIMEOUT_NS) == GL_TIMEOUT_EXPIRED) {}
+            }
+
+            // draw and set draw command slot to available in CP
             draw_Flipper(flipper, &flipper->CP->draw_command_queue[flipper->draw_command_index]);
             flipper->CP->draw_command_available[flipper->draw_command_index++] = true;
             if (flipper->draw_command_index == MAX_DRAW_COMMANDS) {
                 flipper->draw_command_index = 0;
             }
+            flipper->fence = glFenceSync(GL_SYNC_GPU_COMMANDS_COMPLETE, 0);
         }
 
         flipper->current_framebuffer ^= true;  // frameswap for the emulator

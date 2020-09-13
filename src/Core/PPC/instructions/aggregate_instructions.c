@@ -251,6 +251,9 @@ GEKKO_INSTR(instr_111011) {
         case FDIVS_OPCODE_EXTENDED:
             fdivs(cpu, instruction);
             return;
+        case FMSUBS_OPCODE_EXTENDED:
+            fmsubs(cpu, instruction);
+            return;
         case FMADDS_OPCODE_EXTENDED:
             fmadds(cpu, instruction);
             return;

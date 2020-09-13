@@ -29,8 +29,8 @@ extern "C" {
     );
 
     void add_command(const char* command, const char* description, CONSOLE_COMMAND((*callback)));
-    void add_register_tab(const char* name);
-    void add_register_data(char* name, const void* value, bool islong, int tab);
+    int add_register_tab(const char* name);
+    void add_register_data(char* name, const void* value, size_t size, int tab);
 
     void bind_video_init(void (*initializer)());
     void bind_video_render(s_framebuffer (*render)());

@@ -12,7 +12,7 @@
 typedef struct s_register_data {
     char* name;
     const void* value;
-    bool islong;
+    size_t size;
 } s_register_data;
 
 
@@ -36,19 +36,20 @@ typedef struct RegisterViewer
 
     }
 
-    void AddRegisterTab(const char* name) {
+    int AddRegisterTab(const char* name) {
         s_register_tab tab = {
                 .name = new char[MAX_REGISTER_TAB_LENGTH]
         };
         strcpy_s(tab.name, MAX_REGISTER_NAME_LENGTH, name);
         RegisterTabs.push_back(tab);
+        return RegisterTabs.size() - 1;
     }
 
-    void AddRegister(const char* reg, const void* value, bool islong, int tab) {
+    void AddRegister(const char* reg, const void* value, size_t size, int tab) {
         s_register_data data = {
                 .name = new char[MAX_REGISTER_NAME_LENGTH],
                 .value = value,
-                .islong = islong
+                .size = size
         };
 
         strcpy_s(data.name, MAX_REGISTER_NAME_LENGTH, reg);
@@ -83,6 +84,7 @@ typedef struct RegisterViewer
 
                 ImGui::Columns(columns, "Registers", true);  // 3-ways, no border
                 int currentwidth = columns;
+                size_t prev_size = 4;
 
                 for (auto reg : RegisterTab.registers) {
                     if (!reg.value) {
@@ -92,13 +94,22 @@ typedef struct RegisterViewer
                         continue;
                     }
 
-                    if (currentwidth == columns && reg.islong) {
-                        currentwidth >>= 1;
+                    if (prev_size != reg.size) {
+                        switch (reg.size) {
+                            case 1:
+                                currentwidth = columns << 1;
+                                break;
+                            case 4:
+                                currentwidth = columns;
+                                break;
+                            case 8:
+                                currentwidth = columns >> 1;
+                                break;
+                            default:
+                                break;
+                        }
                         ImGui::Columns(currentwidth);
-                    }
-                    else if (currentwidth < columns && !reg.islong) {
-                        currentwidth = columns;
-                        ImGui::Columns(currentwidth);
+                        prev_size = reg.size;
                     }
 
                     // name
@@ -107,24 +118,26 @@ typedef struct RegisterViewer
                     ImGui::NextColumn();
 
                     // value
-                    if (!reg.islong) {
-                        if (!float_view) sprintf(label, "%08x", *((uint32_t*)reg.value));
-                        else sprintf(label, "%f", *((float*)reg.value));
-
-                        if (ImGui::Selectable(label)) {
-                            SDL_SetClipboardText(label);
-                        }
-                        ImGui::NextColumn();
+                    switch (reg.size) {
+                        case 1:
+                            // no float mode for this one
+                            sprintf(label, "%02x", *((uint8_t*)reg.value));
+                            break;
+                        case 4:
+                            if (!float_view) sprintf(label, "%08x", *((uint32_t*)reg.value));
+                            else sprintf(label, "%f", *((float*)reg.value));
+                            break;
+                        case 8:
+                            if (!float_view) sprintf(label, "%016" PRIx64, *((uint64_t*)reg.value));
+                            else sprintf(label, "%f", *((double*)reg.value));
+                            break;
+                        default:
+                            break;
                     }
-                    else {
-                        if (!float_view) sprintf(label, "%016" PRIx64, *((uint64_t*)reg.value));
-                        else sprintf(label, "%f", *((double*)reg.value));
-
-                        if (ImGui::Selectable(label)) {
-                            SDL_SetClipboardText(label);
-                        }
-                        ImGui::NextColumn();
+                    if (ImGui::Selectable(label)) {
+                        SDL_SetClipboardText(label);
                     }
+                    ImGui::NextColumn();
                 }
 
                 ImGui::Columns(1);

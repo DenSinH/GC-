@@ -52,7 +52,7 @@ const char* transformationShaderSource =
 "}\n";
 
 
-// vertexShaderSource (from vertex.glsl, lines 0 to 356)
+// vertexShaderSource (from vertex.glsl, lines 0 to 357)
 const char* vertexShaderSource = 
 "#version 430 core\n"
 "\n"
@@ -140,6 +140,9 @@ const char* vertexShaderSource =
 "    int stemp;\n"
 "    uint utemp;\n"
 "\n"
+"    // placed here mostly for debugging purposes\n"
+"    vec3 position;\n"
+"\n"
 "    if (arg_offsets[9] >= 0)\n"
 "    {\n"
 "        /* determine vertex position */\n"
@@ -152,8 +155,6 @@ const char* vertexShaderSource =
 "        bool POSCNT  = bitfieldExtract(VAT_A, 0, 1) != 0;\n"
 "        uint POSFMT  = bitfieldExtract(VAT_A, 1, 3);\n"
 "        uint POSSHFT = bitfieldExtract(VAT_A, 4, 5);\n"
-"\n"
-"        vec3 position;\n"
 "\n"
 "        if (POSVCD > 1) {\n"
 "            // indirect data\n"
@@ -265,13 +266,13 @@ const char* vertexShaderSource =
 "                gl_Position = vec4(-0.5, -0.5, 0.0, 1.0);\n"
 "                break;\n"
 "            case 1:\n"
-"                gl_Position = vec4(0.5, -0.5, 0.0, 1.0);\n"
+"                gl_Position = vec4(0.0, -0.5, 0.0, 1.0);\n"
 "                break;\n"
 "            case 2:\n"
-"                gl_Position = vec4(0.0, 0.5, 0.0, 1.0);\n"
+"                gl_Position = vec4(0.5, 0.5, 0.0, 1.0);\n"
 "                break;\n"
-"            default:\n"
-"                gl_Position = vec4(position.xyz / 32.0, 1.0);\n"
+"            case 3:\n"
+"                gl_Position = vec4(0.0, 0.5, 0.0, 1.0);\n"
 "                break;\n"
 "        }\n"
 "#endif\n"
@@ -398,8 +399,8 @@ const char* vertexShaderSource =
 "        vertexColor = color;\n"
 "        if (!COL0CNT) color.w = 1.0;\n"
 "#ifdef DEBUG\n"
-"        if (position.z == 0) {\n"
-"            vertexColor = vec4(0.0, position.y / 32.0, 0.0, 1.0);\n"
+"        if (position.y > 29) {\n"
+"            vertexColor = vec4(0.0, 1.0, 0.0, 1.0);\n"
 "        }\n"
 "        else {\n"
 "            vertexColor = vec4(1.0, 0.0, 0.0, 1.0);\n"

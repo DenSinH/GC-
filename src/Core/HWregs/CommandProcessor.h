@@ -264,6 +264,7 @@ typedef struct s_draw_command_small {
 
 typedef struct s_CP {
     // external function
+    // todo: is this actually 0x80? does not seem right (0x40 instead?)
     u8 regs[0x80];
     HW_REG_WRITE_CALLBACK((*write[0x40]), CP);
     HW_REG_READ_PRECALL((*read[0x40]), CP);

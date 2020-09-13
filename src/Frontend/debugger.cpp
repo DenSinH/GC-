@@ -33,12 +33,12 @@ void add_command(const char* command, const char* description, CONSOLE_COMMAND((
     });
 }
 
-void add_register_tab(const char* name){
-    Debugger.register_viewer.AddRegisterTab(name);
+int add_register_tab(const char* name){
+    return Debugger.register_viewer.AddRegisterTab(name);
 }
 
-void add_register_data(char* name, const void* value, bool islong, int tab) {
-    Debugger.register_viewer.AddRegister(name, value, islong, tab);
+void add_register_data(char* name, const void* value, size_t size, int tab) {
+    Debugger.register_viewer.AddRegister(name, value, size, tab);
 }
 
 void debugger_init(

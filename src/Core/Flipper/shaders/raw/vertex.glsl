@@ -86,6 +86,9 @@ void main()
     int stemp;
     uint utemp;
 
+    // placed here mostly for debugging purposes
+    vec3 position;
+
     if (arg_offsets[%draw_arg_POS%] >= 0)
     {
         /* determine vertex position */
@@ -98,8 +101,6 @@ void main()
         bool POSCNT  = bitfieldExtract(VAT_A, 0, 1) != 0;
         uint POSFMT  = bitfieldExtract(VAT_A, 1, 3);
         uint POSSHFT = bitfieldExtract(VAT_A, 4, 5);
-
-        vec3 position;
 
         if (POSVCD > 1) {
             // indirect data
@@ -211,13 +212,13 @@ void main()
                 gl_Position = vec4(-0.5, -0.5, 0.0, 1.0);
                 break;
             case 1:
-                gl_Position = vec4(0.5, -0.5, 0.0, 1.0);
+                gl_Position = vec4(0.0, -0.5, 0.0, 1.0);
                 break;
             case 2:
-                gl_Position = vec4(0.0, 0.5, 0.0, 1.0);
+                gl_Position = vec4(0.5, 0.5, 0.0, 1.0);
                 break;
-            default:
-                gl_Position = vec4(position.xyz / 32.0, 1.0);
+            case 3:
+                gl_Position = vec4(0.0, 0.5, 0.0, 1.0);
                 break;
         }
 #endif
@@ -344,8 +345,8 @@ void main()
         vertexColor = color;
         if (!COL0CNT) color.w = 1.0;
 #ifdef DEBUG
-        if (position.z == 0) {
-            vertexColor = vec4(0.0, position.y / 32.0, 0.0, 1.0);
+        if (position.y > 29) {
+            vertexColor = vec4(0.0, 1.0, 0.0, 1.0);
         }
         else {
             vertexColor = vec4(1.0, 0.0, 0.0, 1.0);

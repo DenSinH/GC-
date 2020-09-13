@@ -145,121 +145,199 @@ static void init() {
 
     char name[32];
 
-    add_register_tab("Gekko");
+    int Gekko_tab = add_register_tab("Gekko");
 
-    add_register_data("PC", &global_system->cpu.PC, false, 0);
-    add_register_data("LR", &global_system->cpu.LR, false, 0);
-    add_register_data("SP", &global_system->cpu.SP, false, 0);
-    add_register_data("CR", &global_system->cpu.CR, false, 0);
+    add_register_data("PC", &global_system->cpu.PC, 4, Gekko_tab);
+    add_register_data("LR", &global_system->cpu.LR, 4, Gekko_tab);
+    add_register_data("SP", &global_system->cpu.SP, 4, Gekko_tab);
+    add_register_data("CR", &global_system->cpu.CR, 4, Gekko_tab);
 
-    add_register_data("MSR", &global_system->cpu.MSR, false, 0);
-    add_register_data("XER", &global_system->cpu.XER, false, 0);
-    add_register_data("CTR", &global_system->cpu.CTR, false, 0);
-    add_register_data("FPSCR", &global_system->cpu.FPSCR, false, 0);
+    add_register_data("MSR", &global_system->cpu.MSR, 4, Gekko_tab);
+    add_register_data("XER", &global_system->cpu.XER, 4, Gekko_tab);
+    add_register_data("CTR", &global_system->cpu.CTR, 4, Gekko_tab);
+    add_register_data("FPSCR", &global_system->cpu.FPSCR, 4, Gekko_tab);
 
-    add_register_data("", NULL, false, 0);
+    add_register_data("", NULL, 4, Gekko_tab);
 
     for (int i = 0; i < 32; i++) {
         sprintf(name, "GPR%02d", i);
-        add_register_data(name, &global_system->cpu.GPR[i], false, 0);
+        add_register_data(name, &global_system->cpu.GPR[i], 4, Gekko_tab);
     }
 
-    add_register_data("", NULL, false, 0);
+    add_register_data("", NULL, 4, Gekko_tab);
 
-    add_register_data("HID0", &global_system->cpu.HID[0], false, 0);
-    add_register_data("HID1", &global_system->cpu.HID[1], false, 0);
-    add_register_data("HID2", &global_system->cpu.HID2, false, 0);
-    add_register_data("WPAR", &global_system->cpu.WPAR, false, 0);
+    add_register_data("HID0", &global_system->cpu.HID[0], 4, Gekko_tab);
+    add_register_data("HID1", &global_system->cpu.HID[1], 4, Gekko_tab);
+    add_register_data("HID2", &global_system->cpu.HID2, 4, Gekko_tab);
+    add_register_data("WPAR", &global_system->cpu.WPAR, 4, Gekko_tab);
 
-    add_register_data("DEC", &global_system->cpu.DEC, false, 0);
-    add_register_data("SRR0", &global_system->cpu.SRR0, false, 0);
-    add_register_data("SRR1", &global_system->cpu.SRR1, false, 0);
+    add_register_data("DEC", &global_system->cpu.DEC, 4, Gekko_tab);
+    add_register_data("SRR0", &global_system->cpu.SRR0, 4, Gekko_tab);
+    add_register_data("SRR1", &global_system->cpu.SRR1, 4, Gekko_tab);
 
-    add_register_data("", NULL, false, 0);
+    add_register_data("", NULL, 4, Gekko_tab);
 
     for (int i = 0; i < 8; i++) {
         sprintf(name, "GQR%02d", i);
-        add_register_data(name, &global_system->cpu.GQR[i], false, 0);
+        add_register_data(name, &global_system->cpu.GQR[i], 4, Gekko_tab);
     }
 
-    add_register_data("", NULL, false, 0);
+    add_register_data("", NULL, 4, Gekko_tab);
 
     for (int i = 0; i < 32; i++) {
         sprintf(name, "FPR%02d:PS0", i);
-        add_register_data(name, &global_system->cpu.FPR[i].PS0, true, 0);
+        add_register_data(name, &global_system->cpu.FPR[i].PS0, 8, Gekko_tab);
         sprintf(name, "FPR%02d:PS1", i);
-        add_register_data(name, &global_system->cpu.FPR[i].PS1, true, 0);
+        add_register_data(name, &global_system->cpu.FPR[i].PS1, 8, Gekko_tab);
     }
 
-    add_register_data("", NULL, false, 0);
+    add_register_data("", NULL, 4, Gekko_tab);
 
     for (int i = 0; i < 4; i++) {
         sprintf(name, "IBAT%02d", i);
-        add_register_data(name, &global_system->cpu.IMMU.BAT[i], true, 0);
+        add_register_data(name, &global_system->cpu.IMMU.BAT[i], 8, Gekko_tab);
     }
 
     for (int i = 0; i < 4; i++) {
         sprintf(name, "DBAT%02d", i);
-        add_register_data(name, &global_system->cpu.DMMU.BAT[i], true, 0);
+        add_register_data(name, &global_system->cpu.DMMU.BAT[i], 8, Gekko_tab);
     }
 
-    add_register_data("", NULL, false, 0);
+    add_register_data("", NULL, 4, Gekko_tab);
 
     for (int i = 0; i < 16; i++) {
         sprintf(name, "SR%02d", i);
-        add_register_data(name, &global_system->cpu.SR[i], false, 0);
+        add_register_data(name, &global_system->cpu.SR[i], 4, Gekko_tab);
     }
 
-    add_register_tab("internal CP");
+    int HWIO_tab = add_register_tab("HWIO");
+    for (int i = 0; i < 0x80; i++) {
+        sprintf(name, "CP%02x", i);
+        add_register_data(name, &global_system->HW_regs.CP.regs[i], 1, HWIO_tab);
+    }
+
+    add_register_data("", NULL, 1, HWIO_tab);
+    add_register_data("", NULL, 1, HWIO_tab);
+
+    for (int i = 0; i < 0x100; i++) {
+        sprintf(name, "PE%02x", i);
+        add_register_data(name, &global_system->HW_regs.PE.regs[i], 1, HWIO_tab);
+    }
+
+    add_register_data("", NULL, 1, HWIO_tab);
+    add_register_data("", NULL, 1, HWIO_tab);
+
+    for (int i = 0; i < 0x100; i++) {
+        sprintf(name, "VI%02x", i);
+        add_register_data(name, &global_system->HW_regs.VI.regs[i], 1, HWIO_tab);
+    }
+
+    add_register_data("", NULL, 1, HWIO_tab);
+    add_register_data("", NULL, 1, HWIO_tab);
+
+    for (int i = 0; i < 0x100; i++) {
+        sprintf(name, "PI%02x", i);
+        add_register_data(name, &global_system->HW_regs.PI.regs[i], 1, HWIO_tab);
+    }
+
+    add_register_data("", NULL, 1, HWIO_tab);
+    add_register_data("", NULL, 1, HWIO_tab);
+
+    for (int i = 0; i < 0x80; i++) {
+        sprintf(name, "MI%02x", i);
+        add_register_data(name, &global_system->HW_regs.MI.regs[i], 1, HWIO_tab);
+    }
+
+    add_register_data("", NULL, 1, HWIO_tab);
+    add_register_data("", NULL, 1, HWIO_tab);
+
+    for (int i = 0; i < 0x200; i++) {
+        sprintf(name, "DSP%02x", i);
+        add_register_data(name, &global_system->HW_regs.DSP.regs[i], 1, HWIO_tab);
+    }
+
+    add_register_data("", NULL, 1, HWIO_tab);
+    add_register_data("", NULL, 1, HWIO_tab);
+
+    for (int i = 0; i < 0x40; i++) {
+        sprintf(name, "DI%02x", i);
+        add_register_data(name, &global_system->HW_regs.DI.regs[i], 1, HWIO_tab);
+    }
+
+    add_register_data("", NULL, 1, HWIO_tab);
+    add_register_data("", NULL, 1, HWIO_tab);
+
+    for (int i = 0; i < 0x100; i++) {
+        sprintf(name, "SI%02x", i);
+        add_register_data(name, &global_system->HW_regs.SI.regs[i], 1, HWIO_tab);
+    }
+
+    add_register_data("", NULL, 1, HWIO_tab);
+    add_register_data("", NULL, 1, HWIO_tab);
+
+    for (int i = 0; i < 0x40; i++) {
+        sprintf(name, "EI%02x", i);
+        add_register_data(name, &global_system->HW_regs.EXI.regs[i], 1, HWIO_tab);
+    }
+
+    add_register_data("", NULL, 1, HWIO_tab);
+    add_register_data("", NULL, 1, HWIO_tab);
+
+    for (int i = 0; i < 0x20; i++) {
+        sprintf(name, "AI%02x", i);
+        add_register_data(name, &global_system->HW_regs.AI.regs[i], 1, HWIO_tab);
+    }
+
+    int CP_tab = add_register_tab("internal CP");
 
     for (int i = 0; i < INTERNAL_CP_REGISTER_SIZE; i++) {
         sprintf(name, "CP 0x%02x", INTERNAL_CP_REGISTER_BASE + i);
-        add_register_data(name, &global_system->HW_regs.CP.internal_CP_regs[i], false, 1);
+        add_register_data(name, &global_system->HW_regs.CP.internal_CP_regs[i], 4, CP_tab);
     }
 
-    add_register_tab("BP regs");
+    int BP_tab = add_register_tab("BP regs");
 
     for (int i = 0; i < INTERNAL_BP_REGISTER_SIZE; i++) {
         sprintf(name, "BP 0x%02x", i);
-        add_register_data(name, &global_system->HW_regs.CP.internal_BP_regs[i], false, 2);
+        add_register_data(name, &global_system->HW_regs.CP.internal_BP_regs[i], 4, BP_tab);
     }
 
-    add_register_tab("XF regs");
+    int XF_reg_tab = add_register_tab("XF regs");
 
     for (int i = 0; i < INTERNAL_XF_REGISTER_SIZE; i++) {
         sprintf(name, "XF 0x%02x", INTERNAL_XF_REGISTER_BASE + i);
-        add_register_data(name, &global_system->HW_regs.CP.internal_XF_regs[i], false, 3);
+        add_register_data(name, &global_system->HW_regs.CP.internal_XF_regs[i], 4, XF_reg_tab);
     }
 
-    add_register_tab("XF mem");
+    int XF_mem_tab = add_register_tab("XF mem");
 
     for (int i = 0; i < 0x100; i++) {
         sprintf(name, "XFA[0x%02x]", i);
-        add_register_data(name, &global_system->HW_regs.CP.internal_XF_mem[0][i], false, 4);
+        add_register_data(name, &global_system->HW_regs.CP.internal_XF_mem[0][i], 4, XF_mem_tab);
     }
 
-    add_register_data("", NULL, false, 4);
-    add_register_data("", NULL, false, 4);
+    add_register_data("", NULL, 4, XF_mem_tab);
+    add_register_data("", NULL, 4, XF_mem_tab);
 
     for (int i = 0; i < 0x60; i++) {
         sprintf(name, "XFB[0x%02x]", i);
-        add_register_data(name, &global_system->HW_regs.CP.internal_XF_mem[1][i], false, 4);
+        add_register_data(name, &global_system->HW_regs.CP.internal_XF_mem[1][i], 4, XF_mem_tab);
     }
 
-    add_register_data("", NULL, false, 4);
-    add_register_data("", NULL, false, 4);
+    add_register_data("", NULL, 4, XF_mem_tab);
+    add_register_data("", NULL, 4, XF_mem_tab);
 
     for (int i = 0; i < 0x100; i++) {
         sprintf(name, "XFC[0x%02x]", i);
-        add_register_data(name, &global_system->HW_regs.CP.internal_XF_mem[2][i], false, 4);
+        add_register_data(name, &global_system->HW_regs.CP.internal_XF_mem[2][i], 4, XF_mem_tab);
     }
 
-    add_register_data("", NULL, false, 4);
-    add_register_data("", NULL, false, 4);
+    add_register_data("", NULL, 4, XF_mem_tab);
+    add_register_data("", NULL, 4, XF_mem_tab);
 
     for (int i = 0; i < 0x80; i++) {
         sprintf(name, "XFD[0x%02x]", i);
-        add_register_data(name, &global_system->HW_regs.CP.internal_XF_mem[3][i], false, 4);
+        add_register_data(name, &global_system->HW_regs.CP.internal_XF_mem[3][i], 4, XF_mem_tab);
     }
 
     add_command("RESET", "Resets the system. Add 'pause/freeze/break' to freeze on reload.", reset_system);

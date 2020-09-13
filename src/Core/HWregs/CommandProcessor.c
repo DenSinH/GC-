@@ -193,8 +193,10 @@ static inline void send_draw_command(s_CP* CP) {
                 CP->system->memory + get_internal_CP_reg(CP, CP_reg_int_vert_ARRAY_BASE + draw_arg - draw_arg_POS) + min_index,
                 size
         );
-        log_cp("copied array for argument %d (%04x bytes, index %x -> %x (stride %d)) to offset %x",
-               draw_arg, size, min_index, max_index, stride, data_offset)
+        log_cp("copied array for argument %d (%04x bytes, index %x -> %x (stride %d)) from %08x to offset %x",
+               draw_arg, size, min_index, max_index, stride,
+               get_internal_CP_reg(CP, CP_reg_int_vert_ARRAY_BASE + draw_arg - draw_arg_POS), data_offset
+        );
         data_offset += size;
     }
     CP->current_draw_command.data_size = data_offset;
