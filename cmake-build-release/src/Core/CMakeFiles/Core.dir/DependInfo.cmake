@@ -5,6 +5,7 @@ set(CMAKE_DEPENDS_LANGUAGES
 # The set of files for implicit dependencies of each language:
 set(CMAKE_DEPENDS_CHECK_C
   "D:/CProjects/GC-/src/Core/Breakpoints/breakpoints.c" "D:/CProjects/GC-/cmake-build-release/src/Core/CMakeFiles/Core.dir/Breakpoints/breakpoints.c.obj"
+  "D:/CProjects/GC-/src/Core/Scheduler/scheduler.c" "D:/CProjects/GC-/cmake-build-release/src/Core/CMakeFiles/Core.dir/Scheduler/scheduler.c.obj"
   "D:/CProjects/GC-/src/Core/include/float_utils.c" "D:/CProjects/GC-/cmake-build-release/src/Core/CMakeFiles/Core.dir/include/float_utils.c.obj"
   "D:/CProjects/GC-/src/Core/system.c" "D:/CProjects/GC-/cmake-build-release/src/Core/CMakeFiles/Core.dir/system.c.obj"
   )

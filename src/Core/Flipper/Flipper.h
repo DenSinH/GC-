@@ -9,7 +9,6 @@
 #define FLIPPER_SCREEN_HEIGHT 720
 
 #define FLIPPER_QUAD_INDEX_ARRAY_SIZE 0x8000
-#define FLIPPER_QUAD_RESET_INDEX 0xffff
 
 typedef struct s_Flipper {
 

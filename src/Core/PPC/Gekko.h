@@ -53,6 +53,7 @@ typedef struct s_Gekko {
     u32 SRR0;       // Save/restore register for address on interrupt         [SUPERVISOR]
     u32 SRR1;       // Save/restore register for machine status on interrupt  [SUPERVISOR]
 
+    // todo: handle DEC reads
     u32 DEC;        // Decrement register
     s_TBR TBR;      // Time base register
 

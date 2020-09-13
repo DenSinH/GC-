@@ -549,6 +549,12 @@
 		<Unit filename="D:/CProjects/GC-/src/Core/PPC/instructions.h">
 			<Option target="PPC"/>
 		</Unit>
+		<Unit filename="D:/CProjects/GC-/src/Core/Scheduler/scheduler.c">
+			<Option target="Core"/>
+		</Unit>
+		<Unit filename="D:/CProjects/GC-/src/Core/Scheduler/scheduler.h">
+			<Option target="Core"/>
+		</Unit>
 		<Unit filename="D:/CProjects/GC-/src/Core/include/core_utils.h">
 			<Option target="Core"/>
 		</Unit>

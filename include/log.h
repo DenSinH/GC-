@@ -82,6 +82,16 @@
 #define log_flipper(message, ...) { }
 #endif
 
+#if COMPONENT_FLAGS & COMPONENT_SCHEDULER
+#define log_sched(message, ...) {                        \
+        CONSOLE_BLUE();                                \
+        fprintf(stdout, "[SCHEDULER]: "message "\n",  ##__VA_ARGS__); \
+        CONSOLE_RESTORE();                             \
+    }
+#else
+#define log_sched(message, ...) { }
+#endif
+
 #if VERBOSITY <= VERBOSITY_ALL
 #define log_any(message, ...) {                        \
         CONSOLE_BLUE();                                \

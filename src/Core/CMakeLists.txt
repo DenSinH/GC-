@@ -5,7 +5,7 @@ add_library(Core STATIC
         Breakpoints/breakpoints.c
         include/float_utils.h
         include/float_utils.c
-        include/core_utils.h)
+        include/core_utils.h Scheduler/scheduler.c Scheduler/scheduler.h)
 
 add_subdirectory(HWregs)
 add_subdirectory(PPC)

@@ -176,6 +176,39 @@ Breakpoints\breakpoints.c.s:
 	cd D:\CProjects\GC-\cmake-build-release\src\Core
 .PHONY : Breakpoints\breakpoints.c.s
 
+Scheduler\scheduler.obj: Scheduler\scheduler.c.obj
+
+.PHONY : Scheduler\scheduler.obj
+
+# target to build an object file
+Scheduler\scheduler.c.obj:
+	cd D:\CProjects\GC-\cmake-build-release
+	$(MAKE) $(MAKESILENT) -f src\Core\CMakeFiles\Core.dir\build.make /nologo -$(MAKEFLAGS) src\Core\CMakeFiles\Core.dir\Scheduler\scheduler.c.obj
+	cd D:\CProjects\GC-\cmake-build-release\src\Core
+.PHONY : Scheduler\scheduler.c.obj
+
+Scheduler\scheduler.i: Scheduler\scheduler.c.i
+
+.PHONY : Scheduler\scheduler.i
+
+# target to preprocess a source file
+Scheduler\scheduler.c.i:
+	cd D:\CProjects\GC-\cmake-build-release
+	$(MAKE) $(MAKESILENT) -f src\Core\CMakeFiles\Core.dir\build.make /nologo -$(MAKEFLAGS) src\Core\CMakeFiles\Core.dir\Scheduler\scheduler.c.i
+	cd D:\CProjects\GC-\cmake-build-release\src\Core
+.PHONY : Scheduler\scheduler.c.i
+
+Scheduler\scheduler.s: Scheduler\scheduler.c.s
+
+.PHONY : Scheduler\scheduler.s
+
+# target to generate assembly for a file
+Scheduler\scheduler.c.s:
+	cd D:\CProjects\GC-\cmake-build-release
+	$(MAKE) $(MAKESILENT) -f src\Core\CMakeFiles\Core.dir\build.make /nologo -$(MAKEFLAGS) src\Core\CMakeFiles\Core.dir\Scheduler\scheduler.c.s
+	cd D:\CProjects\GC-\cmake-build-release\src\Core
+.PHONY : Scheduler\scheduler.c.s
+
 include\float_utils.obj: include\float_utils.c.obj
 
 .PHONY : include\float_utils.obj
@@ -254,6 +287,9 @@ help:
 	@echo ... Breakpoints/breakpoints.obj
 	@echo ... Breakpoints/breakpoints.i
 	@echo ... Breakpoints/breakpoints.s
+	@echo ... Scheduler/scheduler.obj
+	@echo ... Scheduler/scheduler.i
+	@echo ... Scheduler/scheduler.s
 	@echo ... include/float_utils.obj
 	@echo ... include/float_utils.i
 	@echo ... include/float_utils.s

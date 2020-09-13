@@ -64,13 +64,19 @@ static void init_framebuffer(s_Flipper* flipper) {
         glGenFramebuffers(1, &flipper->framebuffer[i]);
         glBindFramebuffer(GL_FRAMEBUFFER, flipper->framebuffer[i]);
 
-        GLuint rendered_texture;
+        GLuint rendered_texture, depth_buffer;
         // create a texture to render to and fill it with 0 (also set filtering to low)
         glGenTextures(1, &rendered_texture);
         glBindTexture(GL_TEXTURE_2D, rendered_texture);
         glTexImage2D(GL_TEXTURE_2D, 0, GL_RGB, FLIPPER_SCREEN_WIDTH, FLIPPER_SCREEN_HEIGHT, 0, GL_RGB, GL_UNSIGNED_BYTE, 0);
         glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_NEAREST);
         glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST);
+
+        // add depth buffer
+        glGenRenderbuffers(1, &depth_buffer);
+        glBindRenderbuffer(GL_RENDERBUFFER, depth_buffer);
+        glRenderbufferStorage(GL_RENDERBUFFER, GL_DEPTH_COMPONENT, FLIPPER_SCREEN_WIDTH, FLIPPER_SCREEN_HEIGHT);
+        glFramebufferRenderbuffer(GL_FRAMEBUFFER, GL_DEPTH_ATTACHMENT, GL_RENDERBUFFER, depth_buffer);
 
         glFramebufferTexture(GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT0, rendered_texture, 0);
         GLenum draw_buffers[1] = { GL_COLOR_ATTACHMENT0 };
@@ -155,6 +161,8 @@ void video_init_Flipper(s_Flipper* flipper) {
     flipper->MATIDX_REG_B_location = glGetUniformLocation(flipper->shaderProgram, "MATIDX_REG_B");
 
     init_buffers(flipper);
+
+    glEnable(GL_DEPTH_TEST);
 }
 
 void clear_Flipper_buffer(s_Flipper* flipper) {
@@ -163,7 +171,7 @@ void clear_Flipper_buffer(s_Flipper* flipper) {
     u16 GB = (u16)flipper->CP->internal_BP_regs[BP_reg_int_PE_copy_clear_GB];
 
     glClearColor((float)(AR & 0xff) / 255.0, (float)(GB >> 8) / 255.0, (float)(GB & 0xff) / 255.0, (float)(AR >> 8) / 255.0);
-    glClear(GL_COLOR_BUFFER_BIT);
+    glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 }
 
 // GL_QUADS is depricated, we have to separate case this by using an EBO for the vertices
@@ -241,7 +249,10 @@ struct s_framebuffer render_Flipper(s_Flipper* flipper){
         clear_Flipper_buffer(flipper);
 
         while (!flipper->CP->draw_command_available[flipper->draw_command_index]) {
-            log_flipper("Processing draw command %d", flipper->draw_command_index);
+            log_flipper("Processing draw command %02x @%d",
+                        flipper->CP->draw_command_queue[flipper->draw_command_index].command,
+                        flipper->draw_command_index
+            );
             // wait until either a fail (GL_WAIT_FAILED) or a successful draw command (GL_ALREADY_SIGNALED, GL_TIMEOUT_EXPIRED)
             // first do a non-blocking check to see if we are already done
             if (glClientWaitSync(flipper->fence, GL_SYNC_FLUSH_COMMANDS_BIT, 0) != GL_ALREADY_SIGNALED) {
