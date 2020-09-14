@@ -1,7 +1,19 @@
 #include "SPR.h"
+#include "../../system.h"
+#include "../interrupts.h"
+#include "../Scheduler/scheduler.h"
+
+SPR_READ_FN(SPR_read_DEC) {
+    return cpu->DEC - cpu->TBR.time;
+}
+
+SPR_WRITE_FN(SPR_write_DEC) {
+    cpu->DEC = cpu->TBR.time + value;
+    change_event(&cpu->system->scheduler, &cpu->DEC_intr_event, cpu->DEC);
+}
 
 
-void init_SPRs(s_Gekko* cpu) {
+void init_SPRs(struct s_Gekko* cpu) {
     memset(&cpu->SPR_write_mask, 0xff, sizeof(cpu->SPR_write_mask));
 
     // todo: full map
@@ -54,7 +66,18 @@ void init_SPRs(s_Gekko* cpu) {
 
     // todo: stubbed
     cpu->SPR[SPR_L2CR] = &cpu->default_SPR[SPR_L2CR];
+
+
     cpu->SPR[SPR_DEC] = &cpu->DEC;
+    cpu->SPR_read_fn[SPR_DEC] = SPR_read_DEC;
+    cpu->SPR_write_fn[SPR_DEC] = SPR_write_DEC;
+    // init DEC interrupt event
+    cpu->DEC_intr_event = (s_event) {
+        .callback = DEC_intr,
+        .caller = cpu,
+        .time = 0xffffffff
+    };
+    add_event(&cpu->system->scheduler, &cpu->DEC_intr_event);
 
     // todo: implement this
     cpu->SPR[SPR_MMCR0] = &cpu->default_SPR[SPR_MMCR0];

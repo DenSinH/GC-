@@ -7,6 +7,12 @@ src/Core/CMakeFiles/Core.dir/Breakpoints/breakpoints.c.obj
  ../include/log.h
  D:/CProjects/GC-/src/Core/Breakpoints/breakpoints.c
  D:/CProjects/GC-/src/Core/Breakpoints/breakpoints.h
+src/Core/CMakeFiles/Core.dir/Scheduler/scheduler.c.obj
+ ../include/default.h
+ ../include/flags.h
+ ../include/log.h
+ D:/CProjects/GC-/src/Core/Scheduler/scheduler.c
+ D:/CProjects/GC-/src/Core/Scheduler/scheduler.h
 src/Core/CMakeFiles/Core.dir/include/float_utils.c.obj
  ../include/default.h
  ../include/flags.h

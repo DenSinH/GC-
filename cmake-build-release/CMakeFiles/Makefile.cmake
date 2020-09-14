@@ -18,6 +18,13 @@ set(CMAKE_MAKEFILE_DEPENDS
   "D:/CLion/CLion 2020.2/bin/cmake/win/share/cmake-3.17/Modules/CMakeRCInformation.cmake"
   "D:/CLion/CLion 2020.2/bin/cmake/win/share/cmake-3.17/Modules/CMakeSystemSpecificInformation.cmake"
   "D:/CLion/CLion 2020.2/bin/cmake/win/share/cmake-3.17/Modules/CMakeSystemSpecificInitialize.cmake"
+  "D:/CLion/CLion 2020.2/bin/cmake/win/share/cmake-3.17/Modules/CheckIPOSupported.cmake"
+  "D:/CLion/CLion 2020.2/bin/cmake/win/share/cmake-3.17/Modules/CheckIPOSupported/CMakeLists-C.txt.in"
+  "D:/CLion/CLion 2020.2/bin/cmake/win/share/cmake-3.17/Modules/CheckIPOSupported/CMakeLists-CXX.txt.in"
+  "D:/CLion/CLion 2020.2/bin/cmake/win/share/cmake-3.17/Modules/CheckIPOSupported/foo.c"
+  "D:/CLion/CLion 2020.2/bin/cmake/win/share/cmake-3.17/Modules/CheckIPOSupported/foo.cpp"
+  "D:/CLion/CLion 2020.2/bin/cmake/win/share/cmake-3.17/Modules/CheckIPOSupported/main.c"
+  "D:/CLion/CLion 2020.2/bin/cmake/win/share/cmake-3.17/Modules/CheckIPOSupported/main.cpp"
   "D:/CLion/CLion 2020.2/bin/cmake/win/share/cmake-3.17/Modules/Compiler/CMakeCommonCompilerMacros.cmake"
   "D:/CLion/CLion 2020.2/bin/cmake/win/share/cmake-3.17/Modules/Compiler/Clang-C.cmake"
   "D:/CLion/CLion 2020.2/bin/cmake/win/share/cmake-3.17/Modules/Compiler/Clang-CXX.cmake"
@@ -65,6 +72,12 @@ set(CMAKE_MAKEFILE_OUTPUTS
 
 # Byproducts of CMake generate step:
 set(CMAKE_MAKEFILE_PRODUCTS
+  "CMakeFiles/_CMakeLTOTest-CXX/src/CMakeLists.txt"
+  "CMakeFiles/_CMakeLTOTest-CXX/src/foo.cpp"
+  "CMakeFiles/_CMakeLTOTest-CXX/src/main.cpp"
+  "CMakeFiles/_CMakeLTOTest-C/src/CMakeLists.txt"
+  "CMakeFiles/_CMakeLTOTest-C/src/foo.c"
+  "CMakeFiles/_CMakeLTOTest-C/src/main.c"
   "CMakeFiles/CMakeDirectoryInformation.cmake"
   "src/Core/CMakeFiles/CMakeDirectoryInformation.cmake"
   "src/Core/HWregs/CMakeFiles/CMakeDirectoryInformation.cmake"

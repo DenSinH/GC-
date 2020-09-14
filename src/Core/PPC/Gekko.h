@@ -17,6 +17,8 @@
 #include "Registers/WPAR.h"
 #include "gekko_instruction.h"
 
+#include "../Scheduler/scheduler.h"
+
 #include "default.h"
 #include "log.h"
 #include "float_utils.h"
@@ -31,6 +33,9 @@
 #define GET_TBL(cpu_ptr) (u32)(cpu_ptr)->TBR.time
 #define GET_TBU(cpu_ptr) (u32)((cpu_ptr)->TBR.time >> 32)
 
+#define SPR_READ_FN(name) u32 name(struct s_Gekko* cpu)
+#define SPR_WRITE_FN(name) void name(struct s_Gekko* cpu, u32 value)
+
 typedef struct s_Gekko {
     struct s_GameCube* system;
 
@@ -40,6 +45,8 @@ typedef struct s_Gekko {
     void* SPR[1024];  // pointers to SPRs (encoding in manual)
     u32 SPR_write_mask[1024]; // SPRs write masks
     u32 default_SPR[1024];    // some SPRs with default reads/writes
+    SPR_READ_FN((*SPR_read_fn[1024]));     // some SPRs with special reads
+    SPR_WRITE_FN((*SPR_write_fn[1024]));   // some SPRs with special writes
 
     s_MMU IMMU;     // Instruction MMU
     s_MMU DMMU;     // Data MMU
@@ -53,9 +60,11 @@ typedef struct s_Gekko {
     u32 SRR0;       // Save/restore register for address on interrupt         [SUPERVISOR]
     u32 SRR1;       // Save/restore register for machine status on interrupt  [SUPERVISOR]
 
-    // todo: handle DEC reads
-    u32 DEC;        // Decrement register
+    u64 DEC;        // Decrement register (NOTE: We hold the value of TBR.time + <write value>
+                    //                     in here to calculate the right value on read)
     s_TBR TBR;      // Time base register
+
+    s_event DEC_intr_event;
 
     s_GQR GQR[8];
     u32 HID[2];     // hardware dependent Registers (todo: stubbed)

@@ -6,6 +6,8 @@
 #include <SDL.h>
 #include <thread>
 
+#define WINDOW_WIDTH 1280
+#define WINDOW_HEIGHT 720
 
 static struct s_frontend {
     ImGuiIO io;
@@ -112,15 +114,23 @@ int ui_run() {
 #endif
         // render actual emulation
         s_framebuffer emu_framebuffer = Frontend.render();
+        glViewport(0, 0, (int) Frontend.io.DisplaySize.x, (int) Frontend.io.DisplaySize.y);
+
+        float scale = (float) WINDOW_WIDTH / emu_framebuffer.width;
+        if ((float) WINDOW_HEIGHT / emu_framebuffer.height  < scale) {
+            scale = (float) WINDOW_HEIGHT / emu_framebuffer.height;
+        }
+        unsigned offsx = (WINDOW_WIDTH - scale * emu_framebuffer.width) / 2;
+        unsigned offsy = (WINDOW_HEIGHT - scale * emu_framebuffer.height) / 2;
+
         glBindFramebuffer(GL_DRAW_FRAMEBUFFER, 0);
         glBindFramebuffer(GL_READ_FRAMEBUFFER, emu_framebuffer.id);
         glBlitFramebuffer(0, 0,
                           emu_framebuffer.width, emu_framebuffer.height,
-                          0, 0,
-                          emu_framebuffer.width, emu_framebuffer.height,
+                          offsx, offsy,
+                          offsx + scale * emu_framebuffer.width, offsy + scale * emu_framebuffer.height,
                           GL_COLOR_BUFFER_BIT, GL_NEAREST
         );
-        glViewport(0, 0, (int) Frontend.io.DisplaySize.x, (int) Frontend.io.DisplaySize.y);
 
         // then draw the imGui stuff over it
         ImGui_ImplOpenGL3_RenderDrawData(ImGui::GetDrawData());

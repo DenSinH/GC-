@@ -1,13 +1,16 @@
 cmake_minimum_required(VERSION 3.17)
 project(GC_ LANGUAGES CXX C)
 
+include(CheckIPOSupported)
+check_ipo_supported(RESULT ipo_supported OUTPUT ipo_error)
+
 set(CMAKE_C_STANDARD 11)
 
 set(CMAKE_MODULE_PATH ${PROJECT_SOURCE_DIR}/cmake)
 
 set(CMAKE_CXX_FLAGS_RELEASE "-O3")
 set(CMAKE_C_FLAGS_RELEASE "-Ofast")
-# add_compile_options(-Wall $<$<CONFIG:_DEBUG>:-fsanitize=address>)
+add_compile_options($<$<CONFIG:DEBUG>:-Wall>)
 add_compile_options(
         -Wno-gnu-binary-literal
         -Wno-visibility
@@ -18,7 +21,6 @@ add_compile_definitions(
         $<$<CONFIG:RELEASE>:NDEBUG>
         $<$<CONFIG:RELEASE>:BOOST_DISABLE_ASSERTS>
 )
-# add_link_options($<$<CONFIG:_DEBUG>:-fsanitize=address>)
 
 add_executable(GC_
         main.c
@@ -32,11 +34,20 @@ add_executable(GC_
         include/sleeping.h
 )
 
+# add link time optimizations for extra speed
+if( ipo_supported )
+    message(STATUS "IPO / LTO enabled when compiled in release mode")
+    if (CMAKE_BUILD_TYPE EQUAL "RELEASE")
+        set_property(TARGET GC_ PROPERTY INTERPROCEDURAL_OPTIMIZATION TRUE)
+    endif (CMAKE_BUILD_TYPE EQUAL "RELEASE")
+else()
+    message(STATUS "IPO / LTO not supported: <${ipo_error}>")
+endif()
+
 add_subdirectory(src/Core)
 add_subdirectory(src/Frontend)
 add_subdirectory(src/Loader)
 
-# for logging / stuff I want to use in all files
 include_directories(include
         $<TARGET_PROPERTY:Core,INCLUDE_DIRECTORIES>
         $<TARGET_PROPERTY:Frontend,INCLUDE_DIRECTORIES>

@@ -19,7 +19,7 @@ add_library(
         Registers/SPR.c
         Registers/TBR.h
         gekko_instruction.h
-)
+        interrupts.c interrupts.h)
 
 set_target_properties(PPC PROPERTIES LINKER_LANGUAGE C)
 

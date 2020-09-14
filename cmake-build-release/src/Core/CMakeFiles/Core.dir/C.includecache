@@ -308,6 +308,16 @@ D:/CProjects/GC-/src/Core/PPC/Registers/FPSCR.h
 default.h
 D:/CProjects/GC-/src/Core/PPC/Registers/default.h
 
+D:/CProjects/GC-/src/Core/Scheduler/scheduler.c
+scheduler.h
+D:/CProjects/GC-/src/Core/Scheduler/scheduler.h
+log.h
+D:/CProjects/GC-/src/Core/Scheduler/log.h
+
+D:/CProjects/GC-/src/Core/Scheduler/scheduler.h
+default.h
+D:/CProjects/GC-/src/Core/Scheduler/default.h
+
 D:/CProjects/GC-/src/Core/include/float_utils.c
 float_utils.h
 D:/CProjects/GC-/src/Core/include/float_utils.h

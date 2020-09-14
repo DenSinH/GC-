@@ -1,4 +1,5 @@
 "D:\CLion\CLion 2020.2\bin\cmake\win\bin\cmake.exe" -DCMAKE_BUILD_TYPE=Release "-DCMAKE_C_COMPILER=C:/Program Files (x86)/Microsoft Visual Studio/2019/Community/VC/Tools/Llvm/bin/clang-cl.exe" "-DCMAKE_CXX_COMPILER=C:/Program Files (x86)/Microsoft Visual Studio/2019/Community/VC/Tools/Llvm/bin/clang-cl.exe" -DCMAKE_TOOLCHAIN_FILE=D:\vcpkg\vcpkg\scripts\buildsystems\vcpkg.cmake -DCMAKE_C_FLAGS=-m32 -DCMAKE_CXX_FLAGS=-m32 -G "CodeBlocks - NMake Makefiles" D:\CProjects\GC-
+-- IPO / LTO enabled when compiled in release mode
 -- Configuring done
 -- Generating done
 -- Build files have been written to: D:/CProjects/GC-/cmake-build-release

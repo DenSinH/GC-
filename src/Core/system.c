@@ -45,6 +45,10 @@ void run_system(s_GameCube* system) {
             log_fatal("Jumped to invalid address: %08x", system->cpu.PC);
         }
 
+        if (should_do_events(&system->scheduler, system->cpu.TBR.raw)) {
+            do_events(&system->scheduler, system->cpu.TBR.raw);
+        }
+
 #if defined(DO_BREAKPOINTS) || defined(DO_DEBUGGER)
         if (check_breakpoints(&system->breakpoints, system->cpu.PC)) {
             dump_Gekko(&system->cpu);

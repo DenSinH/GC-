@@ -172,6 +172,7 @@ static void init() {
     add_register_data("WPAR", &global_system->cpu.WPAR, 4, Gekko_tab);
 
     add_register_data("DEC", &global_system->cpu.DEC, 4, Gekko_tab);
+    add_register_data("TBR", &global_system->cpu.TBR, 4, Gekko_tab);  // technically not enough bits, but eh
     add_register_data("SRR0", &global_system->cpu.SRR0, 4, Gekko_tab);
     add_register_data("SRR1", &global_system->cpu.SRR1, 4, Gekko_tab);
 

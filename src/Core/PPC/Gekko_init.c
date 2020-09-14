@@ -4,6 +4,7 @@
 #include "instructions.h"
 #include "Registers/SPR.h"
 
+
 void init_Gekko(s_Gekko* cpu) {
     cpu->IMMU.memory_ptr = cpu->DMMU.memory_ptr = cpu->system->memory;
     cpu->IMMU.system_ptr = cpu->DMMU.system_ptr = cpu->system;

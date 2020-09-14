@@ -75,15 +75,25 @@ typedef enum {
 } e_SPR;
 
 #define SPR_SIZE_BYTES 4
-static inline void SET_SPR(s_Gekko* cpu, e_SPR SPR, const u32* value) {
-    u32 written = *value & cpu->SPR_write_mask[SPR];
-    memcpy((void*)cpu->SPR[SPR], (void*)&written, SPR_SIZE_BYTES);
+static inline void SET_SPR(struct s_Gekko* cpu, e_SPR SPR, const u32* value) {
+    if (!cpu->SPR_write_fn[SPR]) {
+        u32 written = *value & cpu->SPR_write_mask[SPR];
+        memcpy((void*)cpu->SPR[SPR], (void*)&written, SPR_SIZE_BYTES);
+    }
+    else {
+        cpu->SPR_write_fn[SPR](cpu, *value);
+    }
 }
 
-static inline void GET_SPR(s_Gekko* cpu, e_SPR SPR, u32* target) {
-    memcpy((void*)target, (void*)cpu->SPR[SPR], SPR_SIZE_BYTES);
+static inline void GET_SPR(struct s_Gekko* cpu, e_SPR SPR, u32* target) {
+    if (!cpu->SPR_read_fn[SPR]) {
+        memcpy((void*)target, (void*)cpu->SPR[SPR], SPR_SIZE_BYTES);
+    }
+    else {
+        *target = cpu->SPR_read_fn[SPR](cpu);
+    }
 }
 
-void init_SPRs(s_Gekko* cpu);
+void init_SPRs(struct s_Gekko* cpu);
 
 #endif //GC__SPR_H
