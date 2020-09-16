@@ -3,6 +3,7 @@
 #include "../system.h"
 #include "instructions.h"
 #include "Registers/SPR.h"
+#include "interrupts.h"
 
 
 void init_Gekko(s_Gekko* cpu) {
@@ -10,6 +11,11 @@ void init_Gekko(s_Gekko* cpu) {
     cpu->IMMU.system_ptr = cpu->DMMU.system_ptr = cpu->system;
     cpu->IMMU.SR_ptr = cpu->DMMU.SR_ptr = cpu->SR;
     cpu->IMMU.TBR_ptr = cpu->DMMU.TBR_ptr = &cpu->TBR;
+
+    cpu->poll_intr_event = (s_event) {
+        .caller = cpu,
+        .callback = handle_interrupts
+    };
 
     init_SPRs(cpu);
     build_instr_table(cpu);

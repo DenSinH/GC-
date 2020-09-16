@@ -1,15 +1,6 @@
 #ifndef GC__CORE_UTILS_H
 #define GC__CORE_UTILS_H
 
-static void memcpy_rev(void* dest, void* src, size_t size) {
-    char *d = dest;
-    const char *s = src + size - 1;
-
-    while (size--) {
-        *d++ = *s--;
-    }
-}
-
 #define MASK_24MB(_address) (((_address) & 0x01000000) | ((_address) & 0x7fffff))
 
 // todo: builtins/intrinsics

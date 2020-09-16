@@ -20,8 +20,8 @@ required settings:
  - [x] addic
  - [x] addic.
  - [x] addis
- - [ ] addmex
- - [ ] addzex
+ - [x] addmex
+ - [x] addzex
  - [x] divwx
  - [x] divwux
  - [ ] mulhwx

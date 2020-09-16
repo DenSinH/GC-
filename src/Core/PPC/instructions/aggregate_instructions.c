@@ -105,6 +105,9 @@ GEKKO_INSTR(instr_011111) {
         case ADDE_OPCODE_EXTENDED:
             adde(cpu, instruction);
             return;
+        case ADDME_OPCODE_EXTENDED:
+            addme(cpu, instruction);
+            return;
         case ADDZE_OPCODE_EXTENDED:
             addze(cpu, instruction);
             return;

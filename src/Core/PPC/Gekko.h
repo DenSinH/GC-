@@ -64,7 +64,9 @@ typedef struct s_Gekko {
                     //                     in here to calculate the right value on read)
     s_TBR TBR;      // Time base register
 
+    u32 interrupts;
     s_event DEC_intr_event;
+    s_event poll_intr_event;
 
     s_GQR GQR[8];
     u32 HID[2];     // hardware dependent Registers (todo: stubbed)

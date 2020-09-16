@@ -87,6 +87,7 @@ void remove_event(s_scheduler* scheduler, s_event* event) {
     if (index != (size_t)-1) {
         // event was found
         log_sched("Remove event (time = %lld) at %d", event->time, index);
+        event->active = false;
         swap(scheduler->events, index, --scheduler->count);
 
         if (scheduler->events[index]->time < scheduler->events[PARENT(index)]->time) {
@@ -107,6 +108,7 @@ void reschedule_event(s_scheduler* scheduler, s_event* event, u64 new_time) {
     // hard reschedule (probably faster if the event changed a lot)
     remove_event(scheduler, event);
     event->time = new_time;
+    event->active = true;
     add_event(scheduler, event);
 }
 
@@ -127,7 +129,10 @@ void change_event(s_scheduler* scheduler, s_event* event, u64 new_time) {
         }
     }
     else {
-        log_sched("could not find changed event (time %lld)", event->time);
+        log_warn("could not find changed event (time %lld)", event->time);
+        event->time = new_time;
+        add_event(scheduler, event);
+        event->active = true;
     }
 }
 
@@ -141,7 +146,10 @@ void delay_event_by(s_scheduler* scheduler, s_event* event, uint64_t dt) {
         trickle_down(scheduler, index);
     }
     else {
-        log_sched("could not find delayed event (time %lld)", event->time);
+        log_warn("could not find delayed event (time %lld)", event->time);
+        event->time += dt;
+        add_event(scheduler, event);
+        event->active = true;
     }
 }
 
@@ -154,13 +162,17 @@ void hasten_event_by(s_scheduler* scheduler, s_event* event, u64 dt) {
         trickle_up(scheduler, index);
     }
     else {
-        log_sched("could not find hastened event (time %lld)", event->time);
+        log_warn("could not find hastened event (time %lld)", event->time);
+        event->time -= dt;
+        add_event(scheduler, event);
+        event->active = true;
     }
 }
 
 void do_events(s_scheduler* scheduler, uint64_t time) {
     s_event* first = scheduler->events[ROOT];
     while (scheduler->count > 0 && first->time < time) {
+        first->active = false;
         first->callback(first->caller, first);
 
         scheduler->events[ROOT] = scheduler->events[--scheduler->count];

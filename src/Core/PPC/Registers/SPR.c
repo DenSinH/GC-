@@ -8,7 +8,6 @@ SPR_READ_FN(SPR_read_DEC) {
 }
 
 SPR_WRITE_FN(SPR_write_DEC) {
-    log_cpu("Wrote DEC: %08x at PC = %08x", value, cpu->PC);
     // we always keep the DEC event in the scheduler
     cpu->DEC = cpu->TBR.raw + (value << 3);   // 1 TBR tick is 8 clock cycles
     change_event(&cpu->system->scheduler, &cpu->DEC_intr_event, cpu->DEC);

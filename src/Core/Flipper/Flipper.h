@@ -2,11 +2,41 @@
 #define GC__FLIPPER_H
 
 #include "default.h"
+#include "flags.h"
 
 #include <stdbool.h>
 
-#define FLIPPER_SCREEN_WIDTH 720
+#define FLIPPER_SCREEN_WIDTH 640
 #define FLIPPER_SCREEN_HEIGHT 480
+
+#if SCREEN_TYPE == SCREEN_PAL
+
+/*
+ * PAL defines the horizontal active area as 52us of the 64us line.
+ * */
+const static size_t LINES_PER_FRAME = 625;
+const static size_t DOTS_PER_LINE = 64 * FLIPPER_SCREEN_WIDTH / 52;
+
+#elif SCREEN_TYPE == SCREEN_NTSC
+/*
+ * NTSC defines the horizontal active area very vaguely
+ * The total length is 63.555555.. us
+ * a lot of sources give active areas of around 52.655555 us
+ * */
+
+const static size_t LINES_PER_FRAME = 525;
+const static size_t DOTS_PER_LINE = 63.5555555 * FLIPPER_SCREEN_WIDTH / 52.6555555;
+
+#else
+#error Incorrect screen type selected in flags.h
+#endif
+
+/*
+ * The math:
+ * CPU runs at 486 MHz, so that's 486M / (60fps * FLIPPER_SCREEN_WIDTH * FLIPPER_SCREEN_WIDTH) = 23.4 cycles per pixel
+ *
+ * */
+#define CYCLES_PER_PIXEL 23
 
 #define FLIPPER_QUAD_INDEX_ARRAY_SIZE 0x8000
 

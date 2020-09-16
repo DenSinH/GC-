@@ -56,5 +56,21 @@ static inline u32 ctlz(u32 x)
 #endif
 }
 
+static inline u32 cttz(u32 x)
+{
+#if __has_builtin(__builtin_ctz)
+    return x ? __builtin_ctz(x) : 32;
+#else
+    // todo: binary search
+    u8 n;
+    for (n = 0; n < 32; n++) {
+        if (x & (1 << n)) {
+            break;
+        }
+    }
+    return n;
+#endif
+}
+
 
 #endif //GC__HELPERS_H

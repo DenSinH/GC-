@@ -9,6 +9,7 @@
 
 // todo: string field in event to view top event name in debugger?
 typedef struct s_event {
+    bool active;   // signifies if event is in the scheduler or not
     SCHEDULER_EVENT((*callback));
     void* caller;
     u64 time;

@@ -86,6 +86,25 @@ INLINE_GEKKO_INSTR(addze) {
     cpu->GPR[instruction.general_DAB.D] = result;
 }
 
+INLINE_GEKKO_INSTR(addme) {
+    GEKKO_INSTR_HEADER
+    log_cpu_verbose("addme %08x", instruction.raw);
+
+    u32 carry = cpu->XER.CA;
+    cpu->XER.CA = ADD_CARRY(cpu->GPR[instruction.general_DAB.A], carry - 1);
+    u32 result = cpu->GPR[instruction.general_DAB.A] + carry + 0xffffffff;
+
+    if (instruction.general_DAB.OE) {
+        UPDATE_XER_OV(cpu->XER, ADD_OVERFLOW32(cpu->GPR[instruction.general_DAB.A], 0xffffffff, result));
+    }
+
+    if (instruction.general_DAB.Rc) {
+        UPDATE_CR0_RESULT32(cpu, result);
+    }
+
+    cpu->GPR[instruction.general_DAB.D] = result;
+}
+
 GEKKO_INSTR(addis) {
     GEKKO_INSTR_HEADER
     log_cpu_verbose("addis %08x", instruction.raw);

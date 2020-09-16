@@ -1,6 +1,7 @@
 #include "instructions.h"
 
 #include "../Registers/SPR.h"
+#include "../system.h"
 
 #include "flags.h"
 
@@ -17,8 +18,11 @@ INLINE_GEKKO_INSTR(mtmsr) {
     ASSERT_SUPERVISOR
 
     log_cpu_verbose("mtmsr %08x", instruction.raw);
-    // todo: state change effective immediately?
     cpu->MSR.raw = cpu->GPR[instruction.general_SAB.S];
+
+    if (cpu->MSR.EE) {
+        start_interrupt_poll(cpu);
+    }
 }
 
 INLINE_GEKKO_INSTR(mfspr) {
