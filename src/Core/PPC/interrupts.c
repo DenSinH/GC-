@@ -8,6 +8,17 @@
 
 #include <stdbool.h>
 
+static inline void handle_interrupt(s_Gekko* cpu, u32 target_address) {
+    cpu->SRR0 = cpu->PC;    // PC is 4 ahead already
+    cpu->SRR1 = cpu->MSR.raw & INTERRUPT_SRR1_MASK;
+
+    // from Dolphin:
+    cpu->MSR.LE = cpu->MSR.ILE;
+    cpu->MSR.raw &= ~0x04EF36;
+
+    cpu->PC = target_address;
+}
+
 static inline bool any_enabled(u32 interrupts, bool MSR_EE) {
     // check if any interrupts are enabled (either set, or MSR.EE set and interrupt is set)
     return (interrupts & INTERNAL_INTERRUPTS) || (MSR_EE && (interrupts & EXTERNAL_INTERRUPTS));
@@ -15,8 +26,10 @@ static inline bool any_enabled(u32 interrupts, bool MSR_EE) {
 
 void start_interrupt_poll(s_Gekko* cpu){
     // only start polling if there are any interrupts
+    log_cpu("Request to start interrupt poll");
     if (!cpu->poll_intr_event.active && any_enabled(cpu->interrupts, cpu->MSR.EE)) {
         // start polling for interrupts again
+        log_cpu("Request acknowledged");
         cpu->poll_intr_event.time = cpu->TBR.raw + 1;
         add_event(&cpu->system->scheduler, &cpu->poll_intr_event);
     }
@@ -29,7 +42,7 @@ SCHEDULER_EVENT(DEC_intr) {
 
     if (cpu->MSR.EE) {
         // handle immediately
-        do_interrupt(cpu, 0x00000900);
+        handle_interrupt(cpu, 0x00000900);
     }
     else {
         // have it be handled by the interrupt polling event
@@ -52,8 +65,12 @@ SCHEDULER_EVENT(handle_interrupts) {
         if (cpu->MSR.EE) {
             // todo: other external interrupts
             if (cpu->interrupts & interrupt_DEC) {
-                do_interrupt(cpu, 0x00000900);
+                handle_interrupt(cpu, 0x00000900);
                 cpu->interrupts &= ~interrupt_DEC;
+            }
+            else if (cpu->interrupts & interrupt_PE_DONE) {
+                handle_interrupt(cpu, 0x00000500);
+                cpu->interrupts &= ~interrupt_PE_DONE;
             }
         }
 

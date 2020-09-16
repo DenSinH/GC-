@@ -50,11 +50,13 @@ src/Core/CMakeFiles/Core.dir/system.c.obj
  ../src/Core/PPC/Registers/WPAR.h
  ../src/Core/PPC/Registers/XER.h
  ../src/Core/PPC/gekko_instruction.h
+ ../src/Core/Scheduler/scheduler.h
  ../src/Core/include/core_utils.h
  ../src/Core/include/float_utils.h
  ../src/Core/include/hwreg_utils.h
  D:/CProjects/GC-/src/Core/Breakpoints/breakpoints.h
  D:/CProjects/GC-/src/Core/Flipper/Flipper.h
  D:/CProjects/GC-/src/Core/PPC/Gekko.h
+ D:/CProjects/GC-/src/Core/Scheduler/scheduler.h
  D:/CProjects/GC-/src/Core/system.c
  D:/CProjects/GC-/src/Core/system.h

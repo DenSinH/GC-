@@ -49,12 +49,14 @@ src\Core\CMakeFiles\Core.dir\system.c.obj: ..\src\Core\PPC\Registers\TBR.h
 src\Core\CMakeFiles\Core.dir\system.c.obj: ..\src\Core\PPC\Registers\WPAR.h
 src\Core\CMakeFiles\Core.dir\system.c.obj: ..\src\Core\PPC\Registers\XER.h
 src\Core\CMakeFiles\Core.dir\system.c.obj: ..\src\Core\PPC\gekko_instruction.h
+src\Core\CMakeFiles\Core.dir\system.c.obj: ..\src\Core\Scheduler\scheduler.h
 src\Core\CMakeFiles\Core.dir\system.c.obj: ..\src\Core\include\core_utils.h
 src\Core\CMakeFiles\Core.dir\system.c.obj: ..\src\Core\include\float_utils.h
 src\Core\CMakeFiles\Core.dir\system.c.obj: ..\src\Core\include\hwreg_utils.h
 src\Core\CMakeFiles\Core.dir\system.c.obj: ..\src\Core\Breakpoints\breakpoints.h
 src\Core\CMakeFiles\Core.dir\system.c.obj: ..\src\Core\Flipper\Flipper.h
 src\Core\CMakeFiles\Core.dir\system.c.obj: ..\src\Core\PPC\Gekko.h
+src\Core\CMakeFiles\Core.dir\system.c.obj: ..\src\Core\Scheduler\scheduler.h
 src\Core\CMakeFiles\Core.dir\system.c.obj: ..\src\Core\system.c
 src\Core\CMakeFiles\Core.dir\system.c.obj: ..\src\Core\system.h
 

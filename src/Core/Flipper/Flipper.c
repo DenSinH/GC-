@@ -60,7 +60,7 @@ static void debug_program_init(s_Flipper* flipper, unsigned int program) {
 
 static void init_framebuffer(s_Flipper* flipper) {
     // create framebuffer for flipper
-    for (int i = 0; i < 1; i++) {
+    for (int i = 1; i >= 0; i--) {
         glGenFramebuffers(1, &flipper->framebuffer[i]);
         glBindFramebuffer(GL_FRAMEBUFFER, flipper->framebuffer[i]);
 
@@ -68,21 +68,21 @@ static void init_framebuffer(s_Flipper* flipper) {
         // create a texture to render to and fill it with 0 (also set filtering to low)
         glGenTextures(1, &rendered_texture);
         glBindTexture(GL_TEXTURE_2D, rendered_texture);
-        glTexImage2D(GL_TEXTURE_2D, 0, GL_RGB, FLIPPER_SCREEN_WIDTH, FLIPPER_SCREEN_HEIGHT, 0, GL_RGB, GL_UNSIGNED_BYTE, 0);
+        glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA, GAMECUBE_SCREEN_WIDTH, GAMECUBE_SCREEN_HEIGHT, 0, GL_RGBA, GL_UNSIGNED_BYTE, 0);
         glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_NEAREST);
         glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST);
 
         // add depth buffer
         glGenRenderbuffers(1, &depth_buffer);
         glBindRenderbuffer(GL_RENDERBUFFER, depth_buffer);
-        glRenderbufferStorage(GL_RENDERBUFFER, GL_DEPTH_COMPONENT, FLIPPER_SCREEN_WIDTH, FLIPPER_SCREEN_HEIGHT);
+        glRenderbufferStorage(GL_RENDERBUFFER, GL_DEPTH_COMPONENT, GAMECUBE_SCREEN_WIDTH, GAMECUBE_SCREEN_HEIGHT);
         glFramebufferRenderbuffer(GL_FRAMEBUFFER, GL_DEPTH_ATTACHMENT, GL_RENDERBUFFER, depth_buffer);
 
         glFramebufferTexture(GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT0, rendered_texture, 0);
         GLenum draw_buffers[1] = { GL_COLOR_ATTACHMENT0 };
         glDrawBuffers(1, draw_buffers);
 
-        if(glCheckFramebufferStatus(GL_FRAMEBUFFER) != GL_FRAMEBUFFER_COMPLETE) {
+        if (glCheckFramebufferStatus(GL_FRAMEBUFFER) != GL_FRAMEBUFFER_COMPLETE) {
             log_fatal("Error initializing framebuffer");
         }
     }
@@ -165,7 +165,15 @@ void video_init_Flipper(s_Flipper* flipper) {
     glEnable(GL_DEPTH_TEST);
 }
 
-void clear_Flipper_buffer(s_Flipper* flipper) {
+static inline void wait_for_fence(s_Flipper* flipper) {
+    // wait until either a fail (GL_WAIT_FAILED) or a successful draw command (GL_ALREADY_SIGNALED, GL_TIMEOUT_EXPIRED)
+    // first do a non-blocking check to see if we are already done
+    if (glClientWaitSync(flipper->fence, GL_SYNC_FLUSH_COMMANDS_BIT, 0) != GL_ALREADY_SIGNALED) {
+        while (glClientWaitSync(flipper->fence, GL_SYNC_FLUSH_COMMANDS_BIT, FENCE_SYNC_TIMEOUT_NS) == GL_TIMEOUT_EXPIRED) {}
+    }
+}
+
+void Flipper_prepare_draw(s_Flipper* flipper) {
     // clear (emulator) framebuffer to the backdrop color
     u16 AR = (u16)flipper->CP->internal_BP_regs[BP_reg_int_PE_copy_clear_AR];
     u16 GB = (u16)flipper->CP->internal_BP_regs[BP_reg_int_PE_copy_clear_GB];
@@ -239,50 +247,85 @@ void draw_Flipper(s_Flipper* flipper, s_draw_command_small* command) {
 bool first = true;
 struct s_framebuffer render_Flipper(s_Flipper* flipper){
 
-    // bind our framebuffer
-    glBindTexture(GL_TEXTURE_2D, 0);
-    glEnable(GL_TEXTURE_2D);
-    glBindFramebuffer(GL_FRAMEBUFFER, flipper->framebuffer[flipper->current_framebuffer]);
-    glViewport(0, 0, FLIPPER_SCREEN_WIDTH, FLIPPER_SCREEN_HEIGHT);
-
     if (!flipper->CP->draw_command_available[flipper->draw_command_index]) {
-        clear_Flipper_buffer(flipper);
+        // bind our framebuffer
+        glBindTexture(GL_TEXTURE_2D, 0);
+        glEnable(GL_TEXTURE_2D);
+        glBindFramebuffer(GL_FRAMEBUFFER, flipper->framebuffer[flipper->current_framebuffer]);
+        glViewport(0, 0, GAMECUBE_SCREEN_WIDTH, GAMECUBE_SCREEN_HEIGHT);
+
+        u32 start_draw_index = flipper->draw_command_index;
+        Flipper_prepare_draw(flipper);
 
         while (!flipper->CP->draw_command_available[flipper->draw_command_index]) {
             log_flipper("Processing draw command %02x @%d",
                         flipper->CP->draw_command_queue[flipper->draw_command_index].command,
                         flipper->draw_command_index
             );
-            // wait until either a fail (GL_WAIT_FAILED) or a successful draw command (GL_ALREADY_SIGNALED, GL_TIMEOUT_EXPIRED)
-            // first do a non-blocking check to see if we are already done
-            if (glClientWaitSync(flipper->fence, GL_SYNC_FLUSH_COMMANDS_BIT, 0) != GL_ALREADY_SIGNALED) {
-                while (glClientWaitSync(flipper->fence, GL_SYNC_FLUSH_COMMANDS_BIT, FENCE_SYNC_TIMEOUT_NS) == GL_TIMEOUT_EXPIRED) {}
-            }
+
+            wait_for_fence(flipper);
 
             // draw and set draw command slot to available in CP
-            draw_Flipper(flipper, &flipper->CP->draw_command_queue[flipper->draw_command_index]);
-            flipper->CP->draw_command_available[flipper->draw_command_index++] = true;
+            draw_Flipper(flipper, &flipper->CP->draw_command_queue[flipper->draw_command_index++]);
             if (flipper->draw_command_index == MAX_DRAW_COMMANDS) {
                 flipper->draw_command_index = 0;
             }
+
+            // wait for fence next time to prevent data from getting overwritten
             flipper->fence = glFenceSync(GL_SYNC_GPU_COMMANDS_COMPLETE, 0);
+
+            /*
+             * Funnily enough, the way I handle my draw commands is actually pretty similar to the way the GameCube
+             * handles it: I send draw commands, put them in a buffer to wait to be drawn by the GPU,
+             * then I prevent it from passing the CP (similar to watermarks).
+             *
+             * I then explicitly wait for the GPU to finish the current commands before proceeding (this is actually
+             * different from the GameCube probably, where it is handled in interrupts, I don't know how yet).
+             * */
+
+            // got PE_DONE command
+            // todo: stubbed for now
+            if (true || flipper->CP->draw_command_done[flipper->draw_command_index]) {
+                wait_for_fence(flipper);  // wait for current drawing commands to finish before continuing
+                flipper->CP->draw_command_done[flipper->draw_command_index] = false;  // reset it so we don't stop unnecessarily
+                flipper->current_framebuffer ^= true;  // frameswap for the emulator
+                log_flipper("Got draw done command");
+                break;
+            }
+
+            else if (flipper->draw_command_index == flipper->CP->draw_command_index) {
+                // caught up with CP, no frameswap or
+                break;
+            }
         }
 
-        flipper->current_framebuffer ^= true;  // frameswap for the emulator
-    }
+        // mark all draw commands as available again
+        u32 i = start_draw_index;
+        // use do/while loop so that we can let the flipper draw_command_index catch up with the CP draw_command_index
+        do {
+            flipper->CP->draw_command_available[i++] = true;
 
-    unsigned error = glGetError();
-    if (error && first) {
-        first = false;
-        printf("Error: %08x\n", error);
-    }
+            if (i == MAX_DRAW_COMMANDS) {
+                i = 0;
+            }
+        } while (i != flipper->draw_command_index);
 
-    glBindFramebuffer(GL_FRAMEBUFFER, 0);
+        log_flipper("Done drawing commands");
+
+        unsigned error = glGetError();
+        if (error && first) {
+            first = false;
+            printf("Error: %08x\n", error);
+        }
+
+        // unbind framebuffer
+        glBindFramebuffer(GL_FRAMEBUFFER, 0);
+    }
 
     // return the framebuffer that is "ready"
     return (s_framebuffer) {
         .id = flipper->framebuffer[!flipper->current_framebuffer],
-        .width = FLIPPER_SCREEN_WIDTH,
-        .height = FLIPPER_SCREEN_HEIGHT
+        .width = GAMECUBE_SCREEN_WIDTH,
+        .height = GAMECUBE_SCREEN_HEIGHT
     };
 }

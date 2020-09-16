@@ -6,8 +6,10 @@
 
 #include <stdbool.h>
 
-#define FLIPPER_SCREEN_WIDTH 640
-#define FLIPPER_SCREEN_HEIGHT 480
+#define GAMECUBE_SCREEN_WIDTH 640
+#define GAMECUBE_SCREEN_HEIGHT 480
+#define FLIPPER_FRAMEBUFFER_WIDTH 1280
+#define FLIPPER_FRAMEBUFFER_HEIGHT 720
 
 #if SCREEN_TYPE == SCREEN_PAL
 
@@ -15,7 +17,7 @@
  * PAL defines the horizontal active area as 52us of the 64us line.
  * */
 const static size_t LINES_PER_FRAME = 625;
-const static size_t DOTS_PER_LINE = 64 * FLIPPER_SCREEN_WIDTH / 52;
+const static size_t DOTS_PER_LINE = 64 * GAMECUBE_SCREEN_WIDTH / 52;
 
 #elif SCREEN_TYPE == SCREEN_NTSC
 /*
@@ -25,7 +27,7 @@ const static size_t DOTS_PER_LINE = 64 * FLIPPER_SCREEN_WIDTH / 52;
  * */
 
 const static size_t LINES_PER_FRAME = 525;
-const static size_t DOTS_PER_LINE = 63.5555555 * FLIPPER_SCREEN_WIDTH / 52.6555555;
+const static size_t DOTS_PER_LINE = 63.5555555 * GAMECUBE_SCREEN_WIDTH / 52.6555555;
 
 #else
 #error Incorrect screen type selected in flags.h
@@ -33,7 +35,7 @@ const static size_t DOTS_PER_LINE = 63.5555555 * FLIPPER_SCREEN_WIDTH / 52.65555
 
 /*
  * The math:
- * CPU runs at 486 MHz, so that's 486M / (60fps * FLIPPER_SCREEN_WIDTH * FLIPPER_SCREEN_WIDTH) = 23.4 cycles per pixel
+ * CPU runs at 486 MHz, so that's 486M / (60fps * GAMECUBE_SCREEN_WIDTH * GAMECUBE_SCREEN_WIDTH) = 23.4 cycles per pixel
  *
  * */
 #define CYCLES_PER_PIXEL 23
@@ -50,6 +52,7 @@ typedef struct s_Flipper {
     bool current_framebuffer;
 
     u32 draw_command_index;
+
     // todo: UBO for XF mem (faster)
     unsigned int VAO, EBO, command_SSBO, XF_SSBO;  // VBO will just hold the index, the actual vector is calculated in the shader
     void* fence;

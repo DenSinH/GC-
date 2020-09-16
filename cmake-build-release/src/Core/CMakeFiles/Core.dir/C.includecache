@@ -89,6 +89,8 @@ default.h
 ../src/Core/HWregs/default.h
 hwreg_utils.h
 ../src/Core/HWregs/hwreg_utils.h
+core_utils.h
+../src/Core/HWregs/core_utils.h
 
 ../src/Core/HWregs/ProcessorInterface.h
 default.h
@@ -165,6 +167,8 @@ Registers/WPAR.h
 ../src/Core/PPC/Registers/WPAR.h
 gekko_instruction.h
 ../src/Core/PPC/gekko_instruction.h
+../Scheduler/scheduler.h
+../src/Core/Scheduler/scheduler.h
 default.h
 ../src/Core/PPC/default.h
 log.h
@@ -228,6 +232,12 @@ stdbool.h
 assert.h
 -
 
+../src/Core/Scheduler/scheduler.h
+default.h
+../src/Core/Scheduler/default.h
+stdbool.h
+-
+
 ../src/Core/include/core_utils.h
 
 ../src/Core/include/float_utils.h
@@ -250,12 +260,6 @@ flags.h
 assert.h
 -
 
-D:/CProjects/GC-/src/Core/Breakpoints/breakpoints.c
-breakpoints.h
-D:/CProjects/GC-/src/Core/Breakpoints/breakpoints.h
-log.h
-D:/CProjects/GC-/src/Core/Breakpoints/log.h
-
 D:/CProjects/GC-/src/Core/Breakpoints/breakpoints.h
 default.h
 D:/CProjects/GC-/src/Core/Breakpoints/default.h
@@ -265,6 +269,8 @@ stdbool.h
 D:/CProjects/GC-/src/Core/Flipper/Flipper.h
 default.h
 D:/CProjects/GC-/src/Core/Flipper/default.h
+flags.h
+D:/CProjects/GC-/src/Core/Flipper/flags.h
 stdbool.h
 -
 
@@ -297,6 +303,8 @@ Registers/WPAR.h
 D:/CProjects/GC-/src/Core/PPC/Registers/WPAR.h
 gekko_instruction.h
 D:/CProjects/GC-/src/Core/PPC/gekko_instruction.h
+../Scheduler/scheduler.h
+D:/CProjects/GC-/src/Core/Scheduler/scheduler.h
 default.h
 D:/CProjects/GC-/src/Core/PPC/default.h
 log.h
@@ -304,41 +312,9 @@ D:/CProjects/GC-/src/Core/PPC/log.h
 float_utils.h
 D:/CProjects/GC-/src/Core/PPC/float_utils.h
 
-D:/CProjects/GC-/src/Core/PPC/Registers/FPSCR.h
-default.h
-D:/CProjects/GC-/src/Core/PPC/Registers/default.h
-
-D:/CProjects/GC-/src/Core/Scheduler/scheduler.c
-scheduler.h
-D:/CProjects/GC-/src/Core/Scheduler/scheduler.h
-log.h
-D:/CProjects/GC-/src/Core/Scheduler/log.h
-
 D:/CProjects/GC-/src/Core/Scheduler/scheduler.h
 default.h
 D:/CProjects/GC-/src/Core/Scheduler/default.h
-
-D:/CProjects/GC-/src/Core/include/float_utils.c
-float_utils.h
-D:/CProjects/GC-/src/Core/include/float_utils.h
-log.h
-D:/CProjects/GC-/src/Core/include/log.h
-immintrin.h
--
-limits.h
--
-
-D:/CProjects/GC-/src/Core/include/float_utils.h
-flags.h
-D:/CProjects/GC-/src/Core/include/flags.h
-default.h
-D:/CProjects/GC-/src/Core/include/default.h
-../PPC/Registers/FPSCR.h
-D:/CProjects/GC-/src/Core/PPC/Registers/FPSCR.h
-math.h
--
-memory.h
--
 stdbool.h
 -
 
@@ -369,6 +345,8 @@ default.h
 D:/CProjects/GC-/src/Core/default.h
 flags.h
 D:/CProjects/GC-/src/Core/flags.h
+Scheduler/scheduler.h
+D:/CProjects/GC-/src/Core/Scheduler/scheduler.h
 Breakpoints/breakpoints.h
 D:/CProjects/GC-/src/Core/Breakpoints/breakpoints.h
 

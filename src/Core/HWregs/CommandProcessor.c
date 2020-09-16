@@ -1,7 +1,10 @@
 #include "CommandProcessor.h"
+#include "PixelEngine.h"
+
 #include "log.h"
 #include "flags.h"
 #include "helpers.h"
+#include "../PPC/interrupts.h"
 #include "../system.h"
 
 #include <limits.h>
@@ -138,7 +141,7 @@ static inline void load_XF_regs(s_CP* CP, u16 length, u16 base_addr, const u8* v
 }
 
 static inline void load_INDX(s_CP* CP, e_CP_cmd opcode, u16 index, u8 length, u16 base_addr) {
-    log_cp("Load %d XF indexed (%02x, index value %02x) starting at %04x", length, opcode, index, base_addr);
+    log_warn("Load %d XF indexed (%02x, index value %02x) starting at %04x", length, opcode, index, base_addr);
     // todo
 }
 
@@ -216,7 +219,7 @@ static inline void send_draw_command(s_CP* CP) {
 }
 
 static inline void call_DL(s_CP* CP, u32 list_addr, u32 list_size) {
-    log_cp("Call DL at %08x of size %08x", list_addr, list_size);
+    log_warn("Call DL at %08x of size %08x", list_addr, list_size);
     // we can basically just call the execute_buffer function but then on data in memory
 }
 
@@ -225,8 +228,26 @@ static inline void load_BP_reg(s_CP* CP, u32 value) {
     log_cp("Load BP reg: %08x", value);
 
     // RID is a byte, so it always fits into the range for the internal BP registers
-    CP->internal_BP_regs[value >> 24] = value;
+    u8 RID = value >> 24;
+    CP->internal_BP_regs[RID] = value;
 
+    if (RID == BP_reg_int_PE_DONE) {
+        // check if bit 2 is set (likely) and if the PE finish interrupt is masked by PE
+        if (CP->internal_BP_regs[BP_reg_int_PE_DONE] & 0x02 && GET_PE_REG(&CP->system->HW_regs.PE, PE_reg_interrupt_status) & 0x02) {
+            // frame done
+            SET_PE_REG(&CP->system->HW_regs.PE, PE_reg_token, (u16)value);
+            SET_PE_REG(&CP->system->HW_regs.PE, PE_reg_interrupt_status, GET_PE_REG(&CP->system->HW_regs.PE, PE_reg_interrupt_status) | 0x08);
+
+            CP->draw_command_done[CP->draw_command_index] = true;
+            log_cp("Set draw command %d to done", CP->draw_command_index);
+
+            // add interrupt cause to processor interface and call interrupt
+            if (CP->system->HW_regs.PI.INTMR & PI_intr_PE_DONE) {
+                ADD_PI_INTSR(&CP->system->HW_regs.PI, PI_intr_PE_DONE);
+                do_interrupt(&CP->system->cpu, interrupt_PE_DONE);
+            }
+        }
+    }
 }
 
 inline void feed_CP(s_CP* CP, u8 data) {
@@ -329,6 +350,7 @@ void execute_buffer(s_CP* CP, const u8* buffer_ptr, u8 buffer_size) {
                 while (!CP->draw_command_available[CP->draw_command_index]) {
                     // todo: better wait until draw commands finished
                 }
+                log_cp("Got draw command spot");
                 CP->current_draw_command.command = CP->command;
             }
         }

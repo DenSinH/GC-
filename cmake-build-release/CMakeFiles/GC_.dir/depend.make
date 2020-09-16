@@ -44,6 +44,7 @@ CMakeFiles\GC_.dir\main.c.obj: ..\src\Core\PPC\Registers\TBR.h
 CMakeFiles\GC_.dir\main.c.obj: ..\src\Core\PPC\Registers\WPAR.h
 CMakeFiles\GC_.dir\main.c.obj: ..\src\Core\PPC\Registers\XER.h
 CMakeFiles\GC_.dir\main.c.obj: ..\src\Core\PPC\gekko_instruction.h
+CMakeFiles\GC_.dir\main.c.obj: ..\src\Core\Scheduler\scheduler.h
 CMakeFiles\GC_.dir\main.c.obj: ..\src\Core\system.h
 CMakeFiles\GC_.dir\main.c.obj: ..\src\Frontend\interface.h
 

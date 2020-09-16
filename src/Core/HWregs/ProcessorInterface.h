@@ -15,7 +15,7 @@ typedef enum e_PI_interrupt {
     PI_intr_MI = 0x000000080,
     PI_intr_VI = 0x000000100,
     PI_intr_PE_TOKEN = 0x000000200,
-    PI_intr_PE_FINISH = 0x000000400,
+    PI_intr_PE_DONE = 0x000000400,
     PI_intr_CP = 0x000000800,
     PI_intr_DEBUG = 0x000001000,
     PI_intr_HSP = 0x000002000,
@@ -34,5 +34,10 @@ typedef struct s_PI {
 
 
 HW_REG_INIT_FUNCTION(PI);
+
+static void ADD_PI_INTSR(s_PI* PI, e_PI_interrupt interrupt) {
+    u32 INTSR = READ32(PI->regs, 0);
+    WRITE32(PI->regs, 0, INTSR | interrupt);
+}
 
 #endif //GC__PROCESSORINTERFACE_H

@@ -64,6 +64,7 @@ typedef enum e_CP_regs_internal {
 } e_CP_regs_internal;
 
 typedef enum e_BP_regs_internal {
+    BP_reg_int_PE_DONE          = 0x45,
     BP_reg_int_PE_copy_clear_AR = 0x4f,
     BP_reg_int_PE_copy_clear_GB = 0x50,
 } e_BP_regs_internal;
@@ -293,7 +294,9 @@ typedef struct s_CP {
     // todo: draw_command_mid, large
     u8 arg_size[21]; // sizes of individual (direct) arguments of current draw command
     s_draw_command_small draw_command_queue[MAX_DRAW_COMMANDS];
-    u32 draw_command_index;
+    volatile u32 draw_command_index;
+    volatile bool draw_command_done[MAX_DRAW_COMMANDS];  // signify if draw command index is an index where we have to wait
+                                                         // for the frame to draw, because of a PE_DONE command
     volatile bool draw_command_available[MAX_DRAW_COMMANDS];  // used as flags, set to false by CP, then to true by Flipper
 } s_CP;
 

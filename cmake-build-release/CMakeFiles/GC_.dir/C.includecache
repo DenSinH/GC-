@@ -58,12 +58,6 @@ flags.h
 assert.h
 -
 
-D:/CProjects/GC-/UIthread.c
-UIthread.h
-D:/CProjects/GC-/UIthread.h
-src/Frontend/interface.h
-D:/CProjects/GC-/src/Frontend/interface.h
-
 D:/CProjects/GC-/UIthread.h
 windows.h
 -
@@ -107,6 +101,8 @@ stdbool.h
 D:/CProjects/GC-/src/Core/Flipper/Flipper.h
 default.h
 D:/CProjects/GC-/src/Core/Flipper/default.h
+flags.h
+D:/CProjects/GC-/src/Core/Flipper/flags.h
 stdbool.h
 -
 
@@ -167,6 +163,8 @@ default.h
 D:/CProjects/GC-/src/Core/HWregs/default.h
 hwreg_utils.h
 D:/CProjects/GC-/src/Core/HWregs/hwreg_utils.h
+core_utils.h
+D:/CProjects/GC-/src/Core/HWregs/core_utils.h
 
 D:/CProjects/GC-/src/Core/HWregs/ProcessorInterface.h
 default.h
@@ -243,6 +241,8 @@ Registers/WPAR.h
 D:/CProjects/GC-/src/Core/PPC/Registers/WPAR.h
 gekko_instruction.h
 D:/CProjects/GC-/src/Core/PPC/gekko_instruction.h
+../Scheduler/scheduler.h
+D:/CProjects/GC-/src/Core/Scheduler/scheduler.h
 default.h
 D:/CProjects/GC-/src/Core/PPC/default.h
 log.h
@@ -306,6 +306,12 @@ stdbool.h
 assert.h
 -
 
+D:/CProjects/GC-/src/Core/Scheduler/scheduler.h
+default.h
+D:/CProjects/GC-/src/Core/Scheduler/default.h
+stdbool.h
+-
+
 D:/CProjects/GC-/src/Core/system.h
 PPC/Gekko.h
 D:/CProjects/GC-/src/Core/PPC/Gekko.h
@@ -315,6 +321,8 @@ default.h
 D:/CProjects/GC-/src/Core/default.h
 flags.h
 D:/CProjects/GC-/src/Core/flags.h
+Scheduler/scheduler.h
+D:/CProjects/GC-/src/Core/Scheduler/scheduler.h
 Breakpoints/breakpoints.h
 D:/CProjects/GC-/src/Core/Breakpoints/breakpoints.h
 
