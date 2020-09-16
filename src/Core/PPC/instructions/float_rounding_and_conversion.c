@@ -3,7 +3,7 @@
 
 INLINE_GEKKO_INSTR(fctiwz) {
     GEKKO_INSTR_HEADER
-    log_cpu("fctiwz %x", instruction.raw);
+    log_cpu_verbose("fctiwz %x", instruction.raw);
 
     s_float_result result = float_round_to_int(&cpu->FPSCR, cpu->FPR[instruction.general_DAB.B].PS0);
 
@@ -19,7 +19,7 @@ INLINE_GEKKO_INSTR(fctiwz) {
 
 INLINE_GEKKO_INSTR(frsp) {
     GEKKO_INSTR_HEADER
-    log_cpu("frsp %x", instruction.raw);
+    log_cpu_verbose("frsp %x", instruction.raw);
 
     s_float_result result = float_round_to_single(&cpu->FPSCR, cpu->FPR[instruction.general_DAB.B].PS0,
                                                RN_ROUND_TOWARD_ZERO);

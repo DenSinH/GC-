@@ -2,7 +2,7 @@
 
 GEKKO_INSTR(rlwinm) {
     GEKKO_INSTR_HEADER
-    log_cpu("rlwinm %08x", instruction.raw);
+    log_cpu_verbose("rlwinm %08x", instruction.raw);
 
     u32 r = ROTL32(cpu->GPR[instruction.rotate.S], instruction.rotate.SH);
     u32 m = MASK(instruction.rotate.MB, instruction.rotate.ME);
@@ -16,7 +16,7 @@ GEKKO_INSTR(rlwinm) {
 
 GEKKO_INSTR(rlwimi) {
     GEKKO_INSTR_HEADER
-    log_cpu("rlwimi %08x", instruction.raw);
+    log_cpu_verbose("rlwimi %08x", instruction.raw);
 
     u32 r = ROTL32(cpu->GPR[instruction.rotate.S], instruction.rotate.SH);
     u32 m = MASK(instruction.rotate.MB, instruction.rotate.ME);
@@ -30,7 +30,7 @@ GEKKO_INSTR(rlwimi) {
 
 INLINE_GEKKO_INSTR(slw) {
     GEKKO_INSTR_HEADER
-    log_cpu("slw %08x", instruction.raw);
+    log_cpu_verbose("slw %08x", instruction.raw);
 
     u8 n = cpu->GPR[instruction.general_SAB.B] & 0x1f;
     if (n > 31) {
@@ -47,7 +47,7 @@ INLINE_GEKKO_INSTR(slw) {
 
 INLINE_GEKKO_INSTR(srw) {
     GEKKO_INSTR_HEADER
-    log_cpu("srw %08x", instruction.raw);
+    log_cpu_verbose("srw %08x", instruction.raw);
 
     u8 n = cpu->GPR[instruction.general_SAB.B] & 0x1f;
     if (n > 31) {
@@ -64,7 +64,7 @@ INLINE_GEKKO_INSTR(srw) {
 
 INLINE_GEKKO_INSTR(sraw) {
     GEKKO_INSTR_HEADER
-    log_cpu("sraw %08x", instruction.raw);
+    log_cpu_verbose("sraw %08x", instruction.raw);
 
     u8 n = cpu->GPR[instruction.general_SAB.B] & 0x1f;
     if (n > 31) {
@@ -89,7 +89,7 @@ INLINE_GEKKO_INSTR(sraw) {
 
 INLINE_GEKKO_INSTR(srawi) {
     GEKKO_INSTR_HEADER
-    log_cpu("srawi %08x: RS %d, RA, %d, SH %d", instruction.raw, instruction.rotate.S, instruction.rotate.A, instruction.rotate.SH);
+    log_cpu_verbose("srawi %08x: RS %d, RA, %d, SH %d", instruction.raw, instruction.rotate.S, instruction.rotate.A, instruction.rotate.SH);
 
     u8 n = instruction.rotate.SH;
     if (n == 32) {

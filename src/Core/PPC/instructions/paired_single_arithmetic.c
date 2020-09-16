@@ -5,7 +5,7 @@
 INLINE_GEKKO_INSTR(ps_neg) {
     GEKKO_INSTR_HEADER
     ASSERT_PAIRED_SINGLE
-    log_cpu("ps_neg %x", instruction.raw);
+    log_cpu_verbose("ps_neg %x", instruction.raw);
 
     cpu->FPR[instruction.general_DAB.D].PS0.u = cpu->FPR[instruction.general_DAB.B].PS0.u ^ DOUBLE_SIGN;
     cpu->FPR[instruction.general_DAB.D].PS1.u = cpu->FPR[instruction.general_DAB.B].PS1.u ^ DOUBLE_SIGN;
@@ -19,7 +19,7 @@ INLINE_GEKKO_INSTR(ps_mul) {
     // similar to fmuls
     GEKKO_INSTR_HEADER
     ASSERT_PAIRED_SINGLE
-    log_cpu("ps_mul %x", instruction.raw);
+    log_cpu_verbose("ps_mul %x", instruction.raw);
 
     s_float_result result_ps0 = float_mul(
             &cpu->FPSCR,
@@ -47,7 +47,7 @@ INLINE_GEKKO_INSTR(ps_muls0) {
     // similar to ps_muls
     GEKKO_INSTR_HEADER
     ASSERT_PAIRED_SINGLE
-    log_cpu("ps_muls0 %x", instruction.raw);
+    log_cpu_verbose("ps_muls0 %x", instruction.raw);
 
     s_float_result result_ps0 = float_mul(
             &cpu->FPSCR,
@@ -75,7 +75,7 @@ INLINE_GEKKO_INSTR(ps_muls1) {
     // similar to ps_muls0
     GEKKO_INSTR_HEADER
     ASSERT_PAIRED_SINGLE
-    log_cpu("ps_muls1 %x", instruction.raw);
+    log_cpu_verbose("ps_muls1 %x", instruction.raw);
 
     s_float_result result_ps0 = float_mul(
             &cpu->FPSCR,
@@ -104,7 +104,7 @@ INLINE_GEKKO_INSTR(ps_madd) {
     // similar to fmadds
     GEKKO_INSTR_HEADER
     ASSERT_PAIRED_SINGLE
-    log_cpu("ps_madd %x", instruction.raw);
+    log_cpu_verbose("ps_madd %x", instruction.raw);
 
     s_float_result result_ps0 = float_madd(
             &cpu->FPSCR,
@@ -134,7 +134,7 @@ INLINE_GEKKO_INSTR(ps_madds0) {
     // similar to fmadds
     GEKKO_INSTR_HEADER
     ASSERT_PAIRED_SINGLE
-    log_cpu("ps_madds0 %x", instruction.raw);
+    log_cpu_verbose("ps_madds0 %x", instruction.raw);
 
     s_float_result result_ps0 = float_madd(
             &cpu->FPSCR,
@@ -164,7 +164,7 @@ INLINE_GEKKO_INSTR(ps_madds1) {
     // similar to fmadds
     GEKKO_INSTR_HEADER
     ASSERT_PAIRED_SINGLE
-    log_cpu("ps_madds1 %x", instruction.raw);
+    log_cpu_verbose("ps_madds1 %x", instruction.raw);
 
     s_float_result result_ps0 = float_madd(
             &cpu->FPSCR,
@@ -194,7 +194,7 @@ INLINE_GEKKO_INSTR(ps_msub) {
     // similar to ps_madd
     GEKKO_INSTR_HEADER
     ASSERT_PAIRED_SINGLE
-    log_cpu("ps_msub %x", instruction.raw);
+    log_cpu_verbose("ps_msub %x", instruction.raw);
 
     s_float_result result_ps0 = float_msub(
             &cpu->FPSCR,

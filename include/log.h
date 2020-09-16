@@ -15,6 +15,7 @@
 
     #define CONSOLE_BLUE() { SetConsoleTextAttribute(GetStdHandle(STD_OUTPUT_HANDLE), FOREGROUND_BLUE | FOREGROUND_INTENSITY); }
     #define CONSOLE_GREEN() { SetConsoleTextAttribute(GetStdHandle(STD_OUTPUT_HANDLE), FOREGROUND_GREEN | FOREGROUND_INTENSITY); }
+    #define CONSOLE_DARK_GREEN() { SetConsoleTextAttribute(GetStdHandle(STD_OUTPUT_HANDLE), FOREGROUND_GREEN); }
     #define CONSOLE_YELLOW() { SetConsoleTextAttribute(GetStdHandle(STD_OUTPUT_HANDLE), FOREGROUND_YELLOW); }
     #define CONSOLE_RED() { SetConsoleTextAttribute(GetStdHandle(STD_OUTPUT_HANDLE), FOREGROUND_RED); }
     #define CONSOLE_PINK() { SetConsoleTextAttribute(GetStdHandle(STD_OUTPUT_HANDLE), FOREGROUND_PINK); }
@@ -25,6 +26,7 @@
     // linux / macOS
     #define CONSOLE_BLUE() { fprintf(stdout, "\033[0;36m"); }
     #define CONSOLE_GREEN() { fprintf(stdout, "\033[0;32m"); }
+    #define CONSOLE_DARK_GREEN() { fprintf(stdout, "\033[1;32m"); }
     #define CONSOLE_YELLOW() { fprintf(stdout, "\033[0;33m"); }
     #define CONSOLE_RED() { fprintf(stderr, "\033[1;31m"); }
     #define CONSOLE_PINK() { fprintf(stderr, "\033[0;35m"); }
@@ -32,14 +34,24 @@
 
 #endif
 
-#if COMPONENT_FLAGS & COMPONENT_CPU
-    #define log_cpu(message, ...) {                        \
+#if COMPONENT_FLAGS & COMPONENT_CPU_VERBOSE
+    #define log_cpu_verbose(message, ...) {                        \
         CONSOLE_GREEN();                                \
+        fprintf(stdout, "[CPU (verbose)]: " message "\n",  ##__VA_ARGS__); \
+        CONSOLE_RESTORE();                             \
+    }
+#else
+    #define log_cpu_verbose(message, ...) { }
+#endif
+
+#if COMPONENT_FLAGS & (COMPONENT_CPU | COMPONENT_CPU_VERBOSE)
+#define log_cpu(message, ...) {                        \
+        CONSOLE_DARK_GREEN();                                \
         fprintf(stdout, "[CPU]: " message "\n",  ##__VA_ARGS__); \
         CONSOLE_RESTORE();                             \
     }
 #else
-    #define log_cpu(message, ...) { }
+#define log_cpu(message, ...) { }
 #endif
 
 #if COMPONENT_FLAGS & COMPONENT_MMU

@@ -2,7 +2,7 @@
 
 INLINE_GEKKO_INSTR(add) {
     GEKKO_INSTR_HEADER
-    log_cpu("add %08x", instruction.raw);
+    log_cpu_verbose("add %08x", instruction.raw);
 
     u32 result = cpu->GPR[instruction.general_DAB.A] + cpu->GPR[instruction.general_DAB.B];
 
@@ -19,7 +19,7 @@ INLINE_GEKKO_INSTR(add) {
 
 GEKKO_INSTR(addi) {
     GEKKO_INSTR_HEADER
-    log_cpu("addi %08x", instruction.raw);
+    log_cpu_verbose("addi %08x", instruction.raw);
     if (!instruction.arithmetic_simm.A) {
         cpu->GPR[instruction.arithmetic_simm.D] = (u32)((i32)((i16)(instruction.arithmetic_simm.SIMM)));
     }
@@ -30,7 +30,7 @@ GEKKO_INSTR(addi) {
 
 INLINE_GEKKO_INSTR(addc) {
     GEKKO_INSTR_HEADER
-    log_cpu("addc %08x", instruction.raw);
+    log_cpu_verbose("addc %08x", instruction.raw);
 
     cpu->XER.CA = ADD_CARRY(cpu->GPR[instruction.general_DAB.A], cpu->GPR[instruction.general_DAB.B]);
     u32 result = cpu->GPR[instruction.general_DAB.A] + cpu->GPR[instruction.general_DAB.B];
@@ -48,7 +48,7 @@ INLINE_GEKKO_INSTR(addc) {
 
 INLINE_GEKKO_INSTR(adde) {
     GEKKO_INSTR_HEADER
-    log_cpu("adde %08x", instruction.raw);
+    log_cpu_verbose("adde %08x", instruction.raw);
 
     u32 carry = cpu->XER.CA;
     u32 A = cpu->GPR[instruction.general_DAB.A];
@@ -69,7 +69,7 @@ INLINE_GEKKO_INSTR(adde) {
 
 INLINE_GEKKO_INSTR(addze) {
     GEKKO_INSTR_HEADER
-    log_cpu("addze %08x", instruction.raw);
+    log_cpu_verbose("addze %08x", instruction.raw);
 
     u32 carry = cpu->XER.CA;
     cpu->XER.CA = ADD_CARRY(cpu->GPR[instruction.general_DAB.A], carry);
@@ -88,7 +88,7 @@ INLINE_GEKKO_INSTR(addze) {
 
 GEKKO_INSTR(addis) {
     GEKKO_INSTR_HEADER
-    log_cpu("addis %08x", instruction.raw);
+    log_cpu_verbose("addis %08x", instruction.raw);
     if (!instruction.arithmetic_simm.A) {
         cpu->GPR[instruction.arithmetic_simm.D] = (u32)(((i32)((i16)(instruction.arithmetic_simm.SIMM))) << 16);
     }
@@ -99,7 +99,7 @@ GEKKO_INSTR(addis) {
 
 GEKKO_INSTR(addic) {
     GEKKO_INSTR_HEADER
-    log_cpu("addic %08x", instruction.raw);
+    log_cpu_verbose("addic %08x", instruction.raw);
     i32 SIMM = (i32)((i16)instruction.arithmetic_simm.SIMM);
     cpu->XER.CA = ADD_CARRY(cpu->GPR[instruction.arithmetic_simm.A], SIMM);
     cpu->GPR[instruction.arithmetic_simm.D] = cpu->GPR[instruction.arithmetic_simm.A] + SIMM;
@@ -107,7 +107,7 @@ GEKKO_INSTR(addic) {
 
 GEKKO_INSTR(addic_) {
     GEKKO_INSTR_HEADER
-    log_cpu("addic %08x", instruction.raw);
+    log_cpu_verbose("addic %08x", instruction.raw);
     i32 SIMM = (i32)((i16)instruction.arithmetic_simm.SIMM);
     cpu->XER.CA = ADD_CARRY(cpu->GPR[instruction.arithmetic_simm.A], SIMM);
     cpu->GPR[instruction.arithmetic_simm.D] = cpu->GPR[instruction.arithmetic_simm.A] + SIMM;
@@ -116,7 +116,7 @@ GEKKO_INSTR(addic_) {
 
 INLINE_GEKKO_INSTR(subf) {
     GEKKO_INSTR_HEADER
-    log_cpu("subf %08x", instruction.raw);
+    log_cpu_verbose("subf %08x", instruction.raw);
 
     u32 result = ~cpu->GPR[instruction.general_DAB.A] + cpu->GPR[instruction.general_DAB.B] + 1;
 
@@ -133,7 +133,7 @@ INLINE_GEKKO_INSTR(subf) {
 
 GEKKO_INSTR(subfic) {
     GEKKO_INSTR_HEADER
-    log_cpu("subfic %08x", instruction.raw);
+    log_cpu_verbose("subfic %08x", instruction.raw);
     i32 SIMM = (i32)((i16)instruction.arithmetic_simm.SIMM);
     u32 A = ~cpu->GPR[instruction.arithmetic_simm.A];
 
@@ -144,7 +144,7 @@ GEKKO_INSTR(subfic) {
 
 INLINE_GEKKO_INSTR(subfe) {
     GEKKO_INSTR_HEADER
-    log_cpu("subfe %08x", instruction.raw);
+    log_cpu_verbose("subfe %08x", instruction.raw);
 
     u32 carry = cpu->XER.CA;
     u32 A = ~cpu->GPR[instruction.general_DAB.A];
@@ -165,7 +165,7 @@ INLINE_GEKKO_INSTR(subfe) {
 
 INLINE_GEKKO_INSTR(subfc) {
     GEKKO_INSTR_HEADER
-    log_cpu("subfe %08x", instruction.raw);
+    log_cpu_verbose("subfe %08x", instruction.raw);
 
     u32 A = ~cpu->GPR[instruction.general_DAB.A];
     u32 B = cpu->GPR[instruction.general_DAB.B];
@@ -186,7 +186,7 @@ INLINE_GEKKO_INSTR(subfc) {
 
 INLINE_GEKKO_INSTR(divw) {
     GEKKO_INSTR_HEADER
-    log_cpu("divw %08x", instruction.raw);
+    log_cpu_verbose("divw %08x", instruction.raw);
 
     bool overflow = cpu->GPR[instruction.general_DAB.B] == 0 ||
                    (cpu->GPR[instruction.general_DAB.A] == 0x80000000 && (i32)cpu->GPR[instruction.general_DAB.B] == -1);
@@ -213,7 +213,7 @@ INLINE_GEKKO_INSTR(divw) {
 
 INLINE_GEKKO_INSTR(divwu) {
     GEKKO_INSTR_HEADER
-    log_cpu("divwu %08x", instruction.raw);
+    log_cpu_verbose("divwu %08x", instruction.raw);
 
     bool overflow = cpu->GPR[instruction.general_DAB.B] == 0;
 
@@ -238,7 +238,7 @@ INLINE_GEKKO_INSTR(divwu) {
 
 GEKKO_INSTR(mulli) {
     GEKKO_INSTR_HEADER
-    log_cpu("mulli %08x", instruction.raw);
+    log_cpu_verbose("mulli %08x", instruction.raw);
 
     i64 result = (i64)((i32)cpu->GPR[instruction.arithmetic_simm.A]) * (i64)((i16)instruction.arithmetic_simm.SIMM);
 
@@ -247,7 +247,7 @@ GEKKO_INSTR(mulli) {
 
 INLINE_GEKKO_INSTR(mullw) {
     GEKKO_INSTR_HEADER
-    log_cpu("mullw %08x", instruction.raw);
+    log_cpu_verbose("mullw %08x", instruction.raw);
 
     u64 result = (u64)cpu->GPR[instruction.general_DAB.A] * (u64)cpu->GPR[instruction.general_DAB.B];
 

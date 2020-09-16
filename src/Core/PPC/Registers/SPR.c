@@ -8,7 +8,9 @@ SPR_READ_FN(SPR_read_DEC) {
 }
 
 SPR_WRITE_FN(SPR_write_DEC) {
-    cpu->DEC = cpu->TBR.time + value;
+    log_cpu("Wrote DEC: %08x at PC = %08x", value, cpu->PC);
+    // we always keep the DEC event in the scheduler
+    cpu->DEC = cpu->TBR.raw + (value << 3);   // 1 TBR tick is 8 clock cycles
     change_event(&cpu->system->scheduler, &cpu->DEC_intr_event, cpu->DEC);
 }
 
@@ -62,11 +64,11 @@ void init_SPRs(struct s_Gekko* cpu) {
     cpu->SPR[SPR_SPRG1] = &cpu->default_SPR[SPR_SPRG1];
     cpu->SPR[SPR_SPRG2] = &cpu->default_SPR[SPR_SPRG2];
     cpu->SPR[SPR_SPRG3] = &cpu->default_SPR[SPR_SPRG3];
+    cpu->SPR[SPR_DAR] = &cpu->default_SPR[SPR_DAR];   // todo: add DSI or alignment exception
 
 
     // todo: stubbed
     cpu->SPR[SPR_L2CR] = &cpu->default_SPR[SPR_L2CR];
-
 
     cpu->SPR[SPR_DEC] = &cpu->DEC;
     cpu->SPR_read_fn[SPR_DEC] = SPR_read_DEC;
@@ -79,7 +81,7 @@ void init_SPRs(struct s_Gekko* cpu) {
     };
     add_event(&cpu->system->scheduler, &cpu->DEC_intr_event);
 
-    // todo: implement this
+    // todo: implement these
     cpu->SPR[SPR_MMCR0] = &cpu->default_SPR[SPR_MMCR0];
     cpu->SPR[SPR_MMCR1] = &cpu->default_SPR[SPR_MMCR1];
     cpu->SPR[SPR_PMC1] = &cpu->default_SPR[SPR_PMC1];

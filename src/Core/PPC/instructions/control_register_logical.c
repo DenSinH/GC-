@@ -2,7 +2,7 @@
 
 INLINE_GEKKO_INSTR(mcrf) {
     GEKKO_INSTR_HEADER
-    log_cpu("mcrf %x", instruction.raw);
+    log_cpu_verbose("mcrf %x", instruction.raw);
 
     SET_CRn_RAW(cpu->CR, instruction.mcrf.crfD, GET_CRn_RAW(cpu->CR, instruction.mcrf.crfS));
 }
@@ -10,7 +10,7 @@ INLINE_GEKKO_INSTR(mcrf) {
 /* remember: bit 0 is most significant bit, so we need to reason from 0x80000000 */
 INLINE_GEKKO_INSTR(creqv) {
     GEKKO_INSTR_HEADER
-    log_cpu("creqv %x", instruction.raw);
+    log_cpu_verbose("creqv %x", instruction.raw);
 
     u32 bitA = (cpu->CR.raw << instruction.general_DAB.A) & 0x80000000;
     u32 bitB = (cpu->CR.raw << instruction.general_DAB.B) & 0x80000000;
@@ -22,7 +22,7 @@ INLINE_GEKKO_INSTR(creqv) {
 
 INLINE_GEKKO_INSTR(cror) {
     GEKKO_INSTR_HEADER
-    log_cpu("cror %x", instruction.raw);
+    log_cpu_verbose("cror %x", instruction.raw);
 
     u32 bitA = (cpu->CR.raw << instruction.general_DAB.A) & 0x80000000;
     u32 bitB = (cpu->CR.raw << instruction.general_DAB.B) & 0x80000000;
@@ -34,7 +34,7 @@ INLINE_GEKKO_INSTR(cror) {
 
 INLINE_GEKKO_INSTR(crxor) {
     GEKKO_INSTR_HEADER
-    log_cpu("crxor %x", instruction.raw);
+    log_cpu_verbose("crxor %x", instruction.raw);
 
     u32 bitA = (cpu->CR.raw << instruction.general_DAB.A) & 0x80000000;
     u32 bitB = (cpu->CR.raw << instruction.general_DAB.B) & 0x80000000;

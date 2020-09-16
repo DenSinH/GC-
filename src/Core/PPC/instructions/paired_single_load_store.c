@@ -11,7 +11,7 @@
 GEKKO_INSTR(psq_l) {
     GEKKO_INSTR_HEADER
     ASSERT_PAIRED_SINGLE
-    log_cpu("psq_l %08x", instruction.raw);
+    log_cpu_verbose("psq_l %08x", instruction.raw);
 
     u32 EA = (instruction.paired_single_load.A ? cpu->GPR[instruction.paired_single_load.A] : 0) +
              EXTS32(instruction.paired_single_load.d, 12);
@@ -53,7 +53,7 @@ GEKKO_INSTR(psq_l) {
 GEKKO_INSTR(psq_st) {
     GEKKO_INSTR_HEADER
     ASSERT_PAIRED_SINGLE
-    log_cpu("psq_st %08x", instruction.raw);
+    log_cpu_verbose("psq_st %08x", instruction.raw);
 
     u32 EA = (instruction.paired_single_store.A ? cpu->GPR[instruction.paired_single_store.A] : 0) +
              EXTS32(instruction.paired_single_store.d, 12);
@@ -98,7 +98,7 @@ GEKKO_INSTR(psq_st) {
 INLINE_GEKKO_INSTR(ps_mr) {
     GEKKO_INSTR_HEADER
     ASSERT_PAIRED_SINGLE
-    log_cpu("ps_mr %x", instruction.raw);
+    log_cpu_verbose("ps_mr %x", instruction.raw);
 
     cpu->FPR[instruction.general_DAB.D].PS0.u = cpu->FPR[instruction.general_DAB.B].PS0.u;
     cpu->FPR[instruction.general_DAB.D].PS1.u = cpu->FPR[instruction.general_DAB.B].PS1.u;

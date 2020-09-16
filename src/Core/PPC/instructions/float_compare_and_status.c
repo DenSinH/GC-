@@ -3,7 +3,7 @@
 
 INLINE_GEKKO_INSTR(fcmpu) {
     GEKKO_INSTR_HEADER
-    log_cpu("fcmpu %x", instruction.raw);
+    log_cpu_verbose("fcmpu %x", instruction.raw);
 
     bit_double A = cpu->FPR[instruction.cmp_float.A].PS0;
     bit_double B = cpu->FPR[instruction.cmp_float.B].PS0;
@@ -19,7 +19,7 @@ INLINE_GEKKO_INSTR(fcmpu) {
 
 INLINE_GEKKO_INSTR(mtfsf) {
     GEKKO_INSTR_HEADER
-    log_cpu("mtfsf %x", instruction.raw);
+    log_cpu_verbose("mtfsf %x", instruction.raw);
 
     // bits 1 and 2 (or as I would call them: 29 and 30) cannot be cleared this way
     cpu->FPSCR.raw = GET_FPR(cpu, instruction.mtfsf.B) & field_mask[instruction.mtfsf.FM] & 0x9fffffff;
@@ -31,7 +31,7 @@ INLINE_GEKKO_INSTR(mtfsf) {
 
 INLINE_GEKKO_INSTR(mtfsb0) {
     GEKKO_INSTR_HEADER
-    log_cpu("mtfsb0 %08x", instruction.raw);
+    log_cpu_verbose("mtfsb0 %08x", instruction.raw);
 
     cpu->FPSCR.raw &= ~(1 << instruction.general_DAB.D);
     if (instruction.general_DAB.Rc) {
@@ -41,7 +41,7 @@ INLINE_GEKKO_INSTR(mtfsb0) {
 
 INLINE_GEKKO_INSTR(mtfsb1) {
     GEKKO_INSTR_HEADER
-    log_cpu("mtfsb0 %08x", instruction.raw);
+    log_cpu_verbose("mtfsb0 %08x", instruction.raw);
 
     cpu->FPSCR.raw |= 1 << instruction.general_DAB.D;
     if (instruction.general_DAB.Rc) {
