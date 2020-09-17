@@ -8,8 +8,10 @@
 
 #define GAMECUBE_SCREEN_WIDTH 640
 #define GAMECUBE_SCREEN_HEIGHT 480
-#define FLIPPER_FRAMEBUFFER_WIDTH 1280
-#define FLIPPER_FRAMEBUFFER_HEIGHT 720
+
+// full HD framebuffer, to be rescaled when blitted to the frontend screen
+#define FLIPPER_FRAMEBUFFER_WIDTH 1920
+#define FLIPPER_FRAMEBUFFER_HEIGHT 1080
 
 #if SCREEN_TYPE == SCREEN_PAL
 
@@ -47,6 +49,10 @@ typedef struct s_Flipper {
     struct s_GameCube* system;
     u8* memory;
     struct s_CP* CP;
+    struct s_VI* VI;
+
+    // todo: make this variable through VI
+    u32 screen_width, screen_height;
 
     unsigned int framebuffer[2];
     bool current_framebuffer;

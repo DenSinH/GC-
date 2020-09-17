@@ -58,6 +58,12 @@ flags.h
 assert.h
 -
 
+D:/CProjects/GC-/UIthread.c
+UIthread.h
+D:/CProjects/GC-/UIthread.h
+src/Frontend/interface.h
+D:/CProjects/GC-/src/Frontend/interface.h
+
 D:/CProjects/GC-/UIthread.h
 windows.h
 -

@@ -116,19 +116,19 @@ int ui_run() {
         s_framebuffer emu_framebuffer = Frontend.render();
         glViewport(0, 0, (int) Frontend.io.DisplaySize.x, (int) Frontend.io.DisplaySize.y);
 
-        float scale = (float) WINDOW_WIDTH / emu_framebuffer.width;
-        if ((float) WINDOW_HEIGHT / emu_framebuffer.height  < scale) {
-            scale = (float) WINDOW_HEIGHT / emu_framebuffer.height;
+        float scale = (float) WINDOW_WIDTH / emu_framebuffer.dest_width;
+        if ((float) WINDOW_HEIGHT / emu_framebuffer.dest_height  < scale) {
+            scale = (float) WINDOW_HEIGHT / emu_framebuffer.dest_height;
         }
-        unsigned offsx = (WINDOW_WIDTH - scale * emu_framebuffer.width) / 2;
-        unsigned offsy = (WINDOW_HEIGHT - scale * emu_framebuffer.height) / 2;
+        unsigned offsx = (WINDOW_WIDTH - scale * emu_framebuffer.dest_width) / 2;
+        unsigned offsy = (WINDOW_HEIGHT - scale * emu_framebuffer.dest_height) / 2;
 
         glBindFramebuffer(GL_DRAW_FRAMEBUFFER, 0);
         glBindFramebuffer(GL_READ_FRAMEBUFFER, emu_framebuffer.id);
         glBlitFramebuffer(0, 0,
-                          emu_framebuffer.width, emu_framebuffer.height,
+                          emu_framebuffer.src_width, emu_framebuffer.src_height,
                           offsx, offsy,
-                          offsx + scale * emu_framebuffer.width, offsy + scale * emu_framebuffer.height,
+                          offsx + scale * emu_framebuffer.dest_width, offsy + scale * emu_framebuffer.dest_height,
                           GL_COLOR_BUFFER_BIT, GL_NEAREST
         );
 

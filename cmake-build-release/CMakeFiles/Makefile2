@@ -199,8 +199,8 @@ src\Loader\clean: src\Loader\CMakeFiles\Loader.dir\clean
 # Target rules for target CMakeFiles/GC_.dir
 
 # All Build rule for target.
-CMakeFiles\GC_.dir\all: src\Core\HWregs\CMakeFiles\HWregs.dir\all
 CMakeFiles\GC_.dir\all: src\Core\CMakeFiles\Core.dir\all
+CMakeFiles\GC_.dir\all: src\Core\HWregs\CMakeFiles\HWregs.dir\all
 CMakeFiles\GC_.dir\all: src\Frontend\CMakeFiles\Frontend.dir\all
 CMakeFiles\GC_.dir\all: src\Loader\CMakeFiles\Loader.dir\all
 CMakeFiles\GC_.dir\all: src\Core\PPC\CMakeFiles\PPC.dir\all

@@ -1,6 +1,8 @@
 #include "Flipper.h"
 #include "../HWregs/CommandProcessor.h"
+#include "../HWregs/VideoInterface.h"
 #include "../system.h"
+
 #include "../../Frontend/interface.h"
 
 #include "shaders/shaders.h"
@@ -22,6 +24,10 @@ static u16 quad_EBO[FLIPPER_QUAD_INDEX_ARRAY_SIZE];
 void init_Flipper(s_Flipper* flipper) {
     flipper->memory = flipper->system->memory;
     flipper->CP = &flipper->system->HW_regs.CP;
+    flipper->VI = &flipper->system->HW_regs.VI;
+
+    flipper->screen_width = GAMECUBE_SCREEN_WIDTH;
+    flipper->screen_height = GAMECUBE_SCREEN_HEIGHT;
 
     int i = 0;
     for (u16 v = 0; i + 6 < FLIPPER_QUAD_INDEX_ARRAY_SIZE; v += 4) {
@@ -60,6 +66,7 @@ static void debug_program_init(s_Flipper* flipper, unsigned int program) {
 
 static void init_framebuffer(s_Flipper* flipper) {
     // create framebuffer for flipper
+    // I don't know why, but doing this fixed a flickering issue
     for (int i = 1; i >= 0; i--) {
         glGenFramebuffers(1, &flipper->framebuffer[i]);
         glBindFramebuffer(GL_FRAMEBUFFER, flipper->framebuffer[i]);
@@ -68,14 +75,14 @@ static void init_framebuffer(s_Flipper* flipper) {
         // create a texture to render to and fill it with 0 (also set filtering to low)
         glGenTextures(1, &rendered_texture);
         glBindTexture(GL_TEXTURE_2D, rendered_texture);
-        glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA, GAMECUBE_SCREEN_WIDTH, GAMECUBE_SCREEN_HEIGHT, 0, GL_RGBA, GL_UNSIGNED_BYTE, 0);
+        glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA, FLIPPER_FRAMEBUFFER_WIDTH, FLIPPER_FRAMEBUFFER_HEIGHT, 0, GL_RGBA, GL_UNSIGNED_BYTE, 0);
         glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_NEAREST);
         glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST);
 
         // add depth buffer
         glGenRenderbuffers(1, &depth_buffer);
         glBindRenderbuffer(GL_RENDERBUFFER, depth_buffer);
-        glRenderbufferStorage(GL_RENDERBUFFER, GL_DEPTH_COMPONENT, GAMECUBE_SCREEN_WIDTH, GAMECUBE_SCREEN_HEIGHT);
+        glRenderbufferStorage(GL_RENDERBUFFER, GL_DEPTH_COMPONENT, FLIPPER_FRAMEBUFFER_WIDTH, FLIPPER_FRAMEBUFFER_HEIGHT);
         glFramebufferRenderbuffer(GL_FRAMEBUFFER, GL_DEPTH_ATTACHMENT, GL_RENDERBUFFER, depth_buffer);
 
         glFramebufferTexture(GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT0, rendered_texture, 0);
@@ -252,7 +259,7 @@ struct s_framebuffer render_Flipper(s_Flipper* flipper){
         glBindTexture(GL_TEXTURE_2D, 0);
         glEnable(GL_TEXTURE_2D);
         glBindFramebuffer(GL_FRAMEBUFFER, flipper->framebuffer[flipper->current_framebuffer]);
-        glViewport(0, 0, GAMECUBE_SCREEN_WIDTH, GAMECUBE_SCREEN_HEIGHT);
+        glViewport(0, 0, FLIPPER_FRAMEBUFFER_WIDTH, FLIPPER_FRAMEBUFFER_HEIGHT);
 
         u32 start_draw_index = flipper->draw_command_index;
         Flipper_prepare_draw(flipper);
@@ -285,7 +292,7 @@ struct s_framebuffer render_Flipper(s_Flipper* flipper){
 
             // got PE_DONE command
             // todo: stubbed for now
-            if (true || flipper->CP->draw_command_done[flipper->draw_command_index]) {
+            if (flipper->CP->draw_command_done[flipper->draw_command_index]) {
                 wait_for_fence(flipper);  // wait for current drawing commands to finish before continuing
                 flipper->CP->draw_command_done[flipper->draw_command_index] = false;  // reset it so we don't stop unnecessarily
                 flipper->current_framebuffer ^= true;  // frameswap for the emulator
@@ -325,7 +332,9 @@ struct s_framebuffer render_Flipper(s_Flipper* flipper){
     // return the framebuffer that is "ready"
     return (s_framebuffer) {
         .id = flipper->framebuffer[!flipper->current_framebuffer],
-        .width = GAMECUBE_SCREEN_WIDTH,
-        .height = GAMECUBE_SCREEN_HEIGHT
+        .src_width = FLIPPER_FRAMEBUFFER_WIDTH,
+        .src_height = FLIPPER_FRAMEBUFFER_HEIGHT,
+        .dest_width = flipper->screen_width,
+        .dest_height = flipper->screen_height
     };
 }

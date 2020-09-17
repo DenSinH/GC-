@@ -13,7 +13,8 @@ extern "C" {
 
     typedef struct s_framebuffer {
         unsigned int id;
-        size_t width, height;
+        size_t src_width, src_height;
+        size_t dest_width, dest_height;
     } s_framebuffer;
 
     int ui_run();

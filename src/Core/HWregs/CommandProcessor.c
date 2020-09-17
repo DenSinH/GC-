@@ -236,6 +236,8 @@ static inline void load_BP_reg(s_CP* CP, u32 value) {
         if (CP->internal_BP_regs[BP_reg_int_PE_DONE] & 0x02 && GET_PE_REG(&CP->system->HW_regs.PE, PE_reg_interrupt_status) & 0x02) {
             // frame done
             SET_PE_REG(&CP->system->HW_regs.PE, PE_reg_token, (u16)value);
+
+            // set interrupt to called
             SET_PE_REG(&CP->system->HW_regs.PE, PE_reg_interrupt_status, GET_PE_REG(&CP->system->HW_regs.PE, PE_reg_interrupt_status) | 0x08);
 
             CP->draw_command_done[CP->draw_command_index] = true;
