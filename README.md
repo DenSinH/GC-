@@ -3,7 +3,7 @@
 This is probably going to take a while to finish...
 
 #### Packages required:
-`SDL2`, `(dear) ImGui`, `capstone[ppc]`
+`SDL2`, `capstone[ppc]`
 
 #### Memos to self:
 
