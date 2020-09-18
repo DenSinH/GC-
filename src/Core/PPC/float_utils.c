@@ -332,7 +332,7 @@ s_float_result float_msub(s_FPSCR* FPSCR, bit_double opa, bit_double opb, bit_do
     return result;
 }
 
-inline float rsqrt(const float f)
+static inline float rsqrt(const float f)
 {
     __m128 temp = _mm_set_ss(f);
     temp = _mm_rsqrt_ss(temp);

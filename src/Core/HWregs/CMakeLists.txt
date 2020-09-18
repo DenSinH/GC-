@@ -23,11 +23,16 @@ add_library(HWregs STATIC
         GX_FIFO.h
         MemoryInterface.c
         MemoryInterface.h
-        ../include/hwreg_utils.h)
+        include/hwreg_utils.h)
 
 
 # for logging / stuff I want to use in all files
-include_directories(${PROJECT_SOURCE_DIR}/include ../include)
+include_directories(
+        ${PROJECT_SOURCE_DIR}/include
+        ${CMAKE_CURRENT_SOURCE_DIR}/include
+        ../include
+        ../PPC/include
+)
 
 set_target_properties(HWregs PROPERTIES LINKER_LANGUAGE C)
 

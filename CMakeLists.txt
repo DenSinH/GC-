@@ -1,6 +1,8 @@
 cmake_minimum_required(VERSION 3.16)
 project(GC_ LANGUAGES C CXX)
 
+# set(CMAKE_VERBOSE_MAKEFILE ON)
+
 # check of LTO
 include(CheckIPOSupported)
 check_ipo_supported(RESULT ipo_supported OUTPUT ipo_error)

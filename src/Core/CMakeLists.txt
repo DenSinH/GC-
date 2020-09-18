@@ -3,9 +3,6 @@ add_library(Core STATIC
         system.c
         Breakpoints/breakpoints.h
         Breakpoints/breakpoints.c
-        include/float_utils.h
-        include/float_utils.c
-        include/core_utils.h
         Scheduler/scheduler.c
         Scheduler/scheduler.h
 )
@@ -15,11 +12,12 @@ add_subdirectory(PPC)
 add_subdirectory(Flipper)
 
 # for logging / stuff I want to use in all files
-include_directories(${PROJECT_SOURCE_DIR}/include ./include
+include_directories(${PROJECT_SOURCE_DIR}/include
+        ${CMAKE_CURRENT_SOURCE_DIR}/include
         $<TARGET_PROPERTY:HWregs,INCLUDE_DIRECTORIES>
         $<TARGET_PROPERTY:PPC,INCLUDE_DIRECTORIES>
         $<TARGET_PROPERTY:Flipper,INCLUDE_DIRECTORIES>
-        )
+)
 
 set_target_properties(Core PROPERTIES LINKER_LANGUAGE C)
 

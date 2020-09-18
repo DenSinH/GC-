@@ -21,6 +21,8 @@ add_library(
         gekko_instruction.h
         interrupts.c
         interrupts.h
+        float_utils.c
+        include/float_utils.h
 )
 
 set_target_properties(PPC PROPERTIES LINKER_LANGUAGE C)
@@ -28,4 +30,10 @@ set_target_properties(PPC PROPERTIES LINKER_LANGUAGE C)
 add_subdirectory(Loader)
 target_link_libraries(PPC Loader)
 
-target_include_directories(PPC PUBLIC ${CMAKE_CURRENT_SOURCE_DIR} ../include ${PROJECT_SOURCE_DIR}/include)
+target_include_directories(PPC PUBLIC
+        ${CMAKE_CURRENT_SOURCE_DIR}
+        ${CMAKE_CURRENT_SOURCE_DIR}/include
+        ${PROJECT_SOURCE_DIR}/include
+        ../include
+        ../HWregs/include
+)
