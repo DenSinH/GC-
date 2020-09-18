@@ -46,4 +46,5 @@ if (WIN32)
 else()
     target_link_libraries(Frontend PRIVATE Capstone::Capstone)
 endif()
-target_include_directories(Frontend PRIVATE imgui ${PROJECT_SOURCE_DIR}/include)
+
+target_include_directories(Frontend PRIVATE ${CMAKE_CURRENT_SOURCE_DIR}/imgui ${PROJECT_SOURCE_DIR}/include)

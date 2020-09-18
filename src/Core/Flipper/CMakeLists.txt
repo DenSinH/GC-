@@ -1,5 +1,3 @@
-find_package(SDL2 CONFIG REQUIRED)
-
 file(GLOB VERT_FILES ${CMAKE_CURRENT_SOURCE_DIR}/shaders/raw/*.glsl)
 
 if (WIN32)
@@ -41,5 +39,3 @@ target_include_directories(Flipper PUBLIC
         ${PROJECT_SOURCE_DIR}/include
         ../include
 )
-
-target_link_libraries(Flipper PRIVATE SDL2::SDL2)
