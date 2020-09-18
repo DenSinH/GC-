@@ -7,11 +7,15 @@
 #include "default.h"
 #include "log.h"
 
+#ifndef _MSC_VER
+#include <string.h>
+#endif
+
 
 u8* load_IPL_file(const char *file_name) {
     // open file
     FILE* file;
-    fopen_s(&file, file_name, "rb");
+    FOPEN(&file, file_name, "rb");
     if (!file) log_fatal("Failed Loader file read");
 
     // find size
@@ -99,7 +103,7 @@ u8* decrypt_IPL(const char file_name[]) {
 void dump_IPL(u8* IPL, const char file_name[]) {
     // dump decrypted IPL (from memory location) to file
     FILE* file;
-    fopen_s(&file, file_name, "wb");
+    FOPEN(&file, file_name, "wb");
 
     unsigned int written_length = fwrite(IPL + IPL_CODE_START, 1, IPL_DATA_LENGTH - IPL_CODE_START, file);
     if (written_length != IPL_DATA_LENGTH - IPL_CODE_START) {
@@ -115,7 +119,7 @@ void free_IPL(u8* IPL) {
 void decrypt_IPL_to(const char file_name[], u8* target) {
     // decrypt IPL file to a memory location
     u8* IPL = decrypt_IPL(file_name);
-    memcpy_s(target, IPL_DATA_LENGTH - IPL_CODE_START, IPL + IPL_CODE_START, IPL_DATA_LENGTH - IPL_CODE_START);
+    memcpy(target, IPL + IPL_CODE_START, IPL_DATA_LENGTH - IPL_CODE_START);
     free_IPL(IPL);
 }
 
@@ -125,7 +129,7 @@ u32 load_DOL_to(const char file_name[], u8* target) {
     // todo: don't assume memory location >= 80000000
     // open the file
     FILE* file;
-    fopen_s(&file, file_name, "rb");
+    FOPEN(&file, file_name, "rb");
     if (!file) log_fatal("Failed DOL file read");
 
     fseek(file, 0, SEEK_END);

@@ -1,6 +1,5 @@
 find_package(imgui CONFIG REQUIRED)
 find_package(SDL2 CONFIG REQUIRED)
-find_package(glad CONFIG REQUIRED)
 
 if (WIN32)
     find_library(Capstone capstone_dll REQUIRED)
@@ -42,7 +41,7 @@ set_target_properties(Frontend PROPERTIES
                       CXX_STANDARD_REQUIRED YES
                       CXX_EXTENSIONS ON)
 
-target_link_libraries(Frontend PRIVATE imgui::imgui SDL2::SDL2 SDL2::SDL2main glad::glad)
+target_link_libraries(Frontend PRIVATE SDL2::SDL2 SDL2::SDL2main)
 if (WIN32)
     target_link_libraries(Frontend PRIVATE ${Capstone})
 else()

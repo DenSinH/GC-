@@ -30,11 +30,15 @@ add_executable(GC_
         include/flags.h
         include/log.h
         include/sleeping.h
+        include/glad/glad.h
+        include/glad/glad.c
+        include/KHR/khrplatform.h
         UIthread.h
         UIthread.c
         debugging.h
         init.c
-        init.h)
+        init.h
+)
 
 # add link time optimizations for extra speed
 if( ipo_supported )
@@ -46,9 +50,12 @@ else()
     message(STATUS "IPO / LTO not supported: <${ipo_error}>")
 endif()
 
+add_subdirectory(include/imgui)
+
 add_subdirectory(src/Core)
 add_subdirectory(src/Frontend)
 add_subdirectory(src/Core/PPC/Loader)
+
 
 include_directories(include
         $<TARGET_PROPERTY:Core,INCLUDE_DIRECTORIES>
@@ -57,3 +64,4 @@ include_directories(include
 
 target_link_libraries(GC_ PRIVATE Core)
 target_link_libraries(GC_ PRIVATE Frontend)
+target_link_libraries(GC_ PRIVATE imgui)

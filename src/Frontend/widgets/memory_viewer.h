@@ -1,6 +1,7 @@
 #ifndef GC__MEMORY_VIEWER_H
 #define GC__MEMORY_VIEWER_H
 
+#include "imgui/imgui.h"
 #if defined(_MSC_VER) && !defined(_CRT_SECURE_NO_WARNINGS)
 #define _CRT_SECURE_NO_WARNINGS
 #endif

@@ -249,7 +249,7 @@ static inline void load_BP_reg(s_CP* CP, u32 value) {
     }
 }
 
-inline void feed_CP(s_CP* CP, u8 data) {
+static inline void feed_CP(s_CP* CP, u8 data) {
     // feed from the buffer from some index
     // always read argument (we never get here with a NOP anyway)
     switch (CP->command) {

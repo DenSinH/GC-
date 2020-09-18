@@ -5,7 +5,7 @@
 #include <inttypes.h>
 #include "disassemble.h"
 
-#include "imgui.h"
+#include "imgui/imgui.h"
 
 #define INSTRS_BEFORE_PC 20
 #define INSTRS_AFTER_PC 20

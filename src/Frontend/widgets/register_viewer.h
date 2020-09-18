@@ -6,7 +6,7 @@
 #include <inttypes.h>
 
 #include <SDL.h>
-#include "imgui.h"
+#include "imgui/imgui.h"
 
 #define MAX_REGISTER_NAME_LENGTH 16
 #define MAX_REGISTER_TAB_LENGTH 32

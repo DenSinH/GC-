@@ -1,5 +1,4 @@
 find_package(SDL2 CONFIG REQUIRED)
-find_package(glad CONFIG REQUIRED)
 
 file(GLOB VERT_FILES ${CMAKE_CURRENT_SOURCE_DIR}/shaders/raw/*.glsl)
 
@@ -36,6 +35,11 @@ add_library(
 
 set_target_properties(Flipper PROPERTIES LINKER_LANGUAGE C)
 
-target_include_directories(Flipper PUBLIC ${CMAKE_CURRENT_SOURCE_DIR} ${CMAKE_CURRENT_SOURCE_DIR}/include ${SDL2_INCLUDE_DIR} ${GLAD_INCLUDE_DIR} ${PROJECT_SOURCE_DIR}/include ../include)
+target_include_directories(Flipper PUBLIC
+        ${CMAKE_CURRENT_SOURCE_DIR}
+        ${CMAKE_CURRENT_SOURCE_DIR}/include
+        ${PROJECT_SOURCE_DIR}/include
+        ../include
+)
 
-target_link_libraries(Flipper PRIVATE ${SDL2_LIBRARY} glad::glad)
+target_link_libraries(Flipper PRIVATE SDL2::SDL2)

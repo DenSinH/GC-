@@ -2,7 +2,7 @@
 #define GC__OVERLAY_H
 
 #include <list>
-#include "imgui.h"
+#include "imgui/imgui.h"
 
 #define MAX_OVERLAY_INFO_LENGTH 50
 
