@@ -54,7 +54,6 @@ add_subdirectory(include/imgui)
 
 add_subdirectory(src/Core)
 add_subdirectory(src/Frontend)
-add_subdirectory(src/Core/PPC/Loader)
 
 
 include_directories(include

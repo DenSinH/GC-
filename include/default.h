@@ -5,16 +5,25 @@
 #include <float.h>
 
 #ifdef _MSC_VER
+
+#define STATIC_ASSERT static_assert
+
 #define STRCPY(dest, len, src) strcpy_s(dest, len, src)
 #define SSCANF sscanf_s
 #define SPRINTF sprintf_s
 #define FOPEN(stream, fname, mode) fopen_s(stream, fname, mode)
+
 #else
+
 #include <stddef.h>
+
+#define STATIC_ASSERT _Static_assert
+
 #define STRCPY(dest, len, src) strcpy(dest, src)
 #define SSCANF sscanf
 #define SPRINTF(dest, len, src, ...) sprintf(dest, src, ##__VA_ARGS__)
 #define FOPEN(stream, fname, mode) *stream = fopen(fname, mode)
+
 #endif
 
 #ifdef __has_builtin

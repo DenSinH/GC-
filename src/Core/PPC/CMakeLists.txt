@@ -25,4 +25,7 @@ add_library(
 
 set_target_properties(PPC PROPERTIES LINKER_LANGUAGE C)
 
+add_subdirectory(Loader)
+target_link_libraries(PPC Loader)
+
 target_include_directories(PPC PUBLIC ${CMAKE_CURRENT_SOURCE_DIR} ../include ${PROJECT_SOURCE_DIR}/include)

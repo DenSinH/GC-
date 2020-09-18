@@ -1,5 +1,8 @@
 find_package(SDL2 CONFIG REQUIRED)
 
+# compatibility for linux
+include_directories(${SDL2_INCLUDE_DIRS})
+
 if (WIN32)
     find_library(Capstone capstone_dll REQUIRED)
 else()
@@ -41,10 +44,12 @@ set_target_properties(Frontend PROPERTIES
                       CXX_EXTENSIONS ON)
 
 target_link_libraries(Frontend PRIVATE SDL2::SDL2 SDL2::SDL2main)
+
 if (WIN32)
     target_link_libraries(Frontend PRIVATE ${Capstone})
 else()
     target_link_libraries(Frontend PRIVATE Capstone::Capstone)
+    target_link_libraries(GC_ PRIVATE -ldl -lpthread)
 endif()
 
 target_include_directories(Frontend PRIVATE ${CMAKE_CURRENT_SOURCE_DIR}/imgui ${PROJECT_SOURCE_DIR}/include)

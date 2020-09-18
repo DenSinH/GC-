@@ -23,7 +23,6 @@ include_directories(${PROJECT_SOURCE_DIR}/include ./include
 
 set_target_properties(Core PROPERTIES LINKER_LANGUAGE C)
 
-target_link_libraries(Core Loader)
 target_link_libraries(Core HWregs)
 target_link_libraries(Core PPC)
 target_link_libraries(Core Flipper)
