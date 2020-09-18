@@ -22,8 +22,9 @@ s_GameCube* init_system() {
     GameCube->cpu.IMMU.HW_regs_ptr = GameCube->cpu.DMMU.HW_regs_ptr = &GameCube->HW_regs;
 
 #ifdef DO_BREAKPOINTS
-//    add_breakpoint(&GameCube->breakpoints, 0x8000bde0);
-//    add_breakpoint(&GameCube->breakpoints, 0x00000500);
+//    add_breakpoint(&GameCube->breakpoints, 0x8000b0b4);
+    add_breakpoint(&GameCube->breakpoints, 0x00000500);
+//    add_breakpoint(&GameCube->breakpoints, 0x8000586c);
 #endif
     return GameCube;
 }

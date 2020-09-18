@@ -41,15 +41,18 @@ typedef union {
     float f;
 } bit_float;
 
-static_assert(sizeof(bit_float) == 4, "bit_float union was the wrong size!");
-
 typedef union {
     u64 u;
     i64 i;
     double d;
 } bit_double;
 
+#ifdef _MSC_VER
+static_assert(sizeof(bit_float) == 4, "bit_float union was the wrong size!");
 static_assert(sizeof(bit_double) == 8, "bit_double union was the wrong size!");
+#else
+// todo
+#endif
 
 typedef struct s_float_result {
     bit_double value;

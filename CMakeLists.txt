@@ -1,6 +1,7 @@
-cmake_minimum_required(VERSION 3.17)
-project(GC_ LANGUAGES CXX C)
+cmake_minimum_required(VERSION 3.16)
+project(GC_ LANGUAGES C CXX)
 
+# check of LTO
 include(CheckIPOSupported)
 check_ipo_supported(RESULT ipo_supported OUTPUT ipo_error)
 
@@ -28,11 +29,12 @@ add_executable(GC_
         include/helpers.h
         include/flags.h
         include/log.h
+        include/sleeping.h
         UIthread.h
         UIthread.c
         debugging.h
-        include/sleeping.h
-)
+        init.c
+        init.h)
 
 # add link time optimizations for extra speed
 if( ipo_supported )
@@ -46,7 +48,7 @@ endif()
 
 add_subdirectory(src/Core)
 add_subdirectory(src/Frontend)
-add_subdirectory(src/Loader)
+add_subdirectory(src/Core/PPC/Loader)
 
 include_directories(include
         $<TARGET_PROPERTY:Core,INCLUDE_DIRECTORIES>

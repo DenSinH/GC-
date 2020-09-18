@@ -262,6 +262,8 @@ struct s_framebuffer render_Flipper(s_Flipper* flipper){
         glViewport(0, 0, FLIPPER_FRAMEBUFFER_WIDTH, FLIPPER_FRAMEBUFFER_HEIGHT);
 
         u32 start_draw_index = flipper->draw_command_index;
+
+        // todo: proper frame swapping / clearing
         Flipper_prepare_draw(flipper);
 
         while (!flipper->CP->draw_command_available[flipper->draw_command_index]) {
@@ -290,18 +292,8 @@ struct s_framebuffer render_Flipper(s_Flipper* flipper){
              * different from the GameCube probably, where it is handled in interrupts, I don't know how yet).
              * */
 
-            // got PE_DONE command
-            // todo: stubbed for now
-            if (flipper->CP->draw_command_done[flipper->draw_command_index]) {
-                wait_for_fence(flipper);  // wait for current drawing commands to finish before continuing
-                flipper->CP->draw_command_done[flipper->draw_command_index] = false;  // reset it so we don't stop unnecessarily
-                flipper->current_framebuffer ^= true;  // frameswap for the emulator
-                log_flipper("Got draw done command");
-                break;
-            }
-
-            else if (flipper->draw_command_index == flipper->CP->draw_command_index) {
-                // caught up with CP, no frameswap or
+            if (flipper->draw_command_index == flipper->CP->draw_command_index) {
+                // caught up with CP, no frameswap
                 break;
             }
         }
@@ -327,6 +319,14 @@ struct s_framebuffer render_Flipper(s_Flipper* flipper){
 
         // unbind framebuffer
         glBindFramebuffer(GL_FRAMEBUFFER, 0);
+
+        // todo: proper fameswap
+        if (true || flipper->VI->VSync) {
+            // got VSync signal from VI
+            wait_for_fence(flipper);  // wait for current drawing commands to finish before continuing
+            flipper->VI->VSync = false;  // reset it so we don't stop unnecessarily
+            flipper->current_framebuffer ^= true;  // frameswap for the emulator
+        }
     }
 
     // return the framebuffer that is "ready"

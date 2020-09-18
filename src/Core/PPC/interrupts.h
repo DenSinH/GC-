@@ -8,11 +8,10 @@
 #define INTERRUPT_POLL_DELAY 10
 
 typedef enum e_interrupts {
-    interrupt_DEC = 0x00000001,
-    interrupt_PE_DONE = 0x00000002,
+    interrupt_DEC = 0x00000001
 } e_interrupts;
 
-#define EXTERNAL_INTERRUPTS (interrupt_DEC | interrupt_PE_DONE)
+#define EXTERNAL_INTERRUPTS (interrupt_DEC)
 #define INTERNAL_INTERRUPTS (0)
 
 // bit 13 is forced to 0

@@ -295,8 +295,6 @@ typedef struct s_CP {
     u8 arg_size[21]; // sizes of individual (direct) arguments of current draw command
     s_draw_command_small draw_command_queue[MAX_DRAW_COMMANDS];
     volatile u32 draw_command_index;
-    volatile bool draw_command_done[MAX_DRAW_COMMANDS];  // signify if draw command index is an index where we have to wait
-                                                         // for the frame to draw, because of a PE_DONE command
     volatile bool draw_command_available[MAX_DRAW_COMMANDS];  // used as flags, set to false by CP, then to true by Flipper
 } s_CP;
 

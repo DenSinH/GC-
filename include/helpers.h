@@ -30,7 +30,7 @@ static inline u32 MASK(x, y) {
 
 static inline u32 popcount(u32 x)
 {
-#if __has_builtin(__builtin_popcount)
+#if HAS_BUILTIN(__builtin_popcount)
     return __builtin_popcount(x);
 #else
     u32 count = 0;
@@ -42,7 +42,7 @@ static inline u32 popcount(u32 x)
 
 static inline u32 ctlz(u32 x)
 {
-#if __has_builtin(__builtin_clz)
+#if HAS_BUILTIN(__builtin_clz)
     return x ? __builtin_clz(x) : 32;
 #else
     // todo: binary search
@@ -58,7 +58,7 @@ static inline u32 ctlz(u32 x)
 
 static inline u32 cttz(u32 x)
 {
-#if __has_builtin(__builtin_ctz)
+#if HAS_BUILTIN(__builtin_ctz)
     return x ? __builtin_ctz(x) : 32;
 #else
     // todo: binary search

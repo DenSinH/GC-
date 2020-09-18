@@ -36,8 +36,6 @@ typedef struct s_PI {
 
 HW_REG_INIT_FUNCTION(PI);
 
-static void ADD_PI_INTSR(s_PI* PI, e_PI_interrupt interrupt) {
-    PI->INTSR |= interrupt;
-}
+void add_PI_intsr(s_PI* PI, e_PI_interrupt interrupt);
 
 #endif //GC__PROCESSORINTERFACE_H

@@ -12,22 +12,23 @@ static inline void handle_interrupt(s_Gekko* cpu, u32 target_address) {
     cpu->SRR0 = cpu->PC;    // PC is 4 ahead already
     cpu->SRR1 = cpu->MSR.raw & INTERRUPT_SRR1_MASK;
 
-    // from Dolphin:
+    // from the general PPC manual:
     cpu->MSR.LE = cpu->MSR.ILE;
     cpu->MSR.raw &= ~0x04EF36;
 
     cpu->PC = target_address;
 }
 
-static inline bool any_enabled(u32 interrupts, bool MSR_EE) {
+static inline bool any_enabled(s_Gekko* cpu) {
     // check if any interrupts are enabled (either set, or MSR.EE set and interrupt is set)
-    return (interrupts & INTERNAL_INTERRUPTS) || (MSR_EE && (interrupts & EXTERNAL_INTERRUPTS));
+    // todo: check PI_INTSR and INTMR
+    return (cpu->interrupts & INTERNAL_INTERRUPTS) || (cpu->MSR.EE && ((cpu->interrupts & EXTERNAL_INTERRUPTS) || (cpu->system->HW_regs.PI.INTSR & cpu->system->HW_regs.PI.INTMR)));
 }
 
 void start_interrupt_poll(s_Gekko* cpu){
     // only start polling if there are any interrupts
-    log_cpu("Request to start interrupt poll");
-    if (!cpu->poll_intr_event.active && any_enabled(cpu->interrupts, cpu->MSR.EE)) {
+    log_cpu("Request to start interrupt poll (%lld)", cpu->TBR.raw);
+    if (!cpu->poll_intr_event.active && any_enabled(cpu)) {
         // start polling for interrupts again
         log_cpu("Request acknowledged");
         cpu->poll_intr_event.time = cpu->TBR.raw + 1;
@@ -38,7 +39,7 @@ void start_interrupt_poll(s_Gekko* cpu){
 
 SCHEDULER_EVENT(DEC_intr) {
     s_Gekko* cpu = (s_Gekko*)caller;
-    log_cpu("DEC interrupt!");
+    log_cpu("DEC interrupt");
 
     if (cpu->MSR.EE) {
         // handle immediately
@@ -64,17 +65,18 @@ SCHEDULER_EVENT(handle_interrupts) {
 
         if (cpu->MSR.EE) {
             // todo: other external interrupts
-            if (cpu->interrupts & interrupt_DEC) {
+            if (cpu->system->HW_regs.PI.INTSR & cpu->system->HW_regs.PI.INTMR) {
+                // external interrupts from PI
+                log_cpu("External interrupt (%lld)", cpu->TBR.raw);
+                handle_interrupt(cpu, 0x00000500);
+            }
+            else if (cpu->interrupts & interrupt_DEC) {
                 handle_interrupt(cpu, 0x00000900);
                 cpu->interrupts &= ~interrupt_DEC;
             }
-            else if (cpu->interrupts & interrupt_PE_DONE) {
-                handle_interrupt(cpu, 0x00000500);
-                cpu->interrupts &= ~interrupt_PE_DONE;
-            }
         }
 
-        if (cpu->interrupts && any_enabled(cpu->interrupts, cpu->MSR.EE)) {
+        if (cpu->interrupts && any_enabled(cpu)) {
             event->time = cpu->TBR.raw + INTERRUPT_POLL_DELAY;
 
             // keep it in the scheduler

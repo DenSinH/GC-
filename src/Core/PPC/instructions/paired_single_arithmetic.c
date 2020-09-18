@@ -1,4 +1,5 @@
 #include "instructions.h"
+#include "float_utils.h"
 
 #define PS_SET_RESULT_VX !(cpu->FPSCR.VE && (result_ps0.exception || result_ps1.exception))
 

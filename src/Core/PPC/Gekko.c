@@ -3,7 +3,7 @@
 #include <memory.h>
 
 #include "Gekko.h"
-#include "../../Loader/loader.h"
+#include "Loader/loader.h"
 
 #include "log.h"
 
@@ -18,7 +18,7 @@ void load_IPL_to_Gekko(s_Gekko* cpu) {
 void load_DOL_to_Gekko(s_Gekko* cpu, const char file_name[]) {
     // load DOL file to Gekko memory
     cpu->PC = load_DOL_to(file_name, cpu->DMMU.memory_ptr);
-    strcpy_s(cpu->dol_file_name, DOL_FILE_NAME_LENGTH, file_name);
+    STRCPY(cpu->dol_file_name, DOL_FILE_NAME_LENGTH, file_name);
 }
 
 #define R32_FORMAT " %02d: %08"  PRIx32 " | "
@@ -76,7 +76,7 @@ void dump_Gekko(s_Gekko* cpu) {
 void dump_Gekko_mem_range(s_Gekko* cpu, u32 start, u32 end) {
     // dump Gekko memory range to file
     FILE* file;
-    fopen_s(&file, GEKKO_DUMP_FILE_NAME, "wb");
+    FOPEN(&file, GEKKO_DUMP_FILE_NAME, "wb");
 
     u32 written_length = fwrite(cpu->DMMU.memory_ptr + start, 1, end - start, file);
     if (written_length != end - start) {

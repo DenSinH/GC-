@@ -1,4 +1,5 @@
 #include "instructions.h"
+#include "float_utils.h"
 
 
 INLINE_GEKKO_INSTR(ps_sum0) {

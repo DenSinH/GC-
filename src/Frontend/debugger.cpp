@@ -11,7 +11,6 @@
 
 static bool show_console = true;
 static bool show_register_viewer = true;
-static bool show_hw_register_viewer = true;
 static bool show_disassembly_viewer = true;
 static bool show_overlay = false;
 static bool show_memory_viewer = true;

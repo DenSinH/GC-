@@ -2,6 +2,9 @@
 
 This is probably going to take a while to finish...
 
+#### Packages required:
+`SDL2`, `(dear) ImGui`, `capstone[ppc]`
+
 #### Memos to self:
 
 required settings:

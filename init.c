@@ -1,4 +1,4 @@
-#include "src/Core/system.h"
+#include "init.h"
 #include "src/Core/PPC/MMU.h"
 #include "src/Frontend/interface.h"
 
@@ -15,7 +15,7 @@ static CONSOLE_COMMAND(reset_system) {
     }
 
     load_DOL_to_Gekko(&global_system->cpu, global_system->cpu.dol_file_name);
-    strcpy_s(output, MAX_OUTPUT_LENGTH, "Reloaded DOL file");
+    STRCPY(output, MAX_OUTPUT_LENGTH, "Reloaded DOL file");
 #endif
 }
 
@@ -23,7 +23,7 @@ static CONSOLE_COMMAND(pause_system) {
 #ifdef DO_DEBUGGER
     global_system->paused = true;
 
-    strcpy_s(output, MAX_OUTPUT_LENGTH, "System paused");
+    STRCPY(output, MAX_OUTPUT_LENGTH, "System paused");
 #endif
 }
 
@@ -31,7 +31,7 @@ static CONSOLE_COMMAND(unpause_system) {
 #ifdef DO_DEBUGGER
     global_system->paused = false;
 
-    strcpy_s(output, MAX_OUTPUT_LENGTH, "System unpaused");
+    STRCPY(output, MAX_OUTPUT_LENGTH, "System unpaused");
 #endif
 }
 
@@ -44,7 +44,7 @@ static CONSOLE_COMMAND(break_system) {
 
     u32 breakpoint = parsehex(args[1]);
     add_breakpoint(&global_system->breakpoints, breakpoint);
-    sprintf_s(output, MAX_OUTPUT_LENGTH, "Added breakpoint at %08x", breakpoint);
+    SPRINTF(output, MAX_OUTPUT_LENGTH, "Added breakpoint at %08x", breakpoint);
 #endif
 }
 
@@ -57,7 +57,7 @@ static CONSOLE_COMMAND(unbreak_system) {
 
     u32 breakpoint = parsehex(args[1]);
     remove_breakpoint(&global_system->breakpoints, breakpoint);
-    sprintf_s(output, MAX_OUTPUT_LENGTH, "Removed breakpoint at %08x", breakpoint);
+    SPRINTF(output, MAX_OUTPUT_LENGTH, "Removed breakpoint at %08x", breakpoint);
 #endif
 }
 
@@ -66,29 +66,29 @@ static CONSOLE_COMMAND(step_system) {
     global_system->paused = true;
     if (argc < 2) {
         global_system->stepcount = 1;
-        strcpy_s(output, MAX_OUTPUT_LENGTH, "Stepping system for one step");
+        STRCPY(output, MAX_OUTPUT_LENGTH, "Stepping system for one step");
     }
     else {
         u32 steps = parsedec(args[1]);
         global_system->stepcount = steps;
-        sprintf_s(output, MAX_OUTPUT_LENGTH, "Stepping system for %d steps", steps);
+        SPRINTF(output, MAX_OUTPUT_LENGTH, "Stepping system for %d steps", steps);
     }
 #endif
 }
 
 static CONSOLE_COMMAND(dump_memory_range) {
     if (argc < 2) {
-        strcpy_s(output, MAX_OUTPUT_LENGTH, "Provide an address/range to dump from");
+        STRCPY(output, MAX_OUTPUT_LENGTH, "Provide an address/range to dump from");
     }
     else if (argc < 3) {
         u32 address = parsehex(args[1]) & (~3);
-        sprintf_s(output, MAX_OUTPUT_LENGTH, "Value at %08x: %08x", address, get_word(&global_system->cpu.DMMU, address));
+        SPRINTF(output, MAX_OUTPUT_LENGTH, "Value at %08x: %08x", address, get_word(&global_system->cpu.DMMU, address));
     }
     else {
         u32 start = parsehex(args[1]) & (~3);
         u32 end = parsehex(args[2]) & (~3);
         dump_range(&global_system->cpu.DMMU, start, end);
-        strcpy_s(output, MAX_OUTPUT_LENGTH, "Dumped range to console");
+        STRCPY(output, MAX_OUTPUT_LENGTH, "Dumped range to console");
     }
 }
 
@@ -126,8 +126,7 @@ static s_framebuffer frontend_render() {
     return render_Flipper(&global_system->flipper);
 }
 
-
-static void init() {
+s_GameCube* init() {
     global_system = init_system();
 
     bind_video_init(frontend_video_init);
@@ -234,12 +233,34 @@ static void init() {
     }
 
     add_register_data("", NULL, 1, HWIO_tab);
+
+    sprintf(name, "VI HLW");
+    add_register_data(name, &global_system->HW_regs.VI.HLW, 4, HWIO_tab);
+
+    sprintf(name, "VI HLCount");
+    add_register_data(name, &global_system->HW_regs.VI.current_halfline, 4, HWIO_tab);
+
+    sprintf(name, "VI DI0");
+    add_register_data(name, &global_system->HW_regs.VI.DI[0], 4, HWIO_tab);
+
+    sprintf(name, "VI DI1");
+    add_register_data(name, &global_system->HW_regs.VI.DI[1], 4, HWIO_tab);
+
+    add_register_data("", NULL, 1, HWIO_tab);
     add_register_data("", NULL, 1, HWIO_tab);
 
     for (int i = 0; i < 0x100; i++) {
         sprintf(name, "PI%02x", i);
         add_register_data(name, &global_system->HW_regs.PI.regs[i], 1, HWIO_tab);
     }
+
+    add_register_data("", NULL, 1, HWIO_tab);
+
+    sprintf(name, "PI INTSR");
+    add_register_data(name, &global_system->HW_regs.PI.INTSR, 4, HWIO_tab);
+
+    sprintf(name, "PI INTMR");
+    add_register_data(name, &global_system->HW_regs.PI.INTMR, 4, HWIO_tab);
 
     add_register_data("", NULL, 1, HWIO_tab);
     add_register_data("", NULL, 1, HWIO_tab);
@@ -349,4 +370,6 @@ static void init() {
     add_command("STEP", "Step system for $1 CPU steps (defaults to 1 step).", step_system);
     add_command("MEMORY", "Read word(s) from memory between $1 and $2", dump_memory_range);
     add_command("STATE", "Dump the current register state to the console", get_state);
+
+    return global_system;
 }

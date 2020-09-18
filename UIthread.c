@@ -9,5 +9,8 @@ DWORD WINAPI UI_thread(LPVOID _) {
 }
 
 #else
-#error Not implemented
+void* UI_thread(void* arg) {
+    ui_run();
+    return NULL;
+}
 #endif

@@ -4,7 +4,9 @@
 #include <stdio.h>
 #include <stdlib.h>
 
-#include "init.c"
+#include "init.h"
+
+static s_GameCube* global_system;
 
 void exception_handler() {
     // format_Gekko(&global_system->cpu);
@@ -23,7 +25,7 @@ void exception_handler() {
 }
 
 int main() {
-    init();
+    global_system = init();
 
 #ifdef DO_BREAKPOINTS
     global_system->paused = false;

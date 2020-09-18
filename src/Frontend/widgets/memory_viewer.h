@@ -4,8 +4,8 @@
 #if defined(_MSC_VER) && !defined(_CRT_SECURE_NO_WARNINGS)
 #define _CRT_SECURE_NO_WARNINGS
 #endif
-#include <stdio.h>      // sprintf, scanf
-#include <stdint.h>     // uint8_t, etc.
+#include <cstdio>      // sprintf, scanf
+#include <cstdint>     // uint8_t, etc.
 
 #ifdef _MSC_VER
 #define _PRISizeT   "I"
@@ -14,6 +14,8 @@
 #define _PRISizeT   "z"
 #define ImSnprintf  snprintf
 #endif
+
+#include "default.h"
 
 struct MemoryViewer
 {
@@ -245,7 +247,6 @@ struct MemoryViewer
                 if (DataEditingAddr == addr)
                 {
                     // Display text input on current byte
-                    bool data_write = false;
                     ImGui::PushID((void*)addr);
                     if (DataEditingTakeFocus)
                     {
@@ -280,12 +281,8 @@ struct MemoryViewer
                     user_data.CursorPos = -1;
                     sprintf(user_data.CurrentBufOverwrite, format_byte, ReadFn ? ReadFn(mem_data, addr) : mem_data[addr]);
                     ImGuiInputTextFlags flags = ImGuiInputTextFlags_CharsHexadecimal | ImGuiInputTextFlags_EnterReturnsTrue | ImGuiInputTextFlags_AutoSelectAll | ImGuiInputTextFlags_NoHorizontalScroll | ImGuiInputTextFlags_AlwaysInsertMode | ImGuiInputTextFlags_CallbackAlways;
-                    if (ImGui::InputText("##data", DataInputBuf, 32, flags, UserData::Callback, &user_data))
-                        data_write = data_next = true;
                     DataEditingTakeFocus = false;
                     ImGui::PopItemWidth();
-                    if (user_data.CursorPos >= 2)
-                        data_write = data_next = true;
                     ImGui::PopID();
                 }
                 else
@@ -349,12 +346,6 @@ struct MemoryViewer
         ImGui::PopStyleVar(2);
         ImGui::EndChild();
 
-        if (data_next && DataEditingAddr < mem_size)
-        {
-            DataEditingAddr = DataPreviewAddr = DataEditingAddr + 1;
-            DataEditingTakeFocus = true;
-        }
-
         const bool lock_show_data_preview = OptShowDataPreview;
         if (OptShowOptions)
         {
@@ -402,7 +393,7 @@ struct MemoryViewer
         if (ImGui::InputText("##addr", AddrInputBuf, 32, ImGuiInputTextFlags_CharsHexadecimal | ImGuiInputTextFlags_EnterReturnsTrue))
         {
             uint64_t goto_addr;
-            if (sscanf_s(AddrInputBuf, "%" _PRISizeT "X", &goto_addr) == 1)
+            if (SSCANF(AddrInputBuf, "%" _PRISizeT "X", &goto_addr) == 1)
             {
                 GotoAddr = (uint32_t)(goto_addr - base_display_addr);
                 HighlightMin = HighlightMax = (uint64_t)-1;

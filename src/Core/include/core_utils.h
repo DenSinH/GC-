@@ -6,19 +6,12 @@
 // todo: builtins/intrinsics
 #define READ8(array, address) array[(address)]
 #define READ16(array, address) ((array[(address)] << 8) | array[(address) + 1])
-// #define READ16LE(array, address) ((array[(address) + 1] << 8) | array[(address)])
 
 #define READ32(array, address)      \
     ((array[(address)] << 24)    | \
     (array[(address) + 1] << 16) | \
     (array[(address) + 2] << 8)  | \
      array[(address) + 3])
-
-//#define READ32LE(array, address)      \
-//    ((array[(address) + 3] << 24)    | \
-//    (array[(address) + 2] << 16) | \
-//    (array[(address) + 1] << 8)  | \
-//     array[(address)])
 
 #define READ64(array, address)           \
    (((u64)array[(address)] << 56)     | \
@@ -35,20 +28,12 @@
 #define WRITE16(array, address, value)       \
     array[(address)] = (value) >> 8;         \
     array[(address) + 1] = (value) & 0xff
-//#define WRITE16LE(array, address, value)       \
-//    array[(address) + 1] = (value) >> 8;         \
-//    array[(address)] = (value) & 0xff
 
 #define WRITE32(array, address, value)              \
     array[(address)] = (value) >> 24;               \
     array[(address) + 1] = ((value) >> 16) & 0xff;  \
     array[(address) + 2] = ((value) >> 8) & 0xff;   \
     array[(address) + 3] = (value) & 0xff
-//#define WRITE32LE(array, address, value)              \
-//    array[(address) + 3] = (value) >> 24;               \
-//    array[(address) + 2] = ((value) >> 16) & 0xff;  \
-//    array[(address) + 1] = ((value) >> 8) & 0xff;   \
-//    array[(address)] = (value) & 0xff
 
 #define WRITE64(array, address, value)              \
     array[(address)] = (value) >> 56;               \

@@ -1,5 +1,7 @@
 #include "instructions.h"
 
+#include <limits.h>
+
 INLINE_GEKKO_INSTR(add) {
     GEKKO_INSTR_HEADER
     log_cpu_verbose("add %08x", instruction.raw);
@@ -212,7 +214,7 @@ INLINE_GEKKO_INSTR(divw) {
 
     i32 result;
     if (overflow) {
-        result = (i32)cpu->GPR[instruction.general_DAB.A] < 0 ? MAXINT32 : 0;
+        result = (i32)cpu->GPR[instruction.general_DAB.A] < 0 ? INT32_MAX : 0;
     }
     else {
         result = (i32)cpu->GPR[instruction.general_DAB.A] / (i32)cpu->GPR[instruction.general_DAB.B];

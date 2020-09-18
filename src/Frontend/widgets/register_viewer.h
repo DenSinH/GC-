@@ -1,5 +1,7 @@
 #pragma once
 
+#include "default.h"
+
 #include <stdint.h>
 #include <inttypes.h>
 
@@ -40,7 +42,7 @@ typedef struct RegisterViewer
         s_register_tab tab = {
                 .name = new char[MAX_REGISTER_TAB_LENGTH]
         };
-        strcpy_s(tab.name, MAX_REGISTER_NAME_LENGTH, name);
+        STRCPY(tab.name, MAX_REGISTER_NAME_LENGTH, name);
         RegisterTabs.push_back(tab);
         return RegisterTabs.size() - 1;
     }
@@ -52,7 +54,7 @@ typedef struct RegisterViewer
                 .size = size
         };
 
-        strcpy_s(data.name, MAX_REGISTER_NAME_LENGTH, reg);
+        STRCPY(data.name, MAX_REGISTER_NAME_LENGTH, reg);
 
         auto RegisterTab = RegisterTabs.begin();
         std::advance(RegisterTab, tab);

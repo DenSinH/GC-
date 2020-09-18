@@ -10,7 +10,13 @@
 DWORD WINAPI UI_thread(LPVOID _);
 
 #else
-#error Not implemented
+
+#include <pthread.h>
+
+#define START_DEBUG pthread_t ui_thread; pthread_create(&ui_thread, NULL, UI_thread, NULL);
+
+void* UI_thread(void* arg);
+
 #endif
 
 #endif //GC__UITHREAD_H

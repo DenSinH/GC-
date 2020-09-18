@@ -12,9 +12,12 @@ typedef enum e_PE_regs {
 
 typedef struct s_PE {
     u8 regs[0x100];
-    HW_REG_WRITE_CALLBACK((*write[0x40]), PE);
-    HW_REG_READ_PRECALL((*read[0x40]), PE);
+    HW_REG_WRITE_CALLBACK((*write[0x80]), PE);
+    HW_REG_READ_PRECALL((*read[0x80]), PE);
     struct s_GameCube* system;
+
+    /* internal function */
+    u16 intr_status;
 } s_PE;
 
 HW_REG_INIT_FUNCTION(PE);

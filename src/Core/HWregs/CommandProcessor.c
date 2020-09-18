@@ -141,7 +141,7 @@ static inline void load_XF_regs(s_CP* CP, u16 length, u16 base_addr, const u8* v
 }
 
 static inline void load_INDX(s_CP* CP, e_CP_cmd opcode, u16 index, u8 length, u16 base_addr) {
-    log_warn("Load %d XF indexed (%02x, index value %02x) starting at %04x", length, opcode, index, base_addr);
+    log_fatal("Load %d XF indexed (%02x, index value %02x) starting at %04x", length, opcode, index, base_addr);
     // todo
 }
 
@@ -219,7 +219,7 @@ static inline void send_draw_command(s_CP* CP) {
 }
 
 static inline void call_DL(s_CP* CP, u32 list_addr, u32 list_size) {
-    log_warn("Call DL at %08x of size %08x", list_addr, list_size);
+    log_fatal("Call DL at %08x of size %08x", list_addr, list_size);
     // we can basically just call the execute_buffer function but then on data in memory
 }
 
@@ -234,20 +234,17 @@ static inline void load_BP_reg(s_CP* CP, u32 value) {
     if (RID == BP_reg_int_PE_DONE) {
         // check if bit 2 is set (likely) and if the PE finish interrupt is masked by PE
         if (CP->internal_BP_regs[BP_reg_int_PE_DONE] & 0x02 && GET_PE_REG(&CP->system->HW_regs.PE, PE_reg_interrupt_status) & 0x02) {
+            // todo: should PE_reg_interrupt_status be set in this case even?
+
             // frame done
             SET_PE_REG(&CP->system->HW_regs.PE, PE_reg_token, (u16)value);
 
             // set interrupt to called
             SET_PE_REG(&CP->system->HW_regs.PE, PE_reg_interrupt_status, GET_PE_REG(&CP->system->HW_regs.PE, PE_reg_interrupt_status) | 0x08);
 
-            CP->draw_command_done[CP->draw_command_index] = true;
-            log_cp("Set draw command %d to done", CP->draw_command_index);
-
             // add interrupt cause to processor interface and call interrupt
-            if (CP->system->HW_regs.PI.INTMR & PI_intr_PE_DONE) {
-                ADD_PI_INTSR(&CP->system->HW_regs.PI, PI_intr_PE_DONE);
-                do_interrupt(&CP->system->cpu, interrupt_PE_DONE);
-            }
+            log_cp("PE_DONE interrupt!");
+            add_PI_intsr(&CP->system->HW_regs.PI, PI_intr_PE_DONE);
         }
     }
 }

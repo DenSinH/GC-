@@ -4,11 +4,11 @@
 #include "../Scheduler/scheduler.h"
 
 SPR_READ_FN(SPR_read_DEC) {
-    return cpu->DEC - cpu->TBR.time;
+    return (cpu->DEC - cpu->TBR.time) >> 3;
 }
 
 SPR_WRITE_FN(SPR_write_DEC) {
-    // we always keep the DEC event in the scheduler
+    // we always keep the DEC event in the scheduler, because it can technically overflow again
     cpu->DEC = cpu->TBR.raw + (value << 3);   // 1 TBR tick is 8 clock cycles
     change_event(&cpu->system->scheduler, &cpu->DEC_intr_event, cpu->DEC);
 }

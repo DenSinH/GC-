@@ -43,8 +43,9 @@ void trickle_down(s_scheduler* scheduler, size_t index) {
 }
 
 void add_event(s_scheduler* scheduler, s_event* event) {
-    log_sched("add event at time %lld", event->time);
+    log_sched("add event at time %lld (now %d events in queue)", event->time, scheduler->count);
     scheduler->events[scheduler->count] = event;
+    event->active = true;
     trickle_up(scheduler, scheduler->count++);
 }
 

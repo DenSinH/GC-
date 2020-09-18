@@ -1,7 +1,18 @@
 #include "ProcessorInterface.h"
 #include "core_utils.h"
 
+#include "../PPC/interrupts.h"
+#include "../system.h"
+
 #include <stdio.h>
+
+void add_PI_intsr(s_PI* PI, e_PI_interrupt interrupt) {
+    if (PI->INTMR) {
+        PI->INTSR |= interrupt;
+        log_cpu("Requesting interrupt poll for PI interrupt %08x", interrupt);
+        start_interrupt_poll(&PI->system->cpu);
+    }
+}
 
 HW_REG_WRITE_CALLBACK(write_PI_INTSR, PI) {
     PI->INTSR &= ~READ32(PI->regs, 0);

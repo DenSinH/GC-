@@ -2,7 +2,12 @@ find_package(imgui CONFIG REQUIRED)
 find_package(SDL2 CONFIG REQUIRED)
 find_package(glad CONFIG REQUIRED)
 
-find_library(Capstone capstone_dll REQUIRED)
+if (WIN32)
+    find_library(Capstone capstone_dll REQUIRED)
+else()
+    find_package(Capstone REQUIRED)
+endif()
+
 find_path(Capstone_INCLUDE_DIR capstone.h PATH_SUFFIXES capstone)
 set(Capstone_INCLUDE_DIR ${Capstone_INCLUDE_DIR}/../)
 
@@ -38,5 +43,9 @@ set_target_properties(Frontend PROPERTIES
                       CXX_EXTENSIONS ON)
 
 target_link_libraries(Frontend PRIVATE imgui::imgui SDL2::SDL2 SDL2::SDL2main glad::glad)
-target_link_libraries(Frontend PRIVATE ${Capstone})
-target_include_directories(Frontend PRIVATE imgui)
+if (WIN32)
+    target_link_libraries(Frontend PRIVATE ${Capstone})
+else()
+    target_link_libraries(Frontend PRIVATE Capstone::Capstone)
+endif()
+target_include_directories(Frontend PRIVATE imgui ${PROJECT_SOURCE_DIR}/include)
