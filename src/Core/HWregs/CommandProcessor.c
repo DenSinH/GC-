@@ -237,14 +237,13 @@ static inline void load_BP_reg(s_CP* CP, u32 value) {
             // todo: should PE_reg_interrupt_status be set in this case even?
 
             // frame done
-            SET_PE_REG(&CP->system->HW_regs.PE, PE_reg_token, (u16)value);
+            SET_PE_REG(CP->PE, PE_reg_token, (u16)value);
 
             // set interrupt to called
-            SET_PE_REG(&CP->system->HW_regs.PE, PE_reg_interrupt_status, GET_PE_REG(&CP->system->HW_regs.PE, PE_reg_interrupt_status) | 0x08);
+            CP->PE->intr_status |= PE_intr_DONE;
 
             // add interrupt cause to processor interface and call interrupt
-            log_cp("PE_DONE interrupt!");
-            add_PI_intsr(&CP->system->HW_regs.PI, PI_intr_PE_DONE);
+            set_PI_intsr(CP->PI, PI_intr_PE_DONE);
         }
     }
 }

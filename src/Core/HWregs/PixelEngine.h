@@ -5,6 +5,13 @@
 #include "hwreg_utils.h"
 #include "core_utils.h"
 
+#include "ProcessorInterface.h"
+
+typedef enum e_PE_interrupts {
+    PE_intr_DONE = 0x8,
+    PE_intr_TOKEN = 0x4
+} e_PE_interrupts;
+
 typedef enum e_PE_regs {
     PE_reg_interrupt_status = 0x0a,
     PE_reg_token = 0x0e,
@@ -17,6 +24,8 @@ typedef struct s_PE {
     struct s_GameCube* system;
 
     /* internal function */
+    s_PI* PI;
+
     u16 intr_status;
 } s_PE;
 

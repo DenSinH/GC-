@@ -16,7 +16,7 @@ u8* load_IPL_file(const char *file_name) {
     // open file
     FILE* file;
     FOPEN(&file, file_name, "rb");
-    if (!file) log_fatal("Failed Loader file read");
+    if (!file) log_fatal("Failed Loader file read (%s)", file_name);
 
     // find size
     fseek(file, 0, SEEK_END);
@@ -130,7 +130,7 @@ u32 load_DOL_to(const char file_name[], u8* target) {
     // open the file
     FILE* file;
     FOPEN(&file, file_name, "rb");
-    if (!file) log_fatal("Failed DOL file read");
+    if (!file) log_fatal("Failed DOL file read (%s)", file_name);
 
     fseek(file, 0, SEEK_END);
     size_t file_size = ftell(file);

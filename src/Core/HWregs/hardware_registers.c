@@ -19,6 +19,10 @@ void init_HW_regs(s_hardware_registers* HW_regs) {
     HW_regs->GX_FIFO.system = HW_regs->system;
 
     HW_regs->GX_FIFO.CP_ptr = &HW_regs->CP;
+    HW_regs->CP.PI = &HW_regs->PI;
+    HW_regs->CP.PE = &HW_regs->PE;
+    HW_regs->VI.PI = &HW_regs->PI;
+    HW_regs->PE.PI = &HW_regs->PI;
 
     init_CP(&HW_regs->CP);
     init_PE(&HW_regs->PE);

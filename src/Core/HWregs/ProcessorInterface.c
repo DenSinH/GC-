@@ -6,9 +6,11 @@
 
 #include <stdio.h>
 
-void add_PI_intsr(s_PI* PI, e_PI_interrupt interrupt) {
-    if (PI->INTMR) {
-        PI->INTSR |= interrupt;
+void set_PI_intsr(s_PI* PI, e_PI_interrupt interrupt) {
+    log_cpu("Set PI interrupt %x", interrupt);
+    PI->INTSR |= interrupt;
+
+    if (PI->INTMR & PI->INTSR) {
         log_cpu("Requesting interrupt poll for PI interrupt %08x", interrupt);
         start_interrupt_poll(&PI->system->cpu);
     }

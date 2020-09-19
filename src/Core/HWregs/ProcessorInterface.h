@@ -4,6 +4,8 @@
 #include "default.h"
 #include "hwreg_utils.h"
 
+#include "log.h"
+
 typedef enum e_PI_interrupt {
     PI_intr_ERROR = 0x000000001,
     PI_intr_RSW = 0x000000002,
@@ -36,6 +38,11 @@ typedef struct s_PI {
 
 HW_REG_INIT_FUNCTION(PI);
 
-void add_PI_intsr(s_PI* PI, e_PI_interrupt interrupt);
+void set_PI_intsr(s_PI* PI, e_PI_interrupt interrupt);
+
+static inline void clear_PI_intsr(s_PI* PI, e_PI_interrupt interrupt) {
+    PI->INTSR &= ~interrupt;
+    log_cpu("Clear PI interrupt %x", interrupt);
+}
 
 #endif //GC__PROCESSORINTERFACE_H

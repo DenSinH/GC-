@@ -5,7 +5,7 @@
 #include "../Scheduler/scheduler.h"
 
 // must be some small value, higher might increase performance, but decrease accuracy
-#define INTERRUPT_POLL_DELAY 10
+#define INTERRUPT_POLL_DELAY 1
 
 typedef enum e_interrupts {
     interrupt_DEC = 0x00000001

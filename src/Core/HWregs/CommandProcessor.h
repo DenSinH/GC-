@@ -2,10 +2,14 @@
 #define GC__COMMANDPROCESSOR_H
 
 #include "default.h"
-#include <stdbool.h>
 #include "hwreg_utils.h"
 #include "core_utils.h"
 #include "../Flipper/shaders/GX_constants.h"
+
+#include "ProcessorInterface.h"
+#include "PixelEngine.h"
+
+#include <stdbool.h>
 
 typedef enum e_CP_regs {
     CP_reg_FIFO_base_lo = 0x20,
@@ -272,6 +276,9 @@ typedef struct s_CP {
     struct s_GameCube* system;
 
     /* internal function */
+    s_PI* PI;
+    s_PE* PE;
+
     u32 internal_CP_regs[INTERNAL_CP_REGISTER_SIZE];
     u32 internal_BP_regs[INTERNAL_BP_REGISTER_SIZE];
     // ORDER IS IMPORTANT FOR THESE 2 FIELDS (passed to GPU)

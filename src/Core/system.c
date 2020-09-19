@@ -23,13 +23,19 @@ s_GameCube* init_system() {
 
 #ifdef DO_BREAKPOINTS
 //    add_breakpoint(&GameCube->breakpoints, 0x8000b0b4);
-    add_breakpoint(&GameCube->breakpoints, 0x00000500);
+//    add_breakpoint(&GameCube->breakpoints, 0x00000500);
 //    add_breakpoint(&GameCube->breakpoints, 0x8000586c);
 #endif
     return GameCube;
 }
 
-#define TEST_DOL "D:\\CProjects\\GCResources\\GameCubeResources\\Tests\\Cube\\Cube.dol"
+#ifdef _WIN32
+#define ROOT_DIR "D:/"
+#else
+#define ROOT_DIR "/mnt/d/"
+#endif
+
+#define TEST_DOL ROOT_DIR "CProjects/GCResources/GameCubeResources/Tests/Cube/Cube.dol"
 #define STEP_ON_BREAK
 
 void run_system(s_GameCube* system) {

@@ -21,7 +21,7 @@ static inline void handle_interrupt(s_Gekko* cpu, u32 target_address) {
 
 static inline bool any_enabled(s_Gekko* cpu) {
     // check if any interrupts are enabled (either set, or MSR.EE set and interrupt is set)
-    // todo: check PI_INTSR and INTMR
+    log_warn("Check if interrupts are enabled: EE: %d, PI: %08x", cpu->MSR.EE, cpu->system->HW_regs.PI.INTSR & cpu->system->HW_regs.PI.INTMR)
     return (cpu->interrupts & INTERNAL_INTERRUPTS) || (cpu->MSR.EE && ((cpu->interrupts & EXTERNAL_INTERRUPTS) || (cpu->system->HW_regs.PI.INTSR & cpu->system->HW_regs.PI.INTMR)));
 }
 
@@ -39,7 +39,7 @@ void start_interrupt_poll(s_Gekko* cpu){
 
 SCHEDULER_EVENT(DEC_intr) {
     s_Gekko* cpu = (s_Gekko*)caller;
-    log_cpu("DEC interrupt");
+    // log_cpu("DEC interrupt");
 
     if (cpu->MSR.EE) {
         // handle immediately

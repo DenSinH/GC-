@@ -5,6 +5,8 @@
 #include "hwreg_utils.h"
 #include "../Scheduler/scheduler.h"
 
+#include "ProcessorInterface.h"
+
 #include <stdbool.h>
 
 /*
@@ -19,6 +21,7 @@
     #error Incorrect screen type selected in flags.h
 #endif
 
+#define VI_DI_DATA 0x0fffffff
 #define VI_DI_ENABLED 0x10000000
 #define VI_DI_ACTIVE 0x80000000
 
@@ -34,6 +37,8 @@ typedef enum e_VI_regs {
     VI_reg_DPH  = 0x002e,
     VI_reg_DI0  = 0x0030,
     VI_reg_DI1  = 0x0034,
+    VI_reg_DI2  = 0x0038,
+    VI_reg_DI3  = 0x003c,
 } e_VI_regs;
 
 
@@ -44,15 +49,17 @@ typedef struct s_VI {
     struct s_GameCube* system;
 
     /* internal function */
+    s_PI* PI;
+
     u32 HLW;               // HalfLineWidth, set in VI.HTR0
     u32 current_halfline;  // for current VPos: / 2 + (halflines per field * current_field)
     bool current_field;    // false: odd, true: even
     volatile bool VSync;   // end of frame reached
 
-    u32 DI[2];
+    u32 DI[4];
 
     s_event halfline_count_event;  // permanently in the scheduler
-    s_event DI_event[2];           // only in scheduler when enabled, I don't use the top 2 fields
+    s_event DI_event[4];           // only in scheduler when enabled, I don't use the top 2 fields
 } s_VI;
 
 
