@@ -64,4 +64,8 @@ else()
     target_link_libraries(GC_ PRIVATE -ldl -lpthread)
 endif()
 
-target_include_directories(Frontend PRIVATE ${CMAKE_CURRENT_SOURCE_DIR}/imgui ${PROJECT_SOURCE_DIR}/include)
+target_include_directories(Frontend PRIVATE
+        ${CMAKE_CURRENT_SOURCE_DIR}/imgui
+        ${PROJECT_SOURCE_DIR}/include
+        ${PROJECT_SOURCE_DIR}/modules
+)

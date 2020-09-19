@@ -32,9 +32,9 @@ add_executable(GC_
         include/flags.h
         include/log.h
         include/sleeping.h
-        include/glad/glad.h
-        include/glad/glad.c
-        include/KHR/khrplatform.h
+        modules/glad/glad.h
+        modules/glad/glad.c
+        modules/KHR/khrplatform.h
         UIthread.h
         UIthread.c
         debugging.h
@@ -52,7 +52,7 @@ else()
     message(STATUS "IPO / LTO not supported: <${ipo_error}>")
 endif()
 
-add_subdirectory(include/imgui)
+add_subdirectory(modules/imgui)
 
 add_subdirectory(src/Core)
 add_subdirectory(src/Frontend)
