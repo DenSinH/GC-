@@ -21,3 +21,7 @@ void close_disassembly(csh* handle) {
 size_t disassemble(const csh* handle, uint8_t* code, size_t code_size, uint32_t address, uint32_t count, cs_insn** out) {
     return cs_disasm(*handle, code, code_size, address, count, out);
 }
+
+void free_disassembly(cs_insn* out, size_t count) {
+    cs_free(out, count);
+}

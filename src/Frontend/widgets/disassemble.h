@@ -9,6 +9,7 @@ extern "C" {
 void init_disassembly(csh* handle);
 void close_disassembly(csh* handle);
 size_t disassemble(const csh* handle, uint8_t* code, size_t code_size, uint32_t address, uint32_t count, cs_insn** out);
+void free_disassembly(cs_insn* out, size_t count);
 #ifdef __cplusplus
 };
 #endif

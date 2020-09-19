@@ -180,5 +180,7 @@ u32 load_DOL_to(const char file_name[], u8* target) {
     memset(target + data.BSSAddress, 0, data.BSSSize);
 
     log_info("[DOL] entry point %08x", data.EntryPoint);
+
+    free(DOL);
     return data.EntryPoint;
 }

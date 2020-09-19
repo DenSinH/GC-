@@ -11,7 +11,6 @@ required settings:
  - CMake options: `-DCMAKE_TOOLCHAIN_FILE=D:\vcpkg\vcpkg\scripts\buildsystems\vcpkg.cmake`
  
 ### Todo:
- - setup XTerm then XServer for WSL testing
  - `__builtin_bswap32` for memory reads
  
 ### Instructions

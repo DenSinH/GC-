@@ -86,6 +86,8 @@ int ui_run() {
     debugger_video_init(glsl_version, window, &gl_context);
     Frontend.video_init();
 
+    printf("Done initializing frontend\n");
+
     // Main loop
     while (!*Frontend.shutdown) {
         // Get events

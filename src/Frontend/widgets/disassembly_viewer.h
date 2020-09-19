@@ -89,6 +89,8 @@ struct DisassemblyViewer
         }
         ImGui::PopStyleVar();
 
+        free_disassembly(insn, count);
+
         ImGui::EndChild();
         ImGui::End();
     }
