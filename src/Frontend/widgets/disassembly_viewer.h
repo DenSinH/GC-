@@ -11,12 +11,14 @@
 #define INSTRS_AFTER_PC 20
 #define DISASM_BUFER_SIZE 0x100
 
+
 struct DisassemblyViewer
 {
     uint32_t* PC;
     uint8_t* memory;
     uint32_t (*valid_address_mask)(uint32_t address);
 
+#ifdef DO_CAPSTONE
     csh handle;
     cs_insn* insn;
     char buffer[DISASM_BUFER_SIZE];
@@ -29,6 +31,7 @@ struct DisassemblyViewer
     {
         close_disassembly(&handle);
     }
+#endif
 
     void Draw(bool* p_open)
     {
@@ -68,6 +71,7 @@ struct DisassemblyViewer
             address -= (INSTRS_BEFORE_PC << 2);
         }
 
+#ifdef DO_CAPSTONE
         count = disassemble(
                 &this->handle,
                 this->memory + valid_address_mask(address),
@@ -90,7 +94,11 @@ struct DisassemblyViewer
         ImGui::PopStyleVar();
 
         free_disassembly(insn, count);
-
+#else
+        for (int i = 0; i < count; i++) {
+            ImGui::Text("Disassembly unsupported");
+        }
+#endif
         ImGui::EndChild();
         ImGui::End();
     }

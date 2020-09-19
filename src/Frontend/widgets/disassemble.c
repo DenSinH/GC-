@@ -1,5 +1,7 @@
 #include "disassemble.h"
 
+#ifdef DO_CAPSTONE
+
 void init_disassembly(csh* handle) {
     cs_err open = cs_open(CS_ARCH_PPC, CS_MODE_32 | CS_MODE_BIG_ENDIAN, handle);
     if (open != CS_ERR_OK)
@@ -25,3 +27,5 @@ size_t disassemble(const csh* handle, uint8_t* code, size_t code_size, uint32_t 
 void free_disassembly(cs_insn* out, size_t count) {
     cs_free(out, count);
 }
+
+#endif

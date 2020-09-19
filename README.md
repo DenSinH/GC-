@@ -3,7 +3,10 @@
 This is probably going to take a while to finish...
 
 #### Packages required:
-`SDL2`, `capstone[ppc]`
+ - `SDL2`
+
+#### Optional packages:
+ - `capstone[ppc] (optional)`
 
 #### Memos to self:
 

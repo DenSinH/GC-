@@ -15,6 +15,7 @@
 
 #else
 
+// holds size_t and things like that
 #include <stddef.h>
 
 #define STATIC_ASSERT _Static_assert
@@ -26,10 +27,9 @@
 
 #endif
 
-#ifdef __has_builtin
+#if defined(__has_builtin)
 #define HAS_BUILTIN(builtin) __has_builtin(builtin)
 #else
-// todo
 #define HAS_BUILTIN(builtin) 0
 #endif
 
