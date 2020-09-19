@@ -14,9 +14,6 @@ SCHEDULER_EVENT(VI_halfline_count) {
     if (VI->current_halfline == LINES_PER_FRAME) {
         VI->current_halfline = 0;
         VI->current_field ^= true;
-        if (!VI->current_field) {
-            VI->VSync = true;
-        }
     }
 
     if (VI->HLW) {

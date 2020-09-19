@@ -54,7 +54,6 @@ typedef struct s_VI {
     u32 HLW;               // HalfLineWidth, set in VI.HTR0
     u32 current_halfline;  // for current VPos: / 2 + (halflines per field * current_field)
     bool current_field;    // false: odd, true: even
-    volatile bool VSync;   // end of frame reached
 
     u32 DI[4];
 

@@ -71,7 +71,13 @@ typedef enum e_BP_regs_internal {
     BP_reg_int_PE_DONE          = 0x45,
     BP_reg_int_PE_copy_clear_AR = 0x4f,
     BP_reg_int_PE_copy_clear_GB = 0x50,
+    BP_reg_int_PE_copy_execute = 0x52,
 } e_BP_regs_internal;
+
+typedef enum e_PE_copy {
+    PE_copy_clear = 0x0800,
+    PE_copy_execute = 0x4000
+} e_PE_copy;
 
 // YAGCD: draw commands also take an argument in the bottom 3 bits
 typedef enum e_CP_cmd {
@@ -301,7 +307,12 @@ typedef struct s_CP {
     // todo: draw_command_mid, large
     u8 arg_size[21]; // sizes of individual (direct) arguments of current draw command
     s_draw_command_small draw_command_queue[MAX_DRAW_COMMANDS];
-    volatile u32 draw_command_index;
+
+    // these values are also read/set by flipper
+    volatile u32 draw_command_index;  // read to make sure flipper does not catch up
+
+    // set to signal that flipper should frameswap after the draw command at a specific index
+    volatile u16 frameswap[MAX_DRAW_COMMANDS];  // read/set by flipper, set to BP value by CP then clear bit 14 by Flipper
     volatile bool draw_command_available[MAX_DRAW_COMMANDS];  // used as flags, set to false by CP, then to true by Flipper
 } s_CP;
 

@@ -231,20 +231,25 @@ static inline void load_BP_reg(s_CP* CP, u32 value) {
     u8 RID = value >> 24;
     CP->internal_BP_regs[RID] = value;
 
-    if (RID == BP_reg_int_PE_DONE) {
-        // check if bit 2 is set (likely) and if the PE finish interrupt is masked by PE
-        if (CP->internal_BP_regs[BP_reg_int_PE_DONE] & 0x02 && GET_PE_REG(&CP->system->HW_regs.PE, PE_reg_interrupt_status) & 0x02) {
-            // todo: should PE_reg_interrupt_status be set in this case even?
+    switch (RID) {
+        case BP_reg_int_PE_DONE:
+            // check if bit 2 is set (likely) and if the PE finish interrupt is masked by PE
+            if (CP->internal_BP_regs[BP_reg_int_PE_DONE] & 0x02 && GET_PE_REG(CP->PE, PE_reg_interrupt_status) & 0x02) {
+                // frame done
+                SET_PE_REG(CP->PE, PE_reg_token, (u16)value);
 
-            // frame done
-            SET_PE_REG(CP->PE, PE_reg_token, (u16)value);
+                // set interrupt to called
+                CP->PE->intr_status |= PE_intr_DONE;
 
-            // set interrupt to called
-            CP->PE->intr_status |= PE_intr_DONE;
-
-            // add interrupt cause to processor interface and call interrupt
-            set_PI_intsr(CP->PI, PI_intr_PE_DONE);
-        }
+                // add interrupt cause to processor interface and call interrupt
+                set_PI_intsr(CP->PI, PI_intr_PE_DONE);
+            }
+            break;
+        case BP_reg_int_PE_copy_execute:
+            CP->frameswap[CP->draw_command_index] = (u16)value;
+            break;
+        default:
+            break;
     }
 }
 

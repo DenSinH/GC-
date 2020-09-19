@@ -179,13 +179,23 @@ static inline void wait_for_fence(s_Flipper* flipper) {
     }
 }
 
-void Flipper_prepare_draw(s_Flipper* flipper) {
-    // clear (emulator) framebuffer to the backdrop color
-    u16 AR = (u16)flipper->CP->internal_BP_regs[BP_reg_int_PE_copy_clear_AR];
-    u16 GB = (u16)flipper->CP->internal_BP_regs[BP_reg_int_PE_copy_clear_GB];
+void Flipper_frameswap(s_Flipper* flipper, u16 pe_copy_command) {
+    log_flipper("Frameswapping flipper");
+    // frameswap
+    flipper->current_framebuffer ^= true;
+    glBindTexture(GL_TEXTURE_2D, 0);
+    glEnable(GL_TEXTURE_2D);
+    glBindFramebuffer(GL_FRAMEBUFFER, flipper->framebuffer[flipper->current_framebuffer]);
+    glViewport(0, 0, FLIPPER_FRAMEBUFFER_WIDTH, FLIPPER_FRAMEBUFFER_HEIGHT);
 
-    glClearColor((float)(AR & 0xff) / 255.0, (float)(GB >> 8) / 255.0, (float)(GB & 0xff) / 255.0, (float)(AR >> 8) / 255.0);
-    glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+    if (pe_copy_command & PE_copy_clear) {
+        // clear (emulator) framebuffer to the backdrop color
+        u16 AR = (u16)flipper->CP->internal_BP_regs[BP_reg_int_PE_copy_clear_AR];
+        u16 GB = (u16)flipper->CP->internal_BP_regs[BP_reg_int_PE_copy_clear_GB];
+
+        glClearColor((float)(AR & 0xff) / 255.0, (float)(GB >> 8) / 255.0, (float)(GB & 0xff) / 255.0, (float)(AR >> 8) / 255.0);
+        glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+    }
 }
 
 // GL_QUADS is depricated, we have to separate case this by using an EBO for the vertices
@@ -250,7 +260,6 @@ void draw_Flipper(s_Flipper* flipper, s_draw_command_small* command) {
 
 }
 
-bool first = true;
 struct s_framebuffer render_Flipper(s_Flipper* flipper){
 
     if (!flipper->CP->draw_command_available[flipper->draw_command_index]) {
@@ -261,9 +270,6 @@ struct s_framebuffer render_Flipper(s_Flipper* flipper){
         glViewport(0, 0, FLIPPER_FRAMEBUFFER_WIDTH, FLIPPER_FRAMEBUFFER_HEIGHT);
 
         u32 start_draw_index = flipper->draw_command_index;
-
-        // todo: proper frame swapping / clearing
-        Flipper_prepare_draw(flipper);
 
         while (!flipper->CP->draw_command_available[flipper->draw_command_index]) {
             log_flipper("Processing draw command %02x @%d",
@@ -291,6 +297,11 @@ struct s_framebuffer render_Flipper(s_Flipper* flipper){
              * different from the GameCube probably, where it is handled in interrupts, I don't know how yet).
              * */
 
+            if (flipper->CP->frameswap[flipper->draw_command_index] & PE_copy_execute) {
+                flipper->CP->frameswap[flipper->draw_command_index] &= ~PE_copy_execute;  // reset
+                Flipper_frameswap(flipper, flipper->CP->frameswap[flipper->draw_command_index]);
+            }
+
             if (flipper->draw_command_index == flipper->CP->draw_command_index) {
                 // caught up with CP, no frameswap
                 break;
@@ -310,6 +321,7 @@ struct s_framebuffer render_Flipper(s_Flipper* flipper){
 
         log_flipper("Done drawing commands");
 
+        static bool first;
         unsigned error = glGetError();
         if (error && first) {
             first = false;
@@ -318,14 +330,6 @@ struct s_framebuffer render_Flipper(s_Flipper* flipper){
 
         // unbind framebuffer
         glBindFramebuffer(GL_FRAMEBUFFER, 0);
-
-        // todo: proper fameswap
-        if (true || flipper->VI->VSync) {
-            // got VSync signal from VI
-            wait_for_fence(flipper);  // wait for current drawing commands to finish before continuing
-            flipper->VI->VSync = false;  // reset it so we don't stop unnecessarily
-            flipper->current_framebuffer ^= true;  // frameswap for the emulator
-        }
     }
 
     // return the framebuffer that is "ready"
