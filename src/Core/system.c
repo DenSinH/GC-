@@ -35,7 +35,7 @@ s_GameCube* init_system() {
 #define ROOT_DIR "/mnt/d/"
 #endif
 
-#define TEST_DOL ROOT_DIR "CProjects/GCResources/GameCubeResources/Tests/Cube/Cube.dol"
+#define TEST_DOL ROOT_DIR "CProjects/GCResources/GameCubeResources/Tests/Textures/Textures.dol"
 #define STEP_ON_BREAK
 
 void run_system(s_GameCube* system) {

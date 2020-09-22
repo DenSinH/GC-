@@ -168,7 +168,7 @@ HW_REG_READ_PRECALL(read_VI_DI3, VI) {
 }
 
 HW_REG_INIT_FUNCTION(VI) {
-    VI->write[VI_reg_HTR0 >> 2] = write_VI_HTR0;
+    VI->write[VI_reg_HTR0 >> VI_SHIFT] = write_VI_HTR0;
     // schedule event at time infinity at first, rescheduled when VI is configured properly
     VI->halfline_count_event = (s_event) {
             .callback = VI_halfline_count,
@@ -178,14 +178,14 @@ HW_REG_INIT_FUNCTION(VI) {
     add_event(&VI->system->scheduler, &VI->halfline_count_event);
 
 
-    VI->write[VI_reg_DI0 >> 2] = write_VI_DI0;
-    VI->read[VI_reg_DI0 >> 2] = read_VI_DI0;
-    VI->write[VI_reg_DI1 >> 2] = write_VI_DI1;
-    VI->read[VI_reg_DI1 >> 2] = read_VI_DI1;
-    VI->write[VI_reg_DI2 >> 2] = read_VI_DI2;
-    VI->read[VI_reg_DI2 >> 2] = read_VI_DI2;
-    VI->write[VI_reg_DI3 >> 2] = read_VI_DI3;
-    VI->read[VI_reg_DI3 >> 2] = read_VI_DI3;
+    VI->write[VI_reg_DI0 >> VI_SHIFT] = write_VI_DI0;
+    VI->read[VI_reg_DI0 >> VI_SHIFT] = read_VI_DI0;
+    VI->write[VI_reg_DI1 >> VI_SHIFT] = write_VI_DI1;
+    VI->read[VI_reg_DI1 >> VI_SHIFT] = read_VI_DI1;
+    VI->write[VI_reg_DI2 >> VI_SHIFT] = read_VI_DI2;
+    VI->read[VI_reg_DI2 >> VI_SHIFT] = read_VI_DI2;
+    VI->write[VI_reg_DI3 >> VI_SHIFT] = read_VI_DI3;
+    VI->read[VI_reg_DI3 >> VI_SHIFT] = read_VI_DI3;
 
     // these events are not scheduled by default
     VI->DI_event[0] = (s_event) { .callback = VI_DI0_intr, .caller = &VI->system->cpu };

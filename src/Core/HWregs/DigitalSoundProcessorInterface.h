@@ -12,10 +12,12 @@ typedef enum e_DSP_regs {
     DSP_CSR = 0xa
 } e_DSP_regs;
 
+#define DSP_SHIFT 1
+
 typedef struct s_DSP {
     u8 regs[0x200];
-    HW_REG_WRITE_CALLBACK((*write[0x100]), DSP);
-    HW_REG_READ_PRECALL((*read[0x100]), DSP);
+    HW_REG_WRITE_CALLBACK((*write[0x200 >> DSP_SHIFT]), DSP);
+    HW_REG_READ_PRECALL((*read[0x200 >> DSP_SHIFT]), DSP);
     struct s_GameCube* system;
 } s_DSP;
 

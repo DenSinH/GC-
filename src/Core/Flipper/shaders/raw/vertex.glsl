@@ -19,8 +19,8 @@ layout (std430, binding = 3) buffer command_SSBO
     uint _command;
     uint vertex_stride;
     int arg_offsets[21];
-    int data_offsets[12];
-    uint array_strides[12];
+    int data_offsets[21];
+    uint array_strides[21];
     uint _data_size;  // data_size: I don't actually need this in the shader
     uint args[0x1140 >> 2];     // todo: generalize this
     uint data[];
@@ -28,8 +28,11 @@ layout (std430, binding = 3) buffer command_SSBO
 
 out vec4 vertexColor;
 
+out uint texturePresent;
+out uint textureOffset;
+
 /*
- * I can't pass arrays to functions, so Ill have to make due writing separate read handlers for args/data
+ * I can't pass arrays to functions, so I'll have to make due writing separate read handlers for args/data
  * */
 #define read8(array) uint read8_ ## array ##(uint address) { return  bitfieldExtract(array[(address) >> 2], extract_offset[(address) & 3], 8); }
 #define read8s(array) int read8s_ ## array ##(uint address) { return  bitfieldExtract(int(array[(address) >> 2]), extract_offset[(address) & 3], 8); }
@@ -104,7 +107,7 @@ void main()
 
         if (POSVCD > 1) {
             // indirect data
-            data_offset = data_offsets[%draw_arg_POS% - draw_arg_POS];
+            data_offset = data_offsets[%draw_arg_POS%];
 
             // determine the "GC vertex index"
             int vertex_index;
@@ -241,7 +244,7 @@ void main()
         // todo: signed offset
         if (COL0VCD > 1) {
             // indirect data
-            data_offset = data_offsets[%draw_arg_CLR0% - draw_arg_POS];
+            data_offset = data_offsets[%draw_arg_CLR0%];
 
             int color_index;
             if (COL0VCD == 2) {
@@ -352,6 +355,15 @@ void main()
             vertexColor = vec4(1.0, 0.0, 0.0, 1.0);
         }
 #endif
+    }
+
+    texturePresent = 0;
+    for (int i = 0; i < 8; i++) {
+        if (arg_offsets[%draw_arg_TEX0% + i] >= 0) {
+            texturePresent = 1;
+            textureOffset = data_offsets[i];
+            break;
+        }
     }
 }
 

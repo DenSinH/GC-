@@ -22,6 +22,6 @@ HW_REG_READ_PRECALL(read_PE_intr_status, PE) {
 
 
 HW_REG_INIT_FUNCTION(PE) {
-    PE->write[PE_reg_interrupt_status >> 1] = write_PE_intr_status;
-    PE->read[PE_reg_interrupt_status >> 1] = read_PE_intr_status;
+    PE->write[PE_reg_interrupt_status >> PE_SHIFT] = write_PE_intr_status;
+    PE->read[PE_reg_interrupt_status >> PE_SHIFT] = read_PE_intr_status;
 }

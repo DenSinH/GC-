@@ -47,25 +47,25 @@ HW_REG_READ_TEMPLATE_SIGNATURE(_size) { \
     u32 masked_address = address & 0x3ff; \
     switch (address & 0x0000fc00) { \
         case 0x0000: \
-            SECTION_READ_TEMPLATE(CP, _size, 1); \
+            SECTION_READ_TEMPLATE(CP, _size, CP_SHIFT); \
         case 0x1000: \
-            SECTION_READ_TEMPLATE(PE, _size, 1); \
+            SECTION_READ_TEMPLATE(PE, _size, PE_SHIFT); \
         case 0x2000: \
-            SECTION_READ_TEMPLATE(VI, _size, 2); \
+            SECTION_READ_TEMPLATE(VI, _size, VI_SHIFT); \
         case 0x3000: \
-            SECTION_READ_TEMPLATE(PI, _size, 2); \
+            SECTION_READ_TEMPLATE(PI, _size, PI_SHIFT); \
         case 0x4000: \
-            SECTION_READ_TEMPLATE(MI, _size, 2); \
+            SECTION_READ_TEMPLATE(MI, _size, MI_SHIFT); \
         case 0x5000: \
-            SECTION_READ_TEMPLATE(DSP, _size, 1); \
+            SECTION_READ_TEMPLATE(DSP, _size, DSP_SHIFT); \
         case 0x6000: \
-            SECTION_READ_TEMPLATE(DI, _size, 2); \
+            SECTION_READ_TEMPLATE(DI, _size, DI_SHIFT); \
         case 0x6400: \
-            SECTION_READ_TEMPLATE(SI, _size, 2); \
+            SECTION_READ_TEMPLATE(SI, _size, SI_SHIFT); \
         case 0x6800: \
-            SECTION_READ_TEMPLATE(EXI, _size, 2); \
+            SECTION_READ_TEMPLATE(EXI, _size, EXI_SHIFT); \
         case 0x6c00: \
-            SECTION_READ_TEMPLATE(AI, _size, 2); \
+            SECTION_READ_TEMPLATE(AI, _size, AI_SHIFT); \
         case 0x8000: \
             /* GX FIFO reads */ \
             return 0; \

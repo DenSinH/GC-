@@ -72,6 +72,8 @@ typedef enum e_BP_regs_internal {
     BP_reg_int_PE_copy_clear_AR = 0x4f,
     BP_reg_int_PE_copy_clear_GB = 0x50,
     BP_reg_int_PE_copy_execute = 0x52,
+    BP_reg_int_TEX_SET_IMAGE0_l_BASE = 0x88,
+    BP_reg_int_TEX_SET_IMAGE3_l_BASE = 0x94,
 } e_BP_regs_internal;
 
 typedef enum e_PE_copy {
@@ -204,12 +206,15 @@ typedef union s_VAT_C {
     u32 raw;
 } s_VAT_C;
 
-typedef struct s_draw_arg {
-    e_draw_args arg;
-    bool direct;
-    u8 direct_stride;
-    void* direct_buffer;
-} s_draw_arg;
+typedef union s_SETIMAGE0_I {
+    struct {
+        unsigned width: 10;
+        unsigned height: 10;
+        unsigned format: 4;
+        unsigned RID: 8;
+    };
+    u32 raw;
+} s_SETIMAGE0_I;
 
 /* The Math:
  *
@@ -249,15 +254,17 @@ typedef struct s_draw_arg {
 #define DRAW_COMMAND_ARG_BUFFER_SIZE_MED 0x4500
 #define DRAW_COMMAND_ARG_BUFFER_SIZE_LARGE 0x18000
 
+// independent of draw command size:
 #define DRAW_COMMAND_DATA_BUFFER_SIZE 0x80000
+#define DRAW_COMMAND_TEXTURE_BUFFER_SIZE 0x100000
 
 typedef struct s_draw_command_small {
     u32 vertices;              // number of vertices
     u32 command;               // actual command
     u32 vertex_stride;         // stride for one whole vertex
     i32 arg_offset[21];        // strides for arguments into the args array
-    i32 data_offset[12];       // might be negative for correcting for min index
-    u32 data_stride[12];       // ARRAY_STRIDE registers
+    i32 data_offset[21];       // might be negative for correcting for min index
+    u32 data_stride[21];       // ARRAY_STRIDE registers
     u32 data_size;             // to save space copying it to the GPU, this is variable in the shader anyways
     u8 args[DRAW_COMMAND_ARG_BUFFER_SIZE_SMALL];
     u8 data[DRAW_COMMAND_DATA_BUFFER_SIZE];
@@ -271,14 +278,16 @@ typedef struct s_draw_command_small {
 #define INTERNAL_XF_REGISTER_BASE 0x1000
 #define MAX_DRAW_COMMANDS 16
 
+#define CP_SHIFT 1
 #define current_draw_command draw_command_queue[CP->draw_command_index]
+#define current_texture_data texture_data[CP->draw_command_index]
 
 typedef struct s_CP {
     // external function
     // todo: is this actually 0x80? does not seem right (0x40 instead?)
     u8 regs[0x80];
-    HW_REG_WRITE_CALLBACK((*write[0x40]), CP);
-    HW_REG_READ_PRECALL((*read[0x40]), CP);
+    HW_REG_WRITE_CALLBACK((*write[0x80 >> CP_SHIFT]), CP);
+    HW_REG_READ_PRECALL((*read[0x80 >> CP_SHIFT]), CP);
     struct s_GameCube* system;
 
     /* internal function */
@@ -307,6 +316,7 @@ typedef struct s_CP {
     // todo: draw_command_mid, large
     u8 arg_size[21]; // sizes of individual (direct) arguments of current draw command
     s_draw_command_small draw_command_queue[MAX_DRAW_COMMANDS];
+    u8 texture_data[MAX_DRAW_COMMANDS][DRAW_COMMAND_TEXTURE_BUFFER_SIZE];
 
     // these values are also read/set by flipper
     volatile u32 draw_command_index;  // read to make sure flipper does not catch up

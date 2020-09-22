@@ -56,14 +56,18 @@ static const u8 tex_stride[2][8] = {
         { 2, 2, 4, 4, 8, 0, 0, 0 }
 };
 
-#define ADD_DRAW_ARG(_mode, _arg, _lut, _cnt, _fmt) \
-if (_mode) {                                        \
-    log_cp("arg %d enabled, offset %d", _arg, offset)                                                \
-    CP->current_draw_command.arg_offset[_arg] = offset; \
-    offset += (CP->arg_size[_arg] = (((_mode) == 1) ? _lut[_cnt][_fmt] : (_mode) - 1)); \
-} \
-else {  \
-    CP->current_draw_command.arg_offset[_arg] = -1; \
+static inline u32 CP_add_draw_arg(s_CP* CP, u32 offset, u32 mode, e_draw_args arg, const u8 lut[2][8], u32 cnt, u32 fmt)
+{
+    if (mode) {
+        log_cp("arg %d enabled, offset %d, mode %d", arg, offset, mode);
+        CP->current_draw_command.arg_offset[arg] = offset;
+        CP->current_draw_command.data_offset[arg] = mode > 1;   // signify whether we want to have this in our data
+        return (CP->arg_size[arg] = (((mode) == 1) ? lut[cnt][fmt] : (mode) - 1));
+    }
+    else {
+        CP->current_draw_command.arg_offset[arg] = -1;
+        return 0;
+    }
 }
 
 void update_CP_draw_argc(s_CP* CP, int format) {
@@ -80,19 +84,19 @@ void update_CP_draw_argc(s_CP* CP, int format) {
         CP->current_draw_command.arg_offset[draw_arg] = (VCD_lo.raw & (1 << draw_arg)) ? offset++ : -1;
     }
 
-    ADD_DRAW_ARG(VCD_lo.POS, draw_arg_POS, coord_stride, VAT_A.POSCNT, VAT_A.POSFMT)
-    ADD_DRAW_ARG(VCD_lo.NRM, draw_arg_NRM, nrm_stride, VAT_A.NRMCNT, VAT_A.NRMFMT)
-    ADD_DRAW_ARG(VCD_lo.COL0, draw_arg_CLR0, color_stride, VAT_A.COL0CNT, VAT_A.COL0FMT)
-    ADD_DRAW_ARG(VCD_lo.COL1, draw_arg_CLR1, color_stride, VAT_A.COL1CNT, VAT_A.COL1FMT)
+    offset += CP_add_draw_arg(CP, offset, VCD_lo.POS, draw_arg_POS, coord_stride, VAT_A.POSCNT, VAT_A.POSFMT);
+    offset += CP_add_draw_arg(CP, offset, VCD_lo.NRM, draw_arg_NRM, nrm_stride, VAT_A.NRMCNT, VAT_A.NRMFMT);
+    offset += CP_add_draw_arg(CP, offset, VCD_lo.COL0, draw_arg_CLR0, color_stride, VAT_A.COL0CNT, VAT_A.COL0FMT);
+    offset += CP_add_draw_arg(CP, offset, VCD_lo.COL1, draw_arg_CLR1, color_stride, VAT_A.COL1CNT, VAT_A.COL1FMT);
 
-    ADD_DRAW_ARG(VCD_hi.TEX0, draw_arg_TEX0, tex_stride, VAT_A.TEX0CNT, VAT_A.TEX0FMT)
-    ADD_DRAW_ARG(VCD_hi.TEX1, draw_arg_TEX1, tex_stride, VAT_B.TEX1CNT, VAT_B.TEX1FMT)
-    ADD_DRAW_ARG(VCD_hi.TEX2, draw_arg_TEX2, tex_stride, VAT_B.TEX2CNT, VAT_B.TEX2FMT)
-    ADD_DRAW_ARG(VCD_hi.TEX3, draw_arg_TEX3, tex_stride, VAT_B.TEX3CNT, VAT_B.TEX3FMT)
-    ADD_DRAW_ARG(VCD_hi.TEX4, draw_arg_TEX4, tex_stride, VAT_B.TEX4CNT, VAT_B.TEX4FMT)
-    ADD_DRAW_ARG(VCD_hi.TEX5, draw_arg_TEX5, tex_stride, VAT_C.TEX5CNT, VAT_C.TEX5FMT)
-    ADD_DRAW_ARG(VCD_hi.TEX6, draw_arg_TEX6, tex_stride, VAT_C.TEX6CNT, VAT_C.TEX6FMT)
-    ADD_DRAW_ARG(VCD_hi.TEX7, draw_arg_TEX7, tex_stride, VAT_C.TEX7CNT, VAT_C.TEX7FMT)
+    offset += CP_add_draw_arg(CP, offset, VCD_hi.TEX0, draw_arg_TEX0, tex_stride, VAT_A.TEX0CNT, VAT_A.TEX0FMT);
+    offset += CP_add_draw_arg(CP, offset, VCD_hi.TEX1, draw_arg_TEX1, tex_stride, VAT_B.TEX1CNT, VAT_B.TEX1FMT);
+    offset += CP_add_draw_arg(CP, offset, VCD_hi.TEX2, draw_arg_TEX2, tex_stride, VAT_B.TEX2CNT, VAT_B.TEX2FMT);
+    offset += CP_add_draw_arg(CP, offset, VCD_hi.TEX3, draw_arg_TEX3, tex_stride, VAT_B.TEX3CNT, VAT_B.TEX3FMT);
+    offset += CP_add_draw_arg(CP, offset, VCD_hi.TEX4, draw_arg_TEX4, tex_stride, VAT_B.TEX4CNT, VAT_B.TEX4FMT);
+    offset += CP_add_draw_arg(CP, offset, VCD_hi.TEX5, draw_arg_TEX5, tex_stride, VAT_C.TEX5CNT, VAT_C.TEX5FMT);
+    offset += CP_add_draw_arg(CP, offset, VCD_hi.TEX6, draw_arg_TEX6, tex_stride, VAT_C.TEX6CNT, VAT_C.TEX6FMT);
+    offset += CP_add_draw_arg(CP, offset, VCD_hi.TEX7, draw_arg_TEX7, tex_stride, VAT_C.TEX7CNT, VAT_C.TEX7FMT);
 
     CP->current_draw_command.vertex_stride = offset;
 //    CP->draw_argc_valid[format] = true;
@@ -145,13 +149,56 @@ static inline void load_INDX(s_CP* CP, e_CP_cmd opcode, u16 index, u8 length, u1
     // todo
 }
 
+// todo: all the formats with a 0 for size
+static const u8 tex_fmt_size[16] = {
+        0, // I4
+        0, // I8
+        0, // IA4
+        0, // IA8
+        2, // RGB565
+        2, // RGB4A3 (I think this is wrong in YAGCD)
+        4, // RGBA8
+        0, // CI4
+        0, // CI8
+        0, // CIA4
+        0, 0, 0, // unused
+        0, // CMP
+        0  // unused
+};
+
 static inline void send_draw_command(s_CP* CP) {
-    // we still need to buffer the indirect data, we do that here
+
+    u32 texture_offset = 0;
+
+    // arguments 0 - draw_arg_POS are all always direct (they are indices)
+    // instead, we use these to store information on the texture data
+    for (int i = 0; i < 8; i++) {
+        // loop over all textures (TEX0-TEX7)
+        // todo: is this the proper way to check this (should be)
+        if (CP->current_draw_command.arg_offset[draw_arg_TEX0 + i] < 0) {
+            // texture is disabled
+            continue;
+        }
+
+        CP->current_draw_command.data_offset[i] = texture_offset;
+        s_SETIMAGE0_I setimage0_i = (s_SETIMAGE0_I) { .raw = CP->internal_BP_regs[BP_reg_int_TEX_SET_IMAGE0_l_BASE + i] };
+        u32 main_mem_offset = (CP->internal_BP_regs[BP_reg_int_TEX_SET_IMAGE3_l_BASE + i] & 0x00ffffff) << 5;
+        u32 data_length = (setimage0_i.width + 1) * (setimage0_i.height + 1) * tex_fmt_size[setimage0_i.format];
+
+        memcpy(CP->current_texture_data + texture_offset, CP->system->memory + main_mem_offset, data_length);
+        log_cp("Copied %x bytes of texture data for texture %d to offset %x (starting from %x, stride %x)",
+               data_length, i, texture_offset, main_mem_offset, tex_fmt_size[setimage0_i.format]);
+
+        texture_offset += (data_length & ~3) + 4;  // keep aligned by 4 bytes for easier processing in shader
+    }
+
+    // we still need to buffer the indirect data, we do that here as well
     u32 data_offset = 0;
     size_t stride, size;
     i16 min_index, max_index;
+
     for (e_draw_args draw_arg = draw_arg_POS; draw_arg <= draw_arg_TEX7; draw_arg++) {
-        if (CP->current_draw_command.arg_offset[draw_arg] < 0) {
+        if (!CP->current_draw_command.data_offset[draw_arg]) {
             // direct data
             continue;
         }
@@ -187,7 +234,7 @@ static inline void send_draw_command(s_CP* CP) {
         }
 
         // calculate data offset, account for min_index not being 0
-        CP->current_draw_command.data_offset[draw_arg - draw_arg_POS] = data_offset - min_index;
+        CP->current_draw_command.data_offset[draw_arg] = data_offset - min_index;
         size = stride * (((max_index - min_index) & ~3) + 4);   // align by 4 bytes
 
         // copy data
@@ -201,6 +248,10 @@ static inline void send_draw_command(s_CP* CP) {
                get_internal_CP_reg(CP, CP_reg_int_vert_ARRAY_BASE + draw_arg - draw_arg_POS), data_offset
         );
         data_offset += size;
+
+#ifdef CHECK_CP_DATA_BUFFER
+        assert(data_offset < DRAW_COMMAND_DATA_BUFFER_SIZE /* data buffer overflow */);
+#endif
     }
     CP->current_draw_command.data_size = data_offset;
 

@@ -6,6 +6,11 @@
 
 #include "log.h"
 
+typedef enum e_PI_regs {
+    PI_reg_INTSR = 0x00,
+    PI_reg_INTMR = 0x04
+} e_PI_regs;
+
 typedef enum e_PI_interrupt {
     PI_intr_ERROR = 0x000000001,
     PI_intr_RSW = 0x000000002,
@@ -24,14 +29,16 @@ typedef enum e_PI_interrupt {
     PI_intr_RSWST = 0x000010000
 } e_PI_interrupt;
 
+#define PI_SHIFT 2
+
 typedef struct s_PI {
     u8 regs[0x100];
 
     u32 INTSR;  // interrupt cause
     u32 INTMR;  // interrupt mask
 
-    HW_REG_WRITE_CALLBACK((*write[0x40]), PI);
-    HW_REG_READ_PRECALL((*read[0x40]), PI);
+    HW_REG_WRITE_CALLBACK((*write[0x100 >> PI_SHIFT]), PI);
+    HW_REG_READ_PRECALL((*read[0x100 >> PI_SHIFT]), PI);
     struct s_GameCube* system;
 } s_PI;
 

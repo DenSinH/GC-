@@ -29,7 +29,7 @@ HW_REG_WRITE_CALLBACK(write_PI_INTMR, PI) {
 }
 
 HW_REG_INIT_FUNCTION(PI) {
-    PI->write[0x0 >> 2] = write_PI_INTSR;
-    PI->read[0x0 >> 2] = read_PI_INTSR;
-    PI->write[0x4 >> 2] = write_PI_INTMR;
+    PI->write[PI_reg_INTSR >> PI_SHIFT] = write_PI_INTSR;
+    PI->read[PI_reg_INTSR >> PI_SHIFT] = read_PI_INTSR;
+    PI->write[PI_reg_INTMR >> PI_SHIFT] = write_PI_INTMR;
 }

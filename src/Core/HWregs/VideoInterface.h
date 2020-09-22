@@ -42,10 +42,12 @@ typedef enum e_VI_regs {
 } e_VI_regs;
 
 
+#define VI_SHIFT 2
+
 typedef struct s_VI {
     u8 regs[0x100];
-    HW_REG_WRITE_CALLBACK((*write[0x40]), VI);
-    HW_REG_READ_PRECALL((*read[0x40]), VI);
+    HW_REG_WRITE_CALLBACK((*write[0x100 >> VI_SHIFT]), VI);
+    HW_REG_READ_PRECALL((*read[0x100 >> VI_SHIFT]), VI);
     struct s_GameCube* system;
 
     /* internal function */

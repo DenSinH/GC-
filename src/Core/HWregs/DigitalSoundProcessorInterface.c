@@ -30,8 +30,8 @@ HW_REG_WRITE_CALLBACK(write_DSP_CSR, DSP) {
 HW_REG_INIT_FUNCTION(DSP) {
     DSP->regs[DSP_MailboxHiFromDSP] = 0x80;
 
-    DSP->read[DSP_MailboxHiFromDSP >> 1] = read_DSP_MailboxHiFromDSP;
-    DSP->read[DSP_MailboxLoFromDSP >> 1] = read_DSP_MailboxLoFromDSP;
+    DSP->read[DSP_MailboxHiFromDSP >> DSP_SHIFT] = read_DSP_MailboxHiFromDSP;
+    DSP->read[DSP_MailboxLoFromDSP >> DSP_SHIFT] = read_DSP_MailboxLoFromDSP;
 
-    DSP->write[DSP_CSR >> 1] = write_DSP_CSR;
+    DSP->write[DSP_CSR >> DSP_SHIFT] = write_DSP_CSR;
 }

@@ -6,5 +6,5 @@ HW_REG_READ_PRECALL(EXI0CR_read, EXI) {
 
 
 HW_REG_INIT_FUNCTION(EXI) {
-    EXI->read[0xc >> 2] = EXI0CR_read;
+    EXI->read[0xc >> EXI_SHIFT] = EXI0CR_read;
 }

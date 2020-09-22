@@ -23,7 +23,6 @@ for file in os.listdir(SHADER_DIR):
     i = 0
     while i < len(content):
         match = re.match(".*BEGIN\\s+(\w+)", content[i])
-        shader_start = i
         i += 1
         if not match:
             continue
@@ -35,13 +34,15 @@ for file in os.listdir(SHADER_DIR):
         while not content[i]:
             i += 1
 
+        shader_start = i
+
         while i < len(content) and not re.match(f".*END\\s+{shader_name}", content[i]):
             # escape backslashes and quotes
             line = content[i].replace("\\", "\\\\").replace("\"", "\\\"")
             for const, value in constants.items():
                 line = re.sub(f"%{const}%", value, line)
 
-            shader.append(f'"{line}\\n"')
+            shader.append(f'"{line}\\n"  // l:{i - shader_start + 1}')
             i += 1
 
         if i == len(content):
@@ -55,7 +56,7 @@ for file in os.listdir(SHADER_DIR):
 
         # skip line with END in it
         i += 1
-        SHADER_H += f"\n\n// {shader_name} (from {file}, lines {shader_start} to {i - 1})\n{text};\n"
+        SHADER_H += f"\n\n// {shader_name} (from {file}, lines {shader_start} to {i - 1})\n{text}\n;\n"
 
 SHADER_H += "\n#endif  // GC__SHADER_H"
 
