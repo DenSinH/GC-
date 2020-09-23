@@ -160,7 +160,7 @@ static const u8 tex_fmt_shft[16] = {
         0, // IA4 ?
         1, // IA8 ?
         2, // RGB565
-        2, // RGB5A1 (I think this is wrong in YAGCD)
+        2, // RGB5A3
         3, // RGBA8
         0, // unused
         0, // CI4 ?
@@ -194,6 +194,7 @@ static inline void send_draw_command(s_CP* CP) {
         log_cp("Copied %x bytes of texture data for texture %d to offset %x (starting from %x, stride %x)",
                data_length, i, texture_offset, main_mem_offset, (1 << tex_fmt_shft[setimage0_i.format]) >> 1);
 
+        // todo: align by block size (mostly 32, but 64 bytes for RGBA8)
         texture_offset += (data_length & ~3) + 4;  // keep aligned by 4 bytes for easier processing in shader
     }
     CP->current_texture_data.data_size = texture_offset;

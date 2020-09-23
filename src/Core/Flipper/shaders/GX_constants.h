@@ -52,7 +52,7 @@ typedef enum e_color_formats {
     color_format_IA4    = 2,
     color_format_IA8    = 3,
     color_format_RGB565 = 4,
-    color_format_RGB5A1 = 5,
+    color_format_RGB5A3 = 5,
     color_format_RGBA8  = 6,
     color_format_C4     = 7,
     color_format_C8     = 8,

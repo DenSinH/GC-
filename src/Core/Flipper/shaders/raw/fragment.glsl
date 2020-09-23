@@ -36,7 +36,7 @@ const uint tex_fmt_shft[16] = {
     0, // IA4 ?
     1, // IA8 ?
     2, // RGB565
-    2, // RGB5A1 (I think this is wrong in YAGCD)
+    2, // RGB5A3
     3, // RGBA8
     0, // unused
     0, // CI4 ?
@@ -49,6 +49,17 @@ const uint tex_fmt_shft[16] = {
 
 uint utemp;
 int itemp;
+
+uint index_from_pos(uint x, uint y, uint width, uint height, uint block_size_shift) {
+    // block size in power of 2
+    uint tile_x = x >> block_size_shift;
+    uint tile_y = y >> block_size_shift;
+    x &= (1 << block_size_shift) - 1u;  // in-tile
+    y &= (1 << block_size_shift) - 1u;  // in-tile
+
+    return (tile_y * (width >> block_size_shift) + tile_x) * (1 << (block_size_shift + block_size_shift)) // * (tileW * tileH)
+           + (y << block_size_shift) + x;
+}
 
 void main()
 {
@@ -68,17 +79,22 @@ void main()
         }
 
         uint texture_color_format = bitfieldExtract(setimage0_i, 20, 4);
-        uint width_min_1 = bitfieldExtract(setimage0_i, 0, 10);
-        uint height_min_1 = bitfieldExtract(setimage0_i, 10, 10);
+        uint width = bitfieldExtract(setimage0_i, 0, 10) + 1;
+        uint height = bitfieldExtract(setimage0_i, 10, 10) + 1;
 
         // todo: wrap_s/t
         highp vec2 wrappedCoord = clamp(texCoord, 0.0, 1.0);
         uint textureIndex = textureOffset;
 
         // always use nearest interpolation
-        // same strategy as in CommandProcessor.c to get the texture size
-        uint offset_into_texture = uint(wrappedCoord.y * height_min_1) * (width_min_1 + 1) + uint(wrappedCoord.x * width_min_1);
-        // offset_into_texture = uint(wrappedCoord.y * height_min_1) * (width_min_1 + 1);
+        /*
+        Textures are put in blocks:
+        https://fgiesen.wordpress.com/2011/01/17/texture-tiling-and-swizzling/
+        */
+        uint x = uint(wrappedCoord.x * width);
+        uint y = uint(wrappedCoord.y * height);
+        // todo: generalize this for block sizes
+        uint offset_into_texture = index_from_pos(x, y, width, height, 2);
         offset_into_texture <<= tex_fmt_shft[texture_color_format];
         offset_into_texture >>= 1;
 
@@ -86,7 +102,6 @@ void main()
 
         // load data at the location. The color formats are all nicely aligned (either by 4, 2, 1 or 0.5 byte, so we
         // can parse that part before parsing the actual color.
-
         uint data = texture_data[textureIndex >> 2];  // stored bytes as uints
 
         switch (tex_fmt_shft[texture_color_format]) {
@@ -121,7 +136,8 @@ void main()
         vec4 color;
 
         switch (texture_color_format) {
-            case ++color_format_RGB5A1++:
+            // todo: proper parsing (2 modes)
+            case ++color_format_RGB5A3++:
                 color.x = bitfieldExtract(data, 10, 5) / 32.0;
                 color.y = bitfieldExtract(data, 5, 5) / 32.0;
                 color.z = bitfieldExtract(data, 0, 5) / 32.0;
