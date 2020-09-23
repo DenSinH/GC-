@@ -30,7 +30,8 @@ typedef struct s_Flipper {
     u32 draw_command_index;
 
     // todo: UBO for XF mem (faster)
-    unsigned int VAO, EBO, command_SSBO, XF_SSBO;  // VBO will just hold the index, the actual vector is calculated in the shader
+    unsigned int XF_SSBO, BP_SSBO;
+    unsigned int VAO, EBO, command_SSBO, texture_SSBO;
     void* fence;
 
     unsigned int VCD_lo_location, VCD_hi_location, VAT_A_location, VAT_B_location, VAT_C_location;

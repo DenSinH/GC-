@@ -149,20 +149,25 @@ static inline void load_INDX(s_CP* CP, e_CP_cmd opcode, u16 index, u8 length, u1
     // todo
 }
 
-// todo: all the formats with a 0 for size
-static const u8 tex_fmt_size[16] = {
-        0, // I4
-        0, // I8
-        0, // IA4
-        0, // IA8
+// todo: all the formats with ?
+/*
+ * Since we also need to be able to handle 4bit formats, I will shift the outcome right by 1, but first shift it by
+ * the amount specified for the format
+ * */
+static const u8 tex_fmt_shft[16] = {
+        0, // I4 ?
+        1, // I8 ?
+        0, // IA4 ?
+        1, // IA8 ?
         2, // RGB565
-        2, // RGB4A3 (I think this is wrong in YAGCD)
-        4, // RGBA8
-        0, // CI4
-        0, // CI8
-        0, // CIA4
+        2, // RGB5A1 (I think this is wrong in YAGCD)
+        3, // RGBA8
+        0, // unused
+        0, // CI4 ?
+        1, // CI8 ?
+        0, // CIA4 ?
         0, 0, 0, // unused
-        0, // CMP
+        1, // CMP ?
         0  // unused
 };
 
@@ -183,14 +188,15 @@ static inline void send_draw_command(s_CP* CP) {
         CP->current_draw_command.data_offset[i] = texture_offset;
         s_SETIMAGE0_I setimage0_i = (s_SETIMAGE0_I) { .raw = CP->internal_BP_regs[BP_reg_int_TEX_SET_IMAGE0_l_BASE + i] };
         u32 main_mem_offset = (CP->internal_BP_regs[BP_reg_int_TEX_SET_IMAGE3_l_BASE + i] & 0x00ffffff) << 5;
-        u32 data_length = (setimage0_i.width + 1) * (setimage0_i.height + 1) * tex_fmt_size[setimage0_i.format];
+        u32 data_length = (((setimage0_i.width + 1) * (setimage0_i.height + 1)) << tex_fmt_shft[setimage0_i.format]) >> 1;
 
-        memcpy(CP->current_texture_data + texture_offset, CP->system->memory + main_mem_offset, data_length);
+        memcpy(&CP->current_texture_data.data + texture_offset, CP->system->memory + main_mem_offset, data_length);
         log_cp("Copied %x bytes of texture data for texture %d to offset %x (starting from %x, stride %x)",
-               data_length, i, texture_offset, main_mem_offset, tex_fmt_size[setimage0_i.format]);
+               data_length, i, texture_offset, main_mem_offset, (1 << tex_fmt_shft[setimage0_i.format]) >> 1);
 
         texture_offset += (data_length & ~3) + 4;  // keep aligned by 4 bytes for easier processing in shader
     }
+    CP->current_texture_data.data_size = texture_offset;
 
     // we still need to buffer the indirect data, we do that here as well
     u32 data_offset = 0;

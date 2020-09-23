@@ -2,23 +2,144 @@
 
 #version 400 core
 
+layout (std430, binding = 6) buffer BP_SSBO
+{
+    uint BP_regs[0x100];
+};
+
+layout (std430, binding = 7) buffer texture_SSBO
+{
+    uint _data_size;  // not actually needed in the shader
+    uint texture_data[];
+};
+
 in vec4 vertexColor;
-flat in uint texturePresent;
+flat in uint textureData;       // custom bitfield for texture data
+/*
+bit : meaning
+1-3 : texture index (TEX0, ..., TEX7)
+0   : texture present
+*/
+
 flat in uint textureOffset;     // start of texture into texture_data
+in highp vec2 texCoord;  // interpolated texture coordinate
 
 /*
-Idea: pass triangle vertex positions as flat in here (just check index %3 and pass 3 vertices)
+Idea: parse tex coords in vertex.glsl, pass them and they will be interpolated to the proper values here
 */
 
 out vec4 FragColor;
 
+const uint tex_fmt_shft[16] = {
+    0, // I4 ?
+    1, // I8 ?
+    0, // IA4 ?
+    1, // IA8 ?
+    2, // RGB565
+    2, // RGB5A1 (I think this is wrong in YAGCD)
+    3, // RGBA8
+    0, // unused
+    0, // CI4 ?
+    1, // CI8 ?
+    0, // CIA4 ?
+    0, 0, 0, // unused
+    1, // CMP ?
+    0  // unused
+};
+
+uint utemp;
+int itemp;
+
 void main()
 {
-    if (texturePresent == 0) {
-        FragColor = vec4(vertexColor);
+    if ((textureData & 1u) == 0) {
+        // FragColor = vec4(vertexColor);
+        FragColor = vec4(1.0, 0.0, 0.0, 1.0);
     }
     else {
-        FragColor = vec4(1.0, 0.0, 0.0, 1.0);
+        uint tex_index = bitfieldExtract(textureData, 1, 3);
+
+        uint setimage0_i;  // holds width/height data
+        if (tex_index < 4) {
+            setimage0_i = BP_regs[++BP_reg_TX_SETIMAGE0_base_lo++ + tex_index];
+        }
+        else {
+            setimage0_i = BP_regs[++BP_reg_TX_SETIMAGE0_base_hi++ + tex_index - 4];
+        }
+
+        uint texture_color_format = bitfieldExtract(setimage0_i, 20, 4);
+        uint width_min_1 = bitfieldExtract(setimage0_i, 0, 10);
+        uint height_min_1 = bitfieldExtract(setimage0_i, 10, 10);
+
+        // todo: wrap_s/t
+        highp vec2 wrappedCoord = clamp(texCoord, 0.0, 1.0);
+        uint textureIndex = textureOffset;
+
+        // always use nearest interpolation
+        // same strategy as in CommandProcessor.c to get the texture size
+        uint offset_into_texture = uint(wrappedCoord.y * height_min_1) * (width_min_1 + 1) + uint(wrappedCoord.x * width_min_1);
+        // offset_into_texture = uint(wrappedCoord.y * height_min_1) * (width_min_1 + 1);
+        offset_into_texture <<= tex_fmt_shft[texture_color_format];
+        offset_into_texture >>= 1;
+
+        textureIndex += offset_into_texture;
+
+        // load data at the location. The color formats are all nicely aligned (either by 4, 2, 1 or 0.5 byte, so we
+        // can parse that part before parsing the actual color.
+
+        uint data = texture_data[textureIndex >> 2];  // stored bytes as uints
+
+        switch (tex_fmt_shft[texture_color_format]) {
+            case 0:  // nibble
+            case 1:  // byte
+                utemp = bitfieldExtract(offset_into_texture, 0, 2);  // todo: nibble-sized offset for 0
+                data = bitfieldExtract(data, int(utemp * 8), 8);
+                break;
+            case 2:  // halfword
+                utemp = offset_into_texture & 0x2u;  // misalignment (always halfword-aligned)
+                data = bitfieldExtract(data, int(utemp * 8), 16);  // get right halfword
+                utemp = data >> 8;  // top byte
+                data = (data & 0xffu) << 8;  // swap bottom byte
+                data = data | utemp;  // convert to LE
+                break;
+            case 3:  // word
+                utemp = data >> 16;  // top halfword
+                data = (data & 0xffffu) << 16;  // swap bottom halfword
+                data |= utemp;
+                // we now did [0123] -> [2301], need [3210]
+
+                utemp = data & 0x00ff00ffu;  // [.3.1]
+                utemp <<= 8;                 // [3.1.]
+                data >>= 8;                  // [.230]
+                data &= 0x00ff00ffu;         // [.2.0]
+                data |= utemp;               // [3210]
+                break;
+            default:
+                break;
+        }
+
+        vec4 color;
+
+        switch (texture_color_format) {
+            case ++color_format_RGB5A1++:
+                color.x = bitfieldExtract(data, 10, 5) / 32.0;
+                color.y = bitfieldExtract(data, 5, 5) / 32.0;
+                color.z = bitfieldExtract(data, 0, 5) / 32.0;
+                break;
+
+            default:
+                color = vec4(1.0, 0.0, 0.0, 1.0);
+                break;
+        }
+
+//        if (height_min_1 == 0x7f) {
+//            FragColor = vec4(0.0, 1.0, 0.0, 1.0);
+//        }
+//        else {
+//            FragColor = vec4(0.0, 0.0, 1.0, 1.0);
+//        }
+        FragColor = vec4(color.xyz, 1.0);
+        // FragColor = vec4(float(offset_into_texture) / (height_min_1 * width_min_1 * 2), 0.0, 0.0, 1.0);
     }
 }
 

@@ -270,6 +270,11 @@ typedef struct s_draw_command_small {
     u8 data[DRAW_COMMAND_DATA_BUFFER_SIZE];
 } s_draw_command_small;
 
+typedef struct s_texture_data {
+    u32 data_size;
+    u8 data[DRAW_COMMAND_TEXTURE_BUFFER_SIZE];
+} s_texture_data;
+
 #define INTERNAL_CP_REGISTER_SIZE 0xa0
 #define INTERNAL_CP_REGISTER_BASE 0x20
 #define INTERNAL_BP_REGISTER_SIZE 0x100
@@ -316,7 +321,7 @@ typedef struct s_CP {
     // todo: draw_command_mid, large
     u8 arg_size[21]; // sizes of individual (direct) arguments of current draw command
     s_draw_command_small draw_command_queue[MAX_DRAW_COMMANDS];
-    u8 texture_data[MAX_DRAW_COMMANDS][DRAW_COMMAND_TEXTURE_BUFFER_SIZE];
+    s_texture_data texture_data[MAX_DRAW_COMMANDS];
 
     // these values are also read/set by flipper
     volatile u32 draw_command_index;  // read to make sure flipper does not catch up

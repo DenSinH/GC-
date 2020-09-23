@@ -35,4 +35,29 @@ typedef enum e_XF_regs {
     XF_reg_projection_F = 0x25,
 } e_XF_regs;
 
+typedef enum e_BP_regs {
+    BP_reg_TX_SETIMAGE0_base_lo = 0x88,
+    BP_reg_TX_SETIMAGE0_base_hi = 0xa8,
+    BP_reg_TX_SETIMAGE1_base_lo = 0x8c,
+    BP_reg_TX_SETIMAGE1_base_hi = 0xac,
+    BP_reg_TX_SETIMAGE2_base_lo = 0x90,
+    BP_reg_TX_SETIMAGE2_base_hi = 0xb0,
+    BP_reg_TX_SETIMAGE3_base_lo = 0x94,
+    BP_reg_TX_SETIMAGE3_base_hi = 0xb4,
+} e_BP_regs;
+
+typedef enum e_color_formats {
+    color_format_I4     = 0,
+    color_format_I8     = 1,
+    color_format_IA4    = 2,
+    color_format_IA8    = 3,
+    color_format_RGB565 = 4,
+    color_format_RGB5A1 = 5,
+    color_format_RGBA8  = 6,
+    color_format_C4     = 7,
+    color_format_C8     = 8,
+    color_format_C14X2  = 9,
+    color_format_CMP    = 14
+} e_color_formats;
+
 #endif //GC__GX_CONSTANTS_H

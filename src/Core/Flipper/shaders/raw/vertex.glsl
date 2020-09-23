@@ -4,7 +4,7 @@
 
 #undef DEBUG
 
-const uint draw_arg_POS = %draw_arg_POS%;
+const uint draw_arg_POS = ++draw_arg_POS++;
 
 uniform uint VCD_lo, VCD_hi;
 uniform uint VAT_A, VAT_B, VAT_C;
@@ -28,8 +28,9 @@ layout (std430, binding = 3) buffer command_SSBO
 
 out vec4 vertexColor;
 
-out uint texturePresent;
+out uint textureData;
 out uint textureOffset;
+out highp vec2 texCoord;
 
 /*
  * I can't pass arrays to functions, so I'll have to make due writing separate read handlers for args/data
@@ -62,23 +63,110 @@ out uint textureOffset;
     return (msh << 16) | int(lsh); \
 }
 
-read8(data);
-read8s(data);
-read8(args);
-read8s(args);
+read8(data)
+read8s(data)
+read8(args)
+read8s(args)
 
-read16(data);
-read16s(data);
-read16(args);
-read16s(args);
+read16(data)
+read16s(data)
+read16(args)
+read16s(args)
 
-read32(data);
-read32s(data);
-read32(args);
-read32s(args);
+read32(data)
+read32s(data)
+read32(args)
+read32s(args)
+
+// temporary stuff
+int stemp;
+uint utemp;
 
 // defined in trafo.glsl
-vec4 transform(vec3 position, uint posidx);
+vec4 transform_pos(vec3 position, uint posidx);
+vec3 transform_tex(vec3 texcoord, uint texidx);
+
+vec3 load_position(bool from_data, uint FMT, uint offset)
+{
+    // always load 3 coodinates, decide on whether to use the last one later
+    vec3 position;
+    if (from_data) {
+        switch (FMT) {
+            case 0:  // u8
+                position.x = read8_data(offset);
+                position.y = read8_data(offset + 1);
+                position.z = read8_data(offset + 2);
+                break;
+            case 1:  // s8
+                position.x = read8s_data(offset);
+                position.y = read8s_data(offset + 1);
+                position.z = read8s_data(offset + 2);
+                break;
+            case 2:  // u16
+                position.x = read16_data(offset);
+                position.y = read16_data(offset + 2);
+                position.z = read16_data(offset + 4);
+                break;
+            case 3:  // s16
+                position.x = read16s_data(offset);
+                position.y = read16s_data(offset + 2);
+                position.z = read16s_data(offset + 4);
+                break;
+            case 4:
+                utemp = read32_data(offset);
+                position.x = uintBitsToFloat(utemp);
+                utemp = read32_data(offset + 4);
+                position.y = uintBitsToFloat(utemp);
+                utemp = read32_data(offset + 8);
+                position.z = uintBitsToFloat(utemp);
+                break;
+            default:
+                // invalid format
+                position = vec3(0, 0, 0);
+                break;
+        }
+        return position;
+    }
+    else {
+        // read data from args
+        // always load 3 coodinates, decide on whether to use the last one later
+        switch (FMT) {
+            case 0:  // u8
+                position.x = read8_args(offset);
+                position.y = read8_args(offset + 1);
+                position.z = read8_args(offset + 2);
+                break;
+            case 1:  // s8
+                position.x = read8s_args(offset);
+                position.y = read8s_args(offset + 1);
+                position.z = read8s_args(offset + 2);
+                break;
+            case 2:  // u16
+                position.x = read16_args(offset);
+                position.y = read16_args(offset + 2);
+                position.z = read16_args(offset + 4);
+                break;
+            case 3:  // s16
+                position.x = read16s_args(offset);
+                position.y = read16s_args(offset + 2);
+                position.z = read16s_args(offset + 4);
+                break;
+            case 4:
+                utemp = read32_args(offset);
+                position.x = uintBitsToFloat(utemp);
+                utemp = read32_args(offset + 4);
+                position.y = uintBitsToFloat(utemp);
+                utemp = read32_args(offset + 8);
+                position.z = uintBitsToFloat(utemp);
+                break;
+            default:
+                // invalid format
+                position = vec3(0, 0, 0);
+                break;
+        }
+        return position;
+    }
+}
 
 void main()
 {
@@ -86,18 +174,15 @@ void main()
     uint arg_offset;
     uint data_offset;
 
-    int stemp;
-    uint utemp;
-
     // placed here mostly for debugging purposes
     vec3 position;
 
-    if (arg_offsets[%draw_arg_POS%] >= 0)
+    if (arg_offsets[++draw_arg_POS++] >= 0)
     {
         /* determine vertex position */
 
         // initial values
-        arg_offset = arg_offsets[%draw_arg_POS%];
+        arg_offset = arg_offsets[++draw_arg_POS++];
         arg_offset += gl_VertexID * vertex_stride;
 
         uint POSVCD  = bitfieldExtract(VCD_lo, 9, 2);
@@ -107,7 +192,7 @@ void main()
 
         if (POSVCD > 1) {
             // indirect data
-            data_offset = data_offsets[%draw_arg_POS%];
+            data_offset = data_offsets[++draw_arg_POS++];
 
             // determine the "GC vertex index"
             int vertex_index;
@@ -117,80 +202,13 @@ void main()
             else {
                 vertex_index = read16s_args(arg_offset);
             }
-            // todo: pass strides
-            data_offset += vertex_index * array_strides[%draw_arg_POS% - draw_arg_POS];
 
-            // always load 3 coodinates, decide on whether to use the last one later
-            switch (POSFMT) {
-                case 0:  // u8
-                    position.x = read8_data(data_offset);
-                    position.y = read8_data(data_offset + 1);
-                    position.z = read8_data(data_offset + 2);
-                    break;
-                case 1:  // s8
-                    position.x = read8s_data(data_offset);
-                    position.y = read8s_data(data_offset + 1);
-                    position.z = read8s_data(data_offset + 2);
-                    break;
-                case 2:  // u16
-                    position.x = read16_data(data_offset);
-                    position.y = read16_data(data_offset + 2);
-                    position.z = read16_data(data_offset + 4);
-                    break;
-                case 3:  // s16
-                    position.x = read16s_data(data_offset);
-                    position.y = read16s_data(data_offset + 2);
-                    position.z = read16s_data(data_offset + 4);
-                    break;
-                case 4:
-                    utemp = read32_data(data_offset);
-                    position.x = uintBitsToFloat(utemp);
-                    utemp = read32_data(data_offset + 4);
-                    position.y = uintBitsToFloat(utemp);
-                    utemp = read32_data(data_offset + 8);
-                    position.z = uintBitsToFloat(utemp);
-                    break;
-                default:
-                    // invalid format
-                    return;
-            }
+            data_offset += vertex_index * array_strides[++draw_arg_POS++ - draw_arg_POS];
+
+            position = load_position(true, POSFMT, data_offset);
         }
         else {
-            // read data from args
-            // always load 3 coodinates, decide on whether to use the last one later
-            switch (POSFMT) {
-                case 0:  // u8
-                    position.x = read8_args(arg_offset);
-                    position.y = read8_args(arg_offset + 1);
-                    position.z = read8_args(arg_offset + 2);
-                    break;
-                case 1:  // s8
-                    position.x = read8s_args(arg_offset);
-                    position.y = read8s_args(arg_offset + 1);
-                    position.z = read8s_args(arg_offset + 2);
-                    break;
-                case 2:  // u16
-                    position.x = read16_args(arg_offset);
-                    position.y = read16_args(arg_offset + 2);
-                    position.z = read16_args(arg_offset + 4);
-                    break;
-                case 3:  // s16
-                    position.x = read16s_args(arg_offset);
-                    position.y = read16s_args(arg_offset + 2);
-                    position.z = read16s_args(arg_offset + 4);
-                    break;
-                case 4:
-                    utemp = read32_args(arg_offset);
-                    position.x = uintBitsToFloat(utemp);
-                    utemp = read32_args(arg_offset + 4);
-                    position.y = uintBitsToFloat(utemp);
-                    utemp = read32_args(arg_offset + 8);
-                    position.z = uintBitsToFloat(utemp);
-                    break;
-                default:
-                    // invalid format
-                    return;
-            }
+            position = load_position(false, POSFMT, arg_offset);
         }
 
         // todo: POSSHFT
@@ -200,15 +218,15 @@ void main()
         }
 
         uint posidx;
-        if (arg_offsets[%draw_arg_PNMTXIDX%] >= 0) {
+        if (arg_offsets[++draw_arg_PNMTXIDX++] >= 0) {
             // position matrix index value passed (always direct)
-            posidx = read8_args(arg_offsets[%draw_arg_PNMTXIDX%]);
+            posidx = read8_args(arg_offsets[++draw_arg_PNMTXIDX++]);
         }
         else {
             posidx = bitfieldExtract(MATIDX_REG_A, 0, 6);
         }
 
-        gl_Position = transform(position, posidx);
+        gl_Position = transform_pos(position, posidx);
 #ifdef DEBUG
         switch (gl_VertexID) {
             case 0:
@@ -227,12 +245,12 @@ void main()
 #endif
     }
 
-    if (arg_offsets[%draw_arg_CLR0%] >= 0)
+    if (arg_offsets[++draw_arg_CLR0++] >= 0)
     {
         /* determine vertex color 0 */
         // todo: different cases (right now only i8 indexed rgba8888
         // initial values
-        arg_offset = arg_offsets[%draw_arg_CLR0%];
+        arg_offset = arg_offsets[++draw_arg_CLR0++];
         arg_offset += gl_VertexID * vertex_stride;
 
         uint COL0VCD  = bitfieldExtract(VCD_lo, 13, 2);
@@ -241,10 +259,9 @@ void main()
 
         vec4 color;
 
-        // todo: signed offset
         if (COL0VCD > 1) {
             // indirect data
-            data_offset = data_offsets[%draw_arg_CLR0%];
+            data_offset = data_offsets[++draw_arg_CLR0++];
 
             int color_index;
             if (COL0VCD == 2) {
@@ -254,7 +271,7 @@ void main()
                 color_index = read16s_args(arg_offset);
             }
 
-            data_offset += color_index * array_strides[%draw_arg_CLR0% - draw_arg_POS];
+            data_offset += color_index * array_strides[++draw_arg_CLR0++ - draw_arg_POS];
 
             // always get 4 color value, determine actual value later
             switch (COL0FMT) {
@@ -357,11 +374,100 @@ void main()
 #endif
     }
 
-    texturePresent = 0;
+    /* load texture data */
+    textureData = 0;
     for (int i = 0; i < 8; i++) {
-        if (arg_offsets[%draw_arg_TEX0% + i] >= 0) {
-            texturePresent = 1;
+        if (arg_offsets[++draw_arg_TEX0++ + i] >= 0) {
+            // load texture specific data
+            textureData = 1 | (uint(i) << 1);
             textureOffset = data_offsets[i];
+
+            // load texture coordinate (same as position basically)
+            arg_offset = arg_offsets[++draw_arg_TEX0++ + i];
+            arg_offset += gl_VertexID * vertex_stride;
+
+            uint TEXVCD = bitfieldExtract(VCD_hi, 2 * i, 2);
+            bool TEXCNT;
+            uint TEXFMT;
+            uint TEXSHFT;
+            switch (i) {
+                case 0:
+                    // TEX0 is in VAT_A
+                    TEXCNT = bitfieldExtract(VAT_A, 21, 1) != 0;
+                    TEXFMT = bitfieldExtract(VAT_A, 22, 3);
+                    TEXSHFT = bitfieldExtract(VAT_A, 25, 5);
+                    break;
+                case 1:
+                case 2:
+                case 3:
+                    // TEX1-3 are fully in VAT_B
+                    TEXCNT = bitfieldExtract(VAT_B, 9 * (i - 1), 1) != 0;
+                    TEXFMT = bitfieldExtract(VAT_B, 9 * (i - 1) + 1, 3);
+                    TEXSHFT = bitfieldExtract(VAT_B, 9 * (i - 1) + 4, 5);
+                    break;
+                case 4:
+                    // TEX4 is partly in VAT_B, partly in VAT_C
+                    TEXCNT = bitfieldExtract(VAT_B, 27, 1) != 0;
+                    TEXFMT = bitfieldExtract(VAT_B, 28, 3);
+                    TEXSHFT = bitfieldExtract(VAT_C, 0, 5);
+                    break;
+                case 5:
+                case 6:
+                case 7:
+                    // TEX5-7 are fully in VAT_C
+                    TEXCNT = bitfieldExtract(VAT_C, 5 + 9 * (i - 5), 1) != 0;
+                    TEXFMT = bitfieldExtract(VAT_C, 5 + 9 * (i - 5) + 1, 3);
+                    TEXSHFT = bitfieldExtract(VAT_C, 5 + 9 * (i - 5) + 4, 5);
+                default:
+                    // invalid texture format
+                    break;
+            }
+
+            vec3 read_tex_coord;
+
+            if (TEXVCD > 1) {
+                // indirect data
+                data_offset = data_offsets[++draw_arg_TEX0++ + i];
+
+                // determine the GC texture coordiante index
+                int tex_coord_index;
+                if (TEXVCD == 2) {
+                    tex_coord_index = read8s_args(arg_offset);
+                }
+                else {
+                    tex_coord_index = read16s_args(arg_offset);
+                }
+
+                data_offset += tex_coord_index * array_strides[++draw_arg_TEX0++ + i - draw_arg_POS];
+
+                read_tex_coord = load_position(true, TEXFMT, data_offset);
+            }
+            else {
+                read_tex_coord = load_position(false, TEXFMT, arg_offset);
+            }
+
+            read_tex_coord.z = 0;  // 2D at most
+            if (!TEXCNT) {
+                read_tex_coord.y = 0;  // 1D
+            }
+
+            uint texidx;
+            if (arg_offsets[++draw_arg_TEX0MTXIDX++ + i] >= 0) {
+                // texture matrix index value passed (always direct)
+                texidx = read8_args(arg_offsets[++draw_arg_TEX0MTXIDX++ + i]);
+            }
+            else {
+                if (i < 4)  {
+                    // TEX0-3 in MATIDX_REG_A
+                    texidx = bitfieldExtract(MATIDX_REG_A, 6 * (i + 1), 6);
+                }
+                else {
+                    // TEX4-7 in MATIDX_REG_B
+                    texidx = bitfieldExtract(MATIDX_REG_B, 6 * (i - 4), 6);
+                }
+            }
+
+            texCoord = transform_tex(read_tex_coord, texidx).xy;
             break;
         }
     }

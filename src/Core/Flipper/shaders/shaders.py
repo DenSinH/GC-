@@ -2,6 +2,32 @@ import os
 import re
 import sys
 
+from warnings import warn
+
+try:
+    import moderngl
+
+    ctx = moderngl.create_standalone_context(require=430)
+    print(f"Loaded OpenGL version {ctx.version_code}")
+
+    def check_compile(text: str, name: str):
+        try:
+            ctx.compute_shader(text)
+            print(f"Compiled shader '{name}'")
+        except Exception as e:
+            for i, line in enumerate(text.split("\n")):
+                print(f"{i + 1:03d}: {line}")
+            warn(f"Failed compiling shader '{name}': {e}")
+
+except ImportError:
+    print("Could not find module 'OpenGL.GL.shaders', skipping shader compilation check")
+
+    moderngl = None
+    ctx = None
+
+    def check_compile(text: str, name: str):
+        pass
+
 SCRIPT, *_ = sys.argv
 SHADER_DIR = f"{os.path.dirname(SCRIPT)}/raw"
 CONSTANTS = f"{os.path.dirname(SCRIPT)}/GX_constants.h"
@@ -29,6 +55,7 @@ for file in os.listdir(SHADER_DIR):
 
         shader_name = match.group(1)
         shader = [f"const char* {shader_name} = "]
+        raw = ""
 
         # skip leading empty lines
         while not content[i]:
@@ -37,10 +64,14 @@ for file in os.listdir(SHADER_DIR):
         shader_start = i
 
         while i < len(content) and not re.match(f".*END\\s+{shader_name}", content[i]):
-            # escape backslashes and quotes
-            line = content[i].replace("\\", "\\\\").replace("\"", "\\\"")
+            line = content[i]
             for const, value in constants.items():
-                line = re.sub(f"%{const}%", value, line)
+                line = re.sub(f"\\+\\+{const}\\+\\+", value, line)
+
+            raw += line + "\n"
+
+            # escape backslashes and quotes
+            line = line.replace("\\", "\\\\").replace("\"", "\\\"")
 
             shader.append(f'"{line}\\n"  // l:{i - shader_start + 1}')
             i += 1
@@ -53,6 +84,9 @@ for file in os.listdir(SHADER_DIR):
             shader.pop(-1)
 
         text = "\n".join(shader)
+
+        # skip declaration on compile checking
+        check_compile(raw, shader_name)
 
         # skip line with END in it
         i += 1

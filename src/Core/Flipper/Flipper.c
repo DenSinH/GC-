@@ -132,6 +132,8 @@ static void init_program(s_Flipper* flipper) {
 static void init_buffers(s_Flipper* flipper) {
     // create buffers
     glGenBuffers(1, &flipper->command_SSBO);
+    glGenBuffers(1, &flipper->texture_SSBO);
+    glGenBuffers(1, &flipper->BP_SSBO);
     glGenBuffers(1, &flipper->XF_SSBO);
 
     // Setup VAO to bind the buffers to
@@ -140,6 +142,12 @@ static void init_buffers(s_Flipper* flipper) {
 
     glBindBuffer(GL_SHADER_STORAGE_BUFFER, flipper->command_SSBO);
     glBindBufferBase(GL_SHADER_STORAGE_BUFFER, 3, flipper->command_SSBO);
+
+    glBindBuffer(GL_SHADER_STORAGE_BUFFER, flipper->texture_SSBO);
+    glBindBufferBase(GL_SHADER_STORAGE_BUFFER, 7, flipper->texture_SSBO);
+
+    glBindBuffer(GL_SHADER_STORAGE_BUFFER, flipper->BP_SSBO);
+    glBindBufferBase(GL_SHADER_STORAGE_BUFFER, 6, flipper->BP_SSBO);
 
     glBindBuffer(GL_SHADER_STORAGE_BUFFER, flipper->XF_SSBO);
     glBindBufferBase(GL_SHADER_STORAGE_BUFFER, 4, flipper->XF_SSBO);
@@ -204,7 +212,7 @@ static const GLenum draw_commands[8] = {
         GL_TRIANGLE_FAN, GL_LINES, GL_LINE_STRIP, GL_POINTS
 };
 
-void draw_Flipper(s_Flipper* flipper, s_draw_command_small* command) {
+void draw_Flipper(s_Flipper* flipper, s_draw_command_small* command, s_texture_data* texture_data) {
     glBindVertexArray(flipper->VAO);
 
     // buffer command data
@@ -218,7 +226,31 @@ void draw_Flipper(s_Flipper* flipper, s_draw_command_small* command) {
 
     // todo: cache this somehow?
     log_flipper("buffer %x bytes of command data",
-                sizeof(s_draw_command_small) - DRAW_COMMAND_DATA_BUFFER_SIZE + command->data_size)
+                sizeof(s_draw_command_small) - DRAW_COMMAND_DATA_BUFFER_SIZE + command->data_size);
+
+    // buffer texture data (if necessary)
+    if (texture_data->data_size) {
+        glBindBuffer(GL_SHADER_STORAGE_BUFFER, flipper->texture_SSBO);
+        glBufferData(
+                GL_SHADER_STORAGE_BUFFER,
+                sizeof(s_texture_data) - DRAW_COMMAND_TEXTURE_BUFFER_SIZE + texture_data->data_size,
+                texture_data,
+                GL_STATIC_COPY
+        );
+
+        log_flipper("buffer %x bytes of texture data",
+                    sizeof(s_texture_data) - DRAW_COMMAND_TEXTURE_BUFFER_SIZE + texture_data->data_size);
+    }
+
+    glBindBuffer(GL_SHADER_STORAGE_BUFFER, flipper->BP_SSBO);
+    glBufferData(
+            GL_SHADER_STORAGE_BUFFER,
+            sizeof(flipper->CP->internal_BP_regs),
+            &flipper->CP->internal_BP_regs,
+            GL_STATIC_COPY
+    );
+
+    log_flipper("loaded %x bytes of BP regs", sizeof(flipper->CP->internal_BP_regs));
 
     glBindBuffer(GL_SHADER_STORAGE_BUFFER, flipper->XF_SSBO);
     glBufferData(
@@ -280,8 +312,12 @@ struct s_framebuffer render_Flipper(s_Flipper* flipper){
             wait_for_fence(flipper);
 
             // draw and set draw command slot to available in CP
-            draw_Flipper(flipper, &flipper->CP->draw_command_queue[flipper->draw_command_index++]);
-            if (flipper->draw_command_index == MAX_DRAW_COMMANDS) {
+            draw_Flipper(
+                    flipper,
+                    &flipper->CP->draw_command_queue[flipper->draw_command_index],
+                    &flipper->CP->texture_data[flipper->draw_command_index]
+            );
+            if (++flipper->draw_command_index == MAX_DRAW_COMMANDS) {
                 flipper->draw_command_index = 0;
             }
 
