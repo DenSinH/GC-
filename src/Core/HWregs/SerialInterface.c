@@ -6,7 +6,7 @@
 
 HW_REG_WRITE_CALLBACK(write_SI_buffer, SI) {
 #ifndef NDEBUG
-    printf("SI buffer data: %08x\n", READ32(SI->regs, 0x80));
+    // printf("SI buffer data: %08x\n", READ32(SI->regs, 0x80));
 #endif
 }
 

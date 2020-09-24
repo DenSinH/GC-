@@ -196,6 +196,9 @@ static inline void send_draw_command(s_CP* CP) {
 
         // todo: align by block size (mostly 32, but 64 bytes for RGBA8)
         texture_offset += (data_length & ~3) + 4;  // keep aligned by 4 bytes for easier processing in shader
+#ifdef CHECK_CP_DATA_BUFFER
+        assert(texture_offset < DRAW_COMMAND_TEXTURE_BUFFER_SIZE /* texture buffer overflow */);
+#endif
     }
     CP->current_texture_data.data_size = texture_offset;
 

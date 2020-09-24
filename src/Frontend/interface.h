@@ -6,6 +6,7 @@
 
 #define CONSOLE_COMMAND(name) void name(char** args, int argc, char* output)
 #define MAX_OUTPUT_LENGTH 0x100
+#define CONTROLLER_MAP_FILE "input.map"
 
 #ifdef __cplusplus
 extern "C" {
@@ -17,6 +18,12 @@ extern "C" {
         size_t dest_width, dest_height;
     } s_framebuffer;
 
+    typedef struct s_controller {
+        // u8 for compatibility with C
+        uint8_t A, B, X, Y, up, down, left, right, start, select, L, R;
+        int16_t left_x, left_y, right_x, right_y;
+    } s_controller;
+
     int ui_run();
 
     void frontend_init(
@@ -26,7 +33,8 @@ extern "C" {
             uint64_t mem_size,
             uint32_t (*valid_address_mask)(uint32_t),
             uint64_t* timer,
-            uint8_t (*mem_read)(const uint8_t* data, uint64_t off)
+            uint8_t (*mem_read)(const uint8_t* data, uint64_t off),
+            void (*parse_input)(s_controller* controller)
     );
 
     void add_command(const char* command, const char* description, CONSOLE_COMMAND((*callback)));

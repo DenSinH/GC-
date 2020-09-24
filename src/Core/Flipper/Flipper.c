@@ -225,7 +225,7 @@ void draw_Flipper(s_Flipper* flipper, s_draw_command_small* command, s_texture_d
     );
 
     // todo: cache this somehow?
-    log_flipper("buffer %x bytes of command data",
+    log_flipper("buffer %lx bytes of command data",
                 sizeof(s_draw_command_small) - DRAW_COMMAND_DATA_BUFFER_SIZE + command->data_size);
 
     // buffer texture data (if necessary)
@@ -238,7 +238,7 @@ void draw_Flipper(s_Flipper* flipper, s_draw_command_small* command, s_texture_d
                 GL_STATIC_COPY
         );
 
-        log_flipper("buffer %x bytes of texture data",
+        log_flipper("buffer %lx bytes of texture data",
                     sizeof(s_texture_data) - DRAW_COMMAND_TEXTURE_BUFFER_SIZE + texture_data->data_size);
     }
 
@@ -250,7 +250,7 @@ void draw_Flipper(s_Flipper* flipper, s_draw_command_small* command, s_texture_d
             GL_STATIC_COPY
     );
 
-    log_flipper("loaded %x bytes of BP regs", sizeof(flipper->CP->internal_BP_regs));
+    log_flipper("loaded %lx bytes of BP regs", sizeof(flipper->CP->internal_BP_regs));
 
     glBindBuffer(GL_SHADER_STORAGE_BUFFER, flipper->XF_SSBO);
     glBufferData(
@@ -260,7 +260,7 @@ void draw_Flipper(s_Flipper* flipper, s_draw_command_small* command, s_texture_d
             GL_STATIC_COPY
     );
 
-    log_flipper("loaded %x bytes of XF data", sizeof(flipper->CP->internal_XF_mem) + sizeof(flipper->CP->internal_XF_regs));
+    log_flipper("loaded %lx bytes of XF data", sizeof(flipper->CP->internal_XF_mem) + sizeof(flipper->CP->internal_XF_regs));
 
     glBindBuffer(GL_SHADER_STORAGE_BUFFER, 0);
     glUseProgram(flipper->shaderProgram);

@@ -30,7 +30,9 @@ set(FRONTEND_SRCS
         frontend.cpp
         widgets/menubar.cpp
         widgets/disassemble.c
-        debugger.cpp)
+        controller.cpp
+        debugger.cpp
+)
 
 set(FRONTEND_HDRS
                imgui/imgui_impl_opengl3.h
@@ -45,6 +47,7 @@ set(FRONTEND_HDRS
         debugger.h
         frontend.h
         interface.h
+        controller.h
 )
 
 add_library(Frontend ${FRONTEND_SRCS} ${FRONTEND_HDRS})

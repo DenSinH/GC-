@@ -1,6 +1,8 @@
 #include "frontend.h"
+
 #include "debugger.h"
 #include "interface.h"
+#include "controller.h"
 
 #include <stdio.h>
 #include <SDL.h>
@@ -11,6 +13,9 @@
 
 static struct s_frontend {
     ImGuiIO io;
+    s_controller controller;
+    void (*parse_input)(s_controller* controller);
+
     bool* shutdown;
     void (*video_init)();
     s_framebuffer (*render)();
@@ -32,9 +37,11 @@ void frontend_init(
         uint64_t mem_size,
         uint32_t (*valid_address_mask)(uint32_t),
         uint64_t *timer,
-        uint8_t (*mem_read)(const uint8_t *data, uint64_t off)
+        uint8_t (*mem_read)(const uint8_t *data, uint64_t off),
+        void (*parse_input)(s_controller* controller)
 ) {
     Frontend.shutdown = shutdown;
+    Frontend.parse_input = parse_input;
     debugger_init(
             PC, memory, mem_size, valid_address_mask, timer, mem_read
     );
@@ -48,11 +55,37 @@ void bind_video_render(s_framebuffer (*render)()) {
     Frontend.render = render;
 }
 
+SDL_GameController* gamecontroller = NULL;
+
+void init_gamecontroller() {
+    if (SDL_NumJoysticks() < 0) {
+        printf("No gamepads detected\n");
+    }
+    else {
+        for (int i = 0; i < SDL_NumJoysticks(); i++) {
+            if (SDL_IsGameController(i)) {
+                gamecontroller = SDL_GameControllerOpen(i);
+
+                if (gamecontroller == NULL) {
+                    printf("Failed to connect to gamecontroller at index %d\n", i);
+                    continue;
+                }
+
+                printf("Connected game controller at index %d\n", i);
+                return;
+            }
+        }
+    }
+    printf("No gamepads detected (only joysticks)\n");
+}
+
 int ui_run() {
     if (SDL_Init(SDL_INIT_VIDEO | SDL_INIT_TIMER | SDL_INIT_GAMECONTROLLER) != 0) {
         printf("Error: %s\n", SDL_GetError());
         return -1;
     }
+    init_controller_mapping(CONTROLLER_MAP_FILE);
+    init_gamecontroller();
 
     // Decide GL+GLSL versions
 #if __APPLE__
@@ -94,11 +127,48 @@ int ui_run() {
         SDL_Event event;
         while (SDL_PollEvent(&event)) {
             ImGui_ImplSDL2_ProcessEvent(&event);
-            if (event.type == SDL_QUIT)
-                *Frontend.shutdown = true;
-            if (event.type == SDL_WINDOWEVENT && event.window.event == SDL_WINDOWEVENT_CLOSE &&
-                event.window.windowID == SDL_GetWindowID(window))
-                *Frontend.shutdown = true;
+
+            switch (event.type) {
+                case SDL_QUIT:
+                    *Frontend.shutdown = true;
+                    break;
+                case SDL_WINDOWEVENT:
+                    if (event.window.event == SDL_WINDOWEVENT_CLOSE &&
+                        event.window.windowID == SDL_GetWindowID(window)) {
+                        *Frontend.shutdown = true;
+                    }
+                    break;
+                case SDL_CONTROLLERDEVICEADDED:
+                    gamecontroller =  SDL_GameControllerOpen(event.cdevice.which);
+                    if (gamecontroller == NULL) {
+                        printf("Error with connected gamecontroller\n");
+                    }
+                    break;
+                case SDL_KEYDOWN:
+                    // printf("pressed keyboard key %d\n", event.key.keysym.sym);
+                    parse_keyboard_input(&Frontend.controller, event.key.keysym.sym, 1);
+                    break;
+                case SDL_KEYUP:
+                    parse_keyboard_input(&Frontend.controller, event.key.keysym.sym, 0);
+                    break;
+                case SDL_CONTROLLERBUTTONDOWN:
+                    // printf("pressed button %d\n", event.cbutton.button);
+                    parse_controller_button(&Frontend.controller, event.cbutton.button, 1);
+                    break;
+                case SDL_CONTROLLERBUTTONUP:
+                    parse_controller_button(&Frontend.controller, event.cbutton.button, 0);
+                    break;
+                case SDL_CONTROLLERAXISMOTION:
+                    // printf("moved axis %d, %d\n", event.caxis.axis, event.caxis.value);
+                    parse_controller_axis(&Frontend.controller, event.caxis.axis, event.caxis.value);
+                    break;
+                default:
+                    break;
+            }
+        }
+
+        if (Frontend.parse_input) {
+            Frontend.parse_input(&Frontend.controller);
         }
 
         // Start the Dear ImGui frame
@@ -146,6 +216,7 @@ int ui_run() {
     ImGui_ImplSDL2_Shutdown();
     ImGui::DestroyContext();
 
+    SDL_QuitSubSystem(SDL_INIT_VIDEO | SDL_INIT_JOYSTICK | SDL_INIT_GAMECONTROLLER);
     SDL_GL_DeleteContext(gl_context);
     SDL_DestroyWindow(window);
     SDL_Quit();

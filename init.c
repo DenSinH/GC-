@@ -126,6 +126,12 @@ static s_framebuffer frontend_render() {
     return render_Flipper(&global_system->flipper);
 }
 
+static void parse_input(s_controller* controller) {
+    if (controller->A) {
+        printf("A button pressed!\n");
+    }
+}
+
 s_GameCube* init() {
     global_system = init_system();
 
@@ -139,7 +145,8 @@ s_GameCube* init() {
             0x100000000,
             valid_address_check,
             (u64*)&global_system->cpu.TBR,
-            view_byte
+            view_byte,
+            parse_input
             );
 
     char name[32];
