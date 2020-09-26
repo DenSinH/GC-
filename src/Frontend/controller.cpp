@@ -119,7 +119,7 @@ typedef enum e_scan_modes {
 
 template<typename T>
 static void set_input(std::map<T, e_controller_input>& map, e_scan_types type, const std::string& button, T key) {
-    printf("Set mapping for key %s to %d\n", button.c_str(), key);
+    // printf("Set mapping for key %s to %d\n", button.c_str(), key);
 
     if (type == BUTTON) {
         if (button == "A") map[key] = cinp_A;

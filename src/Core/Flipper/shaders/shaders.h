@@ -1,18 +1,18 @@
 #ifndef GC__SHADER_H
 #define GC__SHADER_H
 
-// fragmentShaderSource (from fragment.glsl, lines 2 to 161)
+// fragmentShaderSource (from fragment.glsl, lines 2 to 162)
 const char* fragmentShaderSource = 
-"#version 400 core\n"  // l:1
+"#version 430 core\n"  // l:1
 "\n"  // l:2
-"layout (std430, binding = 6) buffer BP_SSBO\n"  // l:3
+"layout (std430, binding = 6) readonly buffer BP_SSBO\n"  // l:3
 "{\n"  // l:4
 "    uint BP_regs[0x100];\n"  // l:5
 "};\n"  // l:6
 "\n"  // l:7
-"layout (std430, binding = 7) buffer texture_SSBO\n"  // l:8
+"layout (std430, binding = 7) readonly buffer texture_SSBO\n"  // l:8
 "{\n"  // l:9
-"    uint _data_size;  // not actually needed in the shader\n"  // l:10
+"    uint _tex_data_size;  // not actually needed in the shader\n"  // l:10
 "    uint texture_data[];\n"  // l:11
 "};\n"  // l:12
 "\n"  // l:13
@@ -141,27 +141,28 @@ const char* fragmentShaderSource =
 "        switch (texture_color_format) {\n"  // l:136
 "            // todo: proper parsing (2 modes)\n"  // l:137
 "            case 5:\n"  // l:138
-"                color.x = bitfieldExtract(data, 10, 5) / 32.0;\n"  // l:139
-"                color.y = bitfieldExtract(data, 5, 5) / 32.0;\n"  // l:140
-"                color.z = bitfieldExtract(data, 0, 5) / 32.0;\n"  // l:141
-"                break;\n"  // l:142
-"\n"  // l:143
-"            default:\n"  // l:144
-"                color = vec4(1.0, 0.0, 0.0, 1.0);\n"  // l:145
-"                break;\n"  // l:146
-"        }\n"  // l:147
-"\n"  // l:148
-"//        if (height_min_1 == 0x7f) {\n"  // l:149
-"//            FragColor = vec4(0.0, 1.0, 0.0, 1.0);\n"  // l:150
-"//        }\n"  // l:151
-"//        else {\n"  // l:152
-"//            FragColor = vec4(0.0, 0.0, 1.0, 1.0);\n"  // l:153
-"//        }\n"  // l:154
-"        FragColor = vec4(color.xyz, 1.0);\n"  // l:155
-"        // FragColor = vec4(float(offset_into_texture) / (height_min_1 * width_min_1 * 2), 0.0, 0.0, 1.0);\n"  // l:156
-"    }\n"  // l:157
-"}\n"  // l:158
-"\n"  // l:159
+"                color.x = bitfieldExtract(data, 10, 5);\n"  // l:139
+"                color.y = bitfieldExtract(data, 5, 5);\n"  // l:140
+"                color.z = bitfieldExtract(data, 0, 5);\n"  // l:141
+"                color /= 32.0;\n"  // l:142
+"                break;\n"  // l:143
+"\n"  // l:144
+"            default:\n"  // l:145
+"                color = vec4(1.0, 0.0, 0.0, 1.0);\n"  // l:146
+"                break;\n"  // l:147
+"        }\n"  // l:148
+"\n"  // l:149
+"//        if (height_min_1 == 0x7f) {\n"  // l:150
+"//            FragColor = vec4(0.0, 1.0, 0.0, 1.0);\n"  // l:151
+"//        }\n"  // l:152
+"//        else {\n"  // l:153
+"//            FragColor = vec4(0.0, 0.0, 1.0, 1.0);\n"  // l:154
+"//        }\n"  // l:155
+"        FragColor = vec4(color.xyz, 1.0);\n"  // l:156
+"        // FragColor = vec4(float(offset_into_texture) / (height_min_1 * width_min_1 * 2), 0.0, 0.0, 1.0);\n"  // l:157
+"    }\n"  // l:158
+"}\n"  // l:159
+"\n"  // l:160
 ;
 
 
@@ -222,7 +223,7 @@ const char* transformationShaderSource =
 ;
 
 
-// vertexShaderSource (from vertex.glsl, lines 2 to 475)
+// vertexShaderSource (from vertex.glsl, lines 2 to 479)
 const char* vertexShaderSource = 
 "#version 430 core\n"  // l:1
 "\n"  // l:2
@@ -237,7 +238,7 @@ const char* vertexShaderSource =
 "// here, the array is read as little endian\n"  // l:11
 "const int extract_offset[4] = { 0, 8, 16, 24 };\n"  // l:12
 "\n"  // l:13
-"layout (std430, binding = 3) buffer command_SSBO\n"  // l:14
+"layout (std430, binding = 3) readonly buffer command_SSBO\n"  // l:14
 "{\n"  // l:15
 "    uint vertices;\n"  // l:16
 "    uint _command;\n"  // l:17
@@ -245,15 +246,15 @@ const char* vertexShaderSource =
 "    int arg_offsets[21];\n"  // l:19
 "    int data_offsets[21];\n"  // l:20
 "    uint array_strides[21];\n"  // l:21
-"    uint _data_size;  // data_size: I don't actually need this in the shader\n"  // l:22
+"    uint _cmd_data_size;  // data_size: I don't actually need this in the shader\n"  // l:22
 "    uint args[0x1140 >> 2];     // todo: generalize this\n"  // l:23
 "    uint data[];\n"  // l:24
 "};\n"  // l:25
 "\n"  // l:26
 "out vec4 vertexColor;\n"  // l:27
 "\n"  // l:28
-"out uint textureData;\n"  // l:29
-"out uint textureOffset;\n"  // l:30
+"flat out uint textureData;\n"  // l:29
+"flat out uint textureOffset;\n"  // l:30
 "out highp vec2 texCoord;\n"  // l:31
 "\n"  // l:32
 "/*\n"  // l:33
@@ -501,202 +502,206 @@ const char* vertexShaderSource =
 "            switch (COL0FMT) {\n"  // l:275
 "                case 0:  // 16bit rgb565\n"  // l:276
 "                    utemp = read16_data(data_offset);\n"  // l:277
-"                    color.x = bitfieldExtract(utemp, 0, 5)  / 32.0;\n"  // l:278
-"                    color.y = bitfieldExtract(utemp, 4, 6)  / 64.0;\n"  // l:279
-"                    color.z = bitfieldExtract(utemp, 10, 5) / 32.0;\n"  // l:280
-"                    color.w = 1.0;\n"  // l:281
-"                    break;\n"  // l:282
-"                case 1:  // 24bit rgb888\n"  // l:283
-"                    utemp = read32_data(data_offset);\n"  // l:284
-"                    color = unpackUnorm4x8(utemp).wzyx;  // BE to LE\n"  // l:285
-"                    color.w = 1.0;  // 3 colors\n"  // l:286
-"                    // already normalized\n"  // l:287
-"                    break;\n"  // l:288
-"                case 2:  // 32bit rgb888x\n"  // l:289
-"                    utemp = data[data_offset >> 2];  // data is 4 aligned\n"  // l:290
-"                    color = unpackUnorm4x8(utemp);\n"  // l:291
-"                    color.w = 1.0;  // 3 colors\n"  // l:292
-"                    // already normalized\n"  // l:293
-"                    break;\n"  // l:294
-"                case 3:  // 16bit rgba4444\n"  // l:295
-"                    utemp = read16_data(data_offset);\n"  // l:296
-"                    color.x = bitfieldExtract(utemp, 0, 4);\n"  // l:297
-"                    color.y = bitfieldExtract(utemp, 3, 4);\n"  // l:298
-"                    color.z = bitfieldExtract(utemp, 7, 4);\n"  // l:299
-"                    color.w = bitfieldExtract(utemp, 11, 4);\n"  // l:300
-"                    color /= 16.0;  // normalize\n"  // l:301
-"                    break;\n"  // l:302
-"                case 4:  // 24bit rgba6666\n"  // l:303
-"                    utemp = read32_data(data_offset);\n"  // l:304
-"                    color.x = bitfieldExtract(utemp, 0, 6);\n"  // l:305
-"                    color.y = bitfieldExtract(utemp, 5, 6);\n"  // l:306
-"                    color.z = bitfieldExtract(utemp, 11, 6);\n"  // l:307
-"                    color.w = bitfieldExtract(utemp, 17, 6);\n"  // l:308
-"                    color /= 64.0;  // normalize\n"  // l:309
-"                    break;\n"  // l:310
-"                case 5:  // 32bit rgba8888\n"  // l:311
-"                    utemp = data[data_offset >> 2];  // data is 4 aligned\n"  // l:312
-"                    color = unpackUnorm4x8(utemp);\n"  // l:313
-"                    // already normalized\n"  // l:314
-"                    break;\n"  // l:315
-"                default:\n"  // l:316
+"                    color.x = bitfieldExtract(utemp, 0, 5);\n"  // l:278
+"                    color.y = bitfieldExtract(utemp, 4, 6);\n"  // l:279
+"                    color.z = bitfieldExtract(utemp, 10, 5);\n"  // l:280
+"                    color /= 32.0;\n"  // l:281
+"                    color.y *= 0.5; // extra bit\n"  // l:282
+"                    color.w = 1.0;\n"  // l:283
+"                    break;\n"  // l:284
+"                case 1:  // 24bit rgb888\n"  // l:285
+"                    utemp = read32_data(data_offset);\n"  // l:286
+"                    color = unpackUnorm4x8(utemp).wzyx;  // BE to LE\n"  // l:287
+"                    color.w = 1.0;  // 3 colors\n"  // l:288
+"                    // already normalized\n"  // l:289
+"                    break;\n"  // l:290
+"                case 2:  // 32bit rgb888x\n"  // l:291
+"                    utemp = data[data_offset >> 2];  // data is 4 aligned\n"  // l:292
+"                    color = unpackUnorm4x8(utemp);\n"  // l:293
+"                    color.w = 1.0;  // 3 colors\n"  // l:294
+"                    // already normalized\n"  // l:295
+"                    break;\n"  // l:296
+"                case 3:  // 16bit rgba4444\n"  // l:297
+"                    utemp = read16_data(data_offset);\n"  // l:298
+"                    color.x = bitfieldExtract(utemp, 0, 4);\n"  // l:299
+"                    color.y = bitfieldExtract(utemp, 3, 4);\n"  // l:300
+"                    color.z = bitfieldExtract(utemp, 7, 4);\n"  // l:301
+"                    color.w = bitfieldExtract(utemp, 11, 4);\n"  // l:302
+"                    color /= 16.0;  // normalize\n"  // l:303
+"                    break;\n"  // l:304
+"                case 4:  // 24bit rgba6666\n"  // l:305
+"                    utemp = read32_data(data_offset);\n"  // l:306
+"                    color.x = bitfieldExtract(utemp, 0, 6);\n"  // l:307
+"                    color.y = bitfieldExtract(utemp, 5, 6);\n"  // l:308
+"                    color.z = bitfieldExtract(utemp, 11, 6);\n"  // l:309
+"                    color.w = bitfieldExtract(utemp, 17, 6);\n"  // l:310
+"                    color /= 64.0;  // normalize\n"  // l:311
+"                    break;\n"  // l:312
+"                case 5:  // 32bit rgba8888\n"  // l:313
+"                    utemp = data[data_offset >> 2];  // data is 4 aligned\n"  // l:314
+"                    color = unpackUnorm4x8(utemp);\n"  // l:315
+"                    // already normalized\n"  // l:316
 "                    break;\n"  // l:317
-"            }\n"  // l:318
-"        }\n"  // l:319
-"        else {\n"  // l:320
-"            switch (COL0FMT) {\n"  // l:321
-"                case 0:  // 16bit rgb565\n"  // l:322
-"                    utemp = read16_args(arg_offset);\n"  // l:323
-"                    color.x = bitfieldExtract(utemp, 0, 5)  / 32.0;\n"  // l:324
-"                    color.y = bitfieldExtract(utemp, 4, 6)  / 64.0;\n"  // l:325
-"                    color.z = bitfieldExtract(utemp, 10, 5) / 32.0;\n"  // l:326
-"                    color.w = 1.0;\n"  // l:327
-"                    break;\n"  // l:328
-"                case 1:  // 24bit rgb888\n"  // l:329
-"                case 2:  // 32bit rgb888x\n"  // l:330
-"                    utemp = read32_args(arg_offset);\n"  // l:331
-"                    color = unpackUnorm4x8(utemp).wzyx;  // BE to LE\n"  // l:332
-"                    color.w = 1.0;  // 3 colors\n"  // l:333
-"                    // already normalized\n"  // l:334
-"                    break;\n"  // l:335
-"                case 3:  // 16bit rgba4444\n"  // l:336
-"                    utemp = read16_args(arg_offset);\n"  // l:337
-"                    color.x = bitfieldExtract(utemp, 0, 4);\n"  // l:338
-"                    color.y = bitfieldExtract(utemp, 3, 4);\n"  // l:339
-"                    color.z = bitfieldExtract(utemp, 7, 4);\n"  // l:340
-"                    color.w = bitfieldExtract(utemp, 11, 4);\n"  // l:341
-"                    color /= 16.0;  // normalize\n"  // l:342
-"                    break;\n"  // l:343
-"                case 4:  // 24bit rgba6666\n"  // l:344
-"                    utemp = read32_args(arg_offset);\n"  // l:345
-"                    color.x = bitfieldExtract(utemp, 0, 6);\n"  // l:346
-"                    color.y = bitfieldExtract(utemp, 5, 6);\n"  // l:347
-"                    color.z = bitfieldExtract(utemp, 11, 6);\n"  // l:348
-"                    color.w = bitfieldExtract(utemp, 17, 6);\n"  // l:349
-"                    color /= 64.0;  // normalize\n"  // l:350
-"                    break;\n"  // l:351
-"                case 5:  // 32bit rgba8888\n"  // l:352
-"                    utemp = read32_args(arg_offset);\n"  // l:353
-"                    color = unpackUnorm4x8(utemp).wzyx;  // BE to LE\n"  // l:354
-"                    // already normalized\n"  // l:355
-"                    break;\n"  // l:356
-"                default:\n"  // l:357
-"                    break;\n"  // l:358
-"            }\n"  // l:359
-"        }\n"  // l:360
-"\n"  // l:361
-"        // todo: I am not sure if COLCNT really does anything, but just to be sure\n"  // l:362
-"        vertexColor = color;\n"  // l:363
-"        if (!COL0CNT) color.w = 1.0;\n"  // l:364
-"#ifdef DEBUG\n"  // l:365
-"        if (position.y > 29) {\n"  // l:366
-"            vertexColor = vec4(0.0, 1.0, 0.0, 1.0);\n"  // l:367
-"        }\n"  // l:368
-"        else {\n"  // l:369
-"            vertexColor = vec4(1.0, 0.0, 0.0, 1.0);\n"  // l:370
-"        }\n"  // l:371
-"#endif\n"  // l:372
-"    }\n"  // l:373
-"\n"  // l:374
-"    /* load texture data */\n"  // l:375
-"    textureData = 0;\n"  // l:376
-"    for (int i = 0; i < 8; i++) {\n"  // l:377
-"        if (arg_offsets[13 + i] >= 0) {\n"  // l:378
-"            // load texture specific data\n"  // l:379
-"            textureData = 1 | (uint(i) << 1);\n"  // l:380
-"            textureOffset = data_offsets[i];\n"  // l:381
-"\n"  // l:382
-"            // load texture coordinate (same as position basically)\n"  // l:383
-"            arg_offset = arg_offsets[13 + i];\n"  // l:384
-"            arg_offset += gl_VertexID * vertex_stride;\n"  // l:385
+"                default:\n"  // l:318
+"                    break;\n"  // l:319
+"            }\n"  // l:320
+"        }\n"  // l:321
+"        else {\n"  // l:322
+"            switch (COL0FMT) {\n"  // l:323
+"                case 0:  // 16bit rgb565\n"  // l:324
+"                    utemp = read16_args(arg_offset);\n"  // l:325
+"                    color.x = bitfieldExtract(utemp, 0, 5);\n"  // l:326
+"                    color.y = bitfieldExtract(utemp, 4, 6);\n"  // l:327
+"                    color.z = bitfieldExtract(utemp, 10, 5);\n"  // l:328
+"                    color /= 32.0;\n"  // l:329
+"                    color.y *= 0.5;  // extra bit\n"  // l:330
+"                    color.w = 1.0;\n"  // l:331
+"                    break;\n"  // l:332
+"                case 1:  // 24bit rgb888\n"  // l:333
+"                case 2:  // 32bit rgb888x\n"  // l:334
+"                    utemp = read32_args(arg_offset);\n"  // l:335
+"                    color = unpackUnorm4x8(utemp).wzyx;  // BE to LE\n"  // l:336
+"                    color.w = 1.0;  // 3 colors\n"  // l:337
+"                    // already normalized\n"  // l:338
+"                    break;\n"  // l:339
+"                case 3:  // 16bit rgba4444\n"  // l:340
+"                    utemp = read16_args(arg_offset);\n"  // l:341
+"                    color.x = bitfieldExtract(utemp, 0, 4);\n"  // l:342
+"                    color.y = bitfieldExtract(utemp, 3, 4);\n"  // l:343
+"                    color.z = bitfieldExtract(utemp, 7, 4);\n"  // l:344
+"                    color.w = bitfieldExtract(utemp, 11, 4);\n"  // l:345
+"                    color /= 16.0;  // normalize\n"  // l:346
+"                    break;\n"  // l:347
+"                case 4:  // 24bit rgba6666\n"  // l:348
+"                    utemp = read32_args(arg_offset);\n"  // l:349
+"                    color.x = bitfieldExtract(utemp, 0, 6);\n"  // l:350
+"                    color.y = bitfieldExtract(utemp, 5, 6);\n"  // l:351
+"                    color.z = bitfieldExtract(utemp, 11, 6);\n"  // l:352
+"                    color.w = bitfieldExtract(utemp, 17, 6);\n"  // l:353
+"                    color /= 64.0;  // normalize\n"  // l:354
+"                    break;\n"  // l:355
+"                case 5:  // 32bit rgba8888\n"  // l:356
+"                    utemp = read32_args(arg_offset);\n"  // l:357
+"                    color = unpackUnorm4x8(utemp).wzyx;  // BE to LE\n"  // l:358
+"                    // already normalized\n"  // l:359
+"                    break;\n"  // l:360
+"                default:\n"  // l:361
+"                    break;\n"  // l:362
+"            }\n"  // l:363
+"        }\n"  // l:364
+"\n"  // l:365
+"        // todo: I am not sure if COLCNT really does anything, but just to be sure\n"  // l:366
+"        vertexColor = color;\n"  // l:367
+"        if (!COL0CNT) color.w = 1.0;\n"  // l:368
+"#ifdef DEBUG\n"  // l:369
+"        if (position.y > 29) {\n"  // l:370
+"            vertexColor = vec4(0.0, 1.0, 0.0, 1.0);\n"  // l:371
+"        }\n"  // l:372
+"        else {\n"  // l:373
+"            vertexColor = vec4(1.0, 0.0, 0.0, 1.0);\n"  // l:374
+"        }\n"  // l:375
+"#endif\n"  // l:376
+"    }\n"  // l:377
+"\n"  // l:378
+"    /* load texture data */\n"  // l:379
+"    textureData = 0;\n"  // l:380
+"    for (int i = 0; i < 8; i++) {\n"  // l:381
+"        if (arg_offsets[13 + i] >= 0) {\n"  // l:382
+"            // load texture specific data\n"  // l:383
+"            textureData = 1 | (uint(i) << 1);\n"  // l:384
+"            textureOffset = data_offsets[i];\n"  // l:385
 "\n"  // l:386
-"            uint TEXVCD = bitfieldExtract(VCD_hi, 2 * i, 2);\n"  // l:387
-"            bool TEXCNT;\n"  // l:388
-"            uint TEXFMT;\n"  // l:389
-"            uint TEXSHFT;\n"  // l:390
-"            switch (i) {\n"  // l:391
-"                case 0:\n"  // l:392
-"                    // TEX0 is in VAT_A\n"  // l:393
-"                    TEXCNT = bitfieldExtract(VAT_A, 21, 1) != 0;\n"  // l:394
-"                    TEXFMT = bitfieldExtract(VAT_A, 22, 3);\n"  // l:395
-"                    TEXSHFT = bitfieldExtract(VAT_A, 25, 5);\n"  // l:396
-"                    break;\n"  // l:397
-"                case 1:\n"  // l:398
-"                case 2:\n"  // l:399
-"                case 3:\n"  // l:400
-"                    // TEX1-3 are fully in VAT_B\n"  // l:401
-"                    TEXCNT = bitfieldExtract(VAT_B, 9 * (i - 1), 1) != 0;\n"  // l:402
-"                    TEXFMT = bitfieldExtract(VAT_B, 9 * (i - 1) + 1, 3);\n"  // l:403
-"                    TEXSHFT = bitfieldExtract(VAT_B, 9 * (i - 1) + 4, 5);\n"  // l:404
-"                    break;\n"  // l:405
-"                case 4:\n"  // l:406
-"                    // TEX4 is partly in VAT_B, partly in VAT_C\n"  // l:407
-"                    TEXCNT = bitfieldExtract(VAT_B, 27, 1) != 0;\n"  // l:408
-"                    TEXFMT = bitfieldExtract(VAT_B, 28, 3);\n"  // l:409
-"                    TEXSHFT = bitfieldExtract(VAT_C, 0, 5);\n"  // l:410
-"                    break;\n"  // l:411
-"                case 5:\n"  // l:412
-"                case 6:\n"  // l:413
-"                case 7:\n"  // l:414
-"                    // TEX5-7 are fully in VAT_C\n"  // l:415
-"                    TEXCNT = bitfieldExtract(VAT_C, 5 + 9 * (i - 5), 1) != 0;\n"  // l:416
-"                    TEXFMT = bitfieldExtract(VAT_C, 5 + 9 * (i - 5) + 1, 3);\n"  // l:417
-"                    TEXSHFT = bitfieldExtract(VAT_C, 5 + 9 * (i - 5) + 4, 5);\n"  // l:418
-"                default:\n"  // l:419
-"                    // invalid texture format\n"  // l:420
-"                    break;\n"  // l:421
-"            }\n"  // l:422
-"\n"  // l:423
-"            vec3 read_tex_coord;\n"  // l:424
-"\n"  // l:425
-"            if (TEXVCD > 1) {\n"  // l:426
-"                // indirect data\n"  // l:427
-"                data_offset = data_offsets[13 + i];\n"  // l:428
+"            // load texture coordinate (same as position basically)\n"  // l:387
+"            arg_offset = arg_offsets[13 + i];\n"  // l:388
+"            arg_offset += gl_VertexID * vertex_stride;\n"  // l:389
+"\n"  // l:390
+"            uint TEXVCD = bitfieldExtract(VCD_hi, 2 * i, 2);\n"  // l:391
+"            bool TEXCNT;\n"  // l:392
+"            uint TEXFMT;\n"  // l:393
+"            uint TEXSHFT;\n"  // l:394
+"            switch (i) {\n"  // l:395
+"                case 0:\n"  // l:396
+"                    // TEX0 is in VAT_A\n"  // l:397
+"                    TEXCNT = bitfieldExtract(VAT_A, 21, 1) != 0;\n"  // l:398
+"                    TEXFMT = bitfieldExtract(VAT_A, 22, 3);\n"  // l:399
+"                    TEXSHFT = bitfieldExtract(VAT_A, 25, 5);\n"  // l:400
+"                    break;\n"  // l:401
+"                case 1:\n"  // l:402
+"                case 2:\n"  // l:403
+"                case 3:\n"  // l:404
+"                    // TEX1-3 are fully in VAT_B\n"  // l:405
+"                    TEXCNT = bitfieldExtract(VAT_B, 9 * (i - 1), 1) != 0;\n"  // l:406
+"                    TEXFMT = bitfieldExtract(VAT_B, 9 * (i - 1) + 1, 3);\n"  // l:407
+"                    TEXSHFT = bitfieldExtract(VAT_B, 9 * (i - 1) + 4, 5);\n"  // l:408
+"                    break;\n"  // l:409
+"                case 4:\n"  // l:410
+"                    // TEX4 is partly in VAT_B, partly in VAT_C\n"  // l:411
+"                    TEXCNT = bitfieldExtract(VAT_B, 27, 1) != 0;\n"  // l:412
+"                    TEXFMT = bitfieldExtract(VAT_B, 28, 3);\n"  // l:413
+"                    TEXSHFT = bitfieldExtract(VAT_C, 0, 5);\n"  // l:414
+"                    break;\n"  // l:415
+"                case 5:\n"  // l:416
+"                case 6:\n"  // l:417
+"                case 7:\n"  // l:418
+"                    // TEX5-7 are fully in VAT_C\n"  // l:419
+"                    TEXCNT = bitfieldExtract(VAT_C, 5 + 9 * (i - 5), 1) != 0;\n"  // l:420
+"                    TEXFMT = bitfieldExtract(VAT_C, 5 + 9 * (i - 5) + 1, 3);\n"  // l:421
+"                    TEXSHFT = bitfieldExtract(VAT_C, 5 + 9 * (i - 5) + 4, 5);\n"  // l:422
+"                default:\n"  // l:423
+"                    // invalid texture format\n"  // l:424
+"                    break;\n"  // l:425
+"            }\n"  // l:426
+"\n"  // l:427
+"            vec3 read_tex_coord;\n"  // l:428
 "\n"  // l:429
-"                // determine the GC texture coordiante index\n"  // l:430
-"                int tex_coord_index;\n"  // l:431
-"                if (TEXVCD == 2) {\n"  // l:432
-"                    tex_coord_index = read8s_args(arg_offset);\n"  // l:433
-"                }\n"  // l:434
-"                else {\n"  // l:435
-"                    tex_coord_index = read16s_args(arg_offset);\n"  // l:436
-"                }\n"  // l:437
-"\n"  // l:438
-"                data_offset += tex_coord_index * array_strides[13 + i - draw_arg_POS];\n"  // l:439
-"\n"  // l:440
-"                read_tex_coord = load_position(true, TEXFMT, data_offset);\n"  // l:441
-"            }\n"  // l:442
-"            else {\n"  // l:443
-"                read_tex_coord = load_position(false, TEXFMT, arg_offset);\n"  // l:444
-"            }\n"  // l:445
-"\n"  // l:446
-"            read_tex_coord.z = 0;  // 2D at most\n"  // l:447
-"            if (!TEXCNT) {\n"  // l:448
-"                read_tex_coord.y = 0;  // 1D\n"  // l:449
-"            }\n"  // l:450
-"\n"  // l:451
-"            uint texidx;\n"  // l:452
-"            if (arg_offsets[1 + i] >= 0) {\n"  // l:453
-"                // texture matrix index value passed (always direct)\n"  // l:454
-"                texidx = read8_args(arg_offsets[1 + i]);\n"  // l:455
-"            }\n"  // l:456
-"            else {\n"  // l:457
-"                if (i < 4)  {\n"  // l:458
-"                    // TEX0-3 in MATIDX_REG_A\n"  // l:459
-"                    texidx = bitfieldExtract(MATIDX_REG_A, 6 * (i + 1), 6);\n"  // l:460
-"                }\n"  // l:461
-"                else {\n"  // l:462
-"                    // TEX4-7 in MATIDX_REG_B\n"  // l:463
-"                    texidx = bitfieldExtract(MATIDX_REG_B, 6 * (i - 4), 6);\n"  // l:464
+"            if (TEXVCD > 1) {\n"  // l:430
+"                // indirect data\n"  // l:431
+"                data_offset = data_offsets[13 + i];\n"  // l:432
+"\n"  // l:433
+"                // determine the GC texture coordiante index\n"  // l:434
+"                int tex_coord_index;\n"  // l:435
+"                if (TEXVCD == 2) {\n"  // l:436
+"                    tex_coord_index = read8s_args(arg_offset);\n"  // l:437
+"                }\n"  // l:438
+"                else {\n"  // l:439
+"                    tex_coord_index = read16s_args(arg_offset);\n"  // l:440
+"                }\n"  // l:441
+"\n"  // l:442
+"                data_offset += tex_coord_index * array_strides[13 + i - draw_arg_POS];\n"  // l:443
+"\n"  // l:444
+"                read_tex_coord = load_position(true, TEXFMT, data_offset);\n"  // l:445
+"            }\n"  // l:446
+"            else {\n"  // l:447
+"                read_tex_coord = load_position(false, TEXFMT, arg_offset);\n"  // l:448
+"            }\n"  // l:449
+"\n"  // l:450
+"            read_tex_coord.z = 0;  // 2D at most\n"  // l:451
+"            if (!TEXCNT) {\n"  // l:452
+"                read_tex_coord.y = 0;  // 1D\n"  // l:453
+"            }\n"  // l:454
+"\n"  // l:455
+"            uint texidx;\n"  // l:456
+"            if (arg_offsets[1 + i] >= 0) {\n"  // l:457
+"                // texture matrix index value passed (always direct)\n"  // l:458
+"                texidx = read8_args(arg_offsets[1 + i]);\n"  // l:459
+"            }\n"  // l:460
+"            else {\n"  // l:461
+"                if (i < 4)  {\n"  // l:462
+"                    // TEX0-3 in MATIDX_REG_A\n"  // l:463
+"                    texidx = bitfieldExtract(MATIDX_REG_A, 6 * (i + 1), 6);\n"  // l:464
 "                }\n"  // l:465
-"            }\n"  // l:466
-"\n"  // l:467
-"            texCoord = transform_tex(read_tex_coord, texidx).xy;\n"  // l:468
-"            break;\n"  // l:469
-"        }\n"  // l:470
-"    }\n"  // l:471
-"}\n"  // l:472
-"\n"  // l:473
+"                else {\n"  // l:466
+"                    // TEX4-7 in MATIDX_REG_B\n"  // l:467
+"                    texidx = bitfieldExtract(MATIDX_REG_B, 6 * (i - 4), 6);\n"  // l:468
+"                }\n"  // l:469
+"            }\n"  // l:470
+"\n"  // l:471
+"            texCoord = transform_tex(read_tex_coord, texidx).xy;\n"  // l:472
+"            break;\n"  // l:473
+"        }\n"  // l:474
+"    }\n"  // l:475
+"}\n"  // l:476
+"\n"  // l:477
 ;
 
 #endif  // GC__SHADER_H

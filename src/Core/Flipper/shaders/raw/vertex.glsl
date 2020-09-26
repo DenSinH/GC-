@@ -13,7 +13,7 @@ uniform uint MATIDX_REG_A, MATIDX_REG_B;
 // here, the array is read as little endian
 const int extract_offset[4] = { 0, 8, 16, 24 };
 
-layout (std430, binding = 3) buffer command_SSBO
+layout (std430, binding = 3) readonly buffer command_SSBO
 {
     uint vertices;
     uint _command;
@@ -21,15 +21,15 @@ layout (std430, binding = 3) buffer command_SSBO
     int arg_offsets[21];
     int data_offsets[21];
     uint array_strides[21];
-    uint _data_size;  // data_size: I don't actually need this in the shader
+    uint _cmd_data_size;  // data_size: I don't actually need this in the shader
     uint args[0x1140 >> 2];     // todo: generalize this
     uint data[];
 };
 
 out vec4 vertexColor;
 
-out uint textureData;
-out uint textureOffset;
+flat out uint textureData;
+flat out uint textureOffset;
 out highp vec2 texCoord;
 
 /*
@@ -277,9 +277,11 @@ void main()
             switch (COL0FMT) {
                 case 0:  // 16bit rgb565
                     utemp = read16_data(data_offset);
-                    color.x = bitfieldExtract(utemp, 0, 5)  / 32.0;
-                    color.y = bitfieldExtract(utemp, 4, 6)  / 64.0;
-                    color.z = bitfieldExtract(utemp, 10, 5) / 32.0;
+                    color.x = bitfieldExtract(utemp, 0, 5);
+                    color.y = bitfieldExtract(utemp, 4, 6);
+                    color.z = bitfieldExtract(utemp, 10, 5);
+                    color /= 32.0;
+                    color.y *= 0.5; // extra bit
                     color.w = 1.0;
                     break;
                 case 1:  // 24bit rgb888
@@ -323,9 +325,11 @@ void main()
             switch (COL0FMT) {
                 case 0:  // 16bit rgb565
                     utemp = read16_args(arg_offset);
-                    color.x = bitfieldExtract(utemp, 0, 5)  / 32.0;
-                    color.y = bitfieldExtract(utemp, 4, 6)  / 64.0;
-                    color.z = bitfieldExtract(utemp, 10, 5) / 32.0;
+                    color.x = bitfieldExtract(utemp, 0, 5);
+                    color.y = bitfieldExtract(utemp, 4, 6);
+                    color.z = bitfieldExtract(utemp, 10, 5);
+                    color /= 32.0;
+                    color.y *= 0.5;  // extra bit
                     color.w = 1.0;
                     break;
                 case 1:  // 24bit rgb888

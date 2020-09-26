@@ -33,7 +33,7 @@ int main() {
 
     atexit(exception_handler);
 
-    START_DEBUG
+    START_FRONTEND
 
     run_system(global_system);
 

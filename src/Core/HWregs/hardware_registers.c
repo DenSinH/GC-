@@ -2,6 +2,8 @@
 #include "core_utils.h"
 #include "log.h"
 
+#include "../system.h"
+
 #define HW_REGS_READ_ARGS(_section) &HW_regs->_section, address & 0x3ff, size
 #define HW_REGS_WRITE_ARGS(_section) &HW_regs->_section, address & 0x3ff, value, size
 
@@ -61,6 +63,7 @@ HW_REG_READ_TEMPLATE_SIGNATURE(_size) { \
         case 0x6000: \
             SECTION_READ_TEMPLATE(DI, _size, DI_SHIFT); \
         case 0x6400: \
+            log_si("Reading SI %x", masked_address); \
             SECTION_READ_TEMPLATE(SI, _size, SI_SHIFT); \
         case 0x6800: \
             SECTION_READ_TEMPLATE(EXI, _size, EXI_SHIFT); \
@@ -110,6 +113,7 @@ HW_REG_WRITE_TEMPLATE_SIGNATURE(_size) { \
             SECTION_WRITE_TEMPLATE(DI, _size, 2); \
             break; \
         case 0x6400: \
+            log_si("Writing SI %x (%x) (@%08x)", masked_address, value, HW_regs->system->cpu.PC); \
             SECTION_WRITE_TEMPLATE(SI, _size, 2); \
             break; \
         case 0x6800: \

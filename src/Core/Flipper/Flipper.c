@@ -49,7 +49,7 @@ static void debug_shader_init(s_Flipper* flipper, unsigned int shader) {
     {
         char infoLog[512];
         glGetShaderInfoLog(shader, 512, NULL, infoLog);
-        log_fatal("Vertex shader compilation failed: %s\n", infoLog);
+        log_fatal("Shader compilation failed: %s\n", infoLog);
     }
 }
 

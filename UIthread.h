@@ -5,7 +5,7 @@
 
 #include <windows.h>
 
-#define START_DEBUG CreateThread(NULL, 0, UI_thread, NULL, 0, NULL);
+#define START_FRONTEND CreateThread(NULL, 0, UI_thread, NULL, 0, NULL);
 
 DWORD WINAPI UI_thread(LPVOID _);
 
@@ -13,7 +13,7 @@ DWORD WINAPI UI_thread(LPVOID _);
 
 #include <pthread.h>
 
-#define START_DEBUG pthread_t ui_thread; pthread_create(&ui_thread, NULL, UI_thread, NULL);
+#define START_FRONTEND pthread_t ui_thread; pthread_create(&ui_thread, NULL, UI_thread, NULL);
 
 void* UI_thread(void* arg);
 

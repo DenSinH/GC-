@@ -1,15 +1,15 @@
 // BEGIN fragmentShaderSource
 
-#version 400 core
+#version 430 core
 
-layout (std430, binding = 6) buffer BP_SSBO
+layout (std430, binding = 6) readonly buffer BP_SSBO
 {
     uint BP_regs[0x100];
 };
 
-layout (std430, binding = 7) buffer texture_SSBO
+layout (std430, binding = 7) readonly buffer texture_SSBO
 {
-    uint _data_size;  // not actually needed in the shader
+    uint _tex_data_size;  // not actually needed in the shader
     uint texture_data[];
 };
 
@@ -138,9 +138,10 @@ void main()
         switch (texture_color_format) {
             // todo: proper parsing (2 modes)
             case ++color_format_RGB5A3++:
-                color.x = bitfieldExtract(data, 10, 5) / 32.0;
-                color.y = bitfieldExtract(data, 5, 5) / 32.0;
-                color.z = bitfieldExtract(data, 0, 5) / 32.0;
+                color.x = bitfieldExtract(data, 10, 5);
+                color.y = bitfieldExtract(data, 5, 5);
+                color.z = bitfieldExtract(data, 0, 5);
+                color /= 32.0;
                 break;
 
             default:

@@ -34,6 +34,7 @@
 
 #endif
 
+
 #if COMPONENT_FLAGS & COMPONENT_CPU_VERBOSE
     #define log_cpu_verbose(message, ...) {                        \
         CONSOLE_GREEN();                                \
@@ -64,7 +65,7 @@
 #define log_mmu(message, ...) { }
 #endif
 
-#if COMPONENT_FLAGS & COMPONENT_HW_REG
+#if COMPONENT_FLAGS & COMPONENT_HW_REGS
 #define log_hw_reg(message, ...) {                        \
         CONSOLE_BLUE();                                \
         fprintf(stdout, "[HW regs]: "message "\n",  ##__VA_ARGS__); \
@@ -82,6 +83,16 @@
     }
 #else
 #define log_cp(message, ...) { }
+#endif
+
+#if COMPONENT_FLAGS & COMPONENT_SI
+#define log_si(message, ...) {                        \
+        CONSOLE_GREEN();                                \
+        fprintf(stdout, "[SI]: "message "\n",  ##__VA_ARGS__); \
+        CONSOLE_RESTORE();                             \
+    }
+#else
+#define log_si(message, ...) { }
 #endif
 
 #if COMPONENT_FLAGS & COMPONENT_FLIPPER

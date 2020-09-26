@@ -10,7 +10,12 @@ s_GameCube* global_system;
 
 static CONSOLE_COMMAND(reset_system) {
 #ifdef DO_DEBUGGER
-    if (argc > 1 && (strcmp(args[1], "freeze") || strcmp(args[1], "pause")|| strcmp(args[1], "break"))) {
+    if (argc > 1 && (
+            strcmp(args[1], "freeze") != 0 ||
+            strcmp(args[1], "pause")  != 0 ||
+            strcmp(args[1], "break")  != 0
+            )
+        ) {
         global_system->paused = true;
     }
 
