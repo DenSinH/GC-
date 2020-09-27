@@ -22,7 +22,7 @@ s_GameCube* init_system() {
     GameCube->cpu.IMMU.HW_regs_ptr = GameCube->cpu.DMMU.HW_regs_ptr = &GameCube->HW_regs;
 
 #ifdef DO_BREAKPOINTS
-//    add_breakpoint(&GameCube->breakpoints, 0x8000b0b4);
+//    add_breakpoint(&GameCube->breakpoints, 0x80008638);
 //    add_breakpoint(&GameCube->breakpoints, 0x00000500);
 //    add_breakpoint(&GameCube->breakpoints, 0x8000586c);
 #endif
@@ -58,7 +58,6 @@ void run_system(s_GameCube* system) {
 
 #if defined(DO_BREAKPOINTS) || defined(DO_DEBUGGER)
         if (check_breakpoints(&system->breakpoints, system->cpu.PC)) {
-            dump_Gekko(&system->cpu);
             log_debug("Hit breakpoint %08x", system->cpu.PC);
             system->paused = true;
         }

@@ -21,11 +21,11 @@ SCHEDULER_EVENT(handle_interrupts);
 
 SCHEDULER_EVENT(DEC_intr);
 
-void start_interrupt_poll(s_Gekko* cpu);
+void start_interrupt_poll(s_Gekko* cpu, int delay);
 
 static inline void do_interrupt(s_Gekko* cpu, e_interrupts interrupt) {
     cpu->interrupts |= interrupt;
-    start_interrupt_poll(cpu);
+    start_interrupt_poll(cpu, 0);  // instant poll
 }
 
 #endif //GC__INTERRUPTS_H

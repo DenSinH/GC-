@@ -180,6 +180,9 @@ GEKKO_INSTR(instr_011111) {
         case STHX_OPCODE_EXTENDED:
             sthx(cpu, instruction);
             return;
+        case STBX_OPCODE_EXTENDED:
+            stbx(cpu, instruction);
+            return;
         case LWZX_OPCODE_EXTENDED:
             lwzx(cpu, instruction);
             return;

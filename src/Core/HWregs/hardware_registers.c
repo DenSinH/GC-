@@ -25,6 +25,7 @@ void init_HW_regs(s_hardware_registers* HW_regs) {
     HW_regs->CP.PE = &HW_regs->PE;
     HW_regs->VI.PI = &HW_regs->PI;
     HW_regs->PE.PI = &HW_regs->PI;
+    HW_regs->SI.PI = &HW_regs->PI;
 
     init_CP(&HW_regs->CP);
     init_PE(&HW_regs->PE);

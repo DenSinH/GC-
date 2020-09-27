@@ -302,8 +302,8 @@ static inline void load_BP_reg(s_CP* CP, u32 value) {
                 // set interrupt to called
                 CP->PE->intr_status |= PE_intr_DONE;
 
-                // add interrupt cause to processor interface and call interrupt
-                set_PI_intsr(CP->PI, PI_intr_PE_DONE);
+                // add interrupt cause to processor interface and call interrupt (instant polling)
+                set_PI_intsr(CP->PI, PI_intr_PE_DONE, 0);
             }
             break;
         case BP_reg_int_PE_copy_execute:
@@ -424,7 +424,7 @@ void execute_buffer(s_CP* CP, const u8* buffer_ptr, u8 buffer_size) {
 
         // FIFO_end is inclusive!
         if (write_ptr > FIFO_end) {
-            write_ptr = FIFO_end;
+            write_ptr = FIFO_base;
         }
     }
 

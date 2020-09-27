@@ -307,6 +307,11 @@ s_GameCube* init() {
     }
 
     add_register_data("", NULL, 1, HWIO_tab);
+
+    add_register_data("SICOMCSR", &global_system->HW_regs.SI.COMCSR, 4, HWIO_tab);
+    add_register_data("SISR", &global_system->HW_regs.SI.SISR, 4, HWIO_tab);
+
+    add_register_data("", NULL, 1, HWIO_tab);
     add_register_data("", NULL, 1, HWIO_tab);
 
     for (int i = 0; i < 0x40; i++) {

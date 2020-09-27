@@ -24,13 +24,13 @@ static inline bool any_enabled(s_Gekko* cpu) {
     return (cpu->interrupts & INTERNAL_INTERRUPTS) || (cpu->MSR.EE && ((cpu->interrupts & EXTERNAL_INTERRUPTS) || (cpu->system->HW_regs.PI.INTSR & cpu->system->HW_regs.PI.INTMR)));
 }
 
-void start_interrupt_poll(s_Gekko* cpu){
+void start_interrupt_poll(s_Gekko* cpu, int delay){
     // only start polling if there are any interrupts
     log_cpu("Request to start interrupt poll (%lld)", cpu->TBR.raw);
     if (!cpu->poll_intr_event.active && any_enabled(cpu)) {
         // start polling for interrupts again
         log_cpu("Request acknowledged");
-        cpu->poll_intr_event.time = cpu->TBR.raw + 1;
+        cpu->poll_intr_event.time = cpu->TBR.raw + delay;
         add_event(&cpu->system->scheduler, &cpu->poll_intr_event);
     }
 }
@@ -66,7 +66,10 @@ SCHEDULER_EVENT(handle_interrupts) {
             // todo: other external interrupts
             if (cpu->system->HW_regs.PI.INTSR & cpu->system->HW_regs.PI.INTMR) {
                 // external interrupts from PI
-                log_cpu("External interrupt (%lld)", cpu->TBR.raw);
+                log_cpu("External interrupts (%04x) (%lld)", cpu->system->HW_regs.PI.INTSR & cpu->system->HW_regs.PI.INTMR, cpu->TBR.raw);
+                if (cpu->system->HW_regs.PI.INTSR & cpu->system->HW_regs.PI.INTMR & PI_intr_SI) {
+                    log_si("SI INTERRUPT");
+                }
                 handle_interrupt(cpu, 0x00000500);
             }
             else if (cpu->interrupts & interrupt_DEC) {

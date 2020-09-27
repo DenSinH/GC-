@@ -46,6 +46,15 @@ GEKKO_INSTR(stb) {
     write8(&cpu->DMMU, EA, (u8)cpu->GPR[instruction.general_SAd.S]);
 }
 
+INLINE_GEKKO_INSTR(stbx) {
+    GEKKO_INSTR_HEADER
+
+    log_cpu_verbose("stbx %08x", instruction.raw);
+
+    u32 EA = (instruction.general_SAd.A ? cpu->GPR[instruction.general_SAB.A] : 0) + cpu->GPR[instruction.general_SAB.B];
+    write8(&cpu->DMMU, EA, (u8)cpu->GPR[instruction.general_SAB.S]);
+}
+
 GEKKO_INSTR(stbu) {
     GEKKO_INSTR_HEADER
 

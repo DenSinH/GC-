@@ -21,8 +21,8 @@ INLINE_GEKKO_INSTR(mtmsr) {
     cpu->MSR.raw = cpu->GPR[instruction.general_SAB.S];
 
     if (cpu->MSR.EE) {
-        log_cpu("Start interrupt poll on MSR EE set");
-        start_interrupt_poll(cpu);
+        log_cpu("Start interrupt poll on MSR EE set (instant start)");
+        start_interrupt_poll(cpu, 0);
     }
 }
 

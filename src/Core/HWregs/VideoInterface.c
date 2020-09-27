@@ -33,7 +33,7 @@ void VI_DI_intr(s_Gekko* cpu, s_event* event, const u32 index) {
     cpu->system->HW_regs.VI.DI[index] |= VI_DI_ACTIVE;
 
     // signal VI interrupt
-    set_PI_intsr(&cpu->system->HW_regs.PI, PI_intr_VI);
+    set_PI_intsr(&cpu->system->HW_regs.PI, PI_intr_VI, 0);  // instant polling
 
     // reschedule event for next frame
     event->time += LINES_PER_FRAME * 2 * 3 * 6 * cpu->system->HW_regs.VI.HLW;
