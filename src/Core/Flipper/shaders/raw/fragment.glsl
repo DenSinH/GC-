@@ -64,8 +64,7 @@ uint index_from_pos(uint x, uint y, uint width, uint height, uint block_size_shi
 void main()
 {
     if ((textureData & 1u) == 0) {
-        // FragColor = vec4(vertexColor);
-        FragColor = vec4(1.0, 0.0, 0.0, 1.0);
+        FragColor = vec4(vertexColor);
     }
     else {
         uint tex_index = bitfieldExtract(textureData, 1, 3);

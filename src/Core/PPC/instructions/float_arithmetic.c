@@ -267,7 +267,7 @@ INLINE_GEKKO_INSTR(fnmadds) {
     );
 
     if (F_SET_RESULT_VX) {
-        cpu->FPR[instruction.general_DABC.D].PS0.u = isnan(result.value.d) ? result.value.u : -TO_SINGLE(result.value).u;
+        cpu->FPR[instruction.general_DABC.D].PS0.d = isnan(result.value.d) ? result.value.d : -TO_SINGLE(result.value).d;
         UPDATE_FPRF_RESULT_BIT_DOUBLE(cpu, result.value);
         if (cpu->HID2.PSE) {
             cpu->FPR[instruction.general_DAB.D].PS1.u = cpu->FPR[instruction.general_DAB.D].PS0.u;

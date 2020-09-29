@@ -132,9 +132,22 @@ static s_framebuffer frontend_render() {
 }
 
 static void parse_input(s_controller* controller) {
-    if (controller->A) {
-        printf("A button pressed!\n");
-    }
+    // currently only supporting one controller
+    if (controller->A)     global_system->HW_regs.SI.gamepad[0].buttons |= button_A;
+    if (controller->B)     global_system->HW_regs.SI.gamepad[0].buttons |= button_B;
+    if (controller->X)     global_system->HW_regs.SI.gamepad[0].buttons |= button_X;
+    if (controller->Y)     global_system->HW_regs.SI.gamepad[0].buttons |= button_Y;
+    if (controller->start) global_system->HW_regs.SI.gamepad[0].buttons |= button_start;
+    if (controller->left)  global_system->HW_regs.SI.gamepad[0].buttons |= button_left;
+    if (controller->right) global_system->HW_regs.SI.gamepad[0].buttons |= button_right;
+    if (controller->down)  global_system->HW_regs.SI.gamepad[0].buttons |= button_down;
+    if (controller->up)    global_system->HW_regs.SI.gamepad[0].buttons |= button_up;
+
+    // todo: this goes wrong for negative numbers
+    global_system->HW_regs.SI.gamepad[0].stick_x = 0x80 + (controller->left_x >> 8);
+    global_system->HW_regs.SI.gamepad[0].stick_y = 0x80 + (controller->left_y >> 8);
+    global_system->HW_regs.SI.gamepad[0].C_x     = 0x80 + (controller->right_x >> 8);
+    global_system->HW_regs.SI.gamepad[0].C_y     = 0x80 + (controller->right_y >> 8);
 }
 
 s_GameCube* init() {

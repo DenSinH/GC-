@@ -59,16 +59,27 @@ typedef struct s_Controller {
 
 const static s_Controller controller_origin = (s_Controller) {
     .buttons = 0,
-    .stick_x = 0x00,  // signed 0
-    .stick_y = 0x00,
-    .C_x     = 0x00,
-    .C_y     = 0x00,
-    .L       = 0x00,
-    .R       = 0x00,
+    .stick_x = 0x80,  // signed 0
+    .stick_y = 0x80,
+    .C_x     = 0x80,
+    .C_y     = 0x80,
+    .L       = 0x80,
+    .R       = 0x80,
 };
 
 typedef enum e_GCButtons {
-    button_A = 0x0001,
+    button_A     = 0x0001,
+    button_B     = 0x0002,
+    button_X     = 0x0004,
+    button_Y     = 0x0008,
+    button_start = 0x0010,
+    button_left  = 0x0100,
+    button_right = 0x0200,
+    button_down  = 0x0400,
+    button_up    = 0x0800,
+    button_Z     = 0x1000,
+    button_R     = 0x2000,
+    button_L     = 0x4000,
 } e_GCButtons;
 
 #define SI_SHIFT 2
@@ -77,7 +88,7 @@ typedef enum e_GCButtons {
 
 #define SI_CHAN_STRIDE 0xc  // stride for each of the control registers for the channels
 
-#define SI_CONTROLLER 0x09000000
+#define SI_CONTROLLER 0x09000000    // standard controller (I don't expect to support anything else any time soon)
 #define SI_NO_CONTROLLER 0x0008     // no response (nothing attached)
 
 typedef struct s_SI {
@@ -94,9 +105,8 @@ typedef struct s_SI {
     u8 modes[4];  // operating modes for the 4 channels
                   // controlled through the SICnOUTBUF registers
 
-    // arrays for these for potential support for 4 controllers
-    u32 joypad_buttons_1[4];
-    u32 joypad_buttons_2[4];
+    // array of 4 to potentially support multiple controllers
+    s_Controller gamepad[4];
 } s_SI;
 
 

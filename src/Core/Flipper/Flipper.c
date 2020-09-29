@@ -179,14 +179,6 @@ void video_init_Flipper(s_Flipper* flipper) {
     glEnable(GL_DEPTH_TEST);
 }
 
-static inline void wait_for_fence(s_Flipper* flipper) {
-    // wait until either a fail (GL_WAIT_FAILED) or a successful draw command (GL_ALREADY_SIGNALED, GL_TIMEOUT_EXPIRED)
-    // first do a non-blocking check to see if we are already done
-    if (glClientWaitSync(flipper->fence, GL_SYNC_FLUSH_COMMANDS_BIT, 0) != GL_ALREADY_SIGNALED) {
-        while (glClientWaitSync(flipper->fence, GL_SYNC_FLUSH_COMMANDS_BIT, FENCE_SYNC_TIMEOUT_NS) == GL_TIMEOUT_EXPIRED) {}
-    }
-}
-
 void Flipper_frameswap(s_Flipper* flipper, u16 pe_copy_command) {
     log_flipper("Frameswapping flipper");
     // frameswap
@@ -309,8 +301,6 @@ struct s_framebuffer render_Flipper(s_Flipper* flipper){
                         flipper->draw_command_index
             );
 
-            wait_for_fence(flipper);
-
             // draw and set draw command slot to available in CP
             draw_Flipper(
                     flipper,
@@ -320,9 +310,6 @@ struct s_framebuffer render_Flipper(s_Flipper* flipper){
             if (++flipper->draw_command_index == MAX_DRAW_COMMANDS) {
                 flipper->draw_command_index = 0;
             }
-
-            // wait for fence next time to prevent data from getting overwritten
-            flipper->fence = glFenceSync(GL_SYNC_GPU_COMMANDS_COMPLETE, 0);
 
             /*
              * Funnily enough, the way I handle my draw commands is actually pretty similar to the way the GameCube

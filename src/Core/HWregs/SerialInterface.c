@@ -3,9 +3,6 @@
 #include "core_utils.h"
 #include "log.h"
 
-// todo: unnecessary (for debugging)
-#include "../system.h"
-
 #include <stdio.h>
 
 HW_REG_READ_PRECALL(read_SICOMCSR, SI) {
@@ -30,6 +27,7 @@ void SI_run_buffer(s_SI* SI, u32 chan) {
             break;
         case SI_command_direct:
             log_si("Get direct controller data for channel %d", chan);
+            // todo
             break;
         case SI_command_origin:
         case SI_command_recalibrate:
@@ -82,7 +80,7 @@ HW_REG_READ_PRECALL(read_SISR, SI) {
     // keep buffers always buffered
     SI->SISR &= ~(SISR_WRST0 | (SISR_WRST0 >> 8) | (SISR_WRST0 >> 16) | (SISR_WRST0 >> 24));
 
-    log_si("Read SI SISR (%08x) (@%08x)", SI->SISR, SI->system->cpu.PC);
+    log_si("Read SI SISR (%08x)", SI->SISR);
     WRITE32(SI->regs, SI_reg_SISR, SI->SISR);
 }
 
@@ -90,7 +88,7 @@ HW_REG_WRITE_CALLBACK(write_SISR, SI) {
     u32 value = READ32(SI->regs, SI_reg_SISR);
     SI->SISR = (value & 0xf0f0f0f0) | (SI->SISR & ~(value & 0x0f0f0f0f)); // clear errors
 
-    log_si("Write SI SISR (%08x) (@%08x)", SI->SISR, SI->system->cpu.PC);
+    log_si("Write SI SISR (%08x)", SI->SISR);
 
     if (SI->SISR & SISR_Write_Buffer) {
         log_si("Copying SI buffers");
@@ -108,7 +106,8 @@ HW_REG_WRITE_CALLBACK(write_SISR, SI) {
 
 void read_SI_Joy1x(s_SI* SI, int index) {
     log_si("Polled gamepad %d buttons 1", index);
-    WRITE32(SI->regs, SI_reg_Joy1_base + (index * SI_CHAN_STRIDE), SI->joypad_buttons_1[index]);
+    // the layout of the struct was such, that it could be memcpy'd over
+    memcpy(&SI->regs[SI_reg_Joy1_base + (index * SI_CHAN_STRIDE)], (void*)&SI->gamepad[index], 4);
 }
 
 HW_REG_READ_PRECALL(read_SI_Joy11, SI) { read_SI_Joy1x(SI, 0); }
@@ -118,7 +117,8 @@ HW_REG_READ_PRECALL(read_SI_Joy14, SI) { read_SI_Joy1x(SI, 3); }
 
 void read_SI_Joy2x(s_SI* SI, int index) {
     log_si("Polled gamepad %d buttons 2", index);
-    WRITE32(SI->regs, SI_reg_Joy2_base + (index * SI_CHAN_STRIDE), SI->joypad_buttons_2[index]);
+    // the layout of the struct was such, that it could be memcpy'd over
+    memcpy(&SI->regs[SI_reg_Joy2_base + (index * SI_CHAN_STRIDE)], ((void*)&SI->gamepad[index]) + 4, 4);
 }
 
 HW_REG_READ_PRECALL(read_SI_Joy21, SI) { read_SI_Joy2x(SI, 0); }
@@ -127,20 +127,7 @@ HW_REG_READ_PRECALL(read_SI_Joy23, SI) { read_SI_Joy2x(SI, 2); }
 HW_REG_READ_PRECALL(read_SI_Joy24, SI) { read_SI_Joy2x(SI, 3); }
 
 
-HW_REG_WRITE_CALLBACK(write_SI_buffer, SI) {
-    log_si("SI buffer data: %08x", READ32(SI->regs, 0x80));
-}
-
-// todo: for debugging, remove
-HW_REG_READ_PRECALL(report_read, SI) {
-    log_si("Poll buffer at %08x (%08x)", SI->system->cpu.PC, READ32(SI->regs, SI_buffer_base));
-}
-
-
 HW_REG_INIT_FUNCTION(SI) {
-    SI->write[SI_buffer_base >> SI_SHIFT] = write_SI_buffer;
-    SI->read[SI_buffer_base >> SI_SHIFT] = report_read;
-
     SI->read[SI_reg_SICOMCSR >> SI_SHIFT] = read_SICOMCSR;
     SI->write[SI_reg_SICOMCSR >> SI_SHIFT] = write_SICOMCSR;
     SI->read[SI_reg_SISR >> SI_SHIFT] = read_SISR;
