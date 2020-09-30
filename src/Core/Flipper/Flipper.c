@@ -176,7 +176,8 @@ void video_init_Flipper(s_Flipper* flipper) {
 
     init_buffers(flipper);
 
-    glClipControl(GL_UPPER_LEFT, GL_ZERO_TO_ONE);
+    // flipper clipping happens between 0 and 1
+    glClipControl(GL_LOWER_LEFT, GL_ZERO_TO_ONE);
     glEnable(GL_DEPTH_TEST);
 }
 

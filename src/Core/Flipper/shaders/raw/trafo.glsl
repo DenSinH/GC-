@@ -16,7 +16,7 @@ vec4 transform_pos(vec3 position, uint posidx) {
     mat4 projection = mat4(
         XF_regs[++XF_reg_projection_A++], 0, 0, 0,  // first column
         0, XF_regs[++XF_reg_projection_C++], 0, 0,  // second column
-        0, 0, XF_regs[++XF_reg_projection_E++], 1,  // third column
+        0, 0, XF_regs[++XF_reg_projection_E++], -1,  // third column
         XF_regs[++XF_reg_projection_B++], XF_regs[++XF_reg_projection_D++], XF_regs[++XF_reg_projection_F++], 0  // fourth column
     );
 
@@ -32,6 +32,7 @@ vec4 transform_pos(vec3 position, uint posidx) {
     vec4 pos = vec4(position, 1);
     pos = projection * modelview * pos;
     pos /= pos.w;
+    pos.z *= -1;  // openGL is weird
 
     return pos;
 }

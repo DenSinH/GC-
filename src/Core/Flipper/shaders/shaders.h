@@ -165,7 +165,7 @@ const char* fragmentShaderSource =
 ;
 
 
-// transformationShaderSource (from trafo.glsl, lines 2 to 54)
+// transformationShaderSource (from trafo.glsl, lines 2 to 55)
 const char* transformationShaderSource = 
 "#version 430 core\n"  // l:1
 "\n"  // l:2
@@ -183,7 +183,7 @@ const char* transformationShaderSource =
 "    mat4 projection = mat4(\n"  // l:14
 "        XF_regs[0x20], 0, 0, 0,  // first column\n"  // l:15
 "        0, XF_regs[0x22], 0, 0,  // second column\n"  // l:16
-"        0, 0, XF_regs[0x24], 1,  // third column\n"  // l:17
+"        0, 0, XF_regs[0x24], -1,  // third column\n"  // l:17
 "        XF_regs[0x21], XF_regs[0x23], XF_regs[0x25], 0  // fourth column\n"  // l:18
 "    );\n"  // l:19
 "\n"  // l:20
@@ -199,26 +199,27 @@ const char* transformationShaderSource =
 "    vec4 pos = vec4(position, 1);\n"  // l:30
 "    pos = projection * modelview * pos;\n"  // l:31
 "    pos /= pos.w;\n"  // l:32
-"\n"  // l:33
-"    return pos;\n"  // l:34
-"}\n"  // l:35
-"\n"  // l:36
-"vec3 transform_tex(vec3 texcoord, uint texidx) {\n"  // l:37
-"    // matrices can be accessed per row\n"  // l:38
-"    uint texmtx_base = texidx << 2;\n"  // l:39
-"    mat3 xf_mat = mat3(\n"  // l:40
-"        XF_A[texmtx_base + 0], XF_A[texmtx_base + 4], XF_A[texmtx_base + 8],\n"  // l:41
-"        XF_A[texmtx_base + 1], XF_A[texmtx_base + 5], XF_A[texmtx_base + 9],\n"  // l:42
-"        XF_A[texmtx_base + 2], XF_A[texmtx_base + 6], XF_A[texmtx_base + 10]\n"  // l:43
-"    );\n"  // l:44
-"\n"  // l:45
-"    vec3 coord = vec3(texcoord.xy, 1);\n"  // l:46
-"    coord = xf_mat * coord;\n"  // l:47
-"    coord /= coord.z;\n"  // l:48
-"\n"  // l:49
-"    return coord;\n"  // l:50
-"}\n"  // l:51
-"\n"  // l:52
+"    pos.z *= -1;  // openGL is weird\n"  // l:33
+"\n"  // l:34
+"    return pos;\n"  // l:35
+"}\n"  // l:36
+"\n"  // l:37
+"vec3 transform_tex(vec3 texcoord, uint texidx) {\n"  // l:38
+"    // matrices can be accessed per row\n"  // l:39
+"    uint texmtx_base = texidx << 2;\n"  // l:40
+"    mat3 xf_mat = mat3(\n"  // l:41
+"        XF_A[texmtx_base + 0], XF_A[texmtx_base + 4], XF_A[texmtx_base + 8],\n"  // l:42
+"        XF_A[texmtx_base + 1], XF_A[texmtx_base + 5], XF_A[texmtx_base + 9],\n"  // l:43
+"        XF_A[texmtx_base + 2], XF_A[texmtx_base + 6], XF_A[texmtx_base + 10]\n"  // l:44
+"    );\n"  // l:45
+"\n"  // l:46
+"    vec3 coord = vec3(texcoord.xy, 1);\n"  // l:47
+"    coord = xf_mat * coord;\n"  // l:48
+"    coord /= coord.z;\n"  // l:49
+"\n"  // l:50
+"    return coord;\n"  // l:51
+"}\n"  // l:52
+"\n"  // l:53
 ;
 
 
