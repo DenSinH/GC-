@@ -228,19 +228,21 @@ void main()
 
         gl_Position = transform_pos(position, posidx);
 #ifdef DEBUG
-        switch (gl_VertexID) {
-            case 0:
-                gl_Position = vec4(-0.5, -0.5, 0.0, 1.0);
-                break;
-            case 1:
-                gl_Position = vec4(0.0, -0.5, 0.0, 1.0);
-                break;
-            case 2:
-                gl_Position = vec4(0.5, 0.5, 0.0, 1.0);
-                break;
-            case 3:
-                gl_Position = vec4(0.0, 0.5, 0.0, 1.0);
-                break;
+        if (gl_Position.z < 0) {
+            switch (gl_VertexID) {
+                case 0:
+                    gl_Position = vec4(-0.5, -0.5, 0.0, 1.0);
+                    break;
+                case 1:
+                    gl_Position = vec4(0.0, -0.5, 0.0, 1.0);
+                    break;
+                case 2:
+                    gl_Position = vec4(0.5, 0.5, 0.0, 1.0);
+                    break;
+                case 3:
+                    gl_Position = vec4(0.0, 0.5, 0.0, 1.0);
+                    break;
+            }
         }
 #endif
     }
@@ -369,12 +371,12 @@ void main()
         vertexColor = color;
         if (!COL0CNT) color.w = 1.0;
 #ifdef DEBUG
-        if (position.y > 29) {
-            vertexColor = vec4(0.0, 1.0, 0.0, 1.0);
-        }
-        else {
-            vertexColor = vec4(1.0, 0.0, 0.0, 1.0);
-        }
+//        if (position.y > 29) {
+//            vertexColor = vec4(0.0, 1.0, 0.0, 1.0);
+//        }
+//        else {
+//            vertexColor = vec4(1.0, 0.0, 0.0, 1.0);
+//        }
 #endif
     }
 

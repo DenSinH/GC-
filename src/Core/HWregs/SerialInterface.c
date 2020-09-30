@@ -128,6 +128,11 @@ HW_REG_READ_PRECALL(read_SI_Joy24, SI) { read_SI_Joy2x(SI, 3); }
 
 
 HW_REG_INIT_FUNCTION(SI) {
+    for (int i = 0; i < 4; i++) {
+        // initialize controllers to origin
+        memcpy(&SI->gamepad[i], &controller_origin, sizeof(s_Controller));
+    }
+
     SI->read[SI_reg_SICOMCSR >> SI_SHIFT] = read_SICOMCSR;
     SI->write[SI_reg_SICOMCSR >> SI_SHIFT] = write_SICOMCSR;
     SI->read[SI_reg_SISR >> SI_SHIFT] = read_SISR;

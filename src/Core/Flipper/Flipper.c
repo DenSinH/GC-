@@ -176,6 +176,7 @@ void video_init_Flipper(s_Flipper* flipper) {
 
     init_buffers(flipper);
 
+    glClipControl(GL_UPPER_LEFT, GL_ZERO_TO_ONE);
     glEnable(GL_DEPTH_TEST);
 }
 
