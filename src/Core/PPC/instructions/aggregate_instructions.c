@@ -135,6 +135,12 @@ GEKKO_INSTR(instr_011111) {
         case MULLW_OPCODE_EXTENDED:
             mullw(cpu, instruction);
             return;
+        case MULHW_OPCODE_EXTENDED:
+            mulhw(cpu, instruction);
+            return;
+        case MULHWU_OPCODE_EXTENDED:
+            mulhwu(cpu, instruction);
+            return;
         case ANDX_OPCODE_EXTENDED:
             andx(cpu, instruction);
             return;

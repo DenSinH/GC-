@@ -282,3 +282,31 @@ INLINE_GEKKO_INSTR(mullw) {
 
     cpu->GPR[instruction.general_DAB.D] = (u32)result;
 }
+
+INLINE_GEKKO_INSTR(mulhw) {
+    GEKKO_INSTR_HEADER
+    log_cpu_verbose("mulhw %08x", instruction.raw);
+
+    i64 result = (i64)(i32)cpu->GPR[instruction.general_DAB.A] * (i64)(i32)cpu->GPR[instruction.general_DAB.B];
+    result >>= 32;  // high word
+
+    if (instruction.general_DAB.Rc) {
+        UPDATE_CR0_RESULT32(cpu, (u32)(i32)result);
+    }
+
+    cpu->GPR[instruction.general_DAB.D] = (u32)(i32)result;
+}
+
+INLINE_GEKKO_INSTR(mulhwu) {
+    GEKKO_INSTR_HEADER
+    log_cpu_verbose("mulhwu %08x", instruction.raw);
+
+    u64 result = (u64)cpu->GPR[instruction.general_DAB.A] * (u64)cpu->GPR[instruction.general_DAB.B];
+    result >>= 32;  // high word
+
+    if (instruction.general_DAB.Rc) {
+        UPDATE_CR0_RESULT32(cpu, (u32)result);
+    }
+
+    cpu->GPR[instruction.general_DAB.D] = (u32)result;
+}

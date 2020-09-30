@@ -35,16 +35,12 @@ s_GameCube* init_system() {
 #define ROOT_DIR "/mnt/d/"
 #endif
 
-#define TEST_DOL ROOT_DIR "CProjects/GCResources/GameCubeResources/Tests/Textures/Textures.dol"
+#define TEST_DOL ROOT_DIR "CProjects/GCResources/GameCubeResources/Tests/Sprites/Sprites.dol"
 // #define TEST_DOL ROOT_DIR "CProjects/GCResources/GameCubeResources/Tests/Cube/Cube.dol"
 #define STEP_ON_BREAK
 
 void run_system(s_GameCube* system) {
     load_DOL_to_Gekko(&system->cpu, TEST_DOL);
-
-#ifdef STEP_ON_BREAK
-    bool step = false;
-#endif
 
     while (!system->shutdown) {
 
