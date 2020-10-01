@@ -47,6 +47,23 @@ const uint tex_fmt_shft[16] = {
     0  // unused
 };
 
+const uint tex_block_size_shft[16] = {
+    2, // I4 ?
+    2, // I8 ?
+    2, // IA4 ?
+    2, // IA8 ?
+    2, // RGB565
+    2, // RGB5A3
+    2, // RGBA8
+    2, // unused
+    2, // CI4 ?
+    2, // CI8 ?
+    2, // CIA4 ?
+    0, 0, 0, // unused
+    2, // CMP ?
+    0  // unused
+};
+
 uint utemp;
 int itemp;
 
@@ -92,8 +109,8 @@ void main()
         */
         uint x = uint(wrappedCoord.x * width);
         uint y = uint(wrappedCoord.y * height);
-        // todo: generalize this for block sizes
-        uint offset_into_texture = index_from_pos(x, y, width, height, 2);
+        // todo: fix all block sizes
+        uint offset_into_texture = index_from_pos(x, y, width, height, tex_block_size_shft[texture_color_format]);
         offset_into_texture <<= tex_fmt_shft[texture_color_format];
         offset_into_texture >>= 1;
 
@@ -132,19 +149,34 @@ void main()
                 break;
         }
 
-        vec4 color;
+        vec4 color = vec4(0, 0, 0, 1.0);
 
         switch (texture_color_format) {
             // todo: proper parsing (2 modes)
             case ++color_format_RGB5A3++:
-                color.x = bitfieldExtract(data, 10, 5);
-                color.y = bitfieldExtract(data, 5, 5);
-                color.z = bitfieldExtract(data, 0, 5);
-                color /= 32.0;
+                if ((data & 0x8000u) != 0) {
+                    // "normal" RGB555
+                    color.x = bitfieldExtract(data, 10, 5);
+                    color.y = bitfieldExtract(data, 5, 5);
+                    color.z = bitfieldExtract(data, 0, 5);
+                    color /= 32.0;
+                }
+                else {
+                    // RGB4A3
+                    color.x = bitfieldExtract(data, 8, 4);
+                    color.y = bitfieldExtract(data, 4, 4);
+                    color.z = bitfieldExtract(data, 0, 4);
+                    color.w = bitfieldExtract(data, 12, 3);
+                    color.w *= 2;  // one bit less
+                    color /= 16.0;
+                }
+                break;
+            case ++color_format_RGBA8++:
+                color = unpackUnorm4x8(data);
                 break;
 
             default:
-                color = vec4(1.0, 0.0, 0.0, 1.0);
+                color = vec4(1.0, 0.0, 1.0, 1.0);
                 break;
         }
 

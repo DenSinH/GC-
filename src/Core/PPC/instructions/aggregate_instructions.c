@@ -201,6 +201,12 @@ GEKKO_INSTR(instr_011111) {
         case LFDX_OPCODE_EXTENDED:
             lfdx(cpu, instruction);
             return;
+        case LFSX_OPCODE_EXTENDED:
+            lfsx(cpu, instruction);
+            return;
+        case STFSX_OPCODE_EXTENDED:
+            stfsx(cpu, instruction);
+            return;
         case STFIWX_OPCODE_EXTENDED:
             stfiwx(cpu, instruction);
             return;

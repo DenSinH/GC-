@@ -51,6 +51,30 @@ GEKKO_INSTR(lfs) {
     }
 }
 
+INLINE_GEKKO_INSTR(lfsx) {
+    GEKKO_INSTR_HEADER
+    log_cpu_verbose("lfsx %08x", instruction.raw);
+
+    u32 EA = (instruction.general_DAB.A ? cpu->GPR[instruction.general_DAB.A] : 0) + cpu->GPR[instruction.general_DAB.B];
+    bit_float single_raw = {.u = read32(&cpu->DMMU, EA)};
+
+    if (!cpu->HID2.PSE) {
+        cpu->FPR[instruction.general_DAd.D].PS0.d = (double)single_raw.f;
+    }
+    else {
+        cpu->FPR[instruction.general_DAd.D].PS0.u = cpu->FPR[instruction.general_DAd.D].PS1.u = CONVERT_TO_DOUBLE(single_raw).u;
+    }
+}
+
+INLINE_GEKKO_INSTR(stfsx) {
+    GEKKO_INSTR_HEADER
+    log_cpu_verbose("stfsx %08x", instruction.raw);
+
+    u32 EA = (instruction.general_DAB.A ? cpu->GPR[instruction.general_DAB.A] : 0) + cpu->GPR[instruction.general_DAB.B];
+    bit_float single_raw = {.f = (float)cpu->FPR[instruction.general_SAd.S].PS0.d };
+    write32(&cpu->DMMU, EA, single_raw.u);
+}
+
 INLINE_GEKKO_INSTR(stfiwx) {
     GEKKO_INSTR_HEADER
     log_cpu_verbose("stfiwx %08x", instruction.raw);

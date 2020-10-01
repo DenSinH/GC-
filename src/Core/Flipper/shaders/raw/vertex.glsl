@@ -228,22 +228,22 @@ void main()
 
         gl_Position = transform_pos(position, posidx);
 #ifdef DEBUG
-        if (gl_Position.z < 0) {
-            switch (gl_VertexID) {
-                case 0:
-                    gl_Position = vec4(-0.5, -0.5, 0.0, 1.0);
-                    break;
-                case 1:
-                    gl_Position = vec4(0.0, -0.5, 0.0, 1.0);
-                    break;
-                case 2:
-                    gl_Position = vec4(0.5, 0.5, 0.0, 1.0);
-                    break;
-                case 3:
-                    gl_Position = vec4(0.0, 0.5, 0.0, 1.0);
-                    break;
-            }
-        }
+//        if (gl_Position.z < 0) {
+//            switch (gl_VertexID) {
+//                case 0:
+//                    gl_Position = vec4(-0.5, -0.5, 0.0, 1.0);
+//                    break;
+//                case 1:
+//                    gl_Position = vec4(0.0, -0.5, 0.0, 1.0);
+//                    break;
+//                case 2:
+//                    gl_Position = vec4(0.5, 0.5, 0.0, 1.0);
+//                    break;
+//                case 3:
+//                    gl_Position = vec4(0.0, 0.5, 0.0, 1.0);
+//                    break;
+//            }
+//        }
 #endif
     }
 
@@ -385,7 +385,7 @@ void main()
     for (int i = 0; i < 8; i++) {
         if (arg_offsets[++draw_arg_TEX0++ + i] >= 0) {
             // load texture specific data
-            textureData = 1 | (uint(i) << 1);
+            textureData = 1u | (uint(i) << 1);
             textureOffset = data_offsets[i];
 
             // load texture coordinate (same as position basically)

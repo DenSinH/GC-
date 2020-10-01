@@ -1,7 +1,7 @@
 #ifndef GC__SHADER_H
 #define GC__SHADER_H
 
-// fragmentShaderSource (from fragment.glsl, lines 2 to 161)
+// fragmentShaderSource (from fragment.glsl, lines 2 to 193)
 const char* fragmentShaderSource = 
 "#version 430 core\n"  // l:1
 "\n"  // l:2
@@ -50,176 +50,244 @@ const char* fragmentShaderSource =
 "    0  // unused\n"  // l:45
 "};\n"  // l:46
 "\n"  // l:47
-"uint utemp;\n"  // l:48
-"int itemp;\n"  // l:49
-"\n"  // l:50
-"uint index_from_pos(uint x, uint y, uint width, uint height, uint block_size_shift) {\n"  // l:51
-"    // block size in power of 2\n"  // l:52
-"    uint tile_x = x >> block_size_shift;\n"  // l:53
-"    uint tile_y = y >> block_size_shift;\n"  // l:54
-"    x &= (1 << block_size_shift) - 1u;  // in-tile\n"  // l:55
-"    y &= (1 << block_size_shift) - 1u;  // in-tile\n"  // l:56
-"\n"  // l:57
-"    return (tile_y * (width >> block_size_shift) + tile_x) * (1 << (block_size_shift + block_size_shift)) // * (tileW * tileH)\n"  // l:58
-"           + (y << block_size_shift) + x;\n"  // l:59
-"}\n"  // l:60
-"\n"  // l:61
-"void main()\n"  // l:62
-"{\n"  // l:63
-"    if ((textureData & 1u) == 0) {\n"  // l:64
-"        FragColor = vec4(vertexColor);\n"  // l:65
-"    }\n"  // l:66
-"    else {\n"  // l:67
-"        uint tex_index = bitfieldExtract(textureData, 1, 3);\n"  // l:68
-"\n"  // l:69
-"        uint setimage0_i;  // holds width/height data\n"  // l:70
-"        if (tex_index < 4) {\n"  // l:71
-"            setimage0_i = BP_regs[0x88 + tex_index];\n"  // l:72
-"        }\n"  // l:73
-"        else {\n"  // l:74
-"            setimage0_i = BP_regs[0xa8 + tex_index - 4];\n"  // l:75
-"        }\n"  // l:76
-"\n"  // l:77
-"        uint texture_color_format = bitfieldExtract(setimage0_i, 20, 4);\n"  // l:78
-"        uint width = bitfieldExtract(setimage0_i, 0, 10) + 1;\n"  // l:79
-"        uint height = bitfieldExtract(setimage0_i, 10, 10) + 1;\n"  // l:80
-"\n"  // l:81
-"        // todo: wrap_s/t\n"  // l:82
-"        highp vec2 wrappedCoord = clamp(texCoord, 0.0, 1.0);\n"  // l:83
-"        uint textureIndex = textureOffset;\n"  // l:84
-"\n"  // l:85
-"        // always use nearest interpolation\n"  // l:86
-"        /*\n"  // l:87
-"        Textures are put in blocks:\n"  // l:88
-"        https://fgiesen.wordpress.com/2011/01/17/texture-tiling-and-swizzling/\n"  // l:89
-"        */\n"  // l:90
-"        uint x = uint(wrappedCoord.x * width);\n"  // l:91
-"        uint y = uint(wrappedCoord.y * height);\n"  // l:92
-"        // todo: generalize this for block sizes\n"  // l:93
-"        uint offset_into_texture = index_from_pos(x, y, width, height, 2);\n"  // l:94
-"        offset_into_texture <<= tex_fmt_shft[texture_color_format];\n"  // l:95
-"        offset_into_texture >>= 1;\n"  // l:96
-"\n"  // l:97
-"        textureIndex += offset_into_texture;\n"  // l:98
-"\n"  // l:99
-"        // load data at the location. The color formats are all nicely aligned (either by 4, 2, 1 or 0.5 byte, so we\n"  // l:100
-"        // can parse that part before parsing the actual color.\n"  // l:101
-"        uint data = texture_data[textureIndex >> 2];  // stored bytes as uints\n"  // l:102
-"\n"  // l:103
-"        switch (tex_fmt_shft[texture_color_format]) {\n"  // l:104
-"            case 0:  // nibble\n"  // l:105
-"            case 1:  // byte\n"  // l:106
-"                utemp = bitfieldExtract(offset_into_texture, 0, 2);  // todo: nibble-sized offset for 0\n"  // l:107
-"                data = bitfieldExtract(data, int(utemp * 8), 8);\n"  // l:108
-"                break;\n"  // l:109
-"            case 2:  // halfword\n"  // l:110
-"                utemp = offset_into_texture & 0x2u;  // misalignment (always halfword-aligned)\n"  // l:111
-"                data = bitfieldExtract(data, int(utemp * 8), 16);  // get right halfword\n"  // l:112
-"                utemp = data >> 8;  // top byte\n"  // l:113
-"                data = (data & 0xffu) << 8;  // swap bottom byte\n"  // l:114
-"                data = data | utemp;  // convert to LE\n"  // l:115
-"                break;\n"  // l:116
-"            case 3:  // word\n"  // l:117
-"                utemp = data >> 16;  // top halfword\n"  // l:118
-"                data = (data & 0xffffu) << 16;  // swap bottom halfword\n"  // l:119
-"                data |= utemp;\n"  // l:120
-"                // we now did [0123] -> [2301], need [3210]\n"  // l:121
-"\n"  // l:122
-"                utemp = data & 0x00ff00ffu;  // [.3.1]\n"  // l:123
-"                utemp <<= 8;                 // [3.1.]\n"  // l:124
-"                data >>= 8;                  // [.230]\n"  // l:125
-"                data &= 0x00ff00ffu;         // [.2.0]\n"  // l:126
-"                data |= utemp;               // [3210]\n"  // l:127
-"                break;\n"  // l:128
-"            default:\n"  // l:129
-"                break;\n"  // l:130
-"        }\n"  // l:131
-"\n"  // l:132
-"        vec4 color;\n"  // l:133
-"\n"  // l:134
-"        switch (texture_color_format) {\n"  // l:135
-"            // todo: proper parsing (2 modes)\n"  // l:136
-"            case 5:\n"  // l:137
-"                color.x = bitfieldExtract(data, 10, 5);\n"  // l:138
-"                color.y = bitfieldExtract(data, 5, 5);\n"  // l:139
-"                color.z = bitfieldExtract(data, 0, 5);\n"  // l:140
-"                color /= 32.0;\n"  // l:141
-"                break;\n"  // l:142
-"\n"  // l:143
-"            default:\n"  // l:144
-"                color = vec4(1.0, 0.0, 0.0, 1.0);\n"  // l:145
-"                break;\n"  // l:146
-"        }\n"  // l:147
-"\n"  // l:148
-"//        if (height_min_1 == 0x7f) {\n"  // l:149
-"//            FragColor = vec4(0.0, 1.0, 0.0, 1.0);\n"  // l:150
-"//        }\n"  // l:151
-"//        else {\n"  // l:152
-"//            FragColor = vec4(0.0, 0.0, 1.0, 1.0);\n"  // l:153
-"//        }\n"  // l:154
-"        FragColor = vec4(color.xyz, 1.0);\n"  // l:155
-"        // FragColor = vec4(float(offset_into_texture) / (height_min_1 * width_min_1 * 2), 0.0, 0.0, 1.0);\n"  // l:156
-"    }\n"  // l:157
-"}\n"  // l:158
-"\n"  // l:159
+"const uint tex_block_size_shft[16] = {\n"  // l:48
+"    2, // I4 ?\n"  // l:49
+"    2, // I8 ?\n"  // l:50
+"    2, // IA4 ?\n"  // l:51
+"    2, // IA8 ?\n"  // l:52
+"    2, // RGB565\n"  // l:53
+"    2, // RGB5A3\n"  // l:54
+"    2, // RGBA8\n"  // l:55
+"    2, // unused\n"  // l:56
+"    2, // CI4 ?\n"  // l:57
+"    2, // CI8 ?\n"  // l:58
+"    2, // CIA4 ?\n"  // l:59
+"    0, 0, 0, // unused\n"  // l:60
+"    2, // CMP ?\n"  // l:61
+"    0  // unused\n"  // l:62
+"};\n"  // l:63
+"\n"  // l:64
+"uint utemp;\n"  // l:65
+"int itemp;\n"  // l:66
+"\n"  // l:67
+"uint index_from_pos(uint x, uint y, uint width, uint height, uint block_size_shift) {\n"  // l:68
+"    // block size in power of 2\n"  // l:69
+"    uint tile_x = x >> block_size_shift;\n"  // l:70
+"    uint tile_y = y >> block_size_shift;\n"  // l:71
+"    x &= (1 << block_size_shift) - 1u;  // in-tile\n"  // l:72
+"    y &= (1 << block_size_shift) - 1u;  // in-tile\n"  // l:73
+"\n"  // l:74
+"    return (tile_y * (width >> block_size_shift) + tile_x) * (1 << (block_size_shift + block_size_shift)) // * (tileW * tileH)\n"  // l:75
+"           + (y << block_size_shift) + x;\n"  // l:76
+"}\n"  // l:77
+"\n"  // l:78
+"void main()\n"  // l:79
+"{\n"  // l:80
+"    if ((textureData & 1u) == 0) {\n"  // l:81
+"        FragColor = vec4(vertexColor);\n"  // l:82
+"    }\n"  // l:83
+"    else {\n"  // l:84
+"        uint tex_index = bitfieldExtract(textureData, 1, 3);\n"  // l:85
+"\n"  // l:86
+"        uint setimage0_i;  // holds width/height data\n"  // l:87
+"        if (tex_index < 4) {\n"  // l:88
+"            setimage0_i = BP_regs[0x88 + tex_index];\n"  // l:89
+"        }\n"  // l:90
+"        else {\n"  // l:91
+"            setimage0_i = BP_regs[0xa8 + tex_index - 4];\n"  // l:92
+"        }\n"  // l:93
+"\n"  // l:94
+"        uint texture_color_format = bitfieldExtract(setimage0_i, 20, 4);\n"  // l:95
+"        uint width = bitfieldExtract(setimage0_i, 0, 10) + 1;\n"  // l:96
+"        uint height = bitfieldExtract(setimage0_i, 10, 10) + 1;\n"  // l:97
+"\n"  // l:98
+"        // todo: wrap_s/t\n"  // l:99
+"        highp vec2 wrappedCoord = clamp(texCoord, 0.0, 1.0);\n"  // l:100
+"        uint textureIndex = textureOffset;\n"  // l:101
+"\n"  // l:102
+"        // always use nearest interpolation\n"  // l:103
+"        /*\n"  // l:104
+"        Textures are put in blocks:\n"  // l:105
+"        https://fgiesen.wordpress.com/2011/01/17/texture-tiling-and-swizzling/\n"  // l:106
+"        */\n"  // l:107
+"        uint x = uint(wrappedCoord.x * width);\n"  // l:108
+"        uint y = uint(wrappedCoord.y * height);\n"  // l:109
+"        // todo: fix all block sizes\n"  // l:110
+"        uint offset_into_texture = index_from_pos(x, y, width, height, tex_block_size_shft[texture_color_format]);\n"  // l:111
+"        offset_into_texture <<= tex_fmt_shft[texture_color_format];\n"  // l:112
+"        offset_into_texture >>= 1;\n"  // l:113
+"\n"  // l:114
+"        textureIndex += offset_into_texture;\n"  // l:115
+"\n"  // l:116
+"        // load data at the location. The color formats are all nicely aligned (either by 4, 2, 1 or 0.5 byte, so we\n"  // l:117
+"        // can parse that part before parsing the actual color.\n"  // l:118
+"        uint data = texture_data[textureIndex >> 2];  // stored bytes as uints\n"  // l:119
+"\n"  // l:120
+"        switch (tex_fmt_shft[texture_color_format]) {\n"  // l:121
+"            case 0:  // nibble\n"  // l:122
+"            case 1:  // byte\n"  // l:123
+"                utemp = bitfieldExtract(offset_into_texture, 0, 2);  // todo: nibble-sized offset for 0\n"  // l:124
+"                data = bitfieldExtract(data, int(utemp * 8), 8);\n"  // l:125
+"                break;\n"  // l:126
+"            case 2:  // halfword\n"  // l:127
+"                utemp = offset_into_texture & 0x2u;  // misalignment (always halfword-aligned)\n"  // l:128
+"                data = bitfieldExtract(data, int(utemp * 8), 16);  // get right halfword\n"  // l:129
+"                utemp = data >> 8;  // top byte\n"  // l:130
+"                data = (data & 0xffu) << 8;  // swap bottom byte\n"  // l:131
+"                data = data | utemp;  // convert to LE\n"  // l:132
+"                break;\n"  // l:133
+"            case 3:  // word\n"  // l:134
+"                utemp = data >> 16;  // top halfword\n"  // l:135
+"                data = (data & 0xffffu) << 16;  // swap bottom halfword\n"  // l:136
+"                data |= utemp;\n"  // l:137
+"                // we now did [0123] -> [2301], need [3210]\n"  // l:138
+"\n"  // l:139
+"                utemp = data & 0x00ff00ffu;  // [.3.1]\n"  // l:140
+"                utemp <<= 8;                 // [3.1.]\n"  // l:141
+"                data >>= 8;                  // [.230]\n"  // l:142
+"                data &= 0x00ff00ffu;         // [.2.0]\n"  // l:143
+"                data |= utemp;               // [3210]\n"  // l:144
+"                break;\n"  // l:145
+"            default:\n"  // l:146
+"                break;\n"  // l:147
+"        }\n"  // l:148
+"\n"  // l:149
+"        vec4 color = vec4(0, 0, 0, 1.0);\n"  // l:150
+"\n"  // l:151
+"        switch (texture_color_format) {\n"  // l:152
+"            // todo: proper parsing (2 modes)\n"  // l:153
+"            case 5:\n"  // l:154
+"                if ((data & 0x8000u) != 0) {\n"  // l:155
+"                    // \"normal\" RGB555\n"  // l:156
+"                    color.x = bitfieldExtract(data, 10, 5);\n"  // l:157
+"                    color.y = bitfieldExtract(data, 5, 5);\n"  // l:158
+"                    color.z = bitfieldExtract(data, 0, 5);\n"  // l:159
+"                    color /= 32.0;\n"  // l:160
+"                }\n"  // l:161
+"                else {\n"  // l:162
+"                    // RGB4A3\n"  // l:163
+"                    color.x = bitfieldExtract(data, 8, 4);\n"  // l:164
+"                    color.y = bitfieldExtract(data, 4, 4);\n"  // l:165
+"                    color.z = bitfieldExtract(data, 0, 4);\n"  // l:166
+"                    color.w = bitfieldExtract(data, 12, 3);\n"  // l:167
+"                    color.w *= 2;  // one bit less\n"  // l:168
+"                    color /= 16.0;\n"  // l:169
+"                }\n"  // l:170
+"                break;\n"  // l:171
+"            case 6:\n"  // l:172
+"                color = unpackUnorm4x8(data);\n"  // l:173
+"                break;\n"  // l:174
+"\n"  // l:175
+"            default:\n"  // l:176
+"                color = vec4(1.0, 0.0, 1.0, 1.0);\n"  // l:177
+"                break;\n"  // l:178
+"        }\n"  // l:179
+"\n"  // l:180
+"//        if (height_min_1 == 0x7f) {\n"  // l:181
+"//            FragColor = vec4(0.0, 1.0, 0.0, 1.0);\n"  // l:182
+"//        }\n"  // l:183
+"//        else {\n"  // l:184
+"//            FragColor = vec4(0.0, 0.0, 1.0, 1.0);\n"  // l:185
+"//        }\n"  // l:186
+"        FragColor = vec4(color.xyz, 1.0);\n"  // l:187
+"        // FragColor = vec4(float(offset_into_texture) / (height_min_1 * width_min_1 * 2), 0.0, 0.0, 1.0);\n"  // l:188
+"    }\n"  // l:189
+"}\n"  // l:190
+"\n"  // l:191
 ;
 
 
-// transformationShaderSource (from trafo.glsl, lines 2 to 55)
+// transformationShaderSource (from trafo.glsl, lines 2 to 91)
 const char* transformationShaderSource = 
 "#version 430 core\n"  // l:1
 "\n"  // l:2
-"layout (std430, binding = 4) readonly buffer XF_SSBO\n"  // l:3
-"{\n"  // l:4
-"    float XF_A[0x100];\n"  // l:5
-"    float XF_B[0x100];\n"  // l:6
-"    float XF_C[0x100];\n"  // l:7
-"    float XF_D[0x100];\n"  // l:8
-"    float XF_regs[0x58];  // some regs are not floats, but most are\n"  // l:9
-"};\n"  // l:10
-"\n"  // l:11
-"vec4 transform_pos(vec3 position, uint posidx) {\n"  // l:12
-"    // this seems to be what libOGC makes from projection matrices\n"  // l:13
-"    mat4 projection = mat4(\n"  // l:14
-"        XF_regs[0x20], 0, 0, 0,  // first column\n"  // l:15
-"        0, XF_regs[0x22], 0, 0,  // second column\n"  // l:16
-"        0, 0, XF_regs[0x24], -1,  // third column\n"  // l:17
-"        XF_regs[0x21], XF_regs[0x23], XF_regs[0x25], 0  // fourth column\n"  // l:18
-"    );\n"  // l:19
-"\n"  // l:20
-"    // matrices can be accessed per row\n"  // l:21
-"    uint posmtx_base = posidx << 2;\n"  // l:22
-"    mat4 modelview = mat4(\n"  // l:23
-"        XF_A[posmtx_base + 0], XF_A[posmtx_base + 4], XF_A[posmtx_base + 8], 0,\n"  // l:24
-"        XF_A[posmtx_base + 1], XF_A[posmtx_base + 5], XF_A[posmtx_base + 9], 0,\n"  // l:25
-"        XF_A[posmtx_base + 2], XF_A[posmtx_base + 6], XF_A[posmtx_base + 10], 0,\n"  // l:26
-"        XF_A[posmtx_base + 3], XF_A[posmtx_base + 7], XF_A[posmtx_base + 11], 1\n"  // l:27
-"    );\n"  // l:28
-"\n"  // l:29
-"    vec4 pos = vec4(position, 1);\n"  // l:30
-"    pos = projection * modelview * pos;\n"  // l:31
-"    pos /= pos.w;\n"  // l:32
-"    pos.z *= -1;  // openGL is weird\n"  // l:33
-"\n"  // l:34
-"    return pos;\n"  // l:35
-"}\n"  // l:36
-"\n"  // l:37
-"vec3 transform_tex(vec3 texcoord, uint texidx) {\n"  // l:38
-"    // matrices can be accessed per row\n"  // l:39
-"    uint texmtx_base = texidx << 2;\n"  // l:40
-"    mat3 xf_mat = mat3(\n"  // l:41
-"        XF_A[texmtx_base + 0], XF_A[texmtx_base + 4], XF_A[texmtx_base + 8],\n"  // l:42
-"        XF_A[texmtx_base + 1], XF_A[texmtx_base + 5], XF_A[texmtx_base + 9],\n"  // l:43
-"        XF_A[texmtx_base + 2], XF_A[texmtx_base + 6], XF_A[texmtx_base + 10]\n"  // l:44
-"    );\n"  // l:45
-"\n"  // l:46
-"    vec3 coord = vec3(texcoord.xy, 1);\n"  // l:47
-"    coord = xf_mat * coord;\n"  // l:48
-"    coord /= coord.z;\n"  // l:49
-"\n"  // l:50
-"    return coord;\n"  // l:51
-"}\n"  // l:52
-"\n"  // l:53
+"#undef DEBUG\n"  // l:3
+"\n"  // l:4
+"layout (std430, binding = 4) readonly buffer XF_SSBO\n"  // l:5
+"{\n"  // l:6
+"    float XF_A[0x100];\n"  // l:7
+"    float XF_B[0x100];\n"  // l:8
+"    float XF_C[0x100];\n"  // l:9
+"    float XF_D[0x100];\n"  // l:10
+"    float XF_regs[0x58];  // some regs are not floats, but most are\n"  // l:11
+"};\n"  // l:12
+"\n"  // l:13
+"vec4 transform_pos(vec3 position, uint posidx) {\n"  // l:14
+"    // this seems to be what libOGC makes from projection matrices\n"  // l:15
+"    mat4 projection;\n"  // l:16
+"    if (floatBitsToUint(XF_regs[0x26]) == 0) {\n"  // l:17
+"        // perspective matrix\n"  // l:18
+"        projection = mat4(\n"  // l:19
+"            XF_regs[0x20], 0, 0, 0,  // first column\n"  // l:20
+"            0, XF_regs[0x22], 0, 0,  // second column\n"  // l:21
+"            XF_regs[0x21], XF_regs[0x23], XF_regs[0x24], -1,  // third column\n"  // l:22
+"            0, 0, XF_regs[0x25], 0   // fourth column\n"  // l:23
+"        );\n"  // l:24
+"    }\n"  // l:25
+"    else {\n"  // l:26
+"        // orthographic projection matrix\n"  // l:27
+"        projection = mat4(\n"  // l:28
+"            XF_regs[0x20], 0, 0, 0,  // first column\n"  // l:29
+"            0, XF_regs[0x22], 0, 0,  // second column\n"  // l:30
+"            0, 0, XF_regs[0x24], 0, // third column\n"  // l:31
+"            XF_regs[0x21], XF_regs[0x23], XF_regs[0x25], 1  // fourth column\n"  // l:32
+"        );\n"  // l:33
+"    }\n"  // l:34
+"\n"  // l:35
+"    // matrices can be accessed per row\n"  // l:36
+"    uint posmtx_base = posidx << 2;\n"  // l:37
+"    mat4 modelview = mat4(\n"  // l:38
+"        XF_A[posmtx_base + 0], XF_A[posmtx_base + 4], XF_A[posmtx_base + 8], 0,\n"  // l:39
+"        XF_A[posmtx_base + 1], XF_A[posmtx_base + 5], XF_A[posmtx_base + 9], 0,\n"  // l:40
+"        XF_A[posmtx_base + 2], XF_A[posmtx_base + 6], XF_A[posmtx_base + 10], 0,\n"  // l:41
+"        XF_A[posmtx_base + 3], XF_A[posmtx_base + 7], XF_A[posmtx_base + 11], 1\n"  // l:42
+"    );\n"  // l:43
+"\n"  // l:44
+"    vec4 pos = vec4(position, 1);\n"  // l:45
+"    pos = projection * modelview * pos;\n"  // l:46
+"    pos /= pos.w;\n"  // l:47
+"    pos.z = 1 + pos.z;  // openGL is weird\n"  // l:48
+"\n"  // l:49
+"#ifdef DEBUG\n"  // l:50
+"    if (false) {\n"  // l:51
+"        switch (gl_VertexID) {\n"  // l:52
+"            case 0:\n"  // l:53
+"                pos = vec4(-1.0, -0.9, 0.0, 1.0);  // bottom left\n"  // l:54
+"                break;\n"  // l:55
+"            case 1:\n"  // l:56
+"                pos = vec4(pos.x, pos.y, pos.z, 1.0);  // top right\n"  // l:57
+"                break;\n"  // l:58
+"            case 2:\n"  // l:59
+"                pos = vec4(-0.9, -1.0, 0.0, 1.0);  // bottom right\n"  // l:60
+"                break;\n"  // l:61
+"            case 3:\n"  // l:62
+"                pos = vec4(-1.0, -1.0, 0.0, 1.0);  // top left\n"  // l:63
+"                break;\n"  // l:64
+"            default:\n"  // l:65
+"                break;\n"  // l:66
+"        }\n"  // l:67
+"    }\n"  // l:68
+"#endif\n"  // l:69
+"\n"  // l:70
+"    return pos;\n"  // l:71
+"}\n"  // l:72
+"\n"  // l:73
+"vec3 transform_tex(vec3 texcoord, uint texidx) {\n"  // l:74
+"    // matrices can be accessed per row\n"  // l:75
+"    uint texmtx_base = texidx << 2;\n"  // l:76
+"    mat3 xf_mat = mat3(\n"  // l:77
+"        XF_A[texmtx_base + 0], XF_A[texmtx_base + 4], XF_A[texmtx_base + 8],\n"  // l:78
+"        XF_A[texmtx_base + 1], XF_A[texmtx_base + 5], XF_A[texmtx_base + 9],\n"  // l:79
+"        XF_A[texmtx_base + 2], XF_A[texmtx_base + 6], XF_A[texmtx_base + 10]\n"  // l:80
+"    );\n"  // l:81
+"\n"  // l:82
+"    vec3 coord = vec3(texcoord.xy, 1);\n"  // l:83
+"    coord = xf_mat * coord;\n"  // l:84
+"    coord /= coord.z;\n"  // l:85
+"\n"  // l:86
+"    return coord;\n"  // l:87
+"}\n"  // l:88
+"\n"  // l:89
 ;
 
 
@@ -453,22 +521,22 @@ const char* vertexShaderSource =
 "\n"  // l:226
 "        gl_Position = transform_pos(position, posidx);\n"  // l:227
 "#ifdef DEBUG\n"  // l:228
-"        if (gl_Position.z < 0) {\n"  // l:229
-"            switch (gl_VertexID) {\n"  // l:230
-"                case 0:\n"  // l:231
-"                    gl_Position = vec4(-0.5, -0.5, 0.0, 1.0);\n"  // l:232
-"                    break;\n"  // l:233
-"                case 1:\n"  // l:234
-"                    gl_Position = vec4(0.0, -0.5, 0.0, 1.0);\n"  // l:235
-"                    break;\n"  // l:236
-"                case 2:\n"  // l:237
-"                    gl_Position = vec4(0.5, 0.5, 0.0, 1.0);\n"  // l:238
-"                    break;\n"  // l:239
-"                case 3:\n"  // l:240
-"                    gl_Position = vec4(0.0, 0.5, 0.0, 1.0);\n"  // l:241
-"                    break;\n"  // l:242
-"            }\n"  // l:243
-"        }\n"  // l:244
+"//        if (gl_Position.z < 0) {\n"  // l:229
+"//            switch (gl_VertexID) {\n"  // l:230
+"//                case 0:\n"  // l:231
+"//                    gl_Position = vec4(-0.5, -0.5, 0.0, 1.0);\n"  // l:232
+"//                    break;\n"  // l:233
+"//                case 1:\n"  // l:234
+"//                    gl_Position = vec4(0.0, -0.5, 0.0, 1.0);\n"  // l:235
+"//                    break;\n"  // l:236
+"//                case 2:\n"  // l:237
+"//                    gl_Position = vec4(0.5, 0.5, 0.0, 1.0);\n"  // l:238
+"//                    break;\n"  // l:239
+"//                case 3:\n"  // l:240
+"//                    gl_Position = vec4(0.0, 0.5, 0.0, 1.0);\n"  // l:241
+"//                    break;\n"  // l:242
+"//            }\n"  // l:243
+"//        }\n"  // l:244
 "#endif\n"  // l:245
 "    }\n"  // l:246
 "\n"  // l:247
@@ -610,7 +678,7 @@ const char* vertexShaderSource =
 "    for (int i = 0; i < 8; i++) {\n"  // l:383
 "        if (arg_offsets[13 + i] >= 0) {\n"  // l:384
 "            // load texture specific data\n"  // l:385
-"            textureData = 1 | (uint(i) << 1);\n"  // l:386
+"            textureData = 1u | (uint(i) << 1);\n"  // l:386
 "            textureOffset = data_offsets[i];\n"  // l:387
 "\n"  // l:388
 "            // load texture coordinate (same as position basically)\n"  // l:389

@@ -30,14 +30,14 @@ s_GameCube* init_system() {
 }
 
 #ifdef _WIN32
-#define ROOT_DIR "D:/"
+#define ROOT_DIR "D:/Data/CProjects/GameCubeResources/Tests/"
 #else
 #define ROOT_DIR "/mnt/d/"
 #endif
 
-#define TEST_DOL ROOT_DIR "CProjects/GCResources/GameCubeResources/Tests/Sprites/Sprites.dol"
-// #define TEST_DOL ROOT_DIR "CProjects/GCResources/GameCubeResources/Tests/Cube/Cube.dol"
-#define STEP_ON_BREAK
+// #define TEST_DOL ROOT_DIR "Cube/Cube.dol"
+// #define TEST_DOL ROOT_DIR "Textures/Textures.dol"
+#define TEST_DOL ROOT_DIR "Sprites/Sprites.dol"
 
 void run_system(s_GameCube* system) {
     load_DOL_to_Gekko(&system->cpu, TEST_DOL);

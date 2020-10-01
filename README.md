@@ -11,7 +11,7 @@ This is probably going to take a while to finish...
 #### Memos to self:
 
 required settings:
- - CMake options: `-DCMAKE_TOOLCHAIN_FILE=D:\vcpkg\vcpkg\scripts\buildsystems\vcpkg.cmake`
+ - CMake options: `-DCMAKE_TOOLCHAIN_FILE=D:\Programs\vcpkg\scripts\buildsystems\vcpkg.cmake`
  
 ### Todo:
  - `__builtin_bswap32` for memory reads

@@ -27,39 +27,39 @@ HW_REG_INIT_FUNCTION(CP) {
 // indexed by VAT.POSCNT, VAT.POSFMT
 static const u8 coord_stride[2][8] = {
         // POSCNT = 0
-        { 3, 3, 6, 6, 12, 0, 0, 0 },
+        { 2, 2, 4, 4, 8, 0, 0, 0 },
         // POSCNT = 1
-        { 4, 4, 8, 8, 16, 0, 0, 0 }
+        { 3, 3, 6, 6, 12, 0, 0, 0 }
 };
 
 // indexed by VAT.NRMCNT, VAT.NRMFMT
 static const u8 nrm_stride[2][8] = {
-        // POSCNT = 0
+        // NRMCNT = 0
         { 0, 3, 0, 6, 12, 0, 0, 0 },
-        // POSCNT = 1
+        // NRMCNT = 1
         { 0, 9, 0, 18, 36, 0, 0, 0 }
 };
 
 // indexed by VAT.COLxCNT, VAT.COLxFMT (poscnt actually does not impact this)
 static const u8 color_stride[2][8] = {
-        // POSCNT = 0
+        // CLRxCNT = 0
         { 2, 3, 4, 2, 3, 4, 0, 0 },
-        // POSCNT = 1
+        // CLRxCNT = 1
         { 2, 3, 4, 2, 3, 4, 0, 0 }
 };
 
 // indexed by VAT.TEXxCNT, VAT.TEXxFMT
 static const u8 tex_stride[2][8] = {
-        // POSCNT = 0
+        // TEXxCNT = 0
         { 1, 1, 2, 2, 4, 0, 0, 0 },
-        // POSCNT = 1
+        // TEXxCNT = 1
         { 2, 2, 4, 4, 8, 0, 0, 0 }
 };
 
 static inline u32 CP_add_draw_arg(s_CP* CP, u32 offset, u32 mode, e_draw_args arg, const u8 lut[2][8], u32 cnt, u32 fmt)
 {
     if (mode) {
-        log_cp("arg %d enabled, offset %d, mode %d", arg, offset, mode);
+        log_cp("arg %d enabled, offset %d, [cnt %d][mode %d]", arg, offset, cnt, mode);
         CP->current_draw_command.arg_offset[arg] = offset;
         CP->current_draw_command.data_offset[arg] = mode > 1;   // signify whether we want to have this in our data
         return (CP->arg_size[arg] = (((mode) == 1) ? lut[cnt][fmt] : (mode) - 1));
@@ -270,17 +270,10 @@ static inline void send_draw_command(s_CP* CP) {
             &CP->internal_CP_regs[CP_reg_int_vert_ARRAY_STRIDE - INTERNAL_CP_REGISTER_BASE],
             12 * sizeof(u32)
     );
-
-    log_cp("Draw command %d sent", CP->draw_command_index);
-    CP->draw_command_available[CP->draw_command_index++] = false;  // signify that draw command is used
-    if (CP->draw_command_index == MAX_DRAW_COMMANDS) {
-        CP->draw_command_index = 0;
-    }
-    // draw is automatically queued by setting draw_command_available to false
 }
 
 static inline void call_DL(s_CP* CP, u32 list_addr, u32 list_size) {
-    log_fatal("Call DL at %08x of size %08x", list_addr, list_size);
+    log_fatal("Call DL at %08x of size %08x (cmd %02x)", list_addr, list_size, CP->command);
     // we can basically just call the execute_buffer function but then on data in memory
 }
 
@@ -317,7 +310,8 @@ static inline void load_BP_reg(s_CP* CP, u32 value) {
 static inline void feed_CP(s_CP* CP, u8 data) {
     // feed from the buffer from some index
     // always read argument (we never get here with a NOP anyway)
-    switch (CP->command) {
+    // lower 3 bits are always VAT index, except for 'Load BP REG' command
+    switch (CP->command & 0xf8) {
         case CP_cmd_NOP:
             log_fatal("Uncaught NOP in argument feeding");
         case CP_cmd_load_CP_reg:
@@ -359,7 +353,7 @@ static inline void feed_CP(s_CP* CP, u8 data) {
             break;
         case CP_cmd_inval_vertex_cache:
             log_fatal("Uncaught invalidate vertex cache instruction in argument feeding");
-        case CP_cmd_load_BP_reg:
+        case CP_cmd_load_BP_reg & 0xf8:  // should be 0x61, but lower 3 bits are masked out
             CP->args[CP->argc++] = data;
             if (CP->argc == 4) {
                 // 8bit (reg addr) + 24bit (value)
@@ -367,8 +361,15 @@ static inline void feed_CP(s_CP* CP, u8 data) {
                 CP->fetching = false;
             }
             break;
-        case CP_cmd_QUADS ... CP_cmd_MAX:
+        case CP_cmd_QUADS:
+        case CP_cmd_TRIANGLES:
+        case CP_cmd_TRIANGLESTRIP:
+        case CP_cmd_TRIANGLEFAN:
+        case CP_cmd_LINES:
+        case CP_cmd_LINESTRIP:
+        case CP_cmd_POINTS:
             // all drawing commands
+            log_cp("Draw command byte %d", CP->argc);
             if (CP->argc == 0) {
                 CP->argc++;
                 CP->current_draw_command.vertices = data << 8;
@@ -376,11 +377,13 @@ static inline void feed_CP(s_CP* CP, u8 data) {
             else if (CP->argc == 1) {
                 CP->current_draw_command.vertices |= data;
                 CP->argc++;
+                log_cp("Expecting %d vertices", CP->current_draw_command.vertices);
             }
             else {
                 CP->current_draw_command.args[CP->argc++ - 2] = data;  // first 2 bytes were number of vertices
 
                 if ((CP->argc - 2) == CP->current_draw_command.vertex_stride * CP->current_draw_command.vertices) {
+                    log_cp("Got %d bytes of draw data (including #vertices), sending command", CP->argc);
                     send_draw_command(CP);
                     CP->fetching = false;
                 }
@@ -408,6 +411,17 @@ void execute_buffer(s_CP* CP, const u8* buffer_ptr, u8 buffer_size) {
             CP->argc = 0;
             CP->fetching = CP->command != CP_cmd_NOP && CP->command != CP_cmd_inval_vertex_cache;
             if (CP->command >= CP_cmd_QUADS /* && !CP->draw_argc_valid[CP->command & 7] */) {
+                // send previous draw command
+                // first draw command will be all zero's, causing nothing to be drawn
+                log_cp("Draw command %d sent", CP->draw_command_index);
+                // draw is automatically queued by setting draw_command_available to false
+                CP->draw_command_available[CP->draw_command_index] = false;  // signify that draw command is used
+                if (++CP->draw_command_index == MAX_DRAW_COMMANDS) {
+                    CP->draw_command_index = 0;
+                }
+                // clear frameswap trigger
+                CP->frameswap[CP->draw_command_index] = 0;
+
                 update_CP_draw_argc(CP, CP->command & 7);
 
                 // check if current draw command in queue is available

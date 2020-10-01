@@ -297,7 +297,8 @@ struct s_framebuffer render_Flipper(s_Flipper* flipper){
 
         u32 start_draw_index = flipper->draw_command_index;
 
-        while (!flipper->CP->draw_command_available[flipper->draw_command_index]) {
+        while (!flipper->CP->draw_command_available[flipper->draw_command_index]
+                && flipper->draw_command_index != flipper->CP->draw_command_index) {
             log_flipper("Processing draw command %02x @%d",
                         flipper->CP->draw_command_queue[flipper->draw_command_index].command,
                         flipper->draw_command_index
@@ -309,9 +310,6 @@ struct s_framebuffer render_Flipper(s_Flipper* flipper){
                     &flipper->CP->draw_command_queue[flipper->draw_command_index],
                     &flipper->CP->texture_data[flipper->draw_command_index]
             );
-            if (++flipper->draw_command_index == MAX_DRAW_COMMANDS) {
-                flipper->draw_command_index = 0;
-            }
 
             /*
              * Funnily enough, the way I handle my draw commands is actually pretty similar to the way the GameCube
@@ -322,14 +320,13 @@ struct s_framebuffer render_Flipper(s_Flipper* flipper){
              * different from the GameCube probably, where it is handled in interrupts, I don't know how yet).
              * */
 
+            // check if we need to frameswap
             if (flipper->CP->frameswap[flipper->draw_command_index] & PE_copy_execute) {
-                flipper->CP->frameswap[flipper->draw_command_index] &= ~PE_copy_execute;  // reset
                 Flipper_frameswap(flipper, flipper->CP->frameswap[flipper->draw_command_index]);
             }
 
-            if (flipper->draw_command_index == flipper->CP->draw_command_index) {
-                // caught up with CP, no frameswap
-                break;
+            if (++flipper->draw_command_index == MAX_DRAW_COMMANDS) {
+                flipper->draw_command_index = 0;
             }
         }
 

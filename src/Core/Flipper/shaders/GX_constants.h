@@ -33,6 +33,7 @@ typedef enum e_XF_regs {
     XF_reg_projection_D = 0x23,
     XF_reg_projection_E = 0x24,
     XF_reg_projection_F = 0x25,
+    XF_reg_project_ortho = 0x26,
 } e_XF_regs;
 
 typedef enum e_BP_regs {

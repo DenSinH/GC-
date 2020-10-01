@@ -281,7 +281,7 @@ typedef struct s_texture_data {
 #define INTERNAL_XF_REGISTER_SIZE 0x58
 #define INTERNAL_XF_MEM_SIZE 0x100
 #define INTERNAL_XF_REGISTER_BASE 0x1000
-#define MAX_DRAW_COMMANDS 16
+#define MAX_DRAW_COMMANDS 256
 
 #define CP_SHIFT 1
 #define current_draw_command draw_command_queue[CP->draw_command_index]
@@ -327,7 +327,7 @@ typedef struct s_CP {
     volatile u32 draw_command_index;  // read to make sure flipper does not catch up
 
     // set to signal that flipper should frameswap after the draw command at a specific index
-    volatile u16 frameswap[MAX_DRAW_COMMANDS];  // read/set by flipper, set to BP value by CP then clear bit 14 by Flipper
+    volatile u16 frameswap[MAX_DRAW_COMMANDS];  // read by flipper, set to BP value by CP then clear bit 14 by Flipper
     volatile bool draw_command_available[MAX_DRAW_COMMANDS];  // used as flags, set to false by CP, then to true by Flipper
 } s_CP;
 
