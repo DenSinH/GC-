@@ -105,6 +105,16 @@
 #define log_flipper(message, ...) { }
 #endif
 
+#if COMPONENT_FLAGS & COMPONENT_OPENGL
+#define log_gl(message, ...) {                        \
+        CONSOLE_PINK();                                \
+        fprintf(stdout, "[OpenGL]: "message "\n",  ##__VA_ARGS__); \
+        CONSOLE_RESTORE();                             \
+    }
+#else
+#define log_gl(message, ...) { }
+#endif
+
 #if COMPONENT_FLAGS & COMPONENT_SCHEDULER
 #define log_sched(message, ...) {                        \
         CONSOLE_BLUE();                                \

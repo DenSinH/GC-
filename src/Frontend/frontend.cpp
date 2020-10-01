@@ -140,7 +140,7 @@ int ui_run() {
                     break;
                 case SDL_CONTROLLERDEVICEADDED:
                     gamecontroller =  SDL_GameControllerOpen(event.cdevice.which);
-                    if (gamecontroller == NULL) {
+                    if (gamecontroller == nullptr) {
                         printf("Error with connected gamecontroller\n");
                     }
                     break;

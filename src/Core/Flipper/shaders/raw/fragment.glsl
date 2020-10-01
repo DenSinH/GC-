@@ -47,40 +47,23 @@ const uint tex_fmt_shft[16] = {
     0  // unused
 };
 
-const uint tex_block_size_shft[16] = {
-    2, // I4 ?
-    2, // I8 ?
-    2, // IA4 ?
-    2, // IA8 ?
-    2, // RGB565
-    2, // RGB5A3
-    2, // RGBA8
-    2, // unused
-    2, // CI4 ?
-    2, // CI8 ?
-    2, // CIA4 ?
-    0, 0, 0, // unused
-    2, // CMP ?
-    0  // unused
-};
-
 uint utemp;
 int itemp;
 
-uint index_from_pos(uint x, uint y, uint width, uint height, uint block_size_shift) {
-    // block size in power of 2
-    uint tile_x = x >> block_size_shift;
-    uint tile_y = y >> block_size_shift;
-    x &= (1 << block_size_shift) - 1u;  // in-tile
-    y &= (1 << block_size_shift) - 1u;  // in-tile
+uint index_from_pos(uint x, uint y, uint width, uint height) {
+    // blocks are always 4x4 pixels
+    uint tile_x = x >> 2;
+    uint tile_y = y >> 2;
+    x &= 3u;  // in-tile
+    y &= 3u;  // in-tile
 
-    return (tile_y * (width >> block_size_shift) + tile_x) * (1 << (block_size_shift + block_size_shift)) // * (tileW * tileH)
-           + (y << block_size_shift) + x;
+    return (tile_y * (width >> 2) + tile_x) * 16 /* 16 = (tileW * tileH) */ + (y << 2) + x;
 }
 
 void main()
 {
     if ((textureData & 1u) == 0) {
+        // no texture present
         FragColor = vec4(vertexColor);
     }
     else {
@@ -109,44 +92,90 @@ void main()
         */
         uint x = uint(wrappedCoord.x * width);
         uint y = uint(wrappedCoord.y * height);
-        // todo: fix all block sizes
-        uint offset_into_texture = index_from_pos(x, y, width, height, tex_block_size_shft[texture_color_format]);
-        offset_into_texture <<= tex_fmt_shft[texture_color_format];
-        offset_into_texture >>= 1;
 
-        textureIndex += offset_into_texture;
+        uint offset_into_texture;
+        uint data;
+        if (texture_color_format != ++color_format_RGBA8++) {
+            offset_into_texture = index_from_pos(x, y, width, height);
+            offset_into_texture <<= tex_fmt_shft[texture_color_format];
+            offset_into_texture >>= 1;
 
-        // load data at the location. The color formats are all nicely aligned (either by 4, 2, 1 or 0.5 byte, so we
-        // can parse that part before parsing the actual color.
-        uint data = texture_data[textureIndex >> 2];  // stored bytes as uints
+            textureIndex += offset_into_texture;
 
-        switch (tex_fmt_shft[texture_color_format]) {
-            case 0:  // nibble
-            case 1:  // byte
-                utemp = bitfieldExtract(offset_into_texture, 0, 2);  // todo: nibble-sized offset for 0
-                data = bitfieldExtract(data, int(utemp * 8), 8);
-                break;
-            case 2:  // halfword
-                utemp = offset_into_texture & 0x2u;  // misalignment (always halfword-aligned)
-                data = bitfieldExtract(data, int(utemp * 8), 16);  // get right halfword
-                utemp = data >> 8;  // top byte
-                data = (data & 0xffu) << 8;  // swap bottom byte
-                data = data | utemp;  // convert to LE
-                break;
-            case 3:  // word
-                utemp = data >> 16;  // top halfword
-                data = (data & 0xffffu) << 16;  // swap bottom halfword
-                data |= utemp;
-                // we now did [0123] -> [2301], need [3210]
+            // load data at the location. The color formats are all nicely aligned (either by 4, 2, 1 or 0.5 byte, so we
+            // can parse that part before parsing the actual color.
+            data = texture_data[textureIndex >> 2];  // stored bytes as uints
 
-                utemp = data & 0x00ff00ffu;  // [.3.1]
-                utemp <<= 8;                 // [3.1.]
-                data >>= 8;                  // [.230]
-                data &= 0x00ff00ffu;         // [.2.0]
-                data |= utemp;               // [3210]
-                break;
-            default:
-                break;
+            switch (tex_fmt_shft[texture_color_format]) {
+                case 0:  // nibble
+                case 1:  // byte
+                    utemp = bitfieldExtract(offset_into_texture, 0, 2);  // todo: nibble-sized offset for 0
+                    data = bitfieldExtract(data, int(utemp * 8), 8);
+                    break;
+                case 2:  // halfword
+                    utemp = offset_into_texture & 0x2u;  // misalignment (always halfword-aligned)
+                    data = bitfieldExtract(data, int(utemp * 8), 16);  // get right halfword
+                    utemp = data >> 8;  // top byte
+                    data = (data & 0xffu) << 8;  // swap bottom byte
+                    data = data | utemp;  // convert to LE
+                    break;
+                case 3:  // word
+                    utemp = data >> 16;  // top halfword
+                    data = (data & 0xffffu) << 16;  // swap bottom halfword
+                    data |= utemp;
+                    // we now did [0123] -> [2301], need [3210]
+
+                    utemp = data & 0x00ff00ffu;  // [.3.1]
+                    utemp <<= 8;                 // [3.1.]
+                    data >>= 8;                  // [.230]
+                    data &= 0x00ff00ffu;         // [.2.0]
+                    data |= utemp;               // [3210]
+                    break;
+                default:
+                    break;
+            }
+        }
+        else {
+            // data separated into 2 blocks:
+            /*
+            The RGBA32 format (or RGBA8 as it is sometimes known) is used to store 24 bit depth True Color
+            (1 byte per color), with an 8 bit alpha channel.
+            Although the pixel data does follow the block order as seen in other formats,
+            the data is separated into 2 groups. A and R are encoded in this order in the first group,
+            and G and B in the second group.
+            So one block in this format (4x4 pixels), as 64 bytes, appears in this order:
+
+            ARARARARARARARAR (<- 16 bytes)
+            ARARARARARARARAR
+            GBGBGBGBGBGBGBGB
+            GBGBGBGBGBGBGBGB
+            */
+            // blocks is still 4x4 pixels
+            uint tile_x = x >> 2;
+            uint tile_y = y >> 2;
+            uint i_x = x & 3u;  // in-tile
+            uint i_y = y & 3u;  // in-tile
+
+            // shift by 2 here for 4 bytes per full color in block
+            uint block_offset = (tile_y * (width >> 2) + tile_x) * 16 << 2;
+
+            // within the block though, all colors are in 2 separate blocks
+            uint AR_offset = ((i_y << 2) + i_x) << 1;
+            uint AR = texture_data[(block_offset + AR_offset) >> 2];  // stored as uints
+
+            // GB is half a block further
+            uint GB_offset = AR_offset + 32;
+            uint GB = texture_data[(block_offset + GB_offset) >> 2];  // stored as uints
+
+            if ((AR_offset & 2u) != 0) {
+                // misaligned reads
+                AR >>= 16;
+                GB >>= 16;
+            }
+            AR &= 0xffffu;
+            GB &= 0xffffu;
+
+            data = (AR << 16) | GB;
         }
 
         vec4 color = vec4(0, 0, 0, 1.0);
@@ -172,21 +201,26 @@ void main()
                 }
                 break;
             case ++color_format_RGBA8++:
-                color = unpackUnorm4x8(data);
+                color = unpackUnorm4x8(data).yxwz;  // big endian caused this to be RABG
                 break;
-
             default:
                 color = vec4(1.0, 0.0, 1.0, 1.0);
                 break;
         }
 
+        // debugging stuff:
 //        if (height_min_1 == 0x7f) {
 //            FragColor = vec4(0.0, 1.0, 0.0, 1.0);
 //        }
 //        else {
 //            FragColor = vec4(0.0, 0.0, 1.0, 1.0);
 //        }
-        FragColor = vec4(color.xyz, 1.0);
+
+//        if (color.w < 0.1) {
+//            discard;
+//        }
+
+        FragColor = color;
         // FragColor = vec4(float(offset_into_texture) / (height_min_1 * width_min_1 * 2), 0.0, 0.0, 1.0);
     }
 }

@@ -16,6 +16,7 @@
 #define COMPONENT_SCHEDULER   0x20
 #define COMPONENT_CPU         0x40
 #define COMPONENT_SI          0x80
+#define COMPONENT_OPENGL      0x100
 
 #define SCREEN_NTSC 0
 #define SCREEN_PAL 1
@@ -25,7 +26,7 @@
 #ifndef NDEBUG
 // change to change verbosity / component logging:
 #define VERBOSITY VERBOSITY_WARN
-#define COMPONENT_FLAGS (0)
+#define COMPONENT_FLAGS (COMPONENT_OPENGL)
 
 #define CHECK_SPR_ACCESS
 #define CHECK_CP_COMMAND

@@ -20,6 +20,21 @@
 static u16 quad_EBO[FLIPPER_QUAD_INDEX_ARRAY_SIZE];
 
 
+void GLAPIENTRY debug_opengl(
+                 GLenum source,
+                 GLenum type,
+                 GLuint id,
+                 GLenum severity,
+                 GLsizei length,
+                 const GLchar* message,
+                 const void* user_param
+) {
+    if (severity >= GL_DEBUG_SEVERITY_LOW) {
+        log_gl("[%x] %s",severity, message);
+    }
+}
+
+
 void init_Flipper(s_Flipper* flipper) {
     flipper->memory = flipper->system->memory;
     flipper->CP = &flipper->system->HW_regs.CP;
@@ -179,6 +194,19 @@ void video_init_Flipper(s_Flipper* flipper) {
     // flipper clipping happens between 0 and 1
     glClipControl(GL_LOWER_LEFT, GL_ZERO_TO_ONE);
     glEnable(GL_DEPTH_TEST);
+    glEnable(GL_BLEND);
+//    glBlendFunc(GL_CONSTANT_ALPHA, GL_ONE);
+//    glBlendEquation(GL_FUNC_ADD);
+//    glBlendColor(1.000, 0.012, 0.012, 0.557);
+//    glBlendFuncSeparate(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA, GL_ONE, GL_ONE);
+//    glBlendEquationSeparate(GL_FUNC_ADD, GL_MAX);
+    glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
+    glBlendEquation(GL_FUNC_ADD);
+
+#if COMPONENT_FLAGS & COMPONENT_OPENGL
+    glEnable(GL_DEBUG_OUTPUT);
+    glDebugMessageCallback(debug_opengl, NULL);
+#endif
 }
 
 void Flipper_frameswap(s_Flipper* flipper, u16 pe_copy_command) {
@@ -334,9 +362,9 @@ struct s_framebuffer render_Flipper(s_Flipper* flipper){
         u32 i = start_draw_index;
         // use do/while loop so that we can let the flipper draw_command_index catch up with the CP draw_command_index
         do {
-            flipper->CP->draw_command_available[i++] = true;
+            flipper->CP->draw_command_available[i] = true;
 
-            if (i == MAX_DRAW_COMMANDS) {
+            if (++i == MAX_DRAW_COMMANDS) {
                 i = 0;
             }
         } while (i != flipper->draw_command_index);
