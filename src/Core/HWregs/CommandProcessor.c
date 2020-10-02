@@ -104,7 +104,7 @@ void update_CP_draw_argc(s_CP* CP, int format) {
     CP->current_draw_command.vertex_stride = offset;
     log_cp("Expecting %d bytes per vertex", offset);
     for (int i = draw_arg_PNMTXIDX; i < draw_arg_TEX7; i++) {
-        log_cp("Argument %d: offset %d", i, CP->current_draw_command.arg_offset[i])
+        log_cp("Argument %d: offset %d", i, CP->current_draw_command.arg_offset[i]);
     }
 }
 

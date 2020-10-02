@@ -12,7 +12,7 @@ set(CMAKE_C_STANDARD 11)
 set(CMAKE_MODULE_PATH ${PROJECT_SOURCE_DIR}/cmake)
 
 set(CMAKE_CXX_FLAGS_RELEASE "-O3")
-set(CMAKE_C_FLAGS_RELEASE "-Ofast")  # this breaks stuff with thread synchronization now
+set(CMAKE_C_FLAGS_RELEASE "-Ofast")
 
 add_compile_options($<$<CONFIG:DEBUG>:-Wall>)
 add_compile_options(
@@ -20,6 +20,7 @@ add_compile_options(
         -Wno-visibility
         -Wno-c++98-compat
         -Wno-double-promotion
+        -no-pedantic
 )
 add_compile_definitions(
         $<$<CONFIG:RELEASE>:NDEBUG>

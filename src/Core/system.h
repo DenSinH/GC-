@@ -31,7 +31,7 @@ typedef struct s_GameCube {
 
 } s_GameCube ;
 
-s_GameCube* init_system();
+s_GameCube* init_system(void);
 void run_system(s_GameCube* system);
 
 #endif //GC__SYSTEM_H

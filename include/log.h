@@ -36,144 +36,144 @@
 
 
 #if COMPONENT_FLAGS & COMPONENT_CPU_VERBOSE
-    #define log_cpu_verbose(message, ...) {                        \
+    #define log_cpu_verbose(message, ...) do {                        \
         CONSOLE_GREEN();                                \
         fprintf(stdout, "[CPU (verbose)]: " message "\n",  ##__VA_ARGS__); \
         CONSOLE_RESTORE();                             \
-    }
+    } while(0)
 #else
-    #define log_cpu_verbose(message, ...) { }
+    #define log_cpu_verbose(message, ...) do { } while(0)
 #endif
 
 #if COMPONENT_FLAGS & (COMPONENT_CPU | COMPONENT_CPU_VERBOSE)
-#define log_cpu(message, ...) {                        \
+#define log_cpu(message, ...) do {                        \
         CONSOLE_DARK_GREEN();                                \
         fprintf(stdout, "[CPU]: " message "\n",  ##__VA_ARGS__); \
         CONSOLE_RESTORE();                             \
-    }
+    } while(0)
 #else
-#define log_cpu(message, ...) { }
+#define log_cpu(message, ...) do { } while(0)
 #endif
 
 #if COMPONENT_FLAGS & COMPONENT_MMU
-#define log_mmu(message, ...) {                        \
+#define log_mmu(message, ...) do {                        \
         CONSOLE_GREEN();                                \
         fprintf(stdout, "[MMU]: "message "\n",  ##__VA_ARGS__); \
         CONSOLE_RESTORE();                             \
-    }
+    } while(0)
 #else
-#define log_mmu(message, ...) { }
+#define log_mmu(message, ...) do { } while(0)
 #endif
 
 #if COMPONENT_FLAGS & COMPONENT_HW_REGS
-#define log_hw_reg(message, ...) {                        \
+#define log_hw_reg(message, ...) do {                        \
         CONSOLE_BLUE();                                \
         fprintf(stdout, "[HW regs]: "message "\n",  ##__VA_ARGS__); \
         CONSOLE_RESTORE();                             \
-    }
+    } while (0)
 #else
-#define log_hw_reg(message, ...) { }
+#define log_hw_reg(message, ...) do { } while(0)
 #endif
 
 #if COMPONENT_FLAGS & COMPONENT_CP
-#define log_cp(message, ...) {                        \
+#define log_cp(message, ...) do {                        \
         CONSOLE_GREEN();                                \
         fprintf(stdout, "[CP]: "message "\n",  ##__VA_ARGS__); \
         CONSOLE_RESTORE();                             \
-    }
+    } while(0)
 #else
-#define log_cp(message, ...) { }
+#define log_cp(message, ...) do { } while(0)
 #endif
 
 #if COMPONENT_FLAGS & COMPONENT_SI
-#define log_si(message, ...) {                        \
+#define log_si(message, ...) do {                        \
         CONSOLE_GREEN();                                \
         fprintf(stdout, "[SI]: "message "\n",  ##__VA_ARGS__); \
         CONSOLE_RESTORE();                             \
-    }
+    } while(0)
 #else
-#define log_si(message, ...) { }
+#define log_si(message, ...) do { }while(0)
 #endif
 
 #if COMPONENT_FLAGS & COMPONENT_FLIPPER
-#define log_flipper(message, ...) {                        \
+#define log_flipper(message, ...) do {                        \
         CONSOLE_PINK();                                \
         fprintf(stdout, "[FLIPPER]: "message "\n",  ##__VA_ARGS__); \
         CONSOLE_RESTORE();                             \
-    }
+    } while(0)
 #else
-#define log_flipper(message, ...) { }
+#define log_flipper(message, ...) do { } while(0)
 #endif
 
 #if COMPONENT_FLAGS & COMPONENT_OPENGL
-#define log_gl(message, ...) {                        \
+#define log_gl(message, ...) do {                        \
         CONSOLE_PINK();                                \
         fprintf(stdout, "[OpenGL]: "message "\n",  ##__VA_ARGS__); \
         CONSOLE_RESTORE();                             \
-    }
+    } while(0)
 #else
-#define log_gl(message, ...) { }
+#define log_gl(message, ...) do { } while(0)
 #endif
 
 #if COMPONENT_FLAGS & COMPONENT_SCHEDULER
-#define log_sched(message, ...) {                        \
+#define log_sched(message, ...) do {                        \
         CONSOLE_BLUE();                                \
         fprintf(stdout, "[SCHEDULER]: "message "\n",  ##__VA_ARGS__); \
         CONSOLE_RESTORE();                             \
-    }
+    } while(0)
 #else
-#define log_sched(message, ...) { }
+#define log_sched(message, ...) do { } while(0)
 #endif
 
 #if VERBOSITY <= VERBOSITY_ALL
-#define log_any(message, ...) {                        \
+#define log_any(message, ...) do {                        \
         CONSOLE_BLUE();                                \
         fprintf(stdout, message "\n",  ##__VA_ARGS__); \
         CONSOLE_RESTORE();                             \
-    }
+    } while(0)
 #else
-#define log_any(message, ...) { }
+#define log_any(message, ...) do { } while(0)
 #endif
 
 #if VERBOSITY <= VERBOSITY_DEBUG
-    #define log_debug(message, ...) {                 \
+    #define log_debug(message, ...) do {                 \
         fprintf(stdout, "[DEBUG]:");                  \
         fprintf(stdout, message "\n", ##__VA_ARGS__); \
-    }
+    } while(0)
 #else
-    #define log_debug(message, ...) {}
+    #define log_debug(message, ...) do { } while(0)
 #endif
 
 #if VERBOSITY <= VERBOSITY_INFO
-#define log_info(message, ...) {                 \
+#define log_info(message, ...) do {                 \
         fprintf(stdout, "[INFO]:");                  \
         fprintf(stdout, message "\n", ##__VA_ARGS__); \
-    }
+    } while(0)
 #else
-#define log_info(message, ...) {}
+#define log_info(message, ...) do { } while(0)
 #endif
 
 #if VERBOSITY <= VERBOSITY_WARN
-    #define log_warn(message, ...) {                  \
+    #define log_warn(message, ...) do {                  \
         CONSOLE_YELLOW();                             \
         fprintf(stdout, "[WARN]:");                   \
         fprintf(stdout, message "\n", ##__VA_ARGS__); \
         CONSOLE_RESTORE();                            \
-    }
+    } while(0)
 #else
-    #define log_warn(message, ...) { }
+    #define log_warn(message, ...) do { } while(0)
 #endif
 
 #if VERBOSITY <= VERBOSITY_ERROR
-    #define log_fatal(message, ...) {                                \
+    #define log_fatal(message, ...) do {                                \
         CONSOLE_RED();                                               \
         fprintf(stderr, "[FATAL] at %s:%d: ", __FILE__, __LINE__);   \
         fprintf(stderr, message "\n", ##__VA_ARGS__);                \
         /* we're not restoring the color here for any handlers */    \
         exit(1);                                                     \
-    }
+    } while(0)
 #else
-    #define log_fatal(message, ...) { }
+    #define log_fatal(message, ...) do { } while(0)
 #endif
 
 #endif //GC__LOG_H

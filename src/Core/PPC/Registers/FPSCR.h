@@ -71,7 +71,7 @@ typedef enum e_RN_modes {
 
 static inline void SET_VX_EXCEPTIONS(s_FPSCR* FPSCR, e_VX exceptions) {
     // if the exception was not set already, we set FX (sticky)
-    if ((FPSCR->raw & exceptions) != exceptions) {
+    if ((FPSCR->raw & exceptions) != (u32)exceptions) {
         FPSCR->FX = 1;
     }
     // set exception and VX (summary)

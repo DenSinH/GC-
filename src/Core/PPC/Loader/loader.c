@@ -154,7 +154,7 @@ u32 load_DOL_to(const char file_name[], u8* target) {
             log_fatal("[DOL] unimplemented text section offset: %08x (+ %08x)", data.TextAddress[i], data.TextSize[i]);
         }
         data.TextAddress[i] -= 0x80000000;
-        log_info("[DOL] copying text section from %08x to %08x of length %08x", data.TextOffset[i], data.TextAddress[i], data.TextSize[i])
+        log_info("[DOL] copying text section from %08x to %08x of length %08x", data.TextOffset[i], data.TextAddress[i], data.TextSize[i]);
 
         memcpy(target + data.TextAddress[i], DOL + data.TextOffset[i], data.TextSize[i]);
     }
@@ -166,7 +166,7 @@ u32 load_DOL_to(const char file_name[], u8* target) {
             log_fatal("[DOL] unimplemented data section offset: %08x (+ %08x)", data.DataAddress[i], data.DataSize[i]);
         }
         data.DataAddress[i] -= 0x80000000;
-        log_info("[DOL] copying data section from %08x to %08x of length %08x", data.DataOffset[i], data.DataAddress[i], data.DataSize[i])
+        log_info("[DOL] copying data section from %08x to %08x of length %08x", data.DataOffset[i], data.DataAddress[i], data.DataSize[i]);
 
         memcpy(target + data.DataAddress[i], DOL + data.DataOffset[i], data.DataSize[i]);
     }

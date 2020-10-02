@@ -24,7 +24,7 @@ extern "C" {
         int16_t left_x, left_y, right_x, right_y;
     } s_controller;
 
-    int ui_run();
+    int ui_run(void);
 
     void frontend_init(
             bool* shutdown,
@@ -41,8 +41,8 @@ extern "C" {
     int add_register_tab(const char* name);
     void add_register_data(char* name, const void* value, size_t size, int tab);
 
-    void bind_video_init(void (*initializer)());
-    void bind_video_render(s_framebuffer (*render)());
+    void bind_video_init(void (*initializer)(void));
+    void bind_video_render(s_framebuffer (*render)(void));
 #ifdef __cplusplus
 }
 #endif

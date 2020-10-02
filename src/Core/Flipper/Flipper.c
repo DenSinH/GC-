@@ -307,7 +307,7 @@ void draw_Flipper(s_Flipper* flipper, s_draw_command* command, s_texture_data* t
     glUniform1ui(flipper->MATIDX_REG_A_location, get_internal_CP_reg(flipper->CP, CP_reg_int_MATIDX_REG_A));
     glUniform1ui(flipper->MATIDX_REG_B_location, get_internal_CP_reg(flipper->CP, CP_reg_int_MATIDX_REG_B));
 
-    log_flipper("Drawing command %02x, vertices %d", command->command, command->vertices)
+    log_flipper("Drawing command %02x, vertices %d", command->command, command->vertices);
     if ((command->command & 0xf8) == 0x80) {
         // quads need separate case for the indices since GL_QUADS is deprecated
         glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, flipper->EBO);

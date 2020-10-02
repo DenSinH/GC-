@@ -20,7 +20,7 @@ SCHEDULER_EVENT(VI_halfline_count) {
         event->time += 3 * 6 * VI->HLW;
     }
     else {
-        log_warn("Halfline Width is invalid (0)")
+        log_warn("Halfline Width is invalid (0)");
         event->time = (u64)-1;
     }
     add_event(&VI->system->scheduler, event);
@@ -114,7 +114,7 @@ static inline void write_VI_DIx(s_VI* VI, const u32 index) {
         // only reschedule if the event was inactive or it was actually changed
         // a lot of writes are probably just acknowledgements
         if (!VI->DI_event[index].active || (old_data != (VI->DI[index] & VI_DI_DATA))) {
-            log_cpu("Rescheduling DI%d event, cause inactive or %08x != %08x", index, old_data, VI->DI[index] & VI_DI_DATA)
+            log_cpu("Rescheduling DI%d event, cause inactive or %08x != %08x", index, old_data, VI->DI[index] & VI_DI_DATA);
             schedule_DI_event(VI, index);
         }
     }
@@ -149,7 +149,6 @@ HW_REG_WRITE_CALLBACK(write_VI_DI2, VI) {
 HW_REG_WRITE_CALLBACK(write_VI_DI3, VI) {
     write_VI_DIx(VI, 3);
 }
-
 
 HW_REG_READ_PRECALL(read_VI_DI0, VI) {
     WRITE32(VI->regs, VI_reg_DI0, VI->DI[0]);

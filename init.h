@@ -3,6 +3,6 @@
 
 #include "src/Core/system.h"
 
-s_GameCube* init();
+s_GameCube* init(void);
 
 #endif //GC__INIT_H
