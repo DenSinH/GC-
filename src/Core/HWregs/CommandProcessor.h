@@ -251,15 +251,13 @@ typedef union s_SETIMAGE0_I {
  *  non-matrix index arguments
  * */
 
-#define DRAW_COMMAND_ARG_BUFFER_SIZE_SMALL 0x1140
-#define DRAW_COMMAND_ARG_BUFFER_SIZE_MED 0x4500
-#define DRAW_COMMAND_ARG_BUFFER_SIZE_LARGE 0x18000
+#define DRAW_COMMAND_ARG_BUFFER_SIZE 0x1140
 
 // independent of draw command size:
-#define DRAW_COMMAND_DATA_BUFFER_SIZE 0x80000
+#define DRAW_COMMAND_DATA_BUFFER_SIZE 0x80000  // this should be increased for more complex draw commands
 #define DRAW_COMMAND_TEXTURE_BUFFER_SIZE 0x100000
 
-typedef struct s_draw_command_small {
+typedef struct s_draw_command {
     u32 vertices;              // number of vertices
     u32 command;               // actual command
     u32 vertex_stride;         // stride for one whole vertex
@@ -267,9 +265,9 @@ typedef struct s_draw_command_small {
     i32 data_offset[21];       // might be negative for correcting for min index
     u32 data_stride[21];       // ARRAY_STRIDE registers
     u32 data_size;             // to save space copying it to the GPU, this is variable in the shader anyways
-    u8 args[DRAW_COMMAND_ARG_BUFFER_SIZE_SMALL];
+    u8 args[DRAW_COMMAND_ARG_BUFFER_SIZE];
     u8 data[DRAW_COMMAND_DATA_BUFFER_SIZE];
-} s_draw_command_small;
+} s_draw_command;
 
 typedef struct s_texture_data {
     u32 data_size;
@@ -321,7 +319,7 @@ typedef struct s_CP {
 
     // todo: draw_command_mid, large
     u8 arg_size[21]; // sizes of individual (direct) arguments of current draw command
-    s_draw_command_small draw_command_queue[MAX_DRAW_COMMANDS];
+    s_draw_command draw_command_queue[MAX_DRAW_COMMANDS];
     s_texture_data texture_data[MAX_DRAW_COMMANDS];
 
     mutex availability_lock, draw_lock;

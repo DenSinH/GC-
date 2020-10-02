@@ -220,7 +220,7 @@ void main()
 //            discard;
 //        }
 
-        FragColor = color;
+        FragColor = color; // vec4(color.xyz, 0.5);
         // FragColor = vec4(float(offset_into_texture) / (height_min_1 * width_min_1 * 2), 0.0, 0.0, 1.0);
     }
 }

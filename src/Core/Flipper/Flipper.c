@@ -197,14 +197,14 @@ void video_init_Flipper(s_Flipper* flipper) {
     // flipper clipping happens between 0 and 1
     glClipControl(GL_LOWER_LEFT, GL_ZERO_TO_ONE);
     glEnable(GL_DEPTH_TEST);
+    glDepthFunc(GL_LEQUAL);
     glEnable(GL_BLEND);
-//    glBlendFunc(GL_CONSTANT_ALPHA, GL_ONE);
 //    glBlendEquation(GL_FUNC_ADD);
 //    glBlendColor(1.000, 0.012, 0.012, 0.557);
 //    glBlendFuncSeparate(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA, GL_ONE, GL_ONE);
 //    glBlendEquationSeparate(GL_FUNC_ADD, GL_MAX);
     glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
-    glBlendEquation(GL_FUNC_ADD);
+//    glBlendEquation(GL_FUNC_ADD);
 
 #if COMPONENT_FLAGS & COMPONENT_OPENGL
     glEnable(GL_DEBUG_OUTPUT);
@@ -227,8 +227,6 @@ void Flipper_frameswap(s_Flipper* flipper, u16 pe_copy_command) {
     flipper->fence = glFenceSync(GL_SYNC_GPU_COMMANDS_COMPLETE, 0);
 
     flipper->current_framebuffer ^= true;
-    glBindTexture(GL_TEXTURE_2D, 0);
-    glEnable(GL_TEXTURE_2D);
     glBindFramebuffer(GL_FRAMEBUFFER, flipper->framebuffer[flipper->current_framebuffer]);
     glViewport(0, 0, FLIPPER_FRAMEBUFFER_WIDTH, FLIPPER_FRAMEBUFFER_HEIGHT);
 
@@ -248,7 +246,7 @@ static const GLenum draw_commands[8] = {
         GL_TRIANGLE_FAN, GL_LINES, GL_LINE_STRIP, GL_POINTS
 };
 
-void draw_Flipper(s_Flipper* flipper, s_draw_command_small* command, s_texture_data* texture_data) {
+void draw_Flipper(s_Flipper* flipper, s_draw_command* command, s_texture_data* texture_data) {
     acquire_mutex(&flipper->CP->draw_lock);
     glBindVertexArray(flipper->VAO);
 
@@ -256,14 +254,14 @@ void draw_Flipper(s_Flipper* flipper, s_draw_command_small* command, s_texture_d
     glBindBuffer(GL_SHADER_STORAGE_BUFFER, flipper->command_SSBO);
     glBufferData(
             GL_SHADER_STORAGE_BUFFER,
-            sizeof(s_draw_command_small) - DRAW_COMMAND_DATA_BUFFER_SIZE + command->data_size,
+            sizeof(s_draw_command) - DRAW_COMMAND_DATA_BUFFER_SIZE + command->data_size,
             command,
             GL_STATIC_COPY
     );
 
     // todo: cache this somehow?
     log_flipper("buffer %lx bytes of command data",
-                sizeof(s_draw_command_small) - DRAW_COMMAND_DATA_BUFFER_SIZE + command->data_size);
+                sizeof(s_draw_command) - DRAW_COMMAND_DATA_BUFFER_SIZE + command->data_size);
 
     // buffer texture data (if necessary)
     if (texture_data->data_size) {
@@ -334,8 +332,6 @@ struct s_framebuffer render_Flipper(s_Flipper* flipper){
     acquire_mutex(&flipper->CP->availability_lock);
     if (!flipper->CP->draw_command_available[flipper->draw_command_index]) {
         // bind our framebuffer
-        glBindTexture(GL_TEXTURE_2D, 0);
-        glEnable(GL_TEXTURE_2D);
         glBindFramebuffer(GL_FRAMEBUFFER, flipper->framebuffer[flipper->current_framebuffer]);
         glViewport(0, 0, FLIPPER_FRAMEBUFFER_WIDTH, FLIPPER_FRAMEBUFFER_HEIGHT);
 

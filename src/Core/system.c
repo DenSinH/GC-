@@ -62,6 +62,8 @@ void run_system(s_GameCube* system) {
 
 #ifdef DO_DEBUGGER
         while (system->paused && (system->stepcount == 0) && !system->shutdown) {
+            // sleep for a bit to not have a busy wait. This is for debugging anyway, and we are frozen
+            // so it's okay if it's not instant
             sleep_ms(16);
         }
 

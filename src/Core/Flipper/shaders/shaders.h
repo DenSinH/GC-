@@ -223,7 +223,7 @@ const char* fragmentShaderSource =
 "//            discard;\n"  // l:218
 "//        }\n"  // l:219
 "\n"  // l:220
-"        FragColor = color;\n"  // l:221
+"        FragColor = color; // vec4(color.xyz, 0.5);\n"  // l:221
 "        // FragColor = vec4(float(offset_into_texture) / (height_min_1 * width_min_1 * 2), 0.0, 0.0, 1.0);\n"  // l:222
 "    }\n"  // l:223
 "}\n"  // l:224
