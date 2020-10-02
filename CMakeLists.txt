@@ -12,7 +12,8 @@ set(CMAKE_C_STANDARD 11)
 set(CMAKE_MODULE_PATH ${PROJECT_SOURCE_DIR}/cmake)
 
 set(CMAKE_CXX_FLAGS_RELEASE "-O3")
-set(CMAKE_C_FLAGS_RELEASE "-Ofast")
+set(CMAKE_C_FLAGS_RELEASE "-Ofast")  # this breaks stuff with thread synchronization now
+
 add_compile_options($<$<CONFIG:DEBUG>:-Wall>)
 add_compile_options(
         -Wno-gnu-binary-literal
@@ -40,7 +41,7 @@ add_executable(GC_
         debugging.h
         init.c
         init.h
-)
+        include/custom_threading.h)
 
 # add link time optimizations for extra speed
 if( ipo_supported )

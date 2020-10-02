@@ -4,6 +4,7 @@
 #include "default.h"
 #include "hwreg_utils.h"
 #include "core_utils.h"
+#include "custom_threading.h"
 #include "../Flipper/shaders/GX_constants.h"
 
 #include "ProcessorInterface.h"
@@ -323,6 +324,7 @@ typedef struct s_CP {
     s_draw_command_small draw_command_queue[MAX_DRAW_COMMANDS];
     s_texture_data texture_data[MAX_DRAW_COMMANDS];
 
+    mutex availability_lock, draw_lock;
     // these values are also read/set by flipper
     volatile u32 draw_command_index;  // read to make sure flipper does not catch up
 

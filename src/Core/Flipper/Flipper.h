@@ -32,6 +32,7 @@ typedef struct s_Flipper {
     // todo: UBO for XF mem (faster)
     unsigned int XF_SSBO, BP_SSBO;
     unsigned int VAO, EBO, command_SSBO, texture_SSBO;
+    void* fence;
 
     unsigned int VCD_lo_location, VCD_hi_location, VAT_A_location, VAT_B_location, VAT_C_location;
     unsigned int MATIDX_REG_A_location, MATIDX_REG_B_location;

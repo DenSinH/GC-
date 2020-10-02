@@ -1,4 +1,7 @@
 #include "Flipper.h"
+
+#include "custom_threading.h"
+
 #include "../HWregs/CommandProcessor.h"
 #include "../HWregs/VideoInterface.h"
 #include "../system.h"
@@ -209,9 +212,20 @@ void video_init_Flipper(s_Flipper* flipper) {
 #endif
 }
 
+static inline void wait_for_fence(s_Flipper* flipper) {
+    // wait until either a fail (GL_WAIT_FAILED) or a successful draw command (GL_ALREADY_SIGNALED, GL_TIMEOUT_EXPIRED)
+    // first do a non-blocking check to see if we are already done
+    if (glClientWaitSync(flipper->fence, GL_SYNC_FLUSH_COMMANDS_BIT, 0) != GL_ALREADY_SIGNALED) {
+        while (glClientWaitSync(flipper->fence, GL_SYNC_FLUSH_COMMANDS_BIT, FENCE_SYNC_TIMEOUT_NS) == GL_TIMEOUT_EXPIRED) {}
+    }
+    flipper->fence = NULL;
+}
+
 void Flipper_frameswap(s_Flipper* flipper, u16 pe_copy_command) {
     log_flipper("Frameswapping flipper");
     // frameswap
+    flipper->fence = glFenceSync(GL_SYNC_GPU_COMMANDS_COMPLETE, 0);
+
     flipper->current_framebuffer ^= true;
     glBindTexture(GL_TEXTURE_2D, 0);
     glEnable(GL_TEXTURE_2D);
@@ -235,6 +249,7 @@ static const GLenum draw_commands[8] = {
 };
 
 void draw_Flipper(s_Flipper* flipper, s_draw_command_small* command, s_texture_data* texture_data) {
+    acquire_mutex(&flipper->CP->draw_lock);
     glBindVertexArray(flipper->VAO);
 
     // buffer command data
@@ -311,11 +326,12 @@ void draw_Flipper(s_Flipper* flipper, s_draw_command_small* command, s_texture_d
     else {
         glDrawArrays(draw_commands[(command->command >> 3) & 7], 0, command->vertices);
     }
-
+    release_mutex(&flipper->CP->draw_lock);
 }
 
 struct s_framebuffer render_Flipper(s_Flipper* flipper){
 
+    acquire_mutex(&flipper->CP->availability_lock);
     if (!flipper->CP->draw_command_available[flipper->draw_command_index]) {
         // bind our framebuffer
         glBindTexture(GL_TEXTURE_2D, 0);
@@ -325,8 +341,8 @@ struct s_framebuffer render_Flipper(s_Flipper* flipper){
 
         u32 start_draw_index = flipper->draw_command_index;
 
-        while (!flipper->CP->draw_command_available[flipper->draw_command_index]
-                && flipper->draw_command_index != flipper->CP->draw_command_index) {
+        // from the first if statement, we know at least one draw command is available
+        do {
             log_flipper("Processing draw command %02x @%d",
                         flipper->CP->draw_command_queue[flipper->draw_command_index].command,
                         flipper->draw_command_index
@@ -356,7 +372,8 @@ struct s_framebuffer render_Flipper(s_Flipper* flipper){
             if (++flipper->draw_command_index == MAX_DRAW_COMMANDS) {
                 flipper->draw_command_index = 0;
             }
-        }
+        } while (!flipper->CP->draw_command_available[flipper->draw_command_index]
+                 && flipper->draw_command_index != flipper->CP->draw_command_index);
 
         // mark all draw commands as available again
         u32 i = start_draw_index;
@@ -371,15 +388,22 @@ struct s_framebuffer render_Flipper(s_Flipper* flipper){
 
         log_flipper("Done drawing commands");
 
-        static bool first;
-        unsigned error = glGetError();
-        if (error && first) {
-            first = false;
-            printf("Error: %08x\n", error);
-        }
+//        static bool first;
+//        unsigned error = glGetError();
+//        if (error && first) {
+//            first = false;
+//            printf("Error: %08x\n", error);
+//        }
 
         // unbind framebuffer
         glBindFramebuffer(GL_FRAMEBUFFER, 0);
+    }
+
+    release_mutex(&flipper->CP->availability_lock);
+
+    if (flipper->fence) {
+        // frameswap happened, wait for draw commands to complete
+        wait_for_fence(flipper);
     }
 
     // return the framebuffer that is "ready"

@@ -19,6 +19,9 @@ HW_REG_INIT_FUNCTION(CP) {
         CP->draw_command_available[i] = true;
     }
 
+    CP->availability_lock = create_mutex(false);
+    CP->draw_lock = create_mutex(false);
+
 //    for (int i = 0; i < 8; i++) {
 //        CP->draw_argc_valid[i] = true;
 //    }
@@ -99,15 +102,15 @@ void update_CP_draw_argc(s_CP* CP, int format) {
     offset += CP_add_draw_arg(CP, offset, VCD_hi.TEX7, draw_arg_TEX7, tex_stride, VAT_C.TEX7CNT, VAT_C.TEX7FMT);
 
     CP->current_draw_command.vertex_stride = offset;
-//    CP->draw_argc_valid[format] = true;
     log_cp("Expecting %d bytes per vertex", offset);
-//    for (int i = draw_arg_PNMTXIDX; i < draw_arg_TEX7; i++) {
-//        log_cp("Argument %d: offset %d", i, CP->current_draw_command.arg_offset[i])
-//    }
+    for (int i = draw_arg_PNMTXIDX; i < draw_arg_TEX7; i++) {
+        log_cp("Argument %d: offset %d", i, CP->current_draw_command.arg_offset[i])
+    }
 }
 
 static inline void load_CP_reg(s_CP* CP, u8 RID, u32 value) {
     log_cp("Load CP register %02x with %08x", RID, value);
+    acquire_mutex(&CP->draw_lock);
 #ifdef CHECK_CP_COMMAND
     assert(RID - INTERNAL_CP_REGISTER_BASE < INTERNAL_CP_REGISTER_SIZE  /* invalid RID for CP command */);
 #endif
@@ -116,12 +119,14 @@ static inline void load_CP_reg(s_CP* CP, u8 RID, u32 value) {
 //        // invalidate argc because of VAT/VCD update
 //        CP->draw_argc_valid[RID & 7] = false;
 //    }
+    release_mutex(&CP->draw_lock);
 }
 
 const static u8 XF_addr_to_section[] = { 0, 0xff, 0xff, 0xff, 1, 2, 3, 0xff };
 
 static inline void load_XF_regs(s_CP* CP, u16 length, u16 base_addr, const u8* values_buffer) {
     log_cp("Load %d XF registers starting at %04x (first value %08x)", length, base_addr, READ32(values_buffer, 0));
+    acquire_mutex(&CP->draw_lock);
 
     if (base_addr > INTERNAL_XF_REGISTER_BASE) {
 #ifdef CHECK_CP_COMMAND
@@ -142,6 +147,7 @@ static inline void load_XF_regs(s_CP* CP, u16 length, u16 base_addr, const u8* v
             CP->internal_XF_mem[section][(base_addr & 0xff) + i] = READ32(values_buffer, i << 2);
         }
     }
+    release_mutex(&CP->draw_lock);
 }
 
 static inline void load_INDX(s_CP* CP, e_CP_cmd opcode, u16 index, u8 length, u16 base_addr) {
@@ -172,6 +178,7 @@ static const u8 tex_fmt_shft[16] = {
 };
 
 static inline void send_draw_command(s_CP* CP) {
+    acquire_mutex(&CP->draw_lock);
 
     u32 texture_offset = 0;
 
@@ -270,6 +277,8 @@ static inline void send_draw_command(s_CP* CP) {
             &CP->internal_CP_regs[CP_reg_int_vert_ARRAY_STRIDE - INTERNAL_CP_REGISTER_BASE],
             12 * sizeof(u32)
     );
+
+    release_mutex(&CP->draw_lock);
 }
 
 static inline void call_DL(s_CP* CP, u32 list_addr, u32 list_size) {
@@ -280,6 +289,7 @@ static inline void call_DL(s_CP* CP, u32 list_addr, u32 list_size) {
 static inline void load_BP_reg(s_CP* CP, u32 value) {
     // value contains RID _and_ value here
     log_cp("Load BP reg: %08x", value);
+    acquire_mutex(&CP->draw_lock);
 
     // RID is a byte, so it always fits into the range for the internal BP registers
     u8 RID = value >> 24;
@@ -305,6 +315,7 @@ static inline void load_BP_reg(s_CP* CP, u32 value) {
         default:
             break;
     }
+    release_mutex(&CP->draw_lock);
 }
 
 static inline void feed_CP(s_CP* CP, u8 data) {
@@ -415,19 +426,31 @@ void execute_buffer(s_CP* CP, const u8* buffer_ptr, u8 buffer_size) {
                 // first draw command will be all zero's, causing nothing to be drawn
                 log_cp("Draw command %d sent", CP->draw_command_index);
                 // draw is automatically queued by setting draw_command_available to false
+
+                acquire_mutex(&CP->availability_lock);
                 CP->draw_command_available[CP->draw_command_index] = false;  // signify that draw command is used
                 if (++CP->draw_command_index == MAX_DRAW_COMMANDS) {
                     CP->draw_command_index = 0;
                 }
-                // clear frameswap trigger
-                CP->frameswap[CP->draw_command_index] = 0;
+                release_mutex(&CP->availability_lock);
 
                 update_CP_draw_argc(CP, CP->command & 7);
 
                 // check if current draw command in queue is available
-                while (!CP->draw_command_available[CP->draw_command_index]) {
+                bool draw_command_available;
+                do {
                     // todo: better wait until draw commands finished
-                }
+                    acquire_mutex(&CP->availability_lock);
+                    draw_command_available = CP->draw_command_available[CP->draw_command_index];
+                    release_mutex(&CP->availability_lock);
+                } while (!draw_command_available);
+
+                acquire_mutex(&CP->availability_lock);
+                // clear frameswap trigger AFTER the new command is available (this means the old command has been
+                //      processed)
+                CP->frameswap[CP->draw_command_index] = 0;
+                release_mutex(&CP->availability_lock);
+
                 log_cp("Got draw command spot");
                 CP->current_draw_command.command = CP->command;
             }
