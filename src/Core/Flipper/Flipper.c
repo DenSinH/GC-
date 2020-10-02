@@ -197,14 +197,9 @@ void video_init_Flipper(s_Flipper* flipper) {
     // flipper clipping happens between 0 and 1
     glClipControl(GL_LOWER_LEFT, GL_ZERO_TO_ONE);
     glEnable(GL_DEPTH_TEST);
-    glDepthFunc(GL_LEQUAL);
+    glDepthFunc(GL_LEQUAL);  // todo: base this on BP register
     glEnable(GL_BLEND);
-//    glBlendEquation(GL_FUNC_ADD);
-//    glBlendColor(1.000, 0.012, 0.012, 0.557);
-//    glBlendFuncSeparate(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA, GL_ONE, GL_ONE);
-//    glBlendEquationSeparate(GL_FUNC_ADD, GL_MAX);
     glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
-//    glBlendEquation(GL_FUNC_ADD);
 
 #if COMPONENT_FLAGS & COMPONENT_OPENGL
     glEnable(GL_DEBUG_OUTPUT);

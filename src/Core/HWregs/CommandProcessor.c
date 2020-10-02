@@ -380,7 +380,6 @@ static inline void feed_CP(s_CP* CP, u8 data) {
         case CP_cmd_LINESTRIP:
         case CP_cmd_POINTS:
             // all drawing commands
-            log_cp("Draw command byte %d", CP->argc);
             if (CP->argc == 0) {
                 CP->argc++;
                 CP->current_draw_command.vertices = data << 8;

@@ -30,6 +30,7 @@ Idea: parse tex coords in vertex.glsl, pass them and they will be interpolated t
 
 out vec4 FragColor;
 
+// shift per pixel
 const uint tex_fmt_shft[16] = {
     0, // I4 ?
     1, // I8 ?
@@ -47,17 +48,51 @@ const uint tex_fmt_shft[16] = {
     0  // unused
 };
 
+const uint tex_fmt_block_width_shft[16] = {
+    3, // I4
+    3, // I8
+    3, // IA4
+    2, // IA8
+    2, // RGB565
+    2, // RGB5A3
+    2, // RGBA8
+    0, // unused
+    3, // CI4
+    3, // CI8
+    0, // CIA4
+    0, 0, 0, // unused
+    3, // CMP
+    0  // unused
+};
+
+const uint tex_fmt_block_height_shft[16] = {
+    3, // I4
+    2, // I8
+    2, // IA4
+    2, // IA8
+    2, // RGB565
+    2, // RGB5A3
+    2, // RGBA8
+    0, // unused
+    3, // CI4
+    2, // CI8
+    0, // CIA4
+    0, 0, 0, // unused
+    3, // CMP
+    0  // unused
+};
+
 uint utemp;
 int itemp;
 
-uint index_from_pos(uint x, uint y, uint width, uint height) {
-    // blocks are always 4x4 pixels
-    uint tile_x = x >> 2;
-    uint tile_y = y >> 2;
-    x &= 3u;  // in-tile
-    y &= 3u;  // in-tile
+uint index_from_pos(uint x, uint y, uint width, uint height, uint block_width_shft, uint block_height_shft) {
+    uint tile_x = x >> block_width_shft;
+    uint tile_y = y >> block_height_shft;
+    x &= (1u << block_width_shft)  - 1u;  // in-tile
+    y &= (1u << block_height_shft) - 1u;  // in-tile
 
-    return (tile_y * (width >> 2) + tile_x) * 16 /* 16 = (tileW * tileH) */ + (y << 2) + x;
+    return (tile_y * (width >> block_width_shft) + tile_x) * (1 << (block_width_shft + block_height_shft)) /* (tileW * tileH) */
+            + (y << block_width_shft) + x;
 }
 
 void main()
@@ -96,7 +131,10 @@ void main()
         uint offset_into_texture;
         uint data;
         if (texture_color_format != ++color_format_RGBA8++) {
-            offset_into_texture = index_from_pos(x, y, width, height);
+            offset_into_texture = index_from_pos(x, y,
+                width, height,
+                tex_fmt_block_width_shft[texture_color_format], tex_fmt_block_height_shft[texture_color_format]
+            );
             offset_into_texture <<= tex_fmt_shft[texture_color_format];
             offset_into_texture >>= 1;
 
@@ -181,13 +219,20 @@ void main()
         vec4 color = vec4(0, 0, 0, 1.0);
 
         switch (texture_color_format) {
-            // todo: proper parsing (2 modes)
+            // todo: proper parsing (all modes)
+            case ++color_format_I8++:
+                color = vec4(data, data, data, 0xff);
+                color *= 2 * vertexColor;
+                color /= 255.0;
+                break;
+
             case ++color_format_RGB5A3++:
                 if ((data & 0x8000u) != 0) {
                     // "normal" RGB555
                     color.x = bitfieldExtract(data, 10, 5);
                     color.y = bitfieldExtract(data, 5, 5);
                     color.z = bitfieldExtract(data, 0, 5);
+                    color.w = 32.0;
                     color /= 32.0;
                 }
                 else {
