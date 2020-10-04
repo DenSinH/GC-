@@ -61,4 +61,10 @@ typedef enum e_color_formats {
     color_format_CMP    = 14
 } e_color_formats;
 
+typedef enum e_impossible_color {
+    impossible_Y = 89,
+    impossible_U = 164,
+    impossible_V = 137
+} e_impossible_color;
+
 #endif //GC__GX_CONSTANTS_H

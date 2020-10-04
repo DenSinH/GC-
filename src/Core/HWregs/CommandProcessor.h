@@ -1,14 +1,18 @@
 #ifndef GC__COMMANDPROCESSOR_H
 #define GC__COMMANDPROCESSOR_H
 
+#include "ProcessorInterface.h"
+#include "VideoInterface.h"
+#include "PixelEngine.h"
+
+#include "../Scheduler/scheduler.h"
+
 #include "default.h"
 #include "hwreg_utils.h"
 #include "core_utils.h"
 #include "custom_threading.h"
 #include "../Flipper/shaders/GX_constants.h"
 
-#include "ProcessorInterface.h"
-#include "PixelEngine.h"
 
 #include <stdbool.h>
 
@@ -69,10 +73,12 @@ typedef enum e_CP_regs_internal {
 } e_CP_regs_internal;
 
 typedef enum e_BP_regs_internal {
-    BP_reg_int_PE_DONE          = 0x45,
-    BP_reg_int_PE_copy_clear_AR = 0x4f,
-    BP_reg_int_PE_copy_clear_GB = 0x50,
-    BP_reg_int_PE_copy_execute = 0x52,
+    BP_reg_int_PE_DONE               = 0x45,
+    BP_reg_int_EFB_dimensions        = 0x4a,
+    BP_reg_int_XFB_address           = 0x4b,
+    BP_reg_int_PE_copy_clear_AR      = 0x4f,
+    BP_reg_int_PE_copy_clear_GB      = 0x50,
+    BP_reg_int_PE_copy_execute       = 0x52,
     BP_reg_int_TEX_SET_IMAGE0_l_BASE = 0x88,
     BP_reg_int_TEX_SET_IMAGE3_l_BASE = 0x94,
 } e_BP_regs_internal;
@@ -297,6 +303,7 @@ typedef struct s_CP {
     /* internal function */
     s_PI* PI;
     s_PE* PE;
+    s_VI* VI;
 
     u32 internal_CP_regs[INTERNAL_CP_REGISTER_SIZE];
     u32 internal_BP_regs[INTERNAL_BP_REGISTER_SIZE];
@@ -328,6 +335,9 @@ typedef struct s_CP {
 
     // set to signal that flipper should frameswap after the draw command at a specific index
     volatile u16 frameswap[MAX_DRAW_COMMANDS];  // read by flipper, set to BP value by CP then clear bit 14 by Flipper
+    bool PE_copy_frameswap;                     // set if a frameswap command was sent from an xfb -> efb copy command
+    volatile bool force_frameswap;              // force frameswap if no PE_copy_frameswap happened
+    s_event frameswap_event;
     volatile bool draw_command_available[MAX_DRAW_COMMANDS];  // used as flags, set to false by CP, then to true by Flipper
 } s_CP;
 

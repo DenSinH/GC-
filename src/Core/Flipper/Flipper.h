@@ -31,12 +31,16 @@ typedef struct s_Flipper {
 
     // todo: UBO for XF mem (faster)
     unsigned int XF_SSBO, BP_SSBO;
-    unsigned int VAO, EBO, command_SSBO, texture_SSBO;
+    unsigned int draw_VAO, quad_EBO, command_SSBO, texture_SSBO;
+    unsigned int efb_VAO, efb_VBO, efb_EBO;
+    unsigned int efb_texture;
+    u32 efb_width, efb_height;
     void* fence;
 
     unsigned int VCD_lo_location, VCD_hi_location, VAT_A_location, VAT_B_location, VAT_C_location;
     unsigned int MATIDX_REG_A_location, MATIDX_REG_B_location;
-    unsigned int shaderProgram;
+    unsigned int efb_width_location, efb_location;
+    unsigned int draw_program, efb_program;
 } s_Flipper;
 
 void init_Flipper(s_Flipper* flipper);

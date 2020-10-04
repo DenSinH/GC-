@@ -4,6 +4,8 @@
 #include "log.h"
 #include "flags.h"
 #include "helpers.h"
+
+#include "../Flipper/shaders/GX_constants.h"
 #include "../PPC/interrupts.h"
 #include "../system.h"
 
@@ -13,6 +15,34 @@
 #include <assert.h>
 #endif
 
+// color that is not in the color spectrum for NTSC/PAL screens (shade of purple) in YUYV format
+// NOTE: this value is little endian
+static const u32 IMPOSSIBLE_COLOR = ((impossible_Y) | (impossible_U << 8) | (impossible_Y << 16) | (impossible_V << 24));
+
+SCHEDULER_EVENT(CP_frameswap_event) {
+    s_CP* CP = (s_CP*)caller;
+
+    if (!CP->PE_copy_frameswap) {
+        acquire_mutex(&CP->draw_lock);
+        CP->force_frameswap = true;
+        release_mutex(&CP->draw_lock);
+    }
+    else {
+        // reset for next frame
+        CP->PE_copy_frameswap = false;
+    }
+
+    // reschedule event
+    if (CP->system->HW_regs.VI.HLW) {
+        event->time += LINES_PER_FRAME * 2 * 3 * 6 * CP->system->HW_regs.VI.HLW;
+    }
+    else {
+        // default value in case of "invalid" HLW
+        event->time += LINES_PER_FRAME * 2 * 3 * 6 * 0x1AD;  // based on libOGC default initialized value
+    }
+    add_event(&CP->system->scheduler, event);
+}
+
 
 HW_REG_INIT_FUNCTION(CP) {
     for (int i = 0; i < MAX_DRAW_COMMANDS; i++) {
@@ -21,6 +51,13 @@ HW_REG_INIT_FUNCTION(CP) {
 
     CP->availability_lock = create_mutex(false);
     CP->draw_lock = create_mutex(false);
+
+    CP->frameswap_event = (s_event) {
+            .callback = CP_frameswap_event,
+            .time = 0,  // immediately start doing it
+            .caller = CP
+    };
+    add_event(&CP->system->scheduler, &CP->frameswap_event);
 
 //    for (int i = 0; i < 8; i++) {
 //        CP->draw_argc_valid[i] = true;
@@ -286,6 +323,41 @@ static inline void call_DL(s_CP* CP, u32 list_addr, u32 list_size) {
     // we can basically just call the execute_buffer function but then on data in memory
 }
 
+static inline void XFB_copy(s_CP* CP, u16 command) {
+    log_cp("Copying XFB -> EFB");
+    u32 width  = (CP->internal_BP_regs[BP_reg_int_EFB_dimensions] & 0x2ff) + 1;
+    u32 height = ((CP->internal_BP_regs[BP_reg_int_EFB_dimensions] >> 10) & 0x2ff) + 1;
+
+    if (width == 0) {
+        width = 640;  // default
+    }
+
+    if (height == 0) {
+        height = 480;  // default
+    }
+
+    u32 XFB_addr = (CP->internal_BP_regs[BP_reg_int_XFB_address] & 0x00ffffff) << 5;
+    u32 EFB_addr = READ32(CP->VI->regs, VI_reg_TFBL);
+    EFB_addr &= 0x00ffffff;
+
+    if (command & PE_copy_execute) {
+        if (EFB_addr) {
+            // copy new data XFB -> EFB
+            // skip this if it is not initialized
+            // each pixel is 2 bytes
+            memcpy(CP->system->memory + EFB_addr, CP->system->memory + XFB_addr, width * height << 1);
+        }
+    }
+
+    if (command & PE_copy_clear) {
+        // clear XFB
+        for (int i = 0; i < width * height << 1; i += 4) {
+            // clear words at a time
+            memcpy(CP->system->memory + XFB_addr + i, &IMPOSSIBLE_COLOR, 4);
+        }
+    }
+}
+
 static inline void load_BP_reg(s_CP* CP, u32 value) {
     // value contains RID _and_ value here
     log_cp("Load BP reg: %08x", value);
@@ -311,6 +383,8 @@ static inline void load_BP_reg(s_CP* CP, u32 value) {
             break;
         case BP_reg_int_PE_copy_execute:
             CP->frameswap[CP->draw_command_index] = (u16)value;
+            XFB_copy(CP, value);
+            CP->PE_copy_frameswap = true;
             break;
         default:
             break;

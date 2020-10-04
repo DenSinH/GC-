@@ -186,14 +186,20 @@ int ui_run() {
 #endif
         // render actual emulation
         s_framebuffer emu_framebuffer = Frontend.render();
-        glViewport(0, 0, (int) Frontend.io.DisplaySize.x, (int) Frontend.io.DisplaySize.y);
+        glViewport(0, 0, WINDOW_WIDTH, WINDOW_HEIGHT);
 
         float scale = (float) WINDOW_WIDTH / emu_framebuffer.dest_width;
-        if ((float) WINDOW_HEIGHT / emu_framebuffer.dest_height  < scale) {
+        if ((float) WINDOW_HEIGHT / emu_framebuffer.dest_height < scale) {
             scale = (float) WINDOW_HEIGHT / emu_framebuffer.dest_height;
         }
+
         unsigned offsx = (WINDOW_WIDTH - scale * emu_framebuffer.dest_width) / 2;
         unsigned offsy = (WINDOW_HEIGHT - scale * emu_framebuffer.dest_height) / 2;
+
+        float x_start = -1.0 + 2 * offsx / (float)WINDOW_WIDTH;
+        float y_start = -1.0 + 2 * offsy / (float)WINDOW_HEIGHT;
+        float dest_width = -2 * x_start;
+        float dest_height = -2 * y_start;
 
         glBindFramebuffer(GL_DRAW_FRAMEBUFFER, 0);
         glBindFramebuffer(GL_READ_FRAMEBUFFER, emu_framebuffer.id);
@@ -203,6 +209,15 @@ int ui_run() {
                           offsx + scale * emu_framebuffer.dest_width, offsy + scale * emu_framebuffer.dest_height,
                           GL_COLOR_BUFFER_BIT, GL_NEAREST
         );
+
+        // blit the overlay
+        if (emu_framebuffer.draw_overlay) {
+            emu_framebuffer.draw_overlay(
+                emu_framebuffer.caller,
+                x_start, y_start,
+                dest_width, dest_height
+            );
+        }
 
         // then draw the imGui stuff over it
         ImGui_ImplOpenGL3_RenderDrawData(ImGui::GetDrawData());

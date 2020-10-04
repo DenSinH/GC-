@@ -33,6 +33,8 @@ typedef enum e_VI_regs {
     VI_reg_VTO  = 0x0008,
     VI_reg_VTE  = 0x000a,
 
+    VI_reg_TFBL = 0x001c,
+
     VI_reg_DPV  = 0x002c,
     VI_reg_DPH  = 0x002e,
     VI_reg_DI0  = 0x0030,

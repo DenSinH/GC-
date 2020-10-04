@@ -276,6 +276,77 @@ const char* fragmentShaderSource =
 ;
 
 
+// framebufferFragmentShaderSource (from framebuffer_fragment.glsl, lines 2 to 49)
+const char* framebufferFragmentShaderSource = 
+"#version 430\n"  // l:1
+"\n"  // l:2
+"varying in vec2 texCoord;\n"  // l:3
+"\n"  // l:4
+"out vec4 FragColor;\n"  // l:5
+"\n"  // l:6
+"uniform uint efb_width;\n"  // l:7
+"uniform sampler2D efb;\n"  // l:8
+"/*\n"  // l:9
+" * This is a fragment shader to handle the \"overlay\" caused from writes to the XFB\n"  // l:10
+" * The idea is to discard certain fragments based on the\n"  // l:11
+" * */\n"  // l:12
+"\n"  // l:13
+"void main() {\n"  // l:14
+"    vec4 pixel_pair = texture(efb, texCoord);\n"  // l:15
+"    float Cb = pixel_pair.y;\n"  // l:16
+"    float Cr = pixel_pair.w;\n"  // l:17
+"    float Y;\n"  // l:18
+"\n"  // l:19
+"    if ((uint(texCoord.x * efb_width) & 1u) == 0) {\n"  // l:20
+"        // left pixel\n"  // l:21
+"        Y = pixel_pair.x;\n"  // l:22
+"    }\n"  // l:23
+"    else {\n"  // l:24
+"        // right pixel\n"  // l:25
+"        Y = pixel_pair.z;\n"  // l:26
+"    }\n"  // l:27
+"\n"  // l:28
+"    if (all(lessThan(\n"  // l:29
+"        abs(vec3(\n"  // l:30
+"            Y - (float(89) / 255.0),\n"  // l:31
+"            Cb - (float(164) / 255.0),\n"  // l:32
+"            Cr - (float(137) / 255.0)\n"  // l:33
+"        )),\n"  // l:34
+"        vec3(0.01, 0.01, 0.01)\n"  // l:35
+"    ))) {\n"  // l:36
+"        discard;  // impossible color\n"  // l:37
+"    }\n"  // l:38
+"\n"  // l:39
+"    FragColor = vec4(\n"  // l:40
+"        Y + 1.317 * (Cr - 0.5),\n"  // l:41
+"        Y - 0.698 * (Cr - 0.5) - 0.336 * (Cb - 0.5),\n"  // l:42
+"        Y + 1.732 * (Cr - 0.5),\n"  // l:43
+"        1.0\n"  // l:44
+"    );\n"  // l:45
+"}\n"  // l:46
+"\n"  // l:47
+;
+
+
+// framebufferVertexShaderSource (from framebuffer_vertex.glsl, lines 2 to 16)
+const char* framebufferVertexShaderSource = 
+"#version 430\n"  // l:1
+"\n"  // l:2
+"layout (location = 0) in vec2 position;\n"  // l:3
+"layout (location = 1) in vec2 vtx_texCoord;\n"  // l:4
+"\n"  // l:5
+"out vec2 texCoord;\n"  // l:6
+"\n"  // l:7
+"void main() {\n"  // l:8
+"    gl_Position = vec4(position, 0.0, 1.0);\n"  // l:9
+"\n"  // l:10
+"    // flip vertically\n"  // l:11
+"    texCoord = vec2(vtx_texCoord.x, 1.0 - vtx_texCoord.y);\n"  // l:12
+"}\n"  // l:13
+"\n"  // l:14
+;
+
+
 // transformationShaderSource (from trafo.glsl, lines 2 to 91)
 const char* transformationShaderSource = 
 "#version 430 core\n"  // l:1
