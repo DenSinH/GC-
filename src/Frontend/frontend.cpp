@@ -4,12 +4,13 @@
 #include "interface.h"
 #include "controller.h"
 
-#include <stdio.h>
+#include <cstdio>
 #include <SDL.h>
-#include <thread>
 
 #define WINDOW_WIDTH 1280
 #define WINDOW_HEIGHT 720
+#define FPS 60
+#define DELTA_TIME (1000 / FPS)
 
 static struct s_frontend {
     ImGuiIO io;
@@ -18,7 +19,8 @@ static struct s_frontend {
 
     bool* shutdown;
     void (*video_init)();
-    s_framebuffer (*render)();
+    void (*destroy)();
+    s_framebuffer (*render)(uint32_t time_left);
 } Frontend;
 
 ImGuiIO *frontend_set_io() {
@@ -37,8 +39,8 @@ void frontend_init(
         uint64_t mem_size,
         uint32_t (*valid_address_mask)(uint32_t),
         uint64_t *timer,
-        uint8_t (*mem_read)(const uint8_t *data, uint64_t off),
-        void (*parse_input)(s_controller* controller)
+        uint8_t (*mem_read)(const uint8_t*, uint64_t),
+        void (*parse_input)(s_controller*)
 ) {
     Frontend.shutdown = shutdown;
     Frontend.parse_input = parse_input;
@@ -51,11 +53,15 @@ void bind_video_init(void (*initializer)()) {
     Frontend.video_init = initializer;
 }
 
-void bind_video_render(s_framebuffer (*render)()) {
+void bind_video_render(s_framebuffer (*render)(uint32_t time_left)) {
     Frontend.render = render;
 }
 
-SDL_GameController* gamecontroller = NULL;
+void bind_video_destroy(void (*destroy)(void)) {
+    Frontend.destroy = destroy;
+}
+
+SDL_GameController* gamecontroller = nullptr;
 
 void init_gamecontroller() {
     if (SDL_NumJoysticks() < 0) {
@@ -66,7 +72,7 @@ void init_gamecontroller() {
             if (SDL_IsGameController(i)) {
                 gamecontroller = SDL_GameControllerOpen(i);
 
-                if (gamecontroller == NULL) {
+                if (!gamecontroller) {
                     printf("Failed to connect to gamecontroller at index %d\n", i);
                     continue;
                 }
@@ -108,21 +114,29 @@ int ui_run() {
     SDL_GL_SetAttribute(SDL_GL_STENCIL_SIZE, 8);
     SDL_GL_SetAttribute(SDL_GL_ACCELERATED_VISUAL, 1);
 
-    SDL_WindowFlags window_flags = (SDL_WindowFlags) (SDL_WINDOW_OPENGL | SDL_WINDOW_SHOWN | // SDL_WINDOW_RESIZABLE |
-                                                      SDL_WINDOW_ALLOW_HIGHDPI);
+    auto window_flags = (SDL_WindowFlags) (SDL_WINDOW_OPENGL | SDL_WINDOW_SHOWN | // SDL_WINDOW_RESIZABLE |
+                                           SDL_WINDOW_ALLOW_HIGHDPI);
     SDL_Window *window = SDL_CreateWindow("GC-", SDL_WINDOWPOS_CENTERED, SDL_WINDOWPOS_CENTERED, 1280, 720,
                                           window_flags);
     SDL_GLContext gl_context = SDL_GL_CreateContext(window);
     SDL_GL_MakeCurrent(window, gl_context);
-    // SDL_GL_SetSwapInterval(1); // Enable vsync
+    SDL_GL_SetSwapInterval(1); // Enable vsync
 
     debugger_video_init(glsl_version, window, &gl_context);
-    Frontend.video_init();
+    if (Frontend.video_init) {
+        Frontend.video_init();
+    }
+    else {
+        printf("No frontend initializer function bound\n");
+    }
 
     printf("Done initializing frontend\n");
 
     // Main loop
     while (!*Frontend.shutdown) {
+        uint32_t frame_ticks = SDL_GetTicks();
+        uint32_t time_left;
+
         // Get events
         SDL_Event event;
         while (SDL_PollEvent(&event)) {
@@ -185,7 +199,16 @@ int ui_run() {
         ImGui::ShowDemoWindow(NULL);
 #endif
         // render actual emulation
-        s_framebuffer emu_framebuffer = Frontend.render();
+        s_framebuffer emu_framebuffer = {
+                .id = 0,
+                .draw_overlay = nullptr
+        };
+
+
+        while ((time_left = SDL_GetTicks() - frame_ticks) < DELTA_TIME) {
+            emu_framebuffer = Frontend.render(time_left);
+        }
+
         glViewport(0, 0, WINDOW_WIDTH, WINDOW_HEIGHT);
 
         float scale = (float) WINDOW_WIDTH / emu_framebuffer.dest_width;
@@ -236,9 +259,16 @@ int ui_run() {
     SDL_DestroyWindow(window);
     SDL_Quit();
 
+    if (Frontend.destroy) {
+        Frontend.destroy();
+    }
+    else {
+        printf("No frontend destroy function bound\n");
+    }
+
     return 0;
 }
 
 #ifdef __cplusplus
-};
+}
 #endif

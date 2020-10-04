@@ -6,7 +6,7 @@
 #include "default.h"
 
 
-s_GameCube* global_system;
+static s_GameCube* global_system;
 
 static CONSOLE_COMMAND(reset_system) {
 #ifdef DO_DEBUGGER
@@ -127,8 +127,12 @@ static void frontend_video_init() {
     video_init_Flipper(&global_system->flipper);
 }
 
-static s_framebuffer frontend_render() {
-    return render_Flipper(&global_system->flipper);
+static s_framebuffer frontend_render(uint32_t time_left) {
+    return render_Flipper(&global_system->flipper, time_left);
+}
+
+static void frontend_destroy() {
+    destroy_Flipper(&global_system->flipper);
 }
 
 static void parse_input(s_controller* controller) {
@@ -155,6 +159,7 @@ s_GameCube* init() {
 
     bind_video_init(frontend_video_init);
     bind_video_render(frontend_render);
+    bind_video_destroy(frontend_destroy);
 
     frontend_init(
             &global_system->shutdown,

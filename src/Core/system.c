@@ -74,4 +74,10 @@ void run_system(s_GameCube* system) {
         }
 #endif
     }
+
+    destroy_system(system);
+}
+
+void destroy_system(s_GameCube* system) {
+    destroy_CP(&system->HW_regs.CP);
 }

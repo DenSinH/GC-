@@ -286,7 +286,7 @@ typedef struct s_texture_data {
 #define INTERNAL_XF_REGISTER_SIZE 0x58
 #define INTERNAL_XF_MEM_SIZE 0x100
 #define INTERNAL_XF_REGISTER_BASE 0x1000
-#define MAX_DRAW_COMMANDS 256
+#define MAX_DRAW_COMMANDS 128
 
 #define CP_SHIFT 1
 #define current_draw_command draw_command_queue[CP->draw_command_index]
@@ -345,6 +345,8 @@ typedef struct s_CP {
 
 
 HW_REG_INIT_FUNCTION(CP);
+
+void destroy_CP(s_CP* CP);
 void execute_buffer(s_CP* CP, const u8* buffer_ptr, u8 buffer_size);
 
 static inline u32 get_CP_reg(s_CP* CP, e_CP_regs reg_hi, e_CP_regs reg_lo) {

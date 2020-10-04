@@ -11,6 +11,23 @@ void create_mutex(mutex* m, bool owned) {
     }
 }
 
+bool owns_mutex(mutex* m) {
+    switch(WaitForSingleObject(*m, 0))
+    {
+        case WAIT_ABANDONED:
+        case WAIT_OBJECT_0:
+            // was not acquired, just acquired it
+            ReleaseMutex(*m);
+            return false;
+        case WAIT_TIMEOUT:
+            // already owned
+            return true;
+        default:
+            // error
+            return false;
+    }
+}
+
 void acquire_mutex(mutex* m) {
     DWORD wait_result;
     do {
@@ -38,6 +55,13 @@ void wait_for_event(wait_event* e) {
             log_warn("Waiting for event failed: %lx", wait_result);
         }
 
+    } while (wait_result != WAIT_OBJECT_0);
+}
+
+void wait_for_event_timeout(wait_event* e, u32 timeout) {
+    DWORD wait_result;
+    do {
+        wait_result = WaitForSingleObject(*e, timeout);
     } while (wait_result != WAIT_OBJECT_0);
 }
 

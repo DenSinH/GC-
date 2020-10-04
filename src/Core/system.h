@@ -32,6 +32,7 @@ typedef struct s_GameCube {
 } s_GameCube ;
 
 s_GameCube* init_system(void);
+void destroy_system(s_GameCube* system);
 void run_system(s_GameCube* system);
 
 #endif //GC__SYSTEM_H

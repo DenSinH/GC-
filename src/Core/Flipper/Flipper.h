@@ -45,7 +45,8 @@ typedef struct s_Flipper {
 
 void init_Flipper(s_Flipper* flipper);
 
-void video_init_Flipper(s_Flipper* gpu);
-struct s_framebuffer render_Flipper(s_Flipper* flipper);
+void video_init_Flipper(s_Flipper* flipper);
+void destroy_Flipper(s_Flipper* flipper);
+struct s_framebuffer render_Flipper(s_Flipper* flipper, u32 time_left);
 
 #endif //GC__FLIPPER_H

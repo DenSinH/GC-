@@ -33,9 +33,11 @@ int main() {
 
     atexit(exception_handler);
 
-    START_FRONTEND
+    start_ui_thread();
 
     run_system(global_system);
+
+    join_ui_thread();
 
     return 0;
 }

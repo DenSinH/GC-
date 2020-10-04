@@ -70,6 +70,12 @@ HW_REG_INIT_FUNCTION(CP) {
 //    }
 }
 
+void destroy_CP(s_CP* CP) {
+    // release all mutexes
+    if (owns_mutex(&CP->availability_lock)) release_mutex(&CP->availability_lock);
+    if (owns_mutex(&CP->draw_lock))         release_mutex(&CP->draw_lock);
+}
+
 // indexed by VAT.POSCNT, VAT.POSFMT
 static const u8 coord_stride[2][8] = {
         // POSCNT = 0
@@ -221,8 +227,6 @@ static const u8 tex_fmt_shft[16] = {
 };
 
 static inline void send_draw_command(s_CP* CP) {
-    acquire_mutex(&CP->draw_lock);
-
     u32 texture_offset = 0;
 
     // arguments 0 - draw_arg_POS are all always direct (they are indices)
@@ -321,9 +325,7 @@ static inline void send_draw_command(s_CP* CP) {
             12 * sizeof(u32)
     );
 
-    // set_wait_event(&CP->draw_commands_ready);
-
-    release_mutex(&CP->draw_lock);
+    set_wait_event(&CP->draw_commands_ready);
 }
 
 static inline void call_DL(s_CP* CP, u32 list_addr, u32 list_size) {
@@ -521,17 +523,18 @@ void execute_buffer(s_CP* CP, const u8* buffer_ptr, u8 buffer_size) {
 
                 if (!draw_command_available) {
                     clear_wait_event(&CP->draw_command_spot_available);
+                    // release availability lock to prevent a deadlock
+                    // flipper needs the availability lock to set the draw_command_spot_available event
                     release_mutex(&CP->availability_lock);
 
                     wait_for_event(&CP->draw_command_spot_available);
-                }
-                else {
-                    release_mutex(&CP->availability_lock);
+
+                    // re-acquire it to set the frameswap
+                    acquire_mutex(&CP->availability_lock);
                 }
 
-                acquire_mutex(&CP->availability_lock);
-                // clear frameswap trigger AFTER the new command is available (this means the old command has been
-                //      processed)
+                // clear frameswap trigger AFTER the new command is available
+                // (this means the old command has been processed fully, and so has the frameswap)
                 CP->frameswap[CP->draw_command_index] = 0;
                 release_mutex(&CP->availability_lock);
 

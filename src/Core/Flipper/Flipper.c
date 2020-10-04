@@ -32,8 +32,10 @@ static void GLAPIENTRY debug_opengl(
                  const GLchar* message,
                  const void* user_param
 ) {
-    if (severity >= GL_DEBUG_SEVERITY_LOW) {
-        log_gl("[%x] %s",severity, message);
+    if (severity >= GL_DEBUG_SEVERITY_MEDIUM) {
+        log_warn("[OpenGL %x] %s", severity, message);
+    } else if (severity >= GL_DEBUG_SEVERITY_LOW) {
+        log_gl("[%x] %s", severity, message);
     }
 }
 
@@ -492,7 +494,13 @@ static void draw_efb(void* caller, const float x, const float y, const float des
     glBindVertexArray(0);
 }
 
-struct s_framebuffer render_Flipper(s_Flipper* flipper){
+struct s_framebuffer render_Flipper(s_Flipper* flipper, u32 time_left) {
+
+    if (flipper->CP->draw_command_available[flipper->draw_command_index]) {
+        // no data to draw yet
+        clear_wait_event(&flipper->CP->draw_commands_ready);
+        wait_for_event_timeout(&flipper->CP->draw_commands_ready, time_left);
+    }
 
     acquire_mutex(&flipper->CP->availability_lock);
     if (!flipper->CP->draw_command_available[flipper->draw_command_index]) {
@@ -552,13 +560,6 @@ struct s_framebuffer render_Flipper(s_Flipper* flipper){
 
         log_flipper("Done drawing commands");
 
-//        static bool first;
-//        unsigned error = glGetError();
-//        if (error && first) {
-//            first = false;
-//            printf("Error: %08x\n", error);
-//        }
-
         // unbind framebuffer
         glBindFramebuffer(GL_FRAMEBUFFER, 0);
     }
@@ -589,4 +590,12 @@ struct s_framebuffer render_Flipper(s_Flipper* flipper){
         .dest_width = flipper->screen_width,
         .dest_height = flipper->screen_height
     };
+}
+
+void destroy_Flipper(s_Flipper* flipper) {
+    // release all mutexes
+    set_wait_event(&flipper->CP->draw_command_spot_available);
+
+    if (owns_mutex(&flipper->CP->availability_lock)) release_mutex(&flipper->CP->availability_lock);
+    if (owns_mutex(&flipper->CP->draw_lock))         release_mutex(&flipper->CP->draw_lock);
 }
