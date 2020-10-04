@@ -547,6 +547,9 @@ struct s_framebuffer render_Flipper(s_Flipper* flipper){
             }
         } while (i != flipper->draw_command_index);
 
+        // if flipper has rendered at least one command, new spots are available again
+        set_wait_event(&flipper->CP->draw_command_spot_available);
+
         log_flipper("Done drawing commands");
 
 //        static bool first;

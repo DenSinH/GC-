@@ -4,6 +4,7 @@
 #include "log.h"
 #include "flags.h"
 #include "helpers.h"
+#include "sleeping.h"
 
 #include "../Flipper/shaders/GX_constants.h"
 #include "../PPC/interrupts.h"
@@ -49,8 +50,13 @@ HW_REG_INIT_FUNCTION(CP) {
         CP->draw_command_available[i] = true;
     }
 
-    CP->availability_lock = create_mutex(false);
-    CP->draw_lock = create_mutex(false);
+    create_mutex(&CP->availability_lock, false);
+    create_mutex(&CP->draw_lock, false);
+
+    create_wait_event(&CP->draw_commands_ready, false);
+
+    // initially, there are spots available, so set this to true
+    create_wait_event(&CP->draw_command_spot_available, true);
 
     CP->frameswap_event = (s_event) {
             .callback = CP_frameswap_event,
@@ -315,6 +321,8 @@ static inline void send_draw_command(s_CP* CP) {
             12 * sizeof(u32)
     );
 
+    // set_wait_event(&CP->draw_commands_ready);
+
     release_mutex(&CP->draw_lock);
 }
 
@@ -505,18 +513,21 @@ void execute_buffer(s_CP* CP, const u8* buffer_ptr, u8 buffer_size) {
                 if (++CP->draw_command_index == MAX_DRAW_COMMANDS) {
                     CP->draw_command_index = 0;
                 }
-                release_mutex(&CP->availability_lock);
 
                 update_CP_draw_argc(CP, CP->command & 7);
 
                 // check if current draw command in queue is available
-                bool draw_command_available;
-                do {
-                    // todo: better wait until draw commands finished
-                    acquire_mutex(&CP->availability_lock);
-                    draw_command_available = CP->draw_command_available[CP->draw_command_index];
+                bool draw_command_available = CP->draw_command_available[CP->draw_command_index];
+
+                if (!draw_command_available) {
+                    clear_wait_event(&CP->draw_command_spot_available);
                     release_mutex(&CP->availability_lock);
-                } while (!draw_command_available);
+
+                    wait_for_event(&CP->draw_command_spot_available);
+                }
+                else {
+                    release_mutex(&CP->availability_lock);
+                }
 
                 acquire_mutex(&CP->availability_lock);
                 // clear frameswap trigger AFTER the new command is available (this means the old command has been

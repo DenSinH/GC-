@@ -20,7 +20,6 @@ add_compile_options(
         -Wno-visibility
         -Wno-c++98-compat
         -Wno-double-promotion
-        -no-pedantic
 )
 add_compile_definitions(
         $<$<CONFIG:RELEASE>:NDEBUG>
@@ -42,7 +41,7 @@ add_executable(GC_
         debugging.h
         init.c
         init.h
-        include/custom_threading.h)
+        include/custom_threading.h custom_threading.c)
 
 # add link time optimizations for extra speed
 if( ipo_supported )

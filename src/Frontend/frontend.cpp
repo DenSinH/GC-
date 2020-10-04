@@ -114,7 +114,7 @@ int ui_run() {
                                           window_flags);
     SDL_GLContext gl_context = SDL_GL_CreateContext(window);
     SDL_GL_MakeCurrent(window, gl_context);
-    SDL_GL_SetSwapInterval(1); // Enable vsync
+    // SDL_GL_SetSwapInterval(1); // Enable vsync
 
     debugger_video_init(glsl_version, window, &gl_context);
     Frontend.video_init();

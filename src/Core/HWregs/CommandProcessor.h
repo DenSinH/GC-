@@ -330,6 +330,8 @@ typedef struct s_CP {
     s_texture_data texture_data[MAX_DRAW_COMMANDS];
 
     mutex availability_lock, draw_lock;
+    wait_event draw_commands_ready, draw_command_spot_available;
+
     // these values are also read/set by flipper
     volatile u32 draw_command_index;  // read to make sure flipper does not catch up
 

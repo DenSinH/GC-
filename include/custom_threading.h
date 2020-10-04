@@ -8,23 +8,20 @@
 #include "windows.h"
 
 typedef HANDLE mutex;
-
-static mutex create_mutex(bool owned) {
-    return CreateMutex(NULL, owned ? TRUE : FALSE, NULL);
-}
-
-static bool acquire_mutex(mutex* m) {
-    DWORD wait_result = WaitForSingleObject(*m, INFINITE);
-
-    return true;
-}
-
-static bool release_mutex(mutex* m) {
-    return ReleaseMutex(*m);
-}
+typedef HANDLE wait_event;
 
 #else
 #error "unimplemented: thread syncing"
 #endif
+
+void create_mutex(mutex* m, bool owned);
+void acquire_mutex(mutex* m);
+void release_mutex(mutex* m);
+
+void create_wait_event(wait_event* e, bool signaled);
+void wait_for_event(wait_event* e);
+bool is_wait_event_set(wait_event* e) ;
+void set_wait_event(wait_event* e);
+void clear_wait_event(wait_event* e);
 
 #endif //GC__CUSTOM_THREADING_H
