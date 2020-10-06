@@ -138,14 +138,14 @@ static void frontend_destroy() {
 static u64 ticks, prev_ticks;
 static OVERLAY_INFO(cpu_ticks) {
     ticks = global_system->cpu.TBR.raw;
-    SPRINTF(output, output_length, "CPU ticks/s: %.1f\n", (float)(ticks - prev_ticks) / delta_time);
+    SPRINTF(output, output_length, "CPU ticks/s: %.1f", (float)(ticks - prev_ticks) / delta_time);
     prev_ticks = ticks;
 }
 
 static float accum_time;
 static OVERLAY_INFO(fps_counter) {
     accum_time += delta_time;
-    SPRINTF(output, output_length, "FPS        : %.1f\n", (double)(global_system->flipper.frame) / accum_time);
+    SPRINTF(output, output_length, "FPS        : %.1f", (double)(global_system->flipper.frame) / accum_time);
     if (accum_time > 1) {
         accum_time = 0;
         global_system->flipper.frame = 0;

@@ -67,3 +67,9 @@ include_directories(include
 target_link_libraries(GC_ PRIVATE Core)
 target_link_libraries(GC_ PRIVATE Frontend)
 target_link_libraries(GC_ PRIVATE imgui)
+
+# copy over files with settings
+file(COPY ${CMAKE_CURRENT_SOURCE_DIR}/imgui.ini
+        DESTINATION ${CMAKE_CURRENT_BINARY_DIR})
+file(COPY ${CMAKE_CURRENT_SOURCE_DIR}/input.map
+        DESTINATION ${CMAKE_CURRENT_BINARY_DIR})
