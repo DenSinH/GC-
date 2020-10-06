@@ -60,9 +60,10 @@ void wait_for_event(wait_event* e) {
 
 void wait_for_event_timeout(wait_event* e, u32 timeout) {
     DWORD wait_result;
-    do {
-        wait_result = WaitForSingleObject(*e, timeout);
-    } while (wait_result != WAIT_OBJECT_0);
+    wait_result = WaitForSingleObject(*e, timeout);
+    if (wait_result == WAIT_FAILED) {
+        log_warn("Waiting for event failed with error: %lx", GetLastError());
+    }
 }
 
 bool is_wait_event_set(wait_event* e) {

@@ -135,6 +135,23 @@ static void frontend_destroy() {
     destroy_Flipper(&global_system->flipper);
 }
 
+static u64 ticks, prev_ticks;
+static OVERLAY_INFO(cpu_ticks) {
+    ticks = global_system->cpu.TBR.raw;
+    SPRINTF(output, output_length, "CPU ticks/s: %.1f\n", (float)(ticks - prev_ticks) / delta_time);
+    prev_ticks = ticks;
+}
+
+static float accum_time;
+static OVERLAY_INFO(fps_counter) {
+    accum_time += delta_time;
+    SPRINTF(output, output_length, "FPS        : %.1f\n", (double)(global_system->flipper.frame) / accum_time);
+    if (accum_time > 1) {
+        accum_time = 0;
+        global_system->flipper.frame = 0;
+    }
+}
+
 static void parse_input(s_controller* controller) {
     // currently only supporting one controller
     if (controller->A)     global_system->HW_regs.SI.gamepad[0].buttons |= button_A;
@@ -167,7 +184,6 @@ s_GameCube* init() {
             global_system->cpu.DMMU.memory_ptr,
             0x100000000,
             valid_address_check,
-            (u64*)&global_system->cpu.TBR,
             view_byte,
             parse_input
             );
@@ -405,6 +421,9 @@ s_GameCube* init() {
     add_command("STEP", "Step system for $1 CPU steps (defaults to 1 step).", step_system);
     add_command("MEMORY", "Read word(s) from memory between $1 and $2", dump_memory_range);
     add_command("STATE", "Dump the current register state to the console", get_state);
+
+    add_overlay_info(cpu_ticks);
+    add_overlay_info(fps_counter);
 
     return global_system;
 }

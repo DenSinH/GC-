@@ -38,6 +38,9 @@ typedef struct s_Flipper {
     unsigned int MATIDX_REG_A_location, MATIDX_REG_B_location;
     unsigned int efb_width_location, efb_location;
     unsigned int draw_program, efb_program;
+
+    // debugging stuff
+    volatile u64 frame;
 } s_Flipper;
 
 void init_Flipper(s_Flipper* flipper);

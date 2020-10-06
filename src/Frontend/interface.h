@@ -5,6 +5,7 @@
 #include <stdint.h>
 
 #define CONSOLE_COMMAND(name) void name(char** args, int argc, char* output)
+#define OVERLAY_INFO(name) void name(char* output, size_t output_length, float delta_time)
 #define MAX_OUTPUT_LENGTH 0x100
 #define CONTROLLER_MAP_FILE "input.map"
 
@@ -34,12 +35,12 @@ extern "C" {
             uint8_t* memory,
             uint64_t mem_size,
             uint32_t (*valid_address_mask)(uint32_t),
-            uint64_t* timer,
             uint8_t (*mem_read)(const uint8_t* data, uint64_t off),
             void (*parse_input)(s_controller* controller)
     );
 
     void add_command(const char* command, const char* description, CONSOLE_COMMAND((*callback)));
+    void add_overlay_info(OVERLAY_INFO((*getter)));
     int add_register_tab(const char* name);
     void add_register_data(char* name, const void* value, size_t size, int tab);
 

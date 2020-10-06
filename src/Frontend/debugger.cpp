@@ -32,6 +32,11 @@ void add_command(const char* command, const char* description, CONSOLE_COMMAND((
     });
 }
 
+
+void add_overlay_info(OVERLAY_INFO((*getter))) {
+    Debugger.overlay.AddInfo(getter);
+}
+
 int add_register_tab(const char* name){
     return Debugger.register_viewer.AddRegisterTab(name);
 }
@@ -45,13 +50,11 @@ void debugger_init(
         uint8_t* memory,
         uint64_t mem_size,
         uint32_t (*valid_address_mask)(uint32_t),
-        uint64_t* timer,
         uint8_t (*mem_read)(const uint8_t* data, uint64_t off)
 ) {
     Debugger.disassembly_viewer.PC = PC;
     Debugger.disassembly_viewer.memory = memory;
     Debugger.disassembly_viewer.valid_address_mask = valid_address_mask;
-    Debugger.overlay.timer = timer;
     Debugger.memory_viewer.mem_data = memory;
     Debugger.memory_viewer.mem_size = mem_size;
     Debugger.memory_viewer.ReadFn = mem_read;

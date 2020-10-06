@@ -4,17 +4,17 @@
 #include <list>
 #include "imgui/imgui.h"
 
+#include "../interface.h"
+
 #define MAX_OVERLAY_INFO_LENGTH 50
 
 typedef struct s_overlay_info {
-    void (*getter)(char* output, size_t output_length);
+    OVERLAY_INFO((*getter));
 } s_overlay_info;
 
 struct Overlay
 {
     ImGuiIO* io;
-    uint64_t* timer;
-    uint64_t prev_time;
     std::list<s_overlay_info> info;
     char gfx_info[0x200];
     char buffer[MAX_OVERLAY_INFO_LENGTH];
@@ -27,6 +27,12 @@ struct Overlay
     ~Overlay()
     {
 
+    }
+
+    void AddInfo(OVERLAY_INFO((*getter))) {
+        auto overlay_info = (s_overlay_info) { .getter = getter };
+
+        this->info.push_back(overlay_info);
     }
 
     void Draw(bool* p_open)
@@ -51,20 +57,14 @@ struct Overlay
             ImGui::Text("[INFO]\n");
             ImGui::Separator();
 
-            uint64_t time = *this->timer;
-            ImGui::Text("CPU ticks/s: %.1f\n", ((double)(time - this->prev_time)) / io->DeltaTime );
-            this->prev_time = time;
+            for (s_overlay_info info_iter : this->info) {
+                info_iter.getter(this->buffer, MAX_OVERLAY_INFO_LENGTH, io->DeltaTime);
+                ImGui::Text("%s\n", buffer);
+            }
 
             ImGui::Separator();
             ImGui::Text("%s\n", gfx_info);
             ImGui::Separator();
-
-
-            std::list<s_overlay_info> :: iterator info_iter;
-            for (info_iter = this->info.begin(); info_iter != this->info.end(); ++info_iter) {
-                info_iter->getter(this->buffer, MAX_OVERLAY_INFO_LENGTH);
-                ImGui::Text("%s\n", buffer);
-            }
 
             if (ImGui::BeginPopupContextWindow())
             {

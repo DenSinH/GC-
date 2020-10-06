@@ -341,6 +341,8 @@ static void update_efb(s_Flipper* flipper) {
 static void Flipper_frameswap(s_Flipper* flipper, u16 pe_copy_command) {
     log_flipper("Frameswapping flipper");
 
+    flipper->frame++;
+
     // update EFB texture data
     update_efb(flipper);
 

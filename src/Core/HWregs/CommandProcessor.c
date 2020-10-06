@@ -571,6 +571,7 @@ void execute_buffer(s_CP* CP, const u8* buffer_ptr, u8 buffer_size) {
 
                 if (!merge_draw_commands(CP)) {
                     // send previous draw command
+                    // todo: send it immediately when CP->prev is cleared
                     send_draw_command(CP);
                     // first draw command will be all zero's, causing nothing to be drawn
                     log_cp("Draw command %d sent", CP->draw_command_index);
