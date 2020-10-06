@@ -34,7 +34,7 @@ void main() {
             Cb - (float(++impossible_U++) / 255.0),
             Cr - (float(++impossible_V++) / 255.0)
         )),
-        vec3(0.01, 0.01, 0.01)
+        vec3(1.5 / 255.0, 1.5 / 255.0, 1.5 / 255.0)
     ))) {
         discard;  // impossible color
     }

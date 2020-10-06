@@ -2,25 +2,21 @@ file(GLOB GLSL_FILES ${CMAKE_CURRENT_SOURCE_DIR}/shaders/raw/*.glsl)
 
 message(STATUS "Found GLSL shaders: ${GLSL_FILES}")
 
-# only reset shaders in Debug builds
-
-if (CMAKE_BUILD_TYPE EQUAL "DEBUG")
-    if (WIN32)
-        add_custom_command(
-                OUTPUT ${CMAKE_CURRENT_SOURCE_DIR}/shaders/shaders.h
-                COMMENT "Generating shaders/shaders.h"
-                COMMAND py ${CMAKE_CURRENT_SOURCE_DIR}/shaders/shaders.py
-                DEPENDS ${GLSL_FILES}
-        )
-    else()
-        # linux/mac use python in command line instead of py
-        add_custom_command(
-                OUTPUT ${CMAKE_CURRENT_SOURCE_DIR}/shaders/shaders.h
-                COMMENT "Generating shaders/shaders.h"
-                COMMAND python ${CMAKE_CURRENT_SOURCE_DIR}/shaders/shaders.py
-                DEPENDS ${GLSL_FILES}
-        )
-    endif()
+if (WIN32)
+    add_custom_command(
+            OUTPUT ${CMAKE_CURRENT_SOURCE_DIR}/shaders/shaders.h
+            COMMENT "Generating shaders/shaders.h"
+            COMMAND py ${CMAKE_CURRENT_SOURCE_DIR}/shaders/shaders.py
+            DEPENDS ${GLSL_FILES}
+    )
+else()
+    # linux/mac use python in command line instead of py
+    add_custom_command(
+            OUTPUT ${CMAKE_CURRENT_SOURCE_DIR}/shaders/shaders.h
+            COMMENT "Generating shaders/shaders.h"
+            COMMAND python ${CMAKE_CURRENT_SOURCE_DIR}/shaders/shaders.py
+            DEPENDS ${GLSL_FILES}
+    )
 endif()
 
 

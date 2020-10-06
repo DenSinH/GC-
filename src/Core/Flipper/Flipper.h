@@ -12,7 +12,7 @@
 // full HD framebuffer, to be rescaled when blitted to the frontend screen
 #define FLIPPER_FRAMEBUFFER_WIDTH 1920
 #define FLIPPER_FRAMEBUFFER_HEIGHT 1080
-#define FLIPPER_QUAD_INDEX_ARRAY_SIZE 0x8000
+#define FLIPPER_QUAD_INDEX_ARRAY_SIZE 0xc000
 
 typedef struct s_Flipper {
 
@@ -20,9 +20,6 @@ typedef struct s_Flipper {
     u8* memory;
     struct s_CP* CP;
     struct s_VI* VI;
-
-    // todo: make this variable through VI
-    u32 screen_width, screen_height;
 
     unsigned int framebuffer[2];
     bool current_framebuffer;

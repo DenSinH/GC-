@@ -312,7 +312,7 @@ const char* framebufferFragmentShaderSource =
 "            Cb - (float(164) / 255.0),\n"  // l:32
 "            Cr - (float(137) / 255.0)\n"  // l:33
 "        )),\n"  // l:34
-"        vec3(0.01, 0.01, 0.01)\n"  // l:35
+"        vec3(1.5 / 255.0, 1.5 / 255.0, 1.5 / 255.0)\n"  // l:35
 "    ))) {\n"  // l:36
 "        discard;  // impossible color\n"  // l:37
 "    }\n"  // l:38
@@ -441,7 +441,7 @@ const char* transformationShaderSource =
 ;
 
 
-// vertexShaderSource (from vertex.glsl, lines 2 to 481)
+// vertexShaderSource (from vertex.glsl, lines 2 to 482)
 const char* vertexShaderSource = 
 "#version 430 core\n"  // l:1
 "\n"  // l:2
@@ -458,470 +458,471 @@ const char* vertexShaderSource =
 "\n"  // l:13
 "layout (std430, binding = 3) readonly buffer command_SSBO\n"  // l:14
 "{\n"  // l:15
-"    uint vertices;\n"  // l:16
-"    uint _command;\n"  // l:17
-"    uint vertex_stride;\n"  // l:18
-"    int arg_offsets[21];\n"  // l:19
-"    int data_offsets[21];\n"  // l:20
-"    uint array_strides[21];\n"  // l:21
-"    uint _cmd_data_size;  // data_size: I don't actually need this in the shader\n"  // l:22
-"    uint args[0x1140 >> 2];     // todo: generalize this\n"  // l:23
-"    uint data[];\n"  // l:24
-"};\n"  // l:25
-"\n"  // l:26
-"out vec4 vertexColor;\n"  // l:27
-"\n"  // l:28
-"flat out uint textureData;\n"  // l:29
-"flat out uint textureOffset;\n"  // l:30
-"out highp vec2 texCoord;\n"  // l:31
-"\n"  // l:32
-"/*\n"  // l:33
-" * I can't pass arrays to functions, so I'll have to make due writing separate read handlers for args/data\n"  // l:34
-" * */\n"  // l:35
-"#define read8(array) uint read8_ ## array ##(uint address) { return  bitfieldExtract(array[(address) >> 2], extract_offset[(address) & 3], 8); }\n"  // l:36
-"#define read8s(array) int read8s_ ## array ##(uint address) { return  bitfieldExtract(int(array[(address) >> 2]), extract_offset[(address) & 3], 8); }\n"  // l:37
-"\n"  // l:38
-"// bitfieldExtract sign extends the data for us when we pass signed ints!\n"  // l:39
-"#define read16(array) uint read16_ ## array ##(uint address) { \\\n"  // l:40
-"    uint msb = read8_ ## array ##(address); \\\n"  // l:41
-"    uint lsb = read8_ ## array ##(address + 1); \\\n"  // l:42
-"    return (msb << 8) | lsb; \\\n"  // l:43
-"}\n"  // l:44
-"\n"  // l:45
-"#define read16s(array) int read16s_ ## array ##(uint address) { \\\n"  // l:46
-"    int msb = read8s_ ## array ##(address); \\\n"  // l:47
-"    uint lsb = read8_ ## array ##(address + 1); \\\n"  // l:48
-"    return (msb << 8) | int(lsb); \\\n"  // l:49
-"}\n"  // l:50
-"\n"  // l:51
-"#define read32(array) uint read32_ ## array ##(uint address) { \\\n"  // l:52
-"    uint msh = read16_ ## array ##(address); \\\n"  // l:53
-"    uint lsh = read16_ ## array ##(address + 2); \\\n"  // l:54
-"    return (msh << 16) | lsh; \\\n"  // l:55
-"}\n"  // l:56
-"\n"  // l:57
-"#define read32s(array) int read32s_ ## array ##(uint address) { \\\n"  // l:58
-"    int msh = read16s_ ## array ##(address); \\\n"  // l:59
-"    uint lsh = read16_ ## array ##(address + 2); \\\n"  // l:60
-"    return (msh << 16) | int(lsh); \\\n"  // l:61
-"}\n"  // l:62
-"\n"  // l:63
-"read8(data)\n"  // l:64
-"read8s(data)\n"  // l:65
-"read8(args)\n"  // l:66
-"read8s(args)\n"  // l:67
-"\n"  // l:68
-"read16(data)\n"  // l:69
-"read16s(data)\n"  // l:70
-"read16(args)\n"  // l:71
-"read16s(args)\n"  // l:72
-"\n"  // l:73
-"read32(data)\n"  // l:74
-"read32s(data)\n"  // l:75
-"read32(args)\n"  // l:76
-"read32s(args)\n"  // l:77
-"\n"  // l:78
-"// temporary stuff\n"  // l:79
-"int stemp;\n"  // l:80
-"uint utemp;\n"  // l:81
-"\n"  // l:82
-"// defined in trafo.glsl\n"  // l:83
-"vec4 transform_pos(vec3 position, uint posidx);\n"  // l:84
-"vec3 transform_tex(vec3 texcoord, uint texidx);\n"  // l:85
-"\n"  // l:86
-"vec3 load_position(bool from_data, uint FMT, uint offset)\n"  // l:87
-"{\n"  // l:88
-"    // always load 3 coodinates, decide on whether to use the last one later\n"  // l:89
-"    vec3 position;\n"  // l:90
-"    if (from_data) {\n"  // l:91
-"        switch (FMT) {\n"  // l:92
-"            case 0:  // u8\n"  // l:93
-"                position.x = read8_data(offset);\n"  // l:94
-"                position.y = read8_data(offset + 1);\n"  // l:95
-"                position.z = read8_data(offset + 2);\n"  // l:96
-"                break;\n"  // l:97
-"            case 1:  // s8\n"  // l:98
-"                position.x = read8s_data(offset);\n"  // l:99
-"                position.y = read8s_data(offset + 1);\n"  // l:100
-"                position.z = read8s_data(offset + 2);\n"  // l:101
-"                break;\n"  // l:102
-"            case 2:  // u16\n"  // l:103
-"                position.x = read16_data(offset);\n"  // l:104
-"                position.y = read16_data(offset + 2);\n"  // l:105
-"                position.z = read16_data(offset + 4);\n"  // l:106
-"                break;\n"  // l:107
-"            case 3:  // s16\n"  // l:108
-"                position.x = read16s_data(offset);\n"  // l:109
-"                position.y = read16s_data(offset + 2);\n"  // l:110
-"                position.z = read16s_data(offset + 4);\n"  // l:111
-"                break;\n"  // l:112
-"            case 4:\n"  // l:113
-"                utemp = read32_data(offset);\n"  // l:114
-"                position.x = uintBitsToFloat(utemp);\n"  // l:115
-"                utemp = read32_data(offset + 4);\n"  // l:116
-"                position.y = uintBitsToFloat(utemp);\n"  // l:117
-"                utemp = read32_data(offset + 8);\n"  // l:118
-"                position.z = uintBitsToFloat(utemp);\n"  // l:119
-"                break;\n"  // l:120
-"            default:\n"  // l:121
-"                // invalid format\n"  // l:122
-"                position = vec3(0, 0, 0);\n"  // l:123
-"                break;\n"  // l:124
-"        }\n"  // l:125
-"        return position;\n"  // l:126
-"    }\n"  // l:127
-"    else {\n"  // l:128
-"        // read data from args\n"  // l:129
-"        // always load 3 coodinates, decide on whether to use the last one later\n"  // l:130
-"        switch (FMT) {\n"  // l:131
-"            case 0:  // u8\n"  // l:132
-"                position.x = read8_args(offset);\n"  // l:133
-"                position.y = read8_args(offset + 1);\n"  // l:134
-"                position.z = read8_args(offset + 2);\n"  // l:135
-"                break;\n"  // l:136
-"            case 1:  // s8\n"  // l:137
-"                position.x = read8s_args(offset);\n"  // l:138
-"                position.y = read8s_args(offset + 1);\n"  // l:139
-"                position.z = read8s_args(offset + 2);\n"  // l:140
-"                break;\n"  // l:141
-"            case 2:  // u16\n"  // l:142
-"                position.x = read16_args(offset);\n"  // l:143
-"                position.y = read16_args(offset + 2);\n"  // l:144
-"                position.z = read16_args(offset + 4);\n"  // l:145
-"                break;\n"  // l:146
-"            case 3:  // s16\n"  // l:147
-"                position.x = read16s_args(offset);\n"  // l:148
-"                position.y = read16s_args(offset + 2);\n"  // l:149
-"                position.z = read16s_args(offset + 4);\n"  // l:150
-"                break;\n"  // l:151
-"            case 4:\n"  // l:152
-"                utemp = read32_args(offset);\n"  // l:153
-"                position.x = uintBitsToFloat(utemp);\n"  // l:154
-"                utemp = read32_args(offset + 4);\n"  // l:155
-"                position.y = uintBitsToFloat(utemp);\n"  // l:156
-"                utemp = read32_args(offset + 8);\n"  // l:157
-"                position.z = uintBitsToFloat(utemp);\n"  // l:158
-"                break;\n"  // l:159
-"            default:\n"  // l:160
-"                // invalid format\n"  // l:161
-"                position = vec3(0, 0, 0);\n"  // l:162
-"                break;\n"  // l:163
-"        }\n"  // l:164
-"        return position;\n"  // l:165
-"    }\n"  // l:166
-"}\n"  // l:167
-"\n"  // l:168
-"void main()\n"  // l:169
-"{\n"  // l:170
-"    // used for all types of parameters\n"  // l:171
-"    uint arg_offset;\n"  // l:172
-"    uint data_offset;\n"  // l:173
-"\n"  // l:174
-"    // placed here mostly for debugging purposes\n"  // l:175
-"    vec3 position;\n"  // l:176
-"\n"  // l:177
-"    if (arg_offsets[9] >= 0)\n"  // l:178
-"    {\n"  // l:179
-"        /* determine vertex position */\n"  // l:180
-"\n"  // l:181
-"        // initial values\n"  // l:182
-"        arg_offset = arg_offsets[9];\n"  // l:183
-"        arg_offset += gl_VertexID * vertex_stride;\n"  // l:184
-"\n"  // l:185
-"        uint POSVCD  = bitfieldExtract(VCD_lo, 9, 2);\n"  // l:186
-"        bool POSCNT  = bitfieldExtract(VAT_A, 0, 1) != 0;\n"  // l:187
-"        uint POSFMT  = bitfieldExtract(VAT_A, 1, 3);\n"  // l:188
-"        uint POSSHFT = bitfieldExtract(VAT_A, 4, 5);\n"  // l:189
-"\n"  // l:190
-"        if (POSVCD > 1) {\n"  // l:191
-"            // indirect data\n"  // l:192
-"            data_offset = data_offsets[9];\n"  // l:193
-"\n"  // l:194
-"            // determine the \"GC vertex index\"\n"  // l:195
-"            int vertex_index;\n"  // l:196
-"            if (POSVCD == 2) {\n"  // l:197
-"                vertex_index = read8s_args(arg_offset);\n"  // l:198
-"            }\n"  // l:199
-"            else {\n"  // l:200
-"                vertex_index = read16s_args(arg_offset);\n"  // l:201
-"            }\n"  // l:202
-"\n"  // l:203
-"            data_offset += vertex_index * array_strides[9 - draw_arg_POS];\n"  // l:204
-"\n"  // l:205
-"            position = load_position(true, POSFMT, data_offset);\n"  // l:206
-"        }\n"  // l:207
-"        else {\n"  // l:208
-"            position = load_position(false, POSFMT, arg_offset);\n"  // l:209
-"        }\n"  // l:210
-"\n"  // l:211
-"        // todo: POSSHFT\n"  // l:212
-"        if (!POSCNT) {\n"  // l:213
-"            // 2D\n"  // l:214
-"            position.z = 0;  // todo: what is this value supposed to be?\n"  // l:215
-"        }\n"  // l:216
-"\n"  // l:217
-"        uint posidx;\n"  // l:218
-"        if (arg_offsets[0] >= 0) {\n"  // l:219
-"            // position matrix index value passed (always direct)\n"  // l:220
-"            posidx = read8_args(arg_offsets[0]);\n"  // l:221
-"        }\n"  // l:222
-"        else {\n"  // l:223
-"            posidx = bitfieldExtract(MATIDX_REG_A, 0, 6);\n"  // l:224
-"        }\n"  // l:225
-"\n"  // l:226
-"        gl_Position = transform_pos(position, posidx);\n"  // l:227
-"#ifdef DEBUG\n"  // l:228
-"//        if (gl_Position.z < 0) {\n"  // l:229
-"//            switch (gl_VertexID) {\n"  // l:230
-"//                case 0:\n"  // l:231
-"//                    gl_Position = vec4(-0.5, -0.5, 0.0, 1.0);\n"  // l:232
-"//                    break;\n"  // l:233
-"//                case 1:\n"  // l:234
-"//                    gl_Position = vec4(0.0, -0.5, 0.0, 1.0);\n"  // l:235
-"//                    break;\n"  // l:236
-"//                case 2:\n"  // l:237
-"//                    gl_Position = vec4(0.5, 0.5, 0.0, 1.0);\n"  // l:238
-"//                    break;\n"  // l:239
-"//                case 3:\n"  // l:240
-"//                    gl_Position = vec4(0.0, 0.5, 0.0, 1.0);\n"  // l:241
-"//                    break;\n"  // l:242
-"//            }\n"  // l:243
-"//        }\n"  // l:244
-"#endif\n"  // l:245
-"    }\n"  // l:246
-"\n"  // l:247
-"    if (arg_offsets[11] >= 0)\n"  // l:248
-"    {\n"  // l:249
-"        /* determine vertex color 0 */\n"  // l:250
-"        // todo: different cases (right now only i8 indexed rgba8888\n"  // l:251
-"        // initial values\n"  // l:252
-"        arg_offset = arg_offsets[11];\n"  // l:253
-"        arg_offset += gl_VertexID * vertex_stride;\n"  // l:254
-"\n"  // l:255
-"        uint COL0VCD  = bitfieldExtract(VCD_lo, 13, 2);\n"  // l:256
-"        bool COL0CNT  = bitfieldExtract(VAT_A, 13, 1) != 0;\n"  // l:257
-"        uint COL0FMT  = bitfieldExtract(VAT_A, 14, 3);\n"  // l:258
-"\n"  // l:259
-"        vec4 color;\n"  // l:260
-"\n"  // l:261
-"        if (COL0VCD > 1) {\n"  // l:262
-"            // indirect data\n"  // l:263
-"            data_offset = data_offsets[11];\n"  // l:264
-"\n"  // l:265
-"            int color_index;\n"  // l:266
-"            if (COL0VCD == 2) {\n"  // l:267
-"                color_index = read8s_args(arg_offset);\n"  // l:268
-"            }\n"  // l:269
-"            else {\n"  // l:270
-"                color_index = read16s_args(arg_offset);\n"  // l:271
-"            }\n"  // l:272
-"\n"  // l:273
-"            data_offset += color_index * array_strides[11 - draw_arg_POS];\n"  // l:274
-"\n"  // l:275
-"            // always get 4 color value, determine actual value later\n"  // l:276
-"            switch (COL0FMT) {\n"  // l:277
-"                case 0:  // 16bit rgb565\n"  // l:278
-"                    utemp = read16_data(data_offset);\n"  // l:279
-"                    color.x = bitfieldExtract(utemp, 0, 5);\n"  // l:280
-"                    color.y = bitfieldExtract(utemp, 4, 6);\n"  // l:281
-"                    color.z = bitfieldExtract(utemp, 10, 5);\n"  // l:282
-"                    color /= 32.0;\n"  // l:283
-"                    color.y *= 0.5; // extra bit\n"  // l:284
-"                    color.w = 1.0;\n"  // l:285
-"                    break;\n"  // l:286
-"                case 1:  // 24bit rgb888\n"  // l:287
-"                    utemp = read32_data(data_offset);\n"  // l:288
-"                    color = unpackUnorm4x8(utemp).wzyx;  // BE to LE\n"  // l:289
-"                    color.w = 1.0;  // 3 colors\n"  // l:290
-"                    // already normalized\n"  // l:291
-"                    break;\n"  // l:292
-"                case 2:  // 32bit rgb888x\n"  // l:293
-"                    utemp = data[data_offset >> 2];  // data is 4 aligned\n"  // l:294
-"                    color = unpackUnorm4x8(utemp);\n"  // l:295
-"                    color.w = 1.0;  // 3 colors\n"  // l:296
-"                    // already normalized\n"  // l:297
-"                    break;\n"  // l:298
-"                case 3:  // 16bit rgba4444\n"  // l:299
-"                    utemp = read16_data(data_offset);\n"  // l:300
-"                    color.x = bitfieldExtract(utemp, 0, 4);\n"  // l:301
-"                    color.y = bitfieldExtract(utemp, 3, 4);\n"  // l:302
-"                    color.z = bitfieldExtract(utemp, 7, 4);\n"  // l:303
-"                    color.w = bitfieldExtract(utemp, 11, 4);\n"  // l:304
-"                    color /= 16.0;  // normalize\n"  // l:305
-"                    break;\n"  // l:306
-"                case 4:  // 24bit rgba6666\n"  // l:307
-"                    utemp = read32_data(data_offset);\n"  // l:308
-"                    color.x = bitfieldExtract(utemp, 0, 6);\n"  // l:309
-"                    color.y = bitfieldExtract(utemp, 5, 6);\n"  // l:310
-"                    color.z = bitfieldExtract(utemp, 11, 6);\n"  // l:311
-"                    color.w = bitfieldExtract(utemp, 17, 6);\n"  // l:312
-"                    color /= 64.0;  // normalize\n"  // l:313
-"                    break;\n"  // l:314
-"                case 5:  // 32bit rgba8888\n"  // l:315
-"                    utemp = data[data_offset >> 2];  // data is 4 aligned\n"  // l:316
-"                    color = unpackUnorm4x8(utemp);\n"  // l:317
-"                    // already normalized\n"  // l:318
-"                    break;\n"  // l:319
-"                default:\n"  // l:320
-"                    break;\n"  // l:321
-"            }\n"  // l:322
-"        }\n"  // l:323
-"        else {\n"  // l:324
-"            switch (COL0FMT) {\n"  // l:325
-"                case 0:  // 16bit rgb565\n"  // l:326
-"                    utemp = read16_args(arg_offset);\n"  // l:327
-"                    color.x = bitfieldExtract(utemp, 0, 5);\n"  // l:328
-"                    color.y = bitfieldExtract(utemp, 4, 6);\n"  // l:329
-"                    color.z = bitfieldExtract(utemp, 10, 5);\n"  // l:330
-"                    color /= 32.0;\n"  // l:331
-"                    color.y *= 0.5;  // extra bit\n"  // l:332
-"                    color.w = 1.0;\n"  // l:333
-"                    break;\n"  // l:334
-"                case 1:  // 24bit rgb888\n"  // l:335
-"                case 2:  // 32bit rgb888x\n"  // l:336
-"                    utemp = read32_args(arg_offset);\n"  // l:337
-"                    color = unpackUnorm4x8(utemp).wzyx;  // BE to LE\n"  // l:338
-"                    color.w = 1.0;  // 3 colors\n"  // l:339
-"                    // already normalized\n"  // l:340
-"                    break;\n"  // l:341
-"                case 3:  // 16bit rgba4444\n"  // l:342
-"                    utemp = read16_args(arg_offset);\n"  // l:343
-"                    color.x = bitfieldExtract(utemp, 0, 4);\n"  // l:344
-"                    color.y = bitfieldExtract(utemp, 3, 4);\n"  // l:345
-"                    color.z = bitfieldExtract(utemp, 7, 4);\n"  // l:346
-"                    color.w = bitfieldExtract(utemp, 11, 4);\n"  // l:347
-"                    color /= 16.0;  // normalize\n"  // l:348
-"                    break;\n"  // l:349
-"                case 4:  // 24bit rgba6666\n"  // l:350
-"                    utemp = read32_args(arg_offset);\n"  // l:351
-"                    color.x = bitfieldExtract(utemp, 0, 6);\n"  // l:352
-"                    color.y = bitfieldExtract(utemp, 5, 6);\n"  // l:353
-"                    color.z = bitfieldExtract(utemp, 11, 6);\n"  // l:354
-"                    color.w = bitfieldExtract(utemp, 17, 6);\n"  // l:355
-"                    color /= 64.0;  // normalize\n"  // l:356
-"                    break;\n"  // l:357
-"                case 5:  // 32bit rgba8888\n"  // l:358
-"                    utemp = read32_args(arg_offset);\n"  // l:359
-"                    color = unpackUnorm4x8(utemp).wzyx;  // BE to LE\n"  // l:360
-"                    // already normalized\n"  // l:361
-"                    break;\n"  // l:362
-"                default:\n"  // l:363
-"                    break;\n"  // l:364
-"            }\n"  // l:365
-"        }\n"  // l:366
-"\n"  // l:367
-"        // todo: I am not sure if COLCNT really does anything, but just to be sure\n"  // l:368
-"        vertexColor = color;\n"  // l:369
-"        if (!COL0CNT) color.w = 1.0;\n"  // l:370
-"#ifdef DEBUG\n"  // l:371
-"//        if (position.y > 29) {\n"  // l:372
-"//            vertexColor = vec4(0.0, 1.0, 0.0, 1.0);\n"  // l:373
-"//        }\n"  // l:374
-"//        else {\n"  // l:375
-"//            vertexColor = vec4(1.0, 0.0, 0.0, 1.0);\n"  // l:376
-"//        }\n"  // l:377
-"#endif\n"  // l:378
-"    }\n"  // l:379
-"\n"  // l:380
-"    /* load texture data */\n"  // l:381
-"    textureData = 0;\n"  // l:382
-"    for (int i = 0; i < 8; i++) {\n"  // l:383
-"        if (arg_offsets[13 + i] >= 0) {\n"  // l:384
-"            // load texture specific data\n"  // l:385
-"            textureData = 1u | (uint(i) << 1);\n"  // l:386
-"            textureOffset = data_offsets[i];\n"  // l:387
-"\n"  // l:388
-"            // load texture coordinate (same as position basically)\n"  // l:389
-"            arg_offset = arg_offsets[13 + i];\n"  // l:390
-"            arg_offset += gl_VertexID * vertex_stride;\n"  // l:391
-"\n"  // l:392
-"            uint TEXVCD = bitfieldExtract(VCD_hi, 2 * i, 2);\n"  // l:393
-"            bool TEXCNT;\n"  // l:394
-"            uint TEXFMT;\n"  // l:395
-"            uint TEXSHFT;\n"  // l:396
-"            switch (i) {\n"  // l:397
-"                case 0:\n"  // l:398
-"                    // TEX0 is in VAT_A\n"  // l:399
-"                    TEXCNT = bitfieldExtract(VAT_A, 21, 1) != 0;\n"  // l:400
-"                    TEXFMT = bitfieldExtract(VAT_A, 22, 3);\n"  // l:401
-"                    TEXSHFT = bitfieldExtract(VAT_A, 25, 5);\n"  // l:402
-"                    break;\n"  // l:403
-"                case 1:\n"  // l:404
-"                case 2:\n"  // l:405
-"                case 3:\n"  // l:406
-"                    // TEX1-3 are fully in VAT_B\n"  // l:407
-"                    TEXCNT = bitfieldExtract(VAT_B, 9 * (i - 1), 1) != 0;\n"  // l:408
-"                    TEXFMT = bitfieldExtract(VAT_B, 9 * (i - 1) + 1, 3);\n"  // l:409
-"                    TEXSHFT = bitfieldExtract(VAT_B, 9 * (i - 1) + 4, 5);\n"  // l:410
-"                    break;\n"  // l:411
-"                case 4:\n"  // l:412
-"                    // TEX4 is partly in VAT_B, partly in VAT_C\n"  // l:413
-"                    TEXCNT = bitfieldExtract(VAT_B, 27, 1) != 0;\n"  // l:414
-"                    TEXFMT = bitfieldExtract(VAT_B, 28, 3);\n"  // l:415
-"                    TEXSHFT = bitfieldExtract(VAT_C, 0, 5);\n"  // l:416
-"                    break;\n"  // l:417
-"                case 5:\n"  // l:418
-"                case 6:\n"  // l:419
-"                case 7:\n"  // l:420
-"                    // TEX5-7 are fully in VAT_C\n"  // l:421
-"                    TEXCNT = bitfieldExtract(VAT_C, 5 + 9 * (i - 5), 1) != 0;\n"  // l:422
-"                    TEXFMT = bitfieldExtract(VAT_C, 5 + 9 * (i - 5) + 1, 3);\n"  // l:423
-"                    TEXSHFT = bitfieldExtract(VAT_C, 5 + 9 * (i - 5) + 4, 5);\n"  // l:424
-"                default:\n"  // l:425
-"                    // invalid texture format\n"  // l:426
-"                    break;\n"  // l:427
-"            }\n"  // l:428
-"\n"  // l:429
-"            vec3 read_tex_coord;\n"  // l:430
-"\n"  // l:431
-"            if (TEXVCD > 1) {\n"  // l:432
-"                // indirect data\n"  // l:433
-"                data_offset = data_offsets[13 + i];\n"  // l:434
-"\n"  // l:435
-"                // determine the GC texture coordiante index\n"  // l:436
-"                int tex_coord_index;\n"  // l:437
-"                if (TEXVCD == 2) {\n"  // l:438
-"                    tex_coord_index = read8s_args(arg_offset);\n"  // l:439
-"                }\n"  // l:440
-"                else {\n"  // l:441
-"                    tex_coord_index = read16s_args(arg_offset);\n"  // l:442
-"                }\n"  // l:443
-"\n"  // l:444
-"                data_offset += tex_coord_index * array_strides[13 + i - draw_arg_POS];\n"  // l:445
-"\n"  // l:446
-"                read_tex_coord = load_position(true, TEXFMT, data_offset);\n"  // l:447
-"            }\n"  // l:448
-"            else {\n"  // l:449
-"                read_tex_coord = load_position(false, TEXFMT, arg_offset);\n"  // l:450
-"            }\n"  // l:451
-"\n"  // l:452
-"            read_tex_coord.z = 0;  // 2D at most\n"  // l:453
-"            if (!TEXCNT) {\n"  // l:454
-"                read_tex_coord.y = 0;  // 1D\n"  // l:455
-"            }\n"  // l:456
-"\n"  // l:457
-"            uint texidx;\n"  // l:458
-"            if (arg_offsets[1 + i] >= 0) {\n"  // l:459
-"                // texture matrix index value passed (always direct)\n"  // l:460
-"                texidx = read8_args(arg_offsets[1 + i]);\n"  // l:461
-"            }\n"  // l:462
-"            else {\n"  // l:463
-"                if (i < 4)  {\n"  // l:464
-"                    // TEX0-3 in MATIDX_REG_A\n"  // l:465
-"                    texidx = bitfieldExtract(MATIDX_REG_A, 6 * (i + 1), 6);\n"  // l:466
-"                }\n"  // l:467
-"                else {\n"  // l:468
-"                    // TEX4-7 in MATIDX_REG_B\n"  // l:469
-"                    texidx = bitfieldExtract(MATIDX_REG_B, 6 * (i - 4), 6);\n"  // l:470
-"                }\n"  // l:471
-"            }\n"  // l:472
-"\n"  // l:473
-"            texCoord = transform_tex(read_tex_coord, texidx).xy;\n"  // l:474
-"            break;\n"  // l:475
-"        }\n"  // l:476
-"    }\n"  // l:477
-"}\n"  // l:478
-"\n"  // l:479
+"    uint vertex_stride;\n"  // l:16
+"    int arg_offsets[21];\n"  // l:17
+"    int data_offsets[21];\n"  // l:18
+"    uint array_strides[21];\n"  // l:19
+"    uint args[0x80000 >> 2];\n"  // l:20
+"    uint data[];\n"  // l:21
+"};\n"  // l:22
+"\n"  // l:23
+"out vec4 vertexColor;\n"  // l:24
+"// signal that the vertex that was sent was invalid\n"  // l:25
+"// this is used for vertices that are not supposed to connect for triangle strips/fans and linestrips\n"  // l:26
+"// we signal this by filling args with 0xff for that vertex\n"  // l:27
+"flat out uint invalidVertex;\n"  // l:28
+"\n"  // l:29
+"flat out uint textureData;\n"  // l:30
+"flat out uint textureOffset;\n"  // l:31
+"out highp vec2 texCoord;\n"  // l:32
+"\n"  // l:33
+"/*\n"  // l:34
+" * I can't pass arrays to functions, so I'll have to make due writing separate read handlers for args/data\n"  // l:35
+" * */\n"  // l:36
+"#define read8(array) uint read8_ ## array ##(uint address) { return  bitfieldExtract(array[(address) >> 2], extract_offset[(address) & 3], 8); }\n"  // l:37
+"#define read8s(array) int read8s_ ## array ##(uint address) { return  bitfieldExtract(int(array[(address) >> 2]), extract_offset[(address) & 3], 8); }\n"  // l:38
+"\n"  // l:39
+"// bitfieldExtract sign extends the data for us when we pass signed ints!\n"  // l:40
+"#define read16(array) uint read16_ ## array ##(uint address) { \\\n"  // l:41
+"    uint msb = read8_ ## array ##(address); \\\n"  // l:42
+"    uint lsb = read8_ ## array ##(address + 1); \\\n"  // l:43
+"    return (msb << 8) | lsb; \\\n"  // l:44
+"}\n"  // l:45
+"\n"  // l:46
+"#define read16s(array) int read16s_ ## array ##(uint address) { \\\n"  // l:47
+"    int msb = read8s_ ## array ##(address); \\\n"  // l:48
+"    uint lsb = read8_ ## array ##(address + 1); \\\n"  // l:49
+"    return (msb << 8) | int(lsb); \\\n"  // l:50
+"}\n"  // l:51
+"\n"  // l:52
+"#define read32(array) uint read32_ ## array ##(uint address) { \\\n"  // l:53
+"    uint msh = read16_ ## array ##(address); \\\n"  // l:54
+"    uint lsh = read16_ ## array ##(address + 2); \\\n"  // l:55
+"    return (msh << 16) | lsh; \\\n"  // l:56
+"}\n"  // l:57
+"\n"  // l:58
+"#define read32s(array) int read32s_ ## array ##(uint address) { \\\n"  // l:59
+"    int msh = read16s_ ## array ##(address); \\\n"  // l:60
+"    uint lsh = read16_ ## array ##(address + 2); \\\n"  // l:61
+"    return (msh << 16) | int(lsh); \\\n"  // l:62
+"}\n"  // l:63
+"\n"  // l:64
+"read8(data)\n"  // l:65
+"read8s(data)\n"  // l:66
+"read8(args)\n"  // l:67
+"read8s(args)\n"  // l:68
+"\n"  // l:69
+"read16(data)\n"  // l:70
+"read16s(data)\n"  // l:71
+"read16(args)\n"  // l:72
+"read16s(args)\n"  // l:73
+"\n"  // l:74
+"read32(data)\n"  // l:75
+"read32s(data)\n"  // l:76
+"read32(args)\n"  // l:77
+"read32s(args)\n"  // l:78
+"\n"  // l:79
+"// temporary stuff\n"  // l:80
+"int stemp;\n"  // l:81
+"uint utemp;\n"  // l:82
+"\n"  // l:83
+"// defined in trafo.glsl\n"  // l:84
+"vec4 transform_pos(vec3 position, uint posidx);\n"  // l:85
+"vec3 transform_tex(vec3 texcoord, uint texidx);\n"  // l:86
+"\n"  // l:87
+"vec3 load_position(bool from_data, uint FMT, uint offset)\n"  // l:88
+"{\n"  // l:89
+"    // always load 3 coodinates, decide on whether to use the last one later\n"  // l:90
+"    vec3 position;\n"  // l:91
+"    if (from_data) {\n"  // l:92
+"        switch (FMT) {\n"  // l:93
+"            case 0:  // u8\n"  // l:94
+"                position.x = read8_data(offset);\n"  // l:95
+"                position.y = read8_data(offset + 1);\n"  // l:96
+"                position.z = read8_data(offset + 2);\n"  // l:97
+"                break;\n"  // l:98
+"            case 1:  // s8\n"  // l:99
+"                position.x = read8s_data(offset);\n"  // l:100
+"                position.y = read8s_data(offset + 1);\n"  // l:101
+"                position.z = read8s_data(offset + 2);\n"  // l:102
+"                break;\n"  // l:103
+"            case 2:  // u16\n"  // l:104
+"                position.x = read16_data(offset);\n"  // l:105
+"                position.y = read16_data(offset + 2);\n"  // l:106
+"                position.z = read16_data(offset + 4);\n"  // l:107
+"                break;\n"  // l:108
+"            case 3:  // s16\n"  // l:109
+"                position.x = read16s_data(offset);\n"  // l:110
+"                position.y = read16s_data(offset + 2);\n"  // l:111
+"                position.z = read16s_data(offset + 4);\n"  // l:112
+"                break;\n"  // l:113
+"            case 4:\n"  // l:114
+"                utemp = read32_data(offset);\n"  // l:115
+"                position.x = uintBitsToFloat(utemp);\n"  // l:116
+"                utemp = read32_data(offset + 4);\n"  // l:117
+"                position.y = uintBitsToFloat(utemp);\n"  // l:118
+"                utemp = read32_data(offset + 8);\n"  // l:119
+"                position.z = uintBitsToFloat(utemp);\n"  // l:120
+"                break;\n"  // l:121
+"            default:\n"  // l:122
+"                // invalid format\n"  // l:123
+"                position = vec3(0, 0, 0);\n"  // l:124
+"                break;\n"  // l:125
+"        }\n"  // l:126
+"        return position;\n"  // l:127
+"    }\n"  // l:128
+"    else {\n"  // l:129
+"        // read data from args\n"  // l:130
+"        // always load 3 coodinates, decide on whether to use the last one later\n"  // l:131
+"        switch (FMT) {\n"  // l:132
+"            case 0:  // u8\n"  // l:133
+"                position.x = read8_args(offset);\n"  // l:134
+"                position.y = read8_args(offset + 1);\n"  // l:135
+"                position.z = read8_args(offset + 2);\n"  // l:136
+"                break;\n"  // l:137
+"            case 1:  // s8\n"  // l:138
+"                position.x = read8s_args(offset);\n"  // l:139
+"                position.y = read8s_args(offset + 1);\n"  // l:140
+"                position.z = read8s_args(offset + 2);\n"  // l:141
+"                break;\n"  // l:142
+"            case 2:  // u16\n"  // l:143
+"                position.x = read16_args(offset);\n"  // l:144
+"                position.y = read16_args(offset + 2);\n"  // l:145
+"                position.z = read16_args(offset + 4);\n"  // l:146
+"                break;\n"  // l:147
+"            case 3:  // s16\n"  // l:148
+"                position.x = read16s_args(offset);\n"  // l:149
+"                position.y = read16s_args(offset + 2);\n"  // l:150
+"                position.z = read16s_args(offset + 4);\n"  // l:151
+"                break;\n"  // l:152
+"            case 4:\n"  // l:153
+"                utemp = read32_args(offset);\n"  // l:154
+"                position.x = uintBitsToFloat(utemp);\n"  // l:155
+"                utemp = read32_args(offset + 4);\n"  // l:156
+"                position.y = uintBitsToFloat(utemp);\n"  // l:157
+"                utemp = read32_args(offset + 8);\n"  // l:158
+"                position.z = uintBitsToFloat(utemp);\n"  // l:159
+"                break;\n"  // l:160
+"            default:\n"  // l:161
+"                // invalid format\n"  // l:162
+"                position = vec3(0, 0, 0);\n"  // l:163
+"                break;\n"  // l:164
+"        }\n"  // l:165
+"        return position;\n"  // l:166
+"    }\n"  // l:167
+"}\n"  // l:168
+"\n"  // l:169
+"void main()\n"  // l:170
+"{\n"  // l:171
+"    // used for all types of parameters\n"  // l:172
+"    uint arg_offset;\n"  // l:173
+"    uint data_offset;\n"  // l:174
+"\n"  // l:175
+"    // placed here mostly for debugging purposes\n"  // l:176
+"    vec3 position;\n"  // l:177
+"\n"  // l:178
+"    if (arg_offsets[9] >= 0)\n"  // l:179
+"    {\n"  // l:180
+"        /* determine vertex position */\n"  // l:181
+"\n"  // l:182
+"        // initial values\n"  // l:183
+"        arg_offset = arg_offsets[9];\n"  // l:184
+"        arg_offset += gl_VertexID * vertex_stride;\n"  // l:185
+"\n"  // l:186
+"        uint POSVCD  = bitfieldExtract(VCD_lo, 9, 2);\n"  // l:187
+"        bool POSCNT  = bitfieldExtract(VAT_A, 0, 1) != 0;\n"  // l:188
+"        uint POSFMT  = bitfieldExtract(VAT_A, 1, 3);\n"  // l:189
+"        uint POSSHFT = bitfieldExtract(VAT_A, 4, 5);\n"  // l:190
+"\n"  // l:191
+"        if (POSVCD > 1) {\n"  // l:192
+"            // indirect data\n"  // l:193
+"            data_offset = data_offsets[9];\n"  // l:194
+"\n"  // l:195
+"            // determine the \"GC vertex index\"\n"  // l:196
+"            int vertex_index;\n"  // l:197
+"            if (POSVCD == 2) {\n"  // l:198
+"                vertex_index = read8s_args(arg_offset);\n"  // l:199
+"            }\n"  // l:200
+"            else {\n"  // l:201
+"                vertex_index = read16s_args(arg_offset);\n"  // l:202
+"            }\n"  // l:203
+"\n"  // l:204
+"            data_offset += vertex_index * array_strides[9 - draw_arg_POS];\n"  // l:205
+"\n"  // l:206
+"            position = load_position(true, POSFMT, data_offset);\n"  // l:207
+"        }\n"  // l:208
+"        else {\n"  // l:209
+"            position = load_position(false, POSFMT, arg_offset);\n"  // l:210
+"        }\n"  // l:211
+"\n"  // l:212
+"        // todo: POSSHFT\n"  // l:213
+"        if (!POSCNT) {\n"  // l:214
+"            // 2D\n"  // l:215
+"            position.z = 0;  // todo: what is this value supposed to be?\n"  // l:216
+"        }\n"  // l:217
+"\n"  // l:218
+"        uint posidx;\n"  // l:219
+"        if (arg_offsets[0] >= 0) {\n"  // l:220
+"            // position matrix index value passed (always direct)\n"  // l:221
+"            posidx = read8_args(arg_offsets[0]);\n"  // l:222
+"        }\n"  // l:223
+"        else {\n"  // l:224
+"            posidx = bitfieldExtract(MATIDX_REG_A, 0, 6);\n"  // l:225
+"        }\n"  // l:226
+"\n"  // l:227
+"        gl_Position = transform_pos(position, posidx);\n"  // l:228
+"#ifdef DEBUG\n"  // l:229
+"//        if (gl_Position.z < 0) {\n"  // l:230
+"//            switch (gl_VertexID) {\n"  // l:231
+"//                case 0:\n"  // l:232
+"//                    gl_Position = vec4(-0.5, -0.5, 0.0, 1.0);\n"  // l:233
+"//                    break;\n"  // l:234
+"//                case 1:\n"  // l:235
+"//                    gl_Position = vec4(0.0, -0.5, 0.0, 1.0);\n"  // l:236
+"//                    break;\n"  // l:237
+"//                case 2:\n"  // l:238
+"//                    gl_Position = vec4(0.5, 0.5, 0.0, 1.0);\n"  // l:239
+"//                    break;\n"  // l:240
+"//                case 3:\n"  // l:241
+"//                    gl_Position = vec4(0.0, 0.5, 0.0, 1.0);\n"  // l:242
+"//                    break;\n"  // l:243
+"//            }\n"  // l:244
+"//        }\n"  // l:245
+"#endif\n"  // l:246
+"    }\n"  // l:247
+"\n"  // l:248
+"    if (arg_offsets[11] >= 0)\n"  // l:249
+"    {\n"  // l:250
+"        /* determine vertex color 0 */\n"  // l:251
+"        // todo: different cases (right now only i8 indexed rgba8888\n"  // l:252
+"        // initial values\n"  // l:253
+"        arg_offset = arg_offsets[11];\n"  // l:254
+"        arg_offset += gl_VertexID * vertex_stride;\n"  // l:255
+"\n"  // l:256
+"        uint COL0VCD  = bitfieldExtract(VCD_lo, 13, 2);\n"  // l:257
+"        bool COL0CNT  = bitfieldExtract(VAT_A, 13, 1) != 0;\n"  // l:258
+"        uint COL0FMT  = bitfieldExtract(VAT_A, 14, 3);\n"  // l:259
+"\n"  // l:260
+"        vec4 color;\n"  // l:261
+"\n"  // l:262
+"        if (COL0VCD > 1) {\n"  // l:263
+"            // indirect data\n"  // l:264
+"            data_offset = data_offsets[11];\n"  // l:265
+"\n"  // l:266
+"            int color_index;\n"  // l:267
+"            if (COL0VCD == 2) {\n"  // l:268
+"                color_index = read8s_args(arg_offset);\n"  // l:269
+"            }\n"  // l:270
+"            else {\n"  // l:271
+"                color_index = read16s_args(arg_offset);\n"  // l:272
+"            }\n"  // l:273
+"\n"  // l:274
+"            data_offset += color_index * array_strides[11 - draw_arg_POS];\n"  // l:275
+"\n"  // l:276
+"            // always get 4 color value, determine actual value later\n"  // l:277
+"            switch (COL0FMT) {\n"  // l:278
+"                case 0:  // 16bit rgb565\n"  // l:279
+"                    utemp = read16_data(data_offset);\n"  // l:280
+"                    color.x = bitfieldExtract(utemp, 0, 5);\n"  // l:281
+"                    color.y = bitfieldExtract(utemp, 4, 6);\n"  // l:282
+"                    color.z = bitfieldExtract(utemp, 10, 5);\n"  // l:283
+"                    color /= 32.0;\n"  // l:284
+"                    color.y *= 0.5; // extra bit\n"  // l:285
+"                    color.w = 1.0;\n"  // l:286
+"                    break;\n"  // l:287
+"                case 1:  // 24bit rgb888\n"  // l:288
+"                    utemp = read32_data(data_offset);\n"  // l:289
+"                    color = unpackUnorm4x8(utemp).wzyx;  // BE to LE\n"  // l:290
+"                    color.w = 1.0;  // 3 colors\n"  // l:291
+"                    // already normalized\n"  // l:292
+"                    break;\n"  // l:293
+"                case 2:  // 32bit rgb888x\n"  // l:294
+"                    utemp = data[data_offset >> 2];  // data is 4 aligned\n"  // l:295
+"                    color = unpackUnorm4x8(utemp);\n"  // l:296
+"                    color.w = 1.0;  // 3 colors\n"  // l:297
+"                    // already normalized\n"  // l:298
+"                    break;\n"  // l:299
+"                case 3:  // 16bit rgba4444\n"  // l:300
+"                    utemp = read16_data(data_offset);\n"  // l:301
+"                    color.x = bitfieldExtract(utemp, 0, 4);\n"  // l:302
+"                    color.y = bitfieldExtract(utemp, 3, 4);\n"  // l:303
+"                    color.z = bitfieldExtract(utemp, 7, 4);\n"  // l:304
+"                    color.w = bitfieldExtract(utemp, 11, 4);\n"  // l:305
+"                    color /= 16.0;  // normalize\n"  // l:306
+"                    break;\n"  // l:307
+"                case 4:  // 24bit rgba6666\n"  // l:308
+"                    utemp = read32_data(data_offset);\n"  // l:309
+"                    color.x = bitfieldExtract(utemp, 0, 6);\n"  // l:310
+"                    color.y = bitfieldExtract(utemp, 5, 6);\n"  // l:311
+"                    color.z = bitfieldExtract(utemp, 11, 6);\n"  // l:312
+"                    color.w = bitfieldExtract(utemp, 17, 6);\n"  // l:313
+"                    color /= 64.0;  // normalize\n"  // l:314
+"                    break;\n"  // l:315
+"                case 5:  // 32bit rgba8888\n"  // l:316
+"                    utemp = data[data_offset >> 2];  // data is 4 aligned\n"  // l:317
+"                    color = unpackUnorm4x8(utemp);\n"  // l:318
+"                    // already normalized\n"  // l:319
+"                    break;\n"  // l:320
+"                default:\n"  // l:321
+"                    break;\n"  // l:322
+"            }\n"  // l:323
+"        }\n"  // l:324
+"        else {\n"  // l:325
+"            switch (COL0FMT) {\n"  // l:326
+"                case 0:  // 16bit rgb565\n"  // l:327
+"                    utemp = read16_args(arg_offset);\n"  // l:328
+"                    color.x = bitfieldExtract(utemp, 0, 5);\n"  // l:329
+"                    color.y = bitfieldExtract(utemp, 4, 6);\n"  // l:330
+"                    color.z = bitfieldExtract(utemp, 10, 5);\n"  // l:331
+"                    color /= 32.0;\n"  // l:332
+"                    color.y *= 0.5;  // extra bit\n"  // l:333
+"                    color.w = 1.0;\n"  // l:334
+"                    break;\n"  // l:335
+"                case 1:  // 24bit rgb888\n"  // l:336
+"                case 2:  // 32bit rgb888x\n"  // l:337
+"                    utemp = read32_args(arg_offset);\n"  // l:338
+"                    color = unpackUnorm4x8(utemp).wzyx;  // BE to LE\n"  // l:339
+"                    color.w = 1.0;  // 3 colors\n"  // l:340
+"                    // already normalized\n"  // l:341
+"                    break;\n"  // l:342
+"                case 3:  // 16bit rgba4444\n"  // l:343
+"                    utemp = read16_args(arg_offset);\n"  // l:344
+"                    color.x = bitfieldExtract(utemp, 0, 4);\n"  // l:345
+"                    color.y = bitfieldExtract(utemp, 3, 4);\n"  // l:346
+"                    color.z = bitfieldExtract(utemp, 7, 4);\n"  // l:347
+"                    color.w = bitfieldExtract(utemp, 11, 4);\n"  // l:348
+"                    color /= 16.0;  // normalize\n"  // l:349
+"                    break;\n"  // l:350
+"                case 4:  // 24bit rgba6666\n"  // l:351
+"                    utemp = read32_args(arg_offset);\n"  // l:352
+"                    color.x = bitfieldExtract(utemp, 0, 6);\n"  // l:353
+"                    color.y = bitfieldExtract(utemp, 5, 6);\n"  // l:354
+"                    color.z = bitfieldExtract(utemp, 11, 6);\n"  // l:355
+"                    color.w = bitfieldExtract(utemp, 17, 6);\n"  // l:356
+"                    color /= 64.0;  // normalize\n"  // l:357
+"                    break;\n"  // l:358
+"                case 5:  // 32bit rgba8888\n"  // l:359
+"                    utemp = read32_args(arg_offset);\n"  // l:360
+"                    color = unpackUnorm4x8(utemp).wzyx;  // BE to LE\n"  // l:361
+"                    // already normalized\n"  // l:362
+"                    break;\n"  // l:363
+"                default:\n"  // l:364
+"                    break;\n"  // l:365
+"            }\n"  // l:366
+"        }\n"  // l:367
+"\n"  // l:368
+"        // todo: I am not sure if COLCNT really does anything, but just to be sure\n"  // l:369
+"        vertexColor = color;\n"  // l:370
+"        if (!COL0CNT) color.w = 1.0;\n"  // l:371
+"#ifdef DEBUG\n"  // l:372
+"//        if (position.y > 29) {\n"  // l:373
+"//            vertexColor = vec4(0.0, 1.0, 0.0, 1.0);\n"  // l:374
+"//        }\n"  // l:375
+"//        else {\n"  // l:376
+"//            vertexColor = vec4(1.0, 0.0, 0.0, 1.0);\n"  // l:377
+"//        }\n"  // l:378
+"#endif\n"  // l:379
+"    }\n"  // l:380
+"\n"  // l:381
+"    /* load texture data */\n"  // l:382
+"    textureData = 0;\n"  // l:383
+"    for (int i = 0; i < 8; i++) {\n"  // l:384
+"        if (arg_offsets[13 + i] >= 0) {\n"  // l:385
+"            // load texture specific data\n"  // l:386
+"            textureData = 1u | (uint(i) << 1);\n"  // l:387
+"            textureOffset = data_offsets[i];\n"  // l:388
+"\n"  // l:389
+"            // load texture coordinate (same as position basically)\n"  // l:390
+"            arg_offset = arg_offsets[13 + i];\n"  // l:391
+"            arg_offset += gl_VertexID * vertex_stride;\n"  // l:392
+"\n"  // l:393
+"            uint TEXVCD = bitfieldExtract(VCD_hi, 2 * i, 2);\n"  // l:394
+"            bool TEXCNT;\n"  // l:395
+"            uint TEXFMT;\n"  // l:396
+"            uint TEXSHFT;\n"  // l:397
+"            switch (i) {\n"  // l:398
+"                case 0:\n"  // l:399
+"                    // TEX0 is in VAT_A\n"  // l:400
+"                    TEXCNT = bitfieldExtract(VAT_A, 21, 1) != 0;\n"  // l:401
+"                    TEXFMT = bitfieldExtract(VAT_A, 22, 3);\n"  // l:402
+"                    TEXSHFT = bitfieldExtract(VAT_A, 25, 5);\n"  // l:403
+"                    break;\n"  // l:404
+"                case 1:\n"  // l:405
+"                case 2:\n"  // l:406
+"                case 3:\n"  // l:407
+"                    // TEX1-3 are fully in VAT_B\n"  // l:408
+"                    TEXCNT = bitfieldExtract(VAT_B, 9 * (i - 1), 1) != 0;\n"  // l:409
+"                    TEXFMT = bitfieldExtract(VAT_B, 9 * (i - 1) + 1, 3);\n"  // l:410
+"                    TEXSHFT = bitfieldExtract(VAT_B, 9 * (i - 1) + 4, 5);\n"  // l:411
+"                    break;\n"  // l:412
+"                case 4:\n"  // l:413
+"                    // TEX4 is partly in VAT_B, partly in VAT_C\n"  // l:414
+"                    TEXCNT = bitfieldExtract(VAT_B, 27, 1) != 0;\n"  // l:415
+"                    TEXFMT = bitfieldExtract(VAT_B, 28, 3);\n"  // l:416
+"                    TEXSHFT = bitfieldExtract(VAT_C, 0, 5);\n"  // l:417
+"                    break;\n"  // l:418
+"                case 5:\n"  // l:419
+"                case 6:\n"  // l:420
+"                case 7:\n"  // l:421
+"                    // TEX5-7 are fully in VAT_C\n"  // l:422
+"                    TEXCNT = bitfieldExtract(VAT_C, 5 + 9 * (i - 5), 1) != 0;\n"  // l:423
+"                    TEXFMT = bitfieldExtract(VAT_C, 5 + 9 * (i - 5) + 1, 3);\n"  // l:424
+"                    TEXSHFT = bitfieldExtract(VAT_C, 5 + 9 * (i - 5) + 4, 5);\n"  // l:425
+"                default:\n"  // l:426
+"                    // invalid texture format\n"  // l:427
+"                    break;\n"  // l:428
+"            }\n"  // l:429
+"\n"  // l:430
+"            vec3 read_tex_coord;\n"  // l:431
+"\n"  // l:432
+"            if (TEXVCD > 1) {\n"  // l:433
+"                // indirect data\n"  // l:434
+"                data_offset = data_offsets[13 + i];\n"  // l:435
+"\n"  // l:436
+"                // determine the GC texture coordiante index\n"  // l:437
+"                int tex_coord_index;\n"  // l:438
+"                if (TEXVCD == 2) {\n"  // l:439
+"                    tex_coord_index = read8s_args(arg_offset);\n"  // l:440
+"                }\n"  // l:441
+"                else {\n"  // l:442
+"                    tex_coord_index = read16s_args(arg_offset);\n"  // l:443
+"                }\n"  // l:444
+"\n"  // l:445
+"                data_offset += tex_coord_index * array_strides[13 + i - draw_arg_POS];\n"  // l:446
+"\n"  // l:447
+"                read_tex_coord = load_position(true, TEXFMT, data_offset);\n"  // l:448
+"            }\n"  // l:449
+"            else {\n"  // l:450
+"                read_tex_coord = load_position(false, TEXFMT, arg_offset);\n"  // l:451
+"            }\n"  // l:452
+"\n"  // l:453
+"            read_tex_coord.z = 0;  // 2D at most\n"  // l:454
+"            if (!TEXCNT) {\n"  // l:455
+"                read_tex_coord.y = 0;  // 1D\n"  // l:456
+"            }\n"  // l:457
+"\n"  // l:458
+"            uint texidx;\n"  // l:459
+"            if (arg_offsets[1 + i] >= 0) {\n"  // l:460
+"                // texture matrix index value passed (always direct)\n"  // l:461
+"                texidx = read8_args(arg_offsets[1 + i]);\n"  // l:462
+"            }\n"  // l:463
+"            else {\n"  // l:464
+"                if (i < 4)  {\n"  // l:465
+"                    // TEX0-3 in MATIDX_REG_A\n"  // l:466
+"                    texidx = bitfieldExtract(MATIDX_REG_A, 6 * (i + 1), 6);\n"  // l:467
+"                }\n"  // l:468
+"                else {\n"  // l:469
+"                    // TEX4-7 in MATIDX_REG_B\n"  // l:470
+"                    texidx = bitfieldExtract(MATIDX_REG_B, 6 * (i - 4), 6);\n"  // l:471
+"                }\n"  // l:472
+"            }\n"  // l:473
+"\n"  // l:474
+"            texCoord = transform_tex(read_tex_coord, texidx).xy;\n"  // l:475
+"            break;\n"  // l:476
+"        }\n"  // l:477
+"    }\n"  // l:478
+"}\n"  // l:479
+"\n"  // l:480
 ;
 
 #endif  // GC__SHADER_H

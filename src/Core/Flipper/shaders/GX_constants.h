@@ -67,4 +67,10 @@ typedef enum e_impossible_color {
     impossible_V = 137
 } e_impossible_color;
 
+#define DRAW_COMMAND_ARG_BUFFER_SIZE 0x80000  // Way more than we found in our calculation, but that's fine
+
+// independent of draw command size:
+#define DRAW_COMMAND_DATA_BUFFER_SIZE 0x80000  // this should be increased for more complex draw commands
+#define DRAW_COMMAND_TEXTURE_BUFFER_SIZE 0x100000
+
 #endif //GC__GX_CONSTANTS_H

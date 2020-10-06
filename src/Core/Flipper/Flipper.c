@@ -45,12 +45,9 @@ void init_Flipper(s_Flipper* flipper) {
     flipper->CP = &flipper->system->HW_regs.CP;
     flipper->VI = &flipper->system->HW_regs.VI;
 
-    flipper->screen_width = GAMECUBE_SCREEN_WIDTH;
-    flipper->screen_height = GAMECUBE_SCREEN_HEIGHT;
-
     int i = 0;
     for (u16 v = 0; i + 6 < FLIPPER_QUAD_INDEX_ARRAY_SIZE; v += 4) {
-        // triangle fan structure
+        // triangle fan-like structure
         quad_EBO[i++] = v;
         quad_EBO[i++] = v + 1;
         quad_EBO[i++] = v + 2;
@@ -289,8 +286,8 @@ static inline void wait_for_fence(s_Flipper* flipper) {
 
 static inline bool efb_dimensions_changed(s_Flipper* flipper) {
     // returns wheter the dimensions have been changed
-    u32 width  = (flipper->CP->internal_BP_regs[BP_reg_int_EFB_dimensions] & 0x2ff) + 1;
-    u32 height = ((flipper->CP->internal_BP_regs[BP_reg_int_EFB_dimensions] >> 10) & 0x2ff) + 1;
+    u32 width  = (flipper->CP->internal_registers.BP_regs[BP_reg_int_EFB_dimensions] & 0x3ff) + 1;
+    u32 height = ((flipper->CP->internal_registers.BP_regs[BP_reg_int_EFB_dimensions] >> 10) & 0x3ff) + 1;
 
     if (width == 1) {
         width = 640;  // default
@@ -321,6 +318,7 @@ static void update_efb(s_Flipper* flipper) {
     glBindTexture(GL_TEXTURE_2D, flipper->efb_texture);
     // set width to width / 2, in the shader we determine whether we are in the left or right pixel
 
+    acquire_mutex(&flipper->CP->efb_lock);
     if (efb_dimensions_changed(flipper)) {
         // reallocate texture on size change
         glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA, flipper->efb_width >> 1, flipper->efb_height, 0,
@@ -331,6 +329,7 @@ static void update_efb(s_Flipper* flipper) {
         glTexSubImage2D(GL_TEXTURE_2D, 0, 0, 0, flipper->efb_width >> 1, flipper->efb_height, GL_RGBA,
                      GL_UNSIGNED_BYTE, flipper->memory + EFB_addr);
     }
+    release_mutex(&flipper->CP->efb_lock);
 
     // unbind
     glActiveTexture(0);
@@ -354,8 +353,9 @@ static void Flipper_frameswap(s_Flipper* flipper, u16 pe_copy_command) {
 
     if (pe_copy_command & PE_copy_clear) {
         // clear (emulator) framebuffer to the backdrop color
-        u16 AR = (u16)flipper->CP->internal_BP_regs[BP_reg_int_PE_copy_clear_AR];
-        u16 GB = (u16)flipper->CP->internal_BP_regs[BP_reg_int_PE_copy_clear_GB];
+        // use color at the time of the current draw command
+        u16 AR = (u16)flipper->CP->register_data[flipper->draw_command_index].BP_regs[BP_reg_int_PE_copy_clear_AR];
+        u16 GB = (u16)flipper->CP->register_data[flipper->draw_command_index].BP_regs[BP_reg_int_PE_copy_clear_GB];
 
         glClearColor((float)(AR & 0xff) / 255.0, (float)(GB >> 8) / 255.0, (float)(GB & 0xff) / 255.0, (float)(AR >> 8) / 255.0);
         glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
@@ -368,11 +368,16 @@ static const GLenum draw_commands[8] = {
         GL_TRIANGLE_FAN, GL_LINES, GL_LINE_STRIP, GL_POINTS
 };
 
-void draw_Flipper(s_Flipper* flipper, s_draw_command* command, s_texture_data* texture_data) {
+void draw_Flipper(s_Flipper* flipper, s_draw_command* command, s_CP_register_data* registers, s_texture_data* texture_data) {
     acquire_mutex(&flipper->CP->draw_lock);
     glBindVertexArray(flipper->draw_VAO);
 
     // buffer command data
+    /*
+     * Because we don't use all the data in the shader, we actually buffer a few bytes too many
+     * I don't really care about this, calculating how many bytes less is probably slower than just buffering those
+     * few extra ones.
+     * */
     glBindBuffer(GL_SHADER_STORAGE_BUFFER, flipper->command_SSBO);
     glBufferData(
             GL_SHADER_STORAGE_BUFFER,
@@ -402,8 +407,8 @@ void draw_Flipper(s_Flipper* flipper, s_draw_command* command, s_texture_data* t
     glBindBuffer(GL_SHADER_STORAGE_BUFFER, flipper->BP_SSBO);
     glBufferData(
             GL_SHADER_STORAGE_BUFFER,
-            sizeof(flipper->CP->internal_BP_regs),
-            &flipper->CP->internal_BP_regs,
+            sizeof(registers->BP_regs),
+            &registers->BP_regs,
             GL_STATIC_COPY
     );
 
@@ -412,12 +417,12 @@ void draw_Flipper(s_Flipper* flipper, s_draw_command* command, s_texture_data* t
     glBindBuffer(GL_SHADER_STORAGE_BUFFER, flipper->XF_SSBO);
     glBufferData(
             GL_SHADER_STORAGE_BUFFER,
-            sizeof(flipper->CP->internal_XF_mem) + sizeof(flipper->CP->internal_XF_regs),
-            &flipper->CP->internal_XF_mem,
+            sizeof(registers->XF_mem) + sizeof(registers->XF_regs),
+            &registers->XF_mem,
             GL_STATIC_COPY
     );
 
-    log_flipper("loaded %lx bytes of XF data", sizeof(flipper->CP->internal_XF_mem) + sizeof(flipper->CP->internal_XF_regs));
+    log_flipper("loaded %lx bytes of XF data", sizeof(flipper->CP->internal_registers.XF_mem) + sizeof(flipper->CP->internal_registers.XF_regs));
 
     glBindBuffer(GL_SHADER_STORAGE_BUFFER, 0);
     glUseProgram(flipper->draw_program);
@@ -513,14 +518,15 @@ struct s_framebuffer render_Flipper(s_Flipper* flipper, u32 time_left) {
         // from the first if statement, we know at least one draw command is available
         do {
             log_flipper("Processing draw command %02x @%d",
-                        flipper->CP->draw_command_queue[flipper->draw_command_index].command,
+                        flipper->CP->draw_command_data[flipper->draw_command_index].command,
                         flipper->draw_command_index
             );
 
             // draw and set draw command slot to available in CP
             draw_Flipper(
                     flipper,
-                    &flipper->CP->draw_command_queue[flipper->draw_command_index],
+                    &flipper->CP->draw_command_data[flipper->draw_command_index],
+                    &flipper->CP->register_data[flipper->draw_command_index],
                     &flipper->CP->texture_data[flipper->draw_command_index]
             );
 
@@ -567,12 +573,11 @@ struct s_framebuffer render_Flipper(s_Flipper* flipper, u32 time_left) {
     release_mutex(&flipper->CP->availability_lock);
 
     if (flipper->CP->force_frameswap) {
-        acquire_mutex(&flipper->CP->draw_lock);
-
         Flipper_frameswap(flipper, PE_copy_execute);
-        flipper->CP->force_frameswap = false;
 
-        release_mutex(&flipper->CP->draw_lock);
+        acquire_mutex(&flipper->CP->efb_lock);
+        flipper->CP->force_frameswap = false;
+        release_mutex(&flipper->CP->efb_lock);
     }
 
     if (flipper->fence) {
@@ -587,8 +592,8 @@ struct s_framebuffer render_Flipper(s_Flipper* flipper, u32 time_left) {
         .caller = flipper,
         .src_width = FLIPPER_FRAMEBUFFER_WIDTH,
         .src_height = FLIPPER_FRAMEBUFFER_HEIGHT,
-        .dest_width = flipper->screen_width,
-        .dest_height = flipper->screen_height
+        .dest_width = flipper->efb_width,
+        .dest_height = flipper->efb_height
     };
 }
 

@@ -3,6 +3,7 @@ import re
 import sys
 
 from warnings import warn
+from pprint import pprint
 
 try:
     import moderngl
@@ -39,8 +40,14 @@ with open(CONSTANTS, "r") as f:
     for line in f.readlines():
         match = re.match(r"^.*?(\w+).*=.*?(\w+).*$", line)
         if not match:
-            continue
+
+            match = re.match(r"^.*?#define (\w+)\s+(\w+).*$", line)
+            if not match:
+                continue
         constants[match.group(1)] = match.group(2)
+
+print("Found the following constants:")
+pprint(constants)
 
 for file in os.listdir(SHADER_DIR):
     with open(os.path.join(SHADER_DIR, file), "r") as f:

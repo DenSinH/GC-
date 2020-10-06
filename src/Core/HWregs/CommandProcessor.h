@@ -255,30 +255,25 @@ typedef union s_SETIMAGE0_I {
  *
  *  I will also only keep track of the offsets for the arguments into the data array for only the
  *  non-matrix index arguments
+ *
+ *  THE VALUES I TALKED ABOUT HERE ARE DEFINED IN Flipper/shaders/GX_constants.h,
+ *  I need them in the shaders, but it is most relevant in the CommandProcessor context
  * */
 
-#define DRAW_COMMAND_ARG_BUFFER_SIZE 0x1140
-
-// independent of draw command size:
-#define DRAW_COMMAND_DATA_BUFFER_SIZE 0x80000  // this should be increased for more complex draw commands
-#define DRAW_COMMAND_TEXTURE_BUFFER_SIZE 0x100000
-
 typedef struct s_draw_command {
-    u32 vertices;              // number of vertices
-    u32 command;               // actual command
     u32 vertex_stride;         // stride for one whole vertex
     i32 arg_offset[21];        // strides for arguments into the args array
     i32 data_offset[21];       // might be negative for correcting for min index
     u32 data_stride[21];       // ARRAY_STRIDE registers
-    u32 data_size;             // to save space copying it to the GPU, this is variable in the shader anyways
     u8 args[DRAW_COMMAND_ARG_BUFFER_SIZE];
     u8 data[DRAW_COMMAND_DATA_BUFFER_SIZE];
-} s_draw_command;
 
-typedef struct s_texture_data {
-    u32 data_size;
-    u8 data[DRAW_COMMAND_TEXTURE_BUFFER_SIZE];
-} s_texture_data;
+    /* data unused in shader: */
+    u16 vertices;              // number of vertices
+    e_CP_cmd command;          // actual command
+    u32 arg_size;              // to merge draw commands, this variable is in here
+    u32 data_size;             // to save space copying it to the GPU, this is variable in the shader anyways
+} s_draw_command;
 
 #define INTERNAL_CP_REGISTER_SIZE 0xa0
 #define INTERNAL_CP_REGISTER_BASE 0x20
@@ -286,10 +281,31 @@ typedef struct s_texture_data {
 #define INTERNAL_XF_REGISTER_SIZE 0x58
 #define INTERNAL_XF_MEM_SIZE 0x100
 #define INTERNAL_XF_REGISTER_BASE 0x1000
+
+typedef struct s_CP_register_data {
+    u32 CP_regs[INTERNAL_CP_REGISTER_SIZE];
+    u32 BP_regs[INTERNAL_BP_REGISTER_SIZE];
+    // ORDER IS IMPORTANT FOR THESE 2 FIELDS (passed to GPU)
+    u32 XF_mem[4][INTERNAL_XF_MEM_SIZE];    // 4 regions, A, B, C, D
+    u32 XF_regs[INTERNAL_XF_REGISTER_SIZE];
+    /*
+     * Region A: position matrix memory (0x100 words)
+     * Region B: normal matrix memory (0x20 * 3 words)
+     * Region C: dual texture transform matrices (64 * 4 words)
+     * Region D: light memory (only 20 msbits for each word, minimum 3 word write, 0x80 words)
+     * */
+} s_CP_register_data;
+
+typedef struct s_texture_data {
+    u32 data_size;
+    u8 data[DRAW_COMMAND_TEXTURE_BUFFER_SIZE];
+} s_texture_data;
+
 #define MAX_DRAW_COMMANDS 128
 
 #define CP_SHIFT 1
-#define current_draw_command draw_command_queue[CP->draw_command_index]
+#define current_draw_command draw_command_data[CP->draw_command_index]
+#define current_register_data register_data[CP->draw_command_index]
 #define current_texture_data texture_data[CP->draw_command_index]
 
 typedef struct s_CP {
@@ -305,31 +321,33 @@ typedef struct s_CP {
     s_PE* PE;
     s_VI* VI;
 
-    u32 internal_CP_regs[INTERNAL_CP_REGISTER_SIZE];
-    u32 internal_BP_regs[INTERNAL_BP_REGISTER_SIZE];
-    // ORDER IS IMPORTANT FOR THESE 2 FIELDS (passed to GPU)
-    u32 internal_XF_mem[4][INTERNAL_XF_MEM_SIZE];    // 4 regions, A, B, C, D
-    u32 internal_XF_regs[INTERNAL_XF_REGISTER_SIZE];
-    /*
-     * Region A: position matrix memory (0x100 words)
-     * Region B: normal matrix memory (0x20 * 3 words)
-     * Region C: dual texture transform matrices (64 * 4 words)
-     * Region D: light memory (only 20 msbits for each word, minimum 3 word write, 0x80 words)
-     * */
+    s_CP_register_data internal_registers;
 
     e_CP_cmd command;
+    u16 current_vertices;  // amount of vertices for the current draw command being sent
+    /* prev is set to current command whenever a new command is sent
+     * if any relevant registers change, set it to 0
+     * whenever a new command is sent, if it is the same as the previous one,
+     * and enough space is left in the buffers
+     * keep using that command to add new vertex data
+     *
+     * whenever a frameswap is triggered, also set it to 0
+     *
+     * Doing this prevents waiting on free draw command spots whenever draw commands can be merged
+     * */
+    e_CP_cmd prev;
     bool fetching;  // true: needs args; false: needs command;
 
     // put arguments in a buffer, also in serial
     u8 args[32 * 32];  // length for normal commands is limited to 16 (times 32 bits), so we need more than this
     u32 argc;
 
-    // todo: draw_command_mid, large
     u8 arg_size[21]; // sizes of individual (direct) arguments of current draw command
-    s_draw_command draw_command_queue[MAX_DRAW_COMMANDS];
+    s_draw_command draw_command_data[MAX_DRAW_COMMANDS];
+    s_CP_register_data register_data[MAX_DRAW_COMMANDS];
     s_texture_data texture_data[MAX_DRAW_COMMANDS];
 
-    mutex availability_lock, draw_lock;
+    mutex availability_lock, draw_lock, efb_lock;
     wait_event draw_commands_ready, draw_command_spot_available;
 
     // these values are also read/set by flipper
@@ -354,7 +372,7 @@ static inline u32 get_CP_reg(s_CP* CP, e_CP_regs reg_hi, e_CP_regs reg_lo) {
 }
 
 static inline u32 get_internal_CP_reg(s_CP* CP, e_CP_regs_internal reg) {
-    return CP->internal_CP_regs[reg - INTERNAL_CP_REGISTER_BASE];
+    return CP->internal_registers.CP_regs[reg - INTERNAL_CP_REGISTER_BASE];
 }
 
 static inline void set_CP_reg(s_CP* CP, e_CP_regs reg_hi, e_CP_regs reg_lo, u32 value) {

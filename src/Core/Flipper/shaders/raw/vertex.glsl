@@ -15,18 +15,19 @@ const int extract_offset[4] = { 0, 8, 16, 24 };
 
 layout (std430, binding = 3) readonly buffer command_SSBO
 {
-    uint vertices;
-    uint _command;
     uint vertex_stride;
     int arg_offsets[21];
     int data_offsets[21];
     uint array_strides[21];
-    uint _cmd_data_size;  // data_size: I don't actually need this in the shader
-    uint args[0x1140 >> 2];     // todo: generalize this
+    uint args[++DRAW_COMMAND_ARG_BUFFER_SIZE++ >> 2];
     uint data[];
 };
 
 out vec4 vertexColor;
+// signal that the vertex that was sent was invalid
+// this is used for vertices that are not supposed to connect for triangle strips/fans and linestrips
+// we signal this by filling args with 0xff for that vertex
+flat out uint invalidVertex;
 
 flat out uint textureData;
 flat out uint textureOffset;

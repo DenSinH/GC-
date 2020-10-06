@@ -24,9 +24,12 @@ SCHEDULER_EVENT(CP_frameswap_event) {
     s_CP* CP = (s_CP*)caller;
 
     if (!CP->PE_copy_frameswap) {
-        acquire_mutex(&CP->draw_lock);
+        acquire_mutex(&CP->efb_lock);
         CP->force_frameswap = true;
-        release_mutex(&CP->draw_lock);
+
+        // forcing a frameswap requires us to finish the draw command we are doing, and not merge any more
+        CP->prev = 0;
+        release_mutex(&CP->efb_lock);
     }
     else {
         // reset for next frame
@@ -52,6 +55,7 @@ HW_REG_INIT_FUNCTION(CP) {
 
     create_mutex(&CP->availability_lock, false);
     create_mutex(&CP->draw_lock, false);
+    create_mutex(&CP->efb_lock, false);
 
     create_wait_event(&CP->draw_commands_ready, false);
 
@@ -65,15 +69,18 @@ HW_REG_INIT_FUNCTION(CP) {
     };
     add_event(&CP->system->scheduler, &CP->frameswap_event);
 
-//    for (int i = 0; i < 8; i++) {
-//        CP->draw_argc_valid[i] = true;
-//    }
+    // set first draw command to have all arguments disabled
+    // we only send draw commands when a new one is sent, so the very first draw command we send should be empty
+    // setting this allows us to not do an extra check for this, and just run the code normally
+    memset(&CP->draw_command_data[0].arg_offset, 0xff, sizeof(CP->draw_command_data[0].arg_offset));
+    CP->draw_command_data[0].vertices = 0;
 }
 
 void destroy_CP(s_CP* CP) {
     // release all mutexes
     if (owns_mutex(&CP->availability_lock)) release_mutex(&CP->availability_lock);
     if (owns_mutex(&CP->draw_lock))         release_mutex(&CP->draw_lock);
+    if (owns_mutex(&CP->efb_lock))          release_mutex(&CP->efb_lock);
 }
 
 // indexed by VAT.POSCNT, VAT.POSFMT
@@ -159,30 +166,35 @@ void update_CP_draw_argc(s_CP* CP, int format) {
 
 static inline void load_CP_reg(s_CP* CP, u8 RID, u32 value) {
     log_cp("Load CP register %02x with %08x", RID, value);
-    acquire_mutex(&CP->draw_lock);
 #ifdef CHECK_CP_COMMAND
     assert(RID - INTERNAL_CP_REGISTER_BASE < INTERNAL_CP_REGISTER_SIZE  /* invalid RID for CP command */);
 #endif
-    CP->internal_CP_regs[RID - INTERNAL_CP_REGISTER_BASE] = value;
-//    if (RID >= 0x50 && RID < 0x98) {
-//        // invalidate argc because of VAT/VCD update
-//        CP->draw_argc_valid[RID & 7] = false;
-//    }
-    release_mutex(&CP->draw_lock);
+    if ((RID >= 0xa0) || (RID >= 0x50 && RID < 0x98 && (RID & 7) == (CP->prev & 7))) {
+        if (CP->internal_registers.CP_regs[RID - INTERNAL_CP_REGISTER_BASE] != value) {
+            // invalidate arg merging because of VAT/VCD update
+            CP->prev = 0;
+        }
+    }
+    CP->internal_registers.CP_regs[RID - INTERNAL_CP_REGISTER_BASE] = value;
 }
 
 const static u8 XF_addr_to_section[] = { 0, 0xff, 0xff, 0xff, 1, 2, 3, 0xff };
 
 static inline void load_XF_regs(s_CP* CP, u16 length, u16 base_addr, const u8* values_buffer) {
     log_cp("Load %d XF registers starting at %04x (first value %08x)", length, base_addr, READ32(values_buffer, 0));
-    acquire_mutex(&CP->draw_lock);
 
     if (base_addr > INTERNAL_XF_REGISTER_BASE) {
 #ifdef CHECK_CP_COMMAND
         assert(base_addr - INTERNAL_XF_REGISTER_BASE + length <= INTERNAL_XF_REGISTER_SIZE  /* invalid RID for CP command */);
 #endif
         for (int i = 0; i < length; i++) {
-            CP->internal_XF_regs[base_addr + i - INTERNAL_XF_REGISTER_BASE] = READ32(values_buffer, i << 2);
+            u32 value = READ32(values_buffer, i << 2);
+            if (CP->internal_registers.XF_regs[base_addr + i - INTERNAL_XF_REGISTER_BASE] != value) {
+                // invalidate draw merging because of XF update
+                CP->prev = 0;
+            }
+
+            CP->internal_registers.XF_regs[base_addr + i - INTERNAL_XF_REGISTER_BASE] = value;
         }
     }
     else {
@@ -192,11 +204,16 @@ static inline void load_XF_regs(s_CP* CP, u16 length, u16 base_addr, const u8* v
          * */
         u8 section = XF_addr_to_section[base_addr >> 8];
         for (int i = 0; i < length; i++) {
-            log_cp("loaded %08x", READ32(values_buffer, i << 2));
-            CP->internal_XF_mem[section][(base_addr & 0xff) + i] = READ32(values_buffer, i << 2);
+            u32 value = READ32(values_buffer, i << 2);
+            log_cp("loaded %08x", value);
+            if (CP->internal_registers.XF_mem[section][(base_addr & 0xff) + i] != value) {
+                // invalidate draw merging because of XF update
+                CP->prev = 0;
+            }
+
+            CP->internal_registers.XF_mem[section][(base_addr & 0xff) + i] = value;
         }
     }
-    release_mutex(&CP->draw_lock);
 }
 
 static inline void load_INDX(s_CP* CP, e_CP_cmd opcode, u16 index, u8 length, u16 base_addr) {
@@ -227,6 +244,10 @@ static const u8 tex_fmt_shft[16] = {
 };
 
 static inline void send_draw_command(s_CP* CP) {
+    /*
+     * When merging commands, the same texture configuration is used for all commands
+     * Therefore, it is unnecessary to keep stacking texture data
+     * */
     u32 texture_offset = 0;
 
     // arguments 0 - draw_arg_POS are all always direct (they are indices)
@@ -240,8 +261,8 @@ static inline void send_draw_command(s_CP* CP) {
         }
 
         CP->current_draw_command.data_offset[i] = texture_offset;
-        s_SETIMAGE0_I setimage0_i = (s_SETIMAGE0_I) { .raw = CP->internal_BP_regs[BP_reg_int_TEX_SET_IMAGE0_l_BASE + i] };
-        u32 main_mem_offset = (CP->internal_BP_regs[BP_reg_int_TEX_SET_IMAGE3_l_BASE + i] & 0x00ffffff) << 5;
+        s_SETIMAGE0_I setimage0_i = (s_SETIMAGE0_I) { .raw = CP->internal_registers.BP_regs[BP_reg_int_TEX_SET_IMAGE0_l_BASE + i] };
+        u32 main_mem_offset = (CP->internal_registers.BP_regs[BP_reg_int_TEX_SET_IMAGE3_l_BASE + i] & 0x00ffffff) << 5;
         u32 data_length = (((setimage0_i.width + 1) * (setimage0_i.height + 1)) << tex_fmt_shft[setimage0_i.format]) >> 1;
 
         memcpy(&CP->current_texture_data.data + texture_offset, CP->system->memory + main_mem_offset, data_length);
@@ -257,6 +278,7 @@ static inline void send_draw_command(s_CP* CP) {
     CP->current_texture_data.data_size = texture_offset;
 
     // we still need to buffer the indirect data, we do that here as well
+    // similar argument as for texture_data with regards to argument "stacking"
     u32 data_offset = 0;
     size_t stride, size;
     i16 min_index, max_index;
@@ -278,6 +300,7 @@ static inline void send_draw_command(s_CP* CP) {
         }
         i16 index;
         // loop over arguments corresponding to array indices for <draw_arg>
+        // loop over ALL vertices in the draw command, not just the one from the most recent one (merging)
         for (
             int v = CP->current_draw_command.arg_offset[draw_arg];
             v < CP->current_draw_command.arg_offset[draw_arg] + CP->current_draw_command.vertices * CP->current_draw_command.vertex_stride;
@@ -319,12 +342,6 @@ static inline void send_draw_command(s_CP* CP) {
     }
     CP->current_draw_command.data_size = data_offset;
 
-    memcpy(
-            &CP->current_draw_command.data_stride,
-            &CP->internal_CP_regs[CP_reg_int_vert_ARRAY_STRIDE - INTERNAL_CP_REGISTER_BASE],
-            12 * sizeof(u32)
-    );
-
     set_wait_event(&CP->draw_commands_ready);
 }
 
@@ -335,8 +352,8 @@ static inline void call_DL(s_CP* CP, u32 list_addr, u32 list_size) {
 
 static inline void XFB_copy(s_CP* CP, u16 command) {
     log_cp("Copying XFB -> EFB");
-    u32 width  = (CP->internal_BP_regs[BP_reg_int_EFB_dimensions] & 0x2ff) + 1;
-    u32 height = ((CP->internal_BP_regs[BP_reg_int_EFB_dimensions] >> 10) & 0x2ff) + 1;
+    u32 width  = (CP->internal_registers.BP_regs[BP_reg_int_EFB_dimensions] & 0x3ff) + 1;
+    u32 height = ((CP->internal_registers.BP_regs[BP_reg_int_EFB_dimensions] >> 10) & 0x3ff) + 1;
 
     if (width == 0) {
         width = 640;  // default
@@ -346,10 +363,11 @@ static inline void XFB_copy(s_CP* CP, u16 command) {
         height = 480;  // default
     }
 
-    u32 XFB_addr = (CP->internal_BP_regs[BP_reg_int_XFB_address] & 0x00ffffff) << 5;
+    u32 XFB_addr = (CP->internal_registers.BP_regs[BP_reg_int_XFB_address] & 0x00ffffff) << 5;
     u32 EFB_addr = READ32(CP->VI->regs, VI_reg_TFBL);
     EFB_addr &= 0x00ffffff;
 
+    acquire_mutex(&CP->efb_lock);
     if (command & PE_copy_execute) {
         if (EFB_addr) {
             // copy new data XFB -> EFB
@@ -358,7 +376,9 @@ static inline void XFB_copy(s_CP* CP, u16 command) {
             memcpy(CP->system->memory + EFB_addr, CP->system->memory + XFB_addr, width * height << 1);
         }
     }
+    release_mutex(&CP->efb_lock);
 
+    // doing stuff to the XFB doesn't need to be synced
     if (command & PE_copy_clear) {
         // clear XFB
         for (int i = 0; i < width * height << 1; i += 4) {
@@ -371,16 +391,19 @@ static inline void XFB_copy(s_CP* CP, u16 command) {
 static inline void load_BP_reg(s_CP* CP, u32 value) {
     // value contains RID _and_ value here
     log_cp("Load BP reg: %08x", value);
-    acquire_mutex(&CP->draw_lock);
 
     // RID is a byte, so it always fits into the range for the internal BP registers
     u8 RID = value >> 24;
-    CP->internal_BP_regs[RID] = value;
+    if (CP->internal_registers.BP_regs[RID] != value) {
+        // invalidate draw command merging because of BP register update
+        CP->prev = 0;
+    }
+    CP->internal_registers.BP_regs[RID] = value;
 
     switch (RID) {
         case BP_reg_int_PE_DONE:
             // check if bit 2 is set (likely) and if the PE finish interrupt is masked by PE
-            if (CP->internal_BP_regs[BP_reg_int_PE_DONE] & 0x02 && GET_PE_REG(CP->PE, PE_reg_interrupt_status) & 0x02) {
+            if (CP->internal_registers.BP_regs[BP_reg_int_PE_DONE] & 0x02 && GET_PE_REG(CP->PE, PE_reg_interrupt_status) & 0x02) {
                 // frame done
                 SET_PE_REG(CP->PE, PE_reg_token, (u16)value);
 
@@ -395,11 +418,12 @@ static inline void load_BP_reg(s_CP* CP, u32 value) {
             CP->frameswap[CP->draw_command_index] = (u16)value;
             XFB_copy(CP, value);
             CP->PE_copy_frameswap = true;
+            // doing a frameswap requires us to finish the draw command we are doing, and not merge any more
+            CP->prev = 0;
             break;
         default:
             break;
     }
-    release_mutex(&CP->draw_lock);
 }
 
 static inline void feed_CP(s_CP* CP, u8 data) {
@@ -466,26 +490,65 @@ static inline void feed_CP(s_CP* CP, u8 data) {
             // all drawing commands
             if (CP->argc == 0) {
                 CP->argc++;
-                CP->current_draw_command.vertices = data << 8;
+                CP->current_vertices = data << 8;
             }
             else if (CP->argc == 1) {
-                CP->current_draw_command.vertices |= data;
+                CP->current_vertices |= data;
+                CP->current_draw_command.vertices += CP->current_vertices;
                 CP->argc++;
-                log_cp("Expecting %d vertices", CP->current_draw_command.vertices);
+                log_cp("Expecting %d vertices", CP->current_vertices);
             }
             else {
-                CP->current_draw_command.args[CP->argc++ - 2] = data;  // first 2 bytes were number of vertices
+                // first 2 bytes were number of vertices
+                // continue from where we left off in the draw argument (from merging this might be nonzero)
+                CP->current_draw_command.args[CP->current_draw_command.arg_size + CP->argc++ - 2] = data;
 
-                if ((CP->argc - 2) == CP->current_draw_command.vertex_stride * CP->current_draw_command.vertices) {
+                if ((CP->argc - 2) == CP->current_draw_command.vertex_stride * CP->current_vertices) {
                     log_cp("Got %d bytes of draw data (including #vertices), sending command", CP->argc);
-                    send_draw_command(CP);
                     CP->fetching = false;
+
+                    // also update new argument size
+                    CP->current_draw_command.arg_size += CP->current_draw_command.vertex_stride * CP->current_vertices;
                 }
             }
             break;
         default:
             log_fatal("Invalid CP command: %08x", CP->command);
     }
+}
+
+
+static inline void clear_current_command(s_CP* CP) {
+    CP->current_draw_command.vertices = 0;
+    CP->current_draw_command.arg_size = 0;
+    // rest is irrelevant or overwritten by new command anyway
+
+    // copy over current register configuration
+    memcpy(
+            &CP->current_draw_command.data_stride,
+            &CP->internal_registers.CP_regs[CP_reg_int_vert_ARRAY_STRIDE - INTERNAL_CP_REGISTER_BASE],
+            12 * sizeof(u32)
+    );
+
+    memcpy(
+            &CP->current_register_data,
+            &CP->internal_registers,
+            sizeof(struct s_CP_register_data)
+    );
+}
+
+
+static inline bool merge_draw_commands(s_CP* CP) {
+    /* Conditions for merging:
+     * - Configuration of registers must not have changed (CP->command == CP->prev)
+     * - No frameswap must have happened (CP->command == CP->prev)
+     * - We must have room left over in our draw argument buffer
+     *      We actually know how many bytes to expect from the next draw command, so we can make it fit tightly
+     *      Multiply by 8 to still have some leeway
+     * */
+    u32 expected_arg_bytes = 8 * CP->current_draw_command.vertex_stride * CP->current_vertices;
+    return CP->command == CP->prev
+           && CP->current_draw_command.arg_size + expected_arg_bytes < DRAW_COMMAND_ARG_BUFFER_SIZE;
 }
 
 
@@ -504,42 +567,59 @@ void execute_buffer(s_CP* CP, const u8* buffer_ptr, u8 buffer_size) {
             CP->command = buffer_ptr[i++];
             CP->argc = 0;
             CP->fetching = CP->command != CP_cmd_NOP && CP->command != CP_cmd_inval_vertex_cache;
-            if (CP->command >= CP_cmd_QUADS /* && !CP->draw_argc_valid[CP->command & 7] */) {
-                // send previous draw command
-                // first draw command will be all zero's, causing nothing to be drawn
-                log_cp("Draw command %d sent", CP->draw_command_index);
-                // draw is automatically queued by setting draw_command_available to false
+            if (CP->command >= CP_cmd_QUADS) {
 
-                acquire_mutex(&CP->availability_lock);
-                CP->draw_command_available[CP->draw_command_index] = false;  // signify that draw command is used
-                if (++CP->draw_command_index == MAX_DRAW_COMMANDS) {
-                    CP->draw_command_index = 0;
-                }
+                if (!merge_draw_commands(CP)) {
+                    // send previous draw command
+                    send_draw_command(CP);
+                    // first draw command will be all zero's, causing nothing to be drawn
+                    log_cp("Draw command %d sent", CP->draw_command_index);
+                    // draw is automatically queued by setting draw_command_available to false
 
-                update_CP_draw_argc(CP, CP->command & 7);
+                    acquire_mutex(&CP->availability_lock);
+                    CP->draw_command_available[CP->draw_command_index] = false;  // signify that draw command is used
+                    if (++CP->draw_command_index == MAX_DRAW_COMMANDS) {
+                        CP->draw_command_index = 0;
+                    }
+                    clear_current_command(CP);
 
-                // check if current draw command in queue is available
-                bool draw_command_available = CP->draw_command_available[CP->draw_command_index];
+                    update_CP_draw_argc(CP, CP->command & 7);
 
-                if (!draw_command_available) {
-                    clear_wait_event(&CP->draw_command_spot_available);
-                    // release availability lock to prevent a deadlock
-                    // flipper needs the availability lock to set the draw_command_spot_available event
+                    // check if current draw command in queue is available
+                    bool draw_command_available = CP->draw_command_available[CP->draw_command_index];
                     release_mutex(&CP->availability_lock);
 
-                    wait_for_event(&CP->draw_command_spot_available);
+                    if (!draw_command_available) {
+                        // this should be thread safe anyway, no need to keep the lock here
+                        clear_wait_event(&CP->draw_command_spot_available);
+                        wait_for_event(&CP->draw_command_spot_available);
+                    }
 
-                    // re-acquire it to set the frameswap
-                    acquire_mutex(&CP->availability_lock);
+                    // clear frameswap trigger AFTER the new command is available
+                    // (this means the old command has been processed fully, and so has the frameswap)
+                    acquire_mutex(&CP->efb_lock);
+                    CP->frameswap[CP->draw_command_index] = 0;
+                    release_mutex(&CP->efb_lock);
+
+                    log_cp("Got draw command spot");
+                    // update previous command for next command to be drawn
+                    CP->prev = CP->current_draw_command.command = CP->command;
                 }
+                else {
+                    log_cp("Using previous draw command (%02x == %02x)", CP->prev, CP->command);
 
-                // clear frameswap trigger AFTER the new command is available
-                // (this means the old command has been processed fully, and so has the frameswap)
-                CP->frameswap[CP->draw_command_index] = 0;
-                release_mutex(&CP->availability_lock);
-
-                log_cp("Got draw command spot");
-                CP->current_draw_command.command = CP->command;
+                    // we don't want triangle strips/fans to connect unwantedly, so we fill this vertex's arguments
+                    // with 0xff to produce something we can't render
+                    if (((CP->command & 0xf8) == CP_cmd_TRIANGLEFAN) || ((CP->command & 0xf8) == CP_cmd_TRIANGLESTRIP)) {
+                        memset(
+                                &CP->current_draw_command.args[CP->current_draw_command.arg_size],
+                                0xff,
+                                CP->current_draw_command.vertex_stride
+                        );
+                        CP->current_draw_command.vertices++;
+                        CP->current_draw_command.arg_size += CP->current_draw_command.vertex_stride;
+                    }
+                }
             }
         }
         else {

@@ -349,28 +349,28 @@ s_GameCube* init() {
 
     for (int i = 0; i < INTERNAL_CP_REGISTER_SIZE; i++) {
         sprintf(name, "CP 0x%02x", INTERNAL_CP_REGISTER_BASE + i);
-        add_register_data(name, &global_system->HW_regs.CP.internal_CP_regs[i], 4, CP_tab);
+        add_register_data(name, &global_system->HW_regs.CP.internal_registers.CP_regs[i], 4, CP_tab);
     }
 
     int BP_tab = add_register_tab("BP regs");
 
     for (int i = 0; i < INTERNAL_BP_REGISTER_SIZE; i++) {
         sprintf(name, "BP 0x%02x", i);
-        add_register_data(name, &global_system->HW_regs.CP.internal_BP_regs[i], 4, BP_tab);
+        add_register_data(name, &global_system->HW_regs.CP.internal_registers.BP_regs[i], 4, BP_tab);
     }
 
     int XF_reg_tab = add_register_tab("XF regs");
 
     for (int i = 0; i < INTERNAL_XF_REGISTER_SIZE; i++) {
         sprintf(name, "XF 0x%02x", INTERNAL_XF_REGISTER_BASE + i);
-        add_register_data(name, &global_system->HW_regs.CP.internal_XF_regs[i], 4, XF_reg_tab);
+        add_register_data(name, &global_system->HW_regs.CP.internal_registers.XF_regs[i], 4, XF_reg_tab);
     }
 
     int XF_mem_tab = add_register_tab("XF mem");
 
     for (int i = 0; i < 0x100; i++) {
         sprintf(name, "XFA[0x%02x]", i);
-        add_register_data(name, &global_system->HW_regs.CP.internal_XF_mem[0][i], 4, XF_mem_tab);
+        add_register_data(name, &global_system->HW_regs.CP.internal_registers.XF_mem[0][i], 4, XF_mem_tab);
     }
 
     add_register_data("", NULL, 4, XF_mem_tab);
@@ -378,7 +378,7 @@ s_GameCube* init() {
 
     for (int i = 0; i < 0x60; i++) {
         sprintf(name, "XFB[0x%02x]", i);
-        add_register_data(name, &global_system->HW_regs.CP.internal_XF_mem[1][i], 4, XF_mem_tab);
+        add_register_data(name, &global_system->HW_regs.CP.internal_registers.XF_mem[1][i], 4, XF_mem_tab);
     }
 
     add_register_data("", NULL, 4, XF_mem_tab);
@@ -386,7 +386,7 @@ s_GameCube* init() {
 
     for (int i = 0; i < 0x100; i++) {
         sprintf(name, "XFC[0x%02x]", i);
-        add_register_data(name, &global_system->HW_regs.CP.internal_XF_mem[2][i], 4, XF_mem_tab);
+        add_register_data(name, &global_system->HW_regs.CP.internal_registers.XF_mem[2][i], 4, XF_mem_tab);
     }
 
     add_register_data("", NULL, 4, XF_mem_tab);
@@ -394,7 +394,7 @@ s_GameCube* init() {
 
     for (int i = 0; i < 0x80; i++) {
         sprintf(name, "XFD[0x%02x]", i);
-        add_register_data(name, &global_system->HW_regs.CP.internal_XF_mem[3][i], 4, XF_mem_tab);
+        add_register_data(name, &global_system->HW_regs.CP.internal_registers.XF_mem[3][i], 4, XF_mem_tab);
     }
 
     add_command("RESET", "Resets the system. Add 'pause/freeze/break' to freeze on reload.", reset_system);
