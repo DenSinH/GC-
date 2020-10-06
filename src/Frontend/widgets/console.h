@@ -3,6 +3,7 @@
 #include "../interface.h"
 
 #include "imgui/imgui.h"
+#include "default.h"
 
 #include <memory>
 #include <list>
@@ -180,10 +181,10 @@ struct ConsoleWidget
                 ExecCommand(s);
             }
             else if (History.Size) {
-                strcpy(InputBuf, History[History.Size - 1]);
+                STRCPY(InputBuf, sizeof(InputBuf), History[History.Size - 1]);
                 ExecCommand(s);
             }
-            strcpy(s, "");
+            STRCPY(s, sizeof(InputBuf), "");
             reclaim_focus = true;
         }
 
@@ -217,12 +218,12 @@ struct ConsoleWidget
         /* assume target is a char[>MAX_ARGS + 1] */
         char* token = strtok(command, " ");
         int i;
-        for (i = 0; i < MAX_ARGS && token != NULL; i++) {
+        for (i = 0; i < MAX_ARGS && token != nullptr; i++) {
             dest[i] = token;
 
-            token = strtok(NULL, " ");
+            token = strtok(nullptr, " ");
         }
-        dest[i + 1] = NULL;
+        dest[i + 1] = nullptr;
 
         return i;
     }
@@ -269,7 +270,7 @@ struct ConsoleWidget
         }
 
         char command[strlen(command_line) + 1];
-        strcpy(command, command_line);
+        STRCPY(command, sizeof(command), command_line);
 
         char* args[MAX_ARGS + 1];
         int argc = ConsoleWidget::SplitCommand(command, args);
@@ -292,7 +293,7 @@ struct ConsoleWidget
     // In C++11 you'd be better off using lambdas for this sort of forwarding callbacks
     static int TextEditCallbackStub(ImGuiInputTextCallbackData* data)
     {
-        ConsoleWidget* console = (ConsoleWidget*)data->UserData;
+        auto console = (ConsoleWidget*)data->UserData;
         return console->TextEditCallback(data);
     }
 

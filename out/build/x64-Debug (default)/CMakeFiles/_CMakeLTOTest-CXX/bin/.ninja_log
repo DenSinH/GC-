@@ -1,0 +1,5 @@
+# ninja log v5
+1	92	623706086	CMakeFiles/foo.dir/foo.cpp.obj	724d2d762def6d33
+4	99	623706086	CMakeFiles/boo.dir/main.cpp.obj	18cc574ce5763d83
+92	173	623706086	foo.lib	205ccfc260f0c267
+173	485	623706086	boo.exe	7779cd8c16246fcc

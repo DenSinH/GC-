@@ -74,15 +74,20 @@ void dump_Gekko(s_Gekko* cpu) {
 }
 
 void dump_Gekko_mem_range(s_Gekko* cpu, u32 start, u32 end) {
+#ifndef NDEBUG
     // dump Gekko memory range to file
     FILE* file;
     FOPEN(&file, GEKKO_DUMP_FILE_NAME, "wb");
+    if (!file) {
+        return;
+    }
 
     u32 written_length = fwrite(cpu->DMMU.memory_ptr + start, 1, end - start, file);
     if (written_length != end - start) {
         log_fatal("Error writing to file: wrote %x bytes, should have written %x", written_length, end - start);
     }
     fclose(file);
+#endif
 }
 
 void dump_Gekko_stack_trace(s_Gekko* cpu) {
