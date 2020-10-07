@@ -2,8 +2,6 @@
 #include "core_utils.h"
 #include "log.h"
 
-#include "../system.h"
-
 #define HW_REGS_READ_ARGS(_section) &HW_regs->_section, address & 0x3ff, size
 #define HW_REGS_WRITE_ARGS(_section) &HW_regs->_section, address & 0x3ff, value, size
 
@@ -51,6 +49,7 @@ HW_REG_READ_TEMPLATE_SIGNATURE(_size) { \
     u32 masked_address = address & 0x3ff; \
     switch (address & 0x0000fc00) { \
         case 0x0000: \
+            log_cp("Reading CP %x", masked_address); \
             SECTION_READ_TEMPLATE(CP, _size, CP_SHIFT); \
         case 0x1000: \
             SECTION_READ_TEMPLATE(PE, _size, PE_SHIFT); \
@@ -94,6 +93,7 @@ HW_REG_WRITE_TEMPLATE_SIGNATURE(_size) { \
     u32 masked_address = address & 0x3ff; \
     switch (address & 0x0000fc00) { \
         case 0x0000: \
+            log_cp("Writing CP %x (%x)", masked_address, value); \
             SECTION_WRITE_TEMPLATE(CP, _size, 1); \
             break; \
         case 0x1000: \
@@ -115,7 +115,7 @@ HW_REG_WRITE_TEMPLATE_SIGNATURE(_size) { \
             SECTION_WRITE_TEMPLATE(DI, _size, 2); \
             break; \
         case 0x6400: \
-            log_si("Writing SI %x (%x) (@%08x)", masked_address, value, HW_regs->system->cpu.PC); \
+            log_si("Writing SI %x (%x)", masked_address, value); \
             SECTION_WRITE_TEMPLATE(SI, _size, 2); \
             break; \
         case 0x6800: \

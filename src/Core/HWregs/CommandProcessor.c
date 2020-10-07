@@ -10,8 +10,6 @@
 #include "../PPC/interrupts.h"
 #include "../system.h"
 
-#include <limits.h>
-
 #ifdef CHECK_CP_COMMAND
 #include <assert.h>
 #endif
@@ -379,7 +377,8 @@ static inline void XFB_copy(s_CP* CP, u16 command) {
     release_mutex(&CP->efb_lock);
 
     // doing stuff to the XFB doesn't need to be synced
-    if (command & PE_copy_clear) {
+    // if XFB is NULL, then don't clear (probably not initialized)
+    if (XFB_addr && command & PE_copy_clear) {
         // clear XFB
         for (int i = 0; i < width * height << 1; i += 4) {
             // clear words at a time
@@ -588,12 +587,19 @@ void execute_buffer(s_CP* CP, const u8* buffer_ptr, u8 buffer_size) {
 
                     // check if current draw command in queue is available
                     bool draw_command_available = CP->draw_command_available[CP->draw_command_index];
-                    release_mutex(&CP->availability_lock);
 
                     if (!draw_command_available) {
-                        // this should be thread safe anyway, no need to keep the lock here
+                        // we don't want the event to be set between the last line and this one
                         clear_wait_event(&CP->draw_command_spot_available);
+                        release_mutex(&CP->availability_lock);
+#ifdef REPORT_GPU_BOTTLENECK
+                        // if we get here, we are bottlenecked by the GPU not handling draw commands fast enough
+                        log_warn("GPU bottlenecked, waiting for draw command...");
+#endif
                         wait_for_event(&CP->draw_command_spot_available);
+                    }
+                    else {
+                        release_mutex(&CP->availability_lock);
                     }
 
                     // clear frameswap trigger AFTER the new command is available

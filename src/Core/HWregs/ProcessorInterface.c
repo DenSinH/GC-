@@ -32,7 +32,9 @@ HW_REG_WRITE_CALLBACK(write_PI_INTMR, PI) {
 
 HW_REG_WRITE_CALLBACK(write_PI_unknown, PI) {
     // we use this for debugging purposes to write to in our programs
+#ifndef NDEBUG
     printf("PI unknown write: %08x (@%08x)\n", READ32(PI->regs, 0x18), PI->system->cpu.PC);
+#endif
 }
 
 HW_REG_INIT_FUNCTION(PI) {

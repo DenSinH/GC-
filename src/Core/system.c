@@ -21,6 +21,8 @@ s_GameCube* init_system() {
     init_HW_regs(&GameCube->HW_regs);
     GameCube->cpu.IMMU.HW_regs_ptr = GameCube->cpu.DMMU.HW_regs_ptr = &GameCube->HW_regs;
 
+    GameCube->scheduler.timer = &GameCube->cpu.TBR.raw;
+
 #ifdef DO_BREAKPOINTS
 //    add_breakpoint(&GameCube->breakpoints, 0x80008638);
 //    add_breakpoint(&GameCube->breakpoints, 0x00000500);
@@ -37,9 +39,11 @@ s_GameCube* init_system() {
 
 // #define TEST_DOL ROOT_DIR "Cube/Cube.dol"
 // #define TEST_DOL ROOT_DIR "Textures/Textures.dol"
-#define TEST_DOL ROOT_DIR "Sprites/Sprites.dol"
+// #define TEST_DOL ROOT_DIR "Sprites/Sprites.dol"
 // #define TEST_DOL ROOT_DIR "Particles/Particles.dol"
 // #define TEST_DOL ROOT_DIR "HelloWorld/HelloWorld.dol"
+// #define TEST_DOL ROOT_DIR "Console/Console.dol"
+#define TEST_DOL ROOT_DIR "AudioPlayer/AudioPlayer.dol"
 
 void run_system(s_GameCube* system) {
     load_DOL_to_Gekko(&system->cpu, TEST_DOL);
@@ -51,8 +55,8 @@ void run_system(s_GameCube* system) {
             log_fatal("Jumped to invalid address: %08x", system->cpu.PC);
         }
 
-        if (should_do_events(&system->scheduler, system->cpu.TBR.raw)) {
-            do_events(&system->scheduler, system->cpu.TBR.raw);
+        if (should_do_events(&system->scheduler)) {
+            do_events(&system->scheduler);
         }
 
 #if defined(DO_BREAKPOINTS) || defined(DO_DEBUGGER)

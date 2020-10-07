@@ -101,13 +101,16 @@ void debugger_video_init(const char* glsl_version, SDL_Window* window, SDL_GLCon
 
 void debugger_render() {
     // render the widgets
-    ShowMenuBar(
-            &show_console,
-            &show_register_viewer,
-            &show_disassembly_viewer,
-            &show_memory_viewer,
-            &show_overlay
-    );
+    if (SDL_GetMouseFocus()) {
+        ShowMenuBar(
+                &show_console,
+                &show_register_viewer,
+                &show_disassembly_viewer,
+                &show_memory_viewer,
+                &show_overlay
+        );
+    }
+
     if (show_console)
         Debugger.console.Draw(&show_console);
     if (show_register_viewer)

@@ -18,6 +18,7 @@ typedef struct s_event {
 typedef struct s_scheduler {
     s_event* events[SCHEDULER_MAX_EVENTS];
     size_t count;
+    u64* timer;
 } s_scheduler;
 
 /*
@@ -31,10 +32,10 @@ void reschedule_event(s_scheduler* scheduler, s_event* event, u64 new_time);
 void change_event(s_scheduler* scheduler, s_event* event, u64 new_time);
 void delay_event_by(s_scheduler* scheduler, s_event* event, uint64_t dt);
 void hasten_event_by(s_scheduler* scheduler, s_event* event, uint64_t dt);
-void do_events(s_scheduler* scheduler, uint64_t time);
+void do_events(s_scheduler* scheduler);
 
-static inline bool should_do_events(s_scheduler* scheduler, uint64_t time) {
-    return scheduler->events[0]->time < time;
+static inline bool should_do_events(s_scheduler* scheduler) {
+    return scheduler->events[0]->time < *scheduler->timer;
 }
 
 #endif //GC__SCHEDULER_H

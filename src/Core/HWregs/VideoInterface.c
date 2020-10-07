@@ -59,7 +59,7 @@ SCHEDULER_EVENT(VI_DI3_intr) {
 void schedule_DI_event(s_VI* VI, u32 index) {
     u32 HCT = VI->DI[index] & 0x3ff;
     u32 VCT = (VI->DI[index] >> 16) & 0x3ff;
-    u64 time = VI->system->cpu.TBR.raw;
+    u64 time = *VI->system->scheduler.timer;
 
     // VCT > (LINES_PER_FRAME >> 1)  <==> field is odd
     if ((VCT > (LINES_PER_FRAME >> 1)) ^ (VI->current_field & 1)) {
@@ -90,7 +90,7 @@ HW_REG_WRITE_CALLBACK(write_VI_HTR0, VI) {
     VI->HLW = READ16(VI->regs, VI_reg_HTR0) & 0x1ff;
 
     // change event to now to reset it
-    change_event(&VI->system->scheduler, &VI->halfline_count_event, VI->system->cpu.TBR.raw);
+    change_event(&VI->system->scheduler, &VI->halfline_count_event, *VI->system->scheduler.timer);
 
     // Display Interrupt events might have changed
     for (int i = 0; i < 4; i++) {

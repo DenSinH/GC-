@@ -170,9 +170,9 @@ void hasten_event_by(s_scheduler* scheduler, s_event* event, u64 dt) {
     }
 }
 
-void do_events(s_scheduler* scheduler, uint64_t time) {
+void do_events(s_scheduler* scheduler) {
     s_event* first = scheduler->events[ROOT];
-    while (scheduler->count > 0 && first->time < time) {
+    while (scheduler->count > 0 && first->time < *scheduler->timer) {
         first->active = false;
         first->callback(first->caller, first);
 

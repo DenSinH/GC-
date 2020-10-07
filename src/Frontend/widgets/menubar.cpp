@@ -1,3 +1,4 @@
+#include <cstdio>
 #include "imgui/imgui.h"
 
 #include "menubar.h"
@@ -10,19 +11,18 @@ void ShowMenuBar(
         bool* overlay_enabled
         )
 {
-    if (ImGui::BeginMainMenuBar())
+    ImGui::BeginMainMenuBar();
+
+    if (ImGui::BeginMenu("Debug"))
     {
-        if (ImGui::BeginMenu("Debug"))
-        {
-            if (ImGui::MenuItem("Console", NULL, console_enabled)) {}
-            if (ImGui::MenuItem("Register Viewer", NULL, register_viewer_enabled)) {}
-            if (ImGui::MenuItem("Disassembly Viewer", NULL, disassembly_viewer_enabled)) {}
-            if (ImGui::MenuItem("Memory Viewer", NULL, memory_viewer_enabled)) {}
-            ImGui::Separator();
-            if (ImGui::MenuItem("Overlay", NULL, overlay_enabled)) {}
+        if (ImGui::MenuItem("Console", nullptr, console_enabled)) {}
+        if (ImGui::MenuItem("Register Viewer", nullptr, register_viewer_enabled)) {}
+        if (ImGui::MenuItem("Disassembly Viewer", nullptr, disassembly_viewer_enabled)) {}
+        if (ImGui::MenuItem("Memory Viewer", nullptr, memory_viewer_enabled)) {}
+        ImGui::Separator();
+        if (ImGui::MenuItem("Overlay", nullptr, overlay_enabled)) {}
 //            if (ImGui::MenuItem("Redo", "CTRL+Y", false, false)) {}  // Disabled item
-            ImGui::EndMenu();
-        }
-        ImGui::EndMainMenuBar();
+        ImGui::EndMenu();
     }
+    ImGui::EndMainMenuBar();
 }
