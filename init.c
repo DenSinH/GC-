@@ -340,7 +340,7 @@ s_GameCube* init() {
         add_register_data(name, &global_system->HW_regs.SI.regs[i], 1, HWIO_tab);
     }
 
-    add_register_data("", NULL, 1, HWIO_tab);
+    add_register_data("", NULL, 4, HWIO_tab);
 
     add_register_data("SICOMCSR", &global_system->HW_regs.SI.COMCSR, 4, HWIO_tab);
     add_register_data("SISR", &global_system->HW_regs.SI.SISR, 4, HWIO_tab);
@@ -354,12 +354,12 @@ s_GameCube* init() {
     }
 
     add_register_data("", NULL, 1, HWIO_tab);
-    add_register_data("", NULL, 1, HWIO_tab);
+    add_register_data("", NULL, 4, HWIO_tab);
 
-    for (int i = 0; i < 0x20; i++) {
-        sprintf(name, "AI%02x", i);
-        add_register_data(name, &global_system->HW_regs.AI.regs[i], 1, HWIO_tab);
-    }
+    add_register_data("AICR", &global_system->HW_regs.AI.AICR, 4, HWIO_tab);
+    add_register_data("AIVR", &global_system->HW_regs.AI.AIVR, 4, HWIO_tab);
+    add_register_data("AISCNT", &global_system->HW_regs.AI.AISCNT, 4, HWIO_tab);
+    add_register_data("AIIT", &global_system->HW_regs.AI.AIIT, 4, HWIO_tab);
 
     int CP_tab = add_register_tab("internal CP");
 

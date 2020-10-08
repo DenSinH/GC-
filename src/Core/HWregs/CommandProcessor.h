@@ -324,7 +324,7 @@ typedef struct s_CP {
     s_CP_register_data internal_registers;
 
     e_CP_cmd command;
-    u16 current_vertices;  // amount of vertices for the current draw command being sent
+    u16 current_vertices;  // amount of vertices for the current draw command being sent (unmerged)
     /* prev is set to current command whenever a new command is sent
      * if any relevant registers change, set it to 0
      * whenever a new command is sent, if it is the same as the previous one,
@@ -355,7 +355,7 @@ typedef struct s_CP {
 
     // set to signal that flipper should frameswap after the draw command at a specific index
     volatile u16 frameswap[MAX_DRAW_COMMANDS];  // read by flipper, set to BP value by CP then clear bit 14 by Flipper
-    bool PE_copy_frameswap;                     // set if a frameswap command was sent from an xfb -> efb copy command
+    bool PE_copy_frameswap;                     // set if a frameswap command was sent from an xfb -> efb copy command this frame
     volatile bool force_frameswap;              // force frameswap if no PE_copy_frameswap happened
     s_event frameswap_event;
     volatile bool draw_command_available[MAX_DRAW_COMMANDS];  // used as flags, set to false by CP, then to true by Flipper

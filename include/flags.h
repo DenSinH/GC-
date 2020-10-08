@@ -17,6 +17,7 @@
 #define COMPONENT_CPU         0x40
 #define COMPONENT_SI          0x80
 #define COMPONENT_OPENGL      0x100
+#define COMPONENT_DSP         0x200
 
 #define SCREEN_NTSC 0
 #define SCREEN_PAL 1
@@ -26,12 +27,13 @@
 #ifndef NDEBUG
 // change to change verbosity / component logging:
 #define VERBOSITY VERBOSITY_WARN
-#define COMPONENT_FLAGS (0)
+#define COMPONENT_FLAGS (COMPONENT_DSP)
 
 #define CHECK_SPR_ACCESS
 #define CHECK_CP_COMMAND
 #define CHECK_CP_DATA_BUFFER
 #undef RECURSE_HR_ACCESS
+#define CHECK_HR_ACCESS_ALIGNMENT
 #define REPORT_GPU_BOTTLENECK
 #define DO_ASSERT_PAIRED_SINGLE
 

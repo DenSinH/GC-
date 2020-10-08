@@ -19,6 +19,9 @@ typedef struct s_DSP {
     HW_REG_WRITE_CALLBACK((*write[0x200 >> DSP_SHIFT]), DSP);
     HW_REG_READ_PRECALL((*read[0x200 >> DSP_SHIFT]), DSP);
     struct s_GameCube* system;
+
+    /* internal function */
+
 } s_DSP;
 
 

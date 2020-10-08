@@ -95,6 +95,16 @@
 #define log_si(message, ...) do { }while(0)
 #endif
 
+#if COMPONENT_FLAGS & COMPONENT_DSP
+#define log_dsp(message, ...) do {                        \
+        CONSOLE_DARK_GREEN();                                \
+        fprintf(stdout, "[DSP]: "message "\n",  ##__VA_ARGS__); \
+        CONSOLE_RESTORE();                             \
+    } while(0)
+#else
+#define log_dsp(message, ...) do { }while(0)
+#endif
+
 #if COMPONENT_FLAGS & COMPONENT_FLIPPER
 #define log_flipper(message, ...) do {                        \
         CONSOLE_PINK();                                \
