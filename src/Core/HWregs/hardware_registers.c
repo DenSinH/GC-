@@ -79,6 +79,7 @@ HW_REG_READ_TEMPLATE_SIGNATURE(_size) { \
         case 0x4000: \
             SECTION_READ_TEMPLATE(MI, _size, MI_SHIFT); \
         case 0x5000: \
+            log_dsp("Reading DSP %x (%dbit)", masked_address, _size); \
             SECTION_READ_TEMPLATE(DSP, _size, DSP_SHIFT); \
         case 0x6000: \
             SECTION_READ_TEMPLATE(DI, _size, DI_SHIFT); \
@@ -88,6 +89,7 @@ HW_REG_READ_TEMPLATE_SIGNATURE(_size) { \
         case 0x6800: \
             SECTION_READ_TEMPLATE(EXI, _size, EXI_SHIFT); \
         case 0x6c00: \
+            log_dsp("Reading AI %x (%dbit)", masked_address, _size); \
             SECTION_READ_TEMPLATE(AI, _size, AI_SHIFT); \
         case 0x8000: \
             /* GX FIFO reads */ \
@@ -141,6 +143,7 @@ HW_REG_WRITE_TEMPLATE_SIGNATURE(_size) { \
             SECTION_WRITE_TEMPLATE(MI, _size, MI_SHIFT); \
             break; \
         case 0x5000: \
+            log_dsp("Writing DSP %x (%x) (%dbit)", masked_address, value, _size); \
             SECTION_WRITE_TEMPLATE(DSP, _size, DSP_SHIFT); \
             break; \
         case 0x6000: \
@@ -154,6 +157,7 @@ HW_REG_WRITE_TEMPLATE_SIGNATURE(_size) { \
             SECTION_WRITE_TEMPLATE(EXI, _size, EXI_SHIFT); \
             break; \
         case 0x6c00: \
+            log_dsp("Writing AI %x (%x) (%dbit)", masked_address, value, _size); \
             SECTION_WRITE_TEMPLATE(AI, _size, AI_SHIFT); \
             break; \
         case 0x8000: \
