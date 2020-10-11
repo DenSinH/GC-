@@ -35,5 +35,5 @@ target_include_directories(PPC PUBLIC
         ${CMAKE_CURRENT_SOURCE_DIR}/include
         ${PROJECT_SOURCE_DIR}/include
         ../include
-        ../HWregs/include
+        ../HW/include
 )

@@ -1,4 +1,4 @@
-add_library(HWregs STATIC
+add_library(HW STATIC
         hardware_registers.h
         hardware_registers.c
         CommandProcessor.h
@@ -34,6 +34,6 @@ include_directories(
         ../PPC/include
 )
 
-set_target_properties(HWregs PROPERTIES LINKER_LANGUAGE C)
+set_target_properties(HW PROPERTIES LINKER_LANGUAGE C)
 
-target_include_directories(HWregs PUBLIC ${CMAKE_CURRENT_SOURCE_DIR} )
+target_include_directories(HW PUBLIC ${CMAKE_CURRENT_SOURCE_DIR} )

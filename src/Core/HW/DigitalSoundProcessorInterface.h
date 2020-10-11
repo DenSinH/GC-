@@ -27,20 +27,18 @@ typedef enum e_DSP_CSR {
 
 #define DSP_SHIFT 1
 
-typedef struct s_DSP {
+typedef struct s_DSPI {
     u8 regs[0x200];
     HW_REG_WRITE_CALLBACK((*write[0x200 >> DSP_SHIFT]), DSP);
     HW_REG_READ_PRECALL((*read[0x200 >> DSP_SHIFT]), DSP);
     struct s_GameCube* system;
 
     /* internal function */
-    u8 memory[0x10000];
-
     u16 DSPCSR;
     u16 DSPDMACSR;
-} s_DSP;
+} s_DSPI;
 
 
-HW_REG_INIT_FUNCTION(DSP);
+HW_REG_INIT_FUNCTION(DSPI);
 
 #endif //GC__DIGITALSOUNDPROCESSORINTERFACE_H

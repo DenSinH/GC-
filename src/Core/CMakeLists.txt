@@ -7,7 +7,7 @@ add_library(Core STATIC
         Scheduler/scheduler.h
 )
 
-add_subdirectory(HWregs)
+add_subdirectory(HW)
 add_subdirectory(PPC)
 add_subdirectory(Flipper)
 
@@ -21,7 +21,7 @@ include_directories(${PROJECT_SOURCE_DIR}/include
 
 set_target_properties(Core PROPERTIES LINKER_LANGUAGE C)
 
-target_link_libraries(Core HWregs)
+target_link_libraries(Core HW)
 target_link_libraries(Core PPC)
 target_link_libraries(Core Flipper)
 

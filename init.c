@@ -321,7 +321,7 @@ s_GameCube* init() {
 
     for (int i = 0; i < 0x200; i++) {
         sprintf(name, "DSP%02x", i);
-        add_register_data(name, &global_system->HW_regs.DSP.regs[i], 1, HWIO_tab);
+        add_register_data(name, &global_system->HW_regs.DSPI.regs[i], 1, HWIO_tab);
     }
 
     add_register_data("", NULL, 1, HWIO_tab);

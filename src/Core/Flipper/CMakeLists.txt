@@ -40,5 +40,5 @@ target_include_directories(Flipper PUBLIC
         ${CMAKE_CURRENT_SOURCE_DIR}/include
         ${PROJECT_SOURCE_DIR}/include
         ${PROJECT_SOURCE_DIR}/modules
-        $<TARGET_PROPERTY:HWregs,INCLUDE_DIRECTORIES>
+        $<TARGET_PROPERTY:HW,INCLUDE_DIRECTORIES>
 )

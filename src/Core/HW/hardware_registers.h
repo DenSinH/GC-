@@ -22,7 +22,7 @@ typedef struct s_hardware_registers {
     s_VI VI;
     s_PI PI;
     s_MI MI;
-    s_DSP DSP;
+    s_DSPI DSPI;
     s_DI DI;
     s_SI SI;
     s_EXI EXI;

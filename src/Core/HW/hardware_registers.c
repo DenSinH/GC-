@@ -10,16 +10,16 @@
 #define HW_REGS_WRITE_ARGS(_section) &HW_regs->_section, address & 0x3ff, value, size
 
 void init_HW_regs(s_hardware_registers* HW_regs) {
-    HW_regs->CP.system = HW_regs->system;
-    HW_regs->PE.system = HW_regs->system;
-    HW_regs->VI.system = HW_regs->system;
-    HW_regs->PI.system = HW_regs->system;
-    HW_regs->MI.system = HW_regs->system;
-    HW_regs->DSP.system = HW_regs->system;
-    HW_regs->DI.system = HW_regs->system;
-    HW_regs->SI.system = HW_regs->system;
-    HW_regs->EXI.system = HW_regs->system;
-    HW_regs->AI.system = HW_regs->system;
+    HW_regs->CP.system   = HW_regs->system;
+    HW_regs->PE.system   = HW_regs->system;
+    HW_regs->VI.system   = HW_regs->system;
+    HW_regs->PI.system   = HW_regs->system;
+    HW_regs->MI.system   = HW_regs->system;
+    HW_regs->DSPI.system = HW_regs->system;
+    HW_regs->DI.system   = HW_regs->system;
+    HW_regs->SI.system   = HW_regs->system;
+    HW_regs->EXI.system  = HW_regs->system;
+    HW_regs->AI.system   = HW_regs->system;
     HW_regs->GX_FIFO.system = HW_regs->system;
 
     HW_regs->GX_FIFO.CP_ptr = &HW_regs->CP;
@@ -36,7 +36,7 @@ void init_HW_regs(s_hardware_registers* HW_regs) {
     init_VI(&HW_regs->VI);
     init_PI(&HW_regs->PI);
     init_MI(&HW_regs->MI);
-    init_DSP(&HW_regs->DSP);
+    init_DSPI(&HW_regs->DSPI);
     init_DI(&HW_regs->DI);
     init_SI(&HW_regs->SI);
     init_EXI(&HW_regs->EXI);
@@ -80,7 +80,7 @@ HW_REG_READ_TEMPLATE_SIGNATURE(_size) { \
             SECTION_READ_TEMPLATE(MI, _size, MI_SHIFT); \
         case 0x5000: \
             log_dsp("Reading DSP %x (%dbit)", masked_address, _size); \
-            SECTION_READ_TEMPLATE(DSP, _size, DSP_SHIFT); \
+            SECTION_READ_TEMPLATE(DSPI, _size, DSP_SHIFT); \
         case 0x6000: \
             SECTION_READ_TEMPLATE(DI, _size, DI_SHIFT); \
         case 0x6400: \
@@ -144,7 +144,7 @@ HW_REG_WRITE_TEMPLATE_SIGNATURE(_size) { \
             break; \
         case 0x5000: \
             log_dsp("Writing DSP %x (%x) (%dbit)", masked_address, value, _size); \
-            SECTION_WRITE_TEMPLATE(DSP, _size, DSP_SHIFT); \
+            SECTION_WRITE_TEMPLATE(DSPI, _size, DSP_SHIFT); \
             break; \
         case 0x6000: \
             SECTION_WRITE_TEMPLATE(DI, _size, DI_SHIFT); \

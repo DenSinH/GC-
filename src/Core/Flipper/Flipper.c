@@ -2,8 +2,8 @@
 
 #include "custom_threading.h"
 
-#include "../HWregs/CommandProcessor.h"
-#include "../HWregs/VideoInterface.h"
+#include "../HW/CommandProcessor.h"
+#include "../HW/VideoInterface.h"
 #include "../system.h"
 
 #include "../../Frontend/interface.h"
