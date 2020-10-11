@@ -143,6 +143,6 @@ static inline u16 DSP_POP_STACK(s_DSP* DSP, unsigned index) {
     return DSP->stacks[index][--DSP->st[index]];
 }
 
-void init_DSP(s_DSP* DSP);
+void init_DSP(s_DSP* DSP, const char* IROM_file, const char* DROM_file);
 
 #endif //GC__DSP_H
