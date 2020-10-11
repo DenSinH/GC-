@@ -14,7 +14,7 @@ add_subdirectory(Flipper)
 # for logging / stuff I want to use in all files
 include_directories(${PROJECT_SOURCE_DIR}/include
         ${CMAKE_CURRENT_SOURCE_DIR}/include
-        $<TARGET_PROPERTY:HWregs,INCLUDE_DIRECTORIES>
+        $<TARGET_PROPERTY:HW,INCLUDE_DIRECTORIES>
         $<TARGET_PROPERTY:PPC,INCLUDE_DIRECTORIES>
         $<TARGET_PROPERTY:Flipper,INCLUDE_DIRECTORIES>
 )

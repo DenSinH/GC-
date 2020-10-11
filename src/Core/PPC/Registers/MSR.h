@@ -31,5 +31,6 @@ typedef union s_MSR {
     unsigned raw;
 } s_MSR;
 
+STATIC_ASSERT(sizeof(s_MSR) == 4, "MSR union was the wrong size!");
 
 #endif //GC__MSR_H

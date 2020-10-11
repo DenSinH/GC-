@@ -17,4 +17,6 @@ typedef union s_XER {
     unsigned raw;
 } s_XER;
 
+STATIC_ASSERT(sizeof(s_XER) == 4, "XER union was the wrong size!");
+
 #endif //GC__XER_H

@@ -24,4 +24,6 @@ typedef union s_GQR {
     unsigned raw;
 } s_GQR;
 
+STATIC_ASSERT(sizeof(s_GQR) == 4, "GQR union was the wrong size!");
+
 #endif //GC__GQR_H

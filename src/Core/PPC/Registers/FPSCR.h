@@ -62,6 +62,8 @@ typedef union s_FPSCR {
     unsigned raw;
 } s_FPSCR;
 
+STATIC_ASSERT(sizeof(s_FPSCR) == 4, "FPSCR union was the wrong size!");
+
 typedef enum e_RN_modes {
     RN_ROUND_TO_NEAREST = 0b00,
     RN_ROUND_TOWARD_ZERO = 0b01,

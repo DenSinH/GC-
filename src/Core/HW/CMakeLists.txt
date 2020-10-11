@@ -25,6 +25,7 @@ add_library(HW STATIC
         MemoryInterface.h
         include/hwreg_utils.h)
 
+add_subdirectory(DSP)
 
 # for logging / stuff I want to use in all files
 include_directories(
@@ -36,4 +37,6 @@ include_directories(
 
 set_target_properties(HW PROPERTIES LINKER_LANGUAGE C)
 
+
 target_include_directories(HW PUBLIC ${CMAKE_CURRENT_SOURCE_DIR} )
+target_link_libraries(HW PRIVATE DSP)

@@ -5,7 +5,7 @@
 #include <stdbool.h>
 #include <assert.h>
 
-#define GEKKO_INSTR(name) void name(s_Gekko* cpu, s_gekko_instruction instruction)
+#define GEKKO_INSTR(name) void name(struct s_Gekko* cpu, s_gekko_instruction instruction)
 #define INLINE_GEKKO_INSTR(name) static inline void name(s_Gekko* cpu, s_gekko_instruction instruction)
 #define GEKKO_INSTR_HEADER
 #define ASSERT_SUPERVISOR assert(!cpu->MSR.PR /* supervisor instruction attempted in user mode */);
@@ -241,6 +241,6 @@ typedef union gekko_instruction {
 
 } s_gekko_instruction;
 
-static_assert(sizeof(s_gekko_instruction) == 4, "union was the wrong size!");
+STATIC_ASSERT(sizeof(s_gekko_instruction) == 4, "gekko instruction union was the wrong size!");
 
 #endif //GC_GEKKO_INSTRUCTION_H

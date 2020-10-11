@@ -78,7 +78,8 @@ typedef struct s_Gekko {
     u32 PC;         // Program counter
     u32 LR;         // Link register
 
-    void (*instructions[MAIN_INSTR_TABLE_SIZE])(struct s_Gekko* cpu, s_gekko_instruction instruction);
+    GEKKO_INSTR((*instructions[MAIN_INSTR_TABLE_SIZE]));
+    // void (*instructions[MAIN_INSTR_TABLE_SIZE])(struct s_Gekko* cpu, s_gekko_instruction instruction);
 
     /* Debugging stuff */
     char log_line[LOG_LINE_LENGTH];

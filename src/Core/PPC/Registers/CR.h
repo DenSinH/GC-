@@ -70,7 +70,9 @@ typedef union s_CRn {
         unsigned FL: 1;  // Less than
     } FLOAT_COMPARE;
 
-    unsigned raw;
+    struct {
+        unsigned raw: 4;
+    };
 } s_CRn;
 
 typedef union s_CR {
@@ -103,5 +105,7 @@ typedef union s_CR {
 
     unsigned raw;
 } s_CR;
+
+STATIC_ASSERT(sizeof(s_CR) == 4, "CR union was the wrong size!");
 
 #endif //GC__CR_H
