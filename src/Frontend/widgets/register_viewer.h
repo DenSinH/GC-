@@ -101,6 +101,7 @@ typedef struct RegisterViewer
                             case 1:
                                 currentwidth = columns << 1;
                                 break;
+                            case 2:
                             case 4:
                                 currentwidth = columns;
                                 break;
@@ -124,6 +125,10 @@ typedef struct RegisterViewer
                         case 1:
                             // no float mode for this one
                             sprintf(label, "%02x", *((uint8_t*)reg.value));
+                            break;
+                        case 2:
+                            // no float mode for this one
+                            sprintf(label, "%04x", *((uint16_t*)reg.value));
                             break;
                         case 4:
                             if (!float_view) sprintf(label, "%08x", *((uint32_t*)reg.value));

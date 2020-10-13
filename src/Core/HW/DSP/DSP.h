@@ -3,6 +3,8 @@
 
 #include "default.h"
 
+#define DSP_CLOCK_FREQUENCY 81000000
+
 typedef union s_ax {
     struct {
         unsigned l: 16;

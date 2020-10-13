@@ -11,9 +11,9 @@ static s_GameCube* global_system;
 static CONSOLE_COMMAND(reset_system) {
 #ifdef DO_DEBUGGER
     if (argc > 1 && (
-            strcmp(args[1], "freeze") != 0 ||
-            strcmp(args[1], "pause")  != 0 ||
-            strcmp(args[1], "break")  != 0
+            strcmp(args[1], "freeze") == 0 ||
+            strcmp(args[1], "pause")  == 0 ||
+            strcmp(args[1], "break")  == 0
             )
         ) {
         global_system->paused = true;
@@ -68,12 +68,19 @@ static CONSOLE_COMMAND(unbreak_system) {
 
 static CONSOLE_COMMAND(step_system) {
 #ifdef DO_DEBUGGER
-    global_system->paused = true;
     if (argc < 2) {
+        global_system->paused = true;
         global_system->stepcount = 1;
         STRCPY(output, MAX_OUTPUT_LENGTH, "Stepping system for one step");
     }
+    else if (strcmp(args[1], "dsp") == 0) {
+        log_dsp("Step DSP");
+        global_system->paused = false;  // in this case, we want to keep running the system until it steps the DSP
+        global_system->HW_regs.DSPI.step_DSP = true;
+        SPRINTF(output, MAX_OUTPUT_LENGTH, "Stepping DSP");
+    }
     else {
+        global_system->paused = true;
         u32 steps = parsedec(args[1]);
         global_system->stepcount = steps;
         SPRINTF(output, MAX_OUTPUT_LENGTH, "Stepping system for %d steps", steps);
@@ -255,6 +262,40 @@ s_GameCube* init() {
         sprintf(name, "SR%02d", i);
         add_register_data(name, &global_system->cpu.SR[i], 4, Gekko_tab);
     }
+
+    int DSP_tab = add_register_tab("DSP");
+    add_register_data("ar0", &global_system->HW_regs.DSPI.DSP.ar[0], 2, DSP_tab);
+    add_register_data("ar1", &global_system->HW_regs.DSPI.DSP.ar[1], 2, DSP_tab);
+    add_register_data("ar2", &global_system->HW_regs.DSPI.DSP.ar[2], 2, DSP_tab);
+    add_register_data("ar3", &global_system->HW_regs.DSPI.DSP.ar[3], 2, DSP_tab);
+
+    add_register_data("ix0", &global_system->HW_regs.DSPI.DSP.ix[0], 2, DSP_tab);
+    add_register_data("ix1", &global_system->HW_regs.DSPI.DSP.ix[1], 2, DSP_tab);
+    add_register_data("ix2", &global_system->HW_regs.DSPI.DSP.ix[2], 2, DSP_tab);
+    add_register_data("ix3", &global_system->HW_regs.DSPI.DSP.ix[3], 2, DSP_tab);
+
+    add_register_data("wr0", &global_system->HW_regs.DSPI.DSP.wr[0], 2, DSP_tab);
+    add_register_data("wr1", &global_system->HW_regs.DSPI.DSP.wr[1], 2, DSP_tab);
+    add_register_data("wr2", &global_system->HW_regs.DSPI.DSP.wr[2], 2, DSP_tab);
+    add_register_data("wr3", &global_system->HW_regs.DSPI.DSP.wr[3], 2, DSP_tab);
+
+    add_register_data("st0", &global_system->HW_regs.DSPI.DSP.st[0], 2, DSP_tab);
+    add_register_data("st1", &global_system->HW_regs.DSPI.DSP.st[1], 2, DSP_tab);
+    add_register_data("st2", &global_system->HW_regs.DSPI.DSP.st[2], 2, DSP_tab);
+    add_register_data("st3", &global_system->HW_regs.DSPI.DSP.st[3], 2, DSP_tab);
+
+
+    add_register_data("sr", &global_system->HW_regs.DSPI.DSP.sr, 2, DSP_tab);
+    add_register_data("config", &global_system->HW_regs.DSPI.DSP.config, 2, DSP_tab);
+
+    add_register_data("ac0", &global_system->HW_regs.DSPI.DSP.ac[0], 8, DSP_tab);
+    add_register_data("ac1", &global_system->HW_regs.DSPI.DSP.ac[1], 8, DSP_tab);
+    add_register_data("prod", &global_system->HW_regs.DSPI.DSP.prod, 8, DSP_tab);
+
+    add_register_data("ax0", &global_system->HW_regs.DSPI.DSP.ax[0], 4, DSP_tab);
+    add_register_data("ax1", &global_system->HW_regs.DSPI.DSP.ax[1], 4, DSP_tab);
+
+    add_register_data("", NULL, 4, DSP_tab);
 
     int HWIO_tab = add_register_tab("HWIO");
     for (int i = 0; i < 0x80; i++) {

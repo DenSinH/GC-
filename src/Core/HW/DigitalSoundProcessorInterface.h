@@ -1,8 +1,12 @@
 #ifndef GC__DIGITALSOUNDPROCESSORINTERFACE_H
 #define GC__DIGITALSOUNDPROCESSORINTERFACE_H
 
+#include "DSP/DSP.h"
+
 #include "default.h"
 #include "hwreg_utils.h"
+
+#include "../Scheduler/scheduler.h"
 
 typedef enum e_DSP_regs {
     DSP_reg_MailboxHiToDSP   = 0x0,
@@ -29,9 +33,16 @@ typedef enum e_DSP_CSR {
 
 typedef struct s_DSPI {
     u8 regs[0x200];
-    HW_REG_WRITE_CALLBACK((*write[0x200 >> DSP_SHIFT]), DSP);
-    HW_REG_READ_PRECALL((*read[0x200 >> DSP_SHIFT]), DSP);
+    HW_REG_WRITE_CALLBACK((*write[0x200 >> DSP_SHIFT]), DSPI);
+    HW_REG_READ_PRECALL((*read[0x200 >> DSP_SHIFT]), DSPI);
     struct s_GameCube* system;
+
+    s_DSP DSP;
+    s_event DSP_step_event;
+
+#ifdef DO_DEBUGGER
+    bool step_DSP;
+#endif
 
     /* internal function */
     u16 DSPCSR;
