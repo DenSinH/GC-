@@ -18,6 +18,7 @@
 #define COMPONENT_SI          0x80
 #define COMPONENT_OPENGL      0x100
 #define COMPONENT_DSP         0x200
+#define COMPONENT_DSP_VERBOSE 0x400
 
 #define SCREEN_NTSC 0
 #define SCREEN_PAL 1
@@ -27,7 +28,7 @@
 #ifndef NDEBUG
 // change to change verbosity / component logging:
 #define VERBOSITY VERBOSITY_WARN
-#define COMPONENT_FLAGS (COMPONENT_DSP)
+#define COMPONENT_FLAGS (COMPONENT_DSP | COMPONENT_DSP_VERBOSE)
 
 #define CHECK_SPR_ACCESS
 #define CHECK_CP_COMMAND

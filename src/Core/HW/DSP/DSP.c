@@ -17,6 +17,12 @@ void init_DSP_table(s_DSP* DSP) {
             case 0x12:
                 DSP->instructions[i] = DSP_SBSET;
                 break;
+            case 0x8e:
+                DSP->instructions[i] = DSP_SET16;
+                break;
+            case 0x8f:
+                DSP->instructions[i] = DSP_SET40;
+                break;
             default:
                 DSP->instructions[i] = DSP_unimplemented;
                 break;

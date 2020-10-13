@@ -95,7 +95,7 @@
 #define log_si(message, ...) do { }while(0)
 #endif
 
-#if COMPONENT_FLAGS & COMPONENT_DSP
+#if COMPONENT_FLAGS & (COMPONENT_DSP | COMPONENT_DSP_VERBOSE)
 #define log_dsp(message, ...) do {                        \
         CONSOLE_DARK_GREEN();                                \
         fprintf(stdout, "[DSP]: "message "\n",  ##__VA_ARGS__); \
@@ -103,6 +103,16 @@
     } while(0)
 #else
 #define log_dsp(message, ...) do { }while(0)
+#endif
+
+#if COMPONENT_FLAGS & COMPONENT_DSP_VERBOSE
+#define log_dsp_verbose(message, ...) do {                        \
+        CONSOLE_DARK_GREEN();                                \
+        fprintf(stdout, "[DSP (verbose)]: "message "\n",  ##__VA_ARGS__); \
+        CONSOLE_RESTORE();                             \
+    } while(0)
+#else
+#define log_dsp_verbose(message, ...) do { }while(0)
 #endif
 
 #if COMPONENT_FLAGS & COMPONENT_FLIPPER

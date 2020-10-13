@@ -74,7 +74,6 @@ static CONSOLE_COMMAND(step_system) {
         STRCPY(output, MAX_OUTPUT_LENGTH, "Stepping system for one step");
     }
     else if (strcmp(args[1], "dsp") == 0) {
-        log_dsp("Step DSP");
         global_system->paused = false;  // in this case, we want to keep running the system until it steps the DSP
         global_system->HW_regs.DSPI.step_DSP = true;
         SPRINTF(output, MAX_OUTPUT_LENGTH, "Stepping DSP");
@@ -283,7 +282,6 @@ s_GameCube* init() {
     add_register_data("st1", &global_system->HW_regs.DSPI.DSP.st[1], 2, DSP_tab);
     add_register_data("st2", &global_system->HW_regs.DSPI.DSP.st[2], 2, DSP_tab);
     add_register_data("st3", &global_system->HW_regs.DSPI.DSP.st[3], 2, DSP_tab);
-
 
     add_register_data("sr", &global_system->HW_regs.DSPI.DSP.sr, 2, DSP_tab);
     add_register_data("config", &global_system->HW_regs.DSPI.DSP.config, 2, DSP_tab);
