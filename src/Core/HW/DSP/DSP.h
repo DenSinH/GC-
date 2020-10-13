@@ -1,8 +1,6 @@
 #ifndef GC__DSP_H
 #define GC__DSP_H
 
-#include "DSP_instruction.h"
-
 #include "default.h"
 
 typedef union s_ax {
@@ -94,6 +92,8 @@ typedef enum e_DSP_IO {
 #define DSP_STACK_SIZE 0x20
 #define DSP_STACK_MASK 0x1f
 #define DSP_INSTR_TABLE_SIZE 0x100
+
+#define DSP_INSTR(_name) void _name(struct s_DSP* DSP, u16 instruction)
 
 typedef struct s_DSP {
     u8 ARAM[0x1000000];  // 16MB ARAM

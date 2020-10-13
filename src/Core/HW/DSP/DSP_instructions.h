@@ -1,8 +1,12 @@
 #ifndef GC__DSP_INSTRUCTIONS_H
 #define GC__DSP_INSTRUCTIONS_H
 
-#include "DSP_instruction.h"
+#include "DSP.h"
 
+DSP_INSTR(DSP_unimplemented);
+
+DSP_INSTR(DSP_0000_0000);
+DSP_INSTR(DSP_SBSET);
 
 
 #endif //GC__DSP_INSTRUCTIONS_H
