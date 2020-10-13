@@ -1,7 +1,7 @@
 #ifndef GC__DSP_H
 #define GC__DSP_H
 
-#include "dsp_instruction.h"
+#include "DSP_instruction.h"
 
 #include "default.h"
 
@@ -68,8 +68,32 @@ typedef enum e_DSP_exception_vectors {
     DSP_exception_INT   = 0x000e,  // external interrupt (from CPU)
 } e_DSP_exception_vectors;
 
+typedef enum e_DSP_IO {
+    DSP_IO_CMBH  = 0xfffe,
+    DSP_IO_CMBL  = 0xffff,
+    DSP_IO_DMBH  = 0xfffc,
+    DSP_IO_DMBL  = 0xfffd,
+
+    DSP_IO_DSMAH = 0xffce,
+    DSP_IO_DSMAL = 0xffcf,
+    DSP_IO_DSPA  = 0xffcd,
+    DSP_IO_DSCR  = 0xffc9,
+    DSP_IO_DSBL  = 0xffcb,
+
+    DSP_IO_ACSAH = 0xffd4,
+    DSP_IO_ACSAL = 0xffd5,
+    DSP_IO_ACEAH = 0xffd6,
+    DSP_IO_ACEAL = 0xffd7,
+    DSP_IO_ACCAH = 0xffd8,
+    DSP_IO_ACCAL = 0xffd9,
+    DSP_IO_ACDAT = 0xffdd,
+
+    DSP_IO_DIRQ = 0xfffb,
+} e_DSP_IO;
+
 #define DSP_STACK_SIZE 0x20
 #define DSP_STACK_MASK 0x1f
+#define DSP_INSTR_TABLE_SIZE 0x100
 
 typedef struct s_DSP {
     u8 ARAM[0x1000000];  // 16MB ARAM
@@ -132,7 +156,21 @@ typedef struct s_DSP {
     u16* r[0x20];  // pointers to registers to access directly
     u16 stacks[4][DSP_STACK_SIZE];
 
-    DSP_INSTR((*instructions[0x100]));
+    u16 pc;
+
+    u16 CMBH, CMBL;  // CPU -> DSP
+    u16 DMBH, DMBL;  // DSP -> CPU
+    u16 DSMAH, DSMAL;
+    u16 DSPA, DSCR, DSBL;
+
+    u16 ACSAH, ACSAL;
+    u16 ACEAH, ACEAL;
+    u16 ACCAH, ACCAL;
+    u16 ACDAT;
+
+    u16 DIRQ;
+
+    DSP_INSTR((*instructions[DSP_INSTR_TABLE_SIZE]));
 } s_DSP;
 
 static inline void DSP_PUSH_STACK(s_DSP* DSP, unsigned index, u16 value) {
@@ -144,5 +182,6 @@ static inline u16 DSP_POP_STACK(s_DSP* DSP, unsigned index) {
 }
 
 void init_DSP(s_DSP* DSP, const char* IROM_file, const char* DROM_file);
+void step_DSP(s_DSP* DSP);
 
 #endif //GC__DSP_H

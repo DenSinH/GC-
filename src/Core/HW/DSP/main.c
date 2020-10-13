@@ -12,5 +12,9 @@ int main() {
 
     init_DSP(DSP, BASE_FILE_PATH "dsp_rom.bin", BASE_FILE_PATH "dsp_coef.bin");
 
+    while (1) {
+        step_DSP(DSP);
+    }
+
     return 0;
 }
