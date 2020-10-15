@@ -81,7 +81,7 @@ typedef struct RegisterViewer
 
         char label[64];
         ImGui::BeginTabBar("##Tabs", ImGuiTabBarFlags_None);
-        for (auto RegisterTab : RegisterTabs) {
+        for (const auto& RegisterTab : RegisterTabs) {
             if (ImGui::BeginTabItem(RegisterTab.name)) {
 
                 ImGui::Columns(columns, "Registers", true);  // 3-ways, no border
@@ -155,7 +155,7 @@ typedef struct RegisterViewer
 
         if (ImGui::BeginPopupContextWindow())
         {
-            if (ImGui::MenuItem("Float view",       NULL, float_view)) float_view ^= true;
+            if (ImGui::MenuItem("Float view", nullptr, float_view)) float_view ^= true;
             if (p_open && ImGui::MenuItem("Close")) *p_open = false;
             ImGui::EndPopup();
         }

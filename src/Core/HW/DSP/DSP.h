@@ -26,6 +26,8 @@ typedef union s_ac {
     struct {
         u64 lmh: 40;
     };
+
+    u64 raw;
 } s_ac;
 
 typedef union s_prod {
@@ -91,11 +93,56 @@ typedef enum e_DSP_IO {
     DSP_IO_DIRQ = 0xfffb,
 } e_DSP_IO;
 
+typedef enum e_DSP_regs {
+    DSP_reg_ar0 = 0x00,
+    DSP_reg_ar1 = 0x01,
+    DSP_reg_ar2 = 0x02,
+    DSP_reg_ar3 = 0x03,
+
+    DSP_reg_ix0 = 0x04,
+    DSP_reg_ix1 = 0x05,
+    DSP_reg_ix2 = 0x06,
+    DSP_reg_ix3 = 0x07,
+
+    DSP_reg_wr0 = 0x08,
+    DSP_reg_wr1 = 0x09,
+    DSP_reg_wr2 = 0x0a,
+    DSP_reg_wr3 = 0x0b,
+
+    DSP_reg_st0 = 0x0c,
+    DSP_reg_st1 = 0x0d,
+    DSP_reg_st2 = 0x0e,
+    DSP_reg_st3 = 0x0f,
+
+    DSP_reg_ac0h = 0x10,
+    DSP_reg_ac1h = 0x11,
+
+    DSP_reg_config = 0x12,
+    DSP_reg_sr = 0x13,
+
+    DSP_reg_prodl = 0x14,
+    DSP_reg_prodm = 0x15,
+    DSP_reg_prodh = 0x16,
+    DSP_reg_prodm2 = 0x17,
+
+    DSP_reg_ax0l = 0x18,
+    DSP_reg_ax1l = 0x19,
+    DSP_reg_ax0h = 0x1a,
+    DSP_reg_ax1h = 0x1b,
+
+    DSP_reg_ac0l = 0x1c,
+    DSP_reg_ac1l = 0x1d,
+    DSP_reg_ac0m = 0x1e,
+    DSP_reg_ac1m = 0x1f,
+} e_DSP_regs;
+
 #define DSP_STACK_SIZE 0x20
 #define DSP_STACK_MASK 0x1f
 #define DSP_INSTR_TABLE_SIZE 0x100
+#define DSP_EXT_INSTR_TABLE_SIZE 0x100
 
 #define DSP_INSTR(_name) void _name(struct s_DSP* DSP, u16 instruction)
+#define DSP_EXT_INSTR(_name) void _name(struct s_DSP* DSP, u8 instruction)
 
 typedef struct s_DSP {
     u8 ARAM[0x1000000];  // 16MB ARAM
@@ -173,6 +220,8 @@ typedef struct s_DSP {
     u16 DIRQ;
 
     DSP_INSTR((*instructions[DSP_INSTR_TABLE_SIZE]));
+    DSP_EXT_INSTR((*ext_instructions[DSP_EXT_INSTR_TABLE_SIZE]));
+
 } s_DSP;
 
 static inline void DSP_PUSH_STACK(s_DSP* DSP, unsigned index, u16 value) {
@@ -181,6 +230,10 @@ static inline void DSP_PUSH_STACK(s_DSP* DSP, unsigned index, u16 value) {
 
 static inline u16 DSP_POP_STACK(s_DSP* DSP, unsigned index) {
     return DSP->stacks[index][--DSP->st[index]];
+}
+
+static inline void DSP_ext_instruction(s_DSP* DSP, u8 instruction) {
+    DSP->ext_instructions[instruction](DSP, instruction);
 }
 
 void init_DSP(s_DSP* DSP, const char* IROM_file, const char* DROM_file);

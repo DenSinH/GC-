@@ -8,13 +8,13 @@
 
 #include "../Scheduler/scheduler.h"
 
-typedef enum e_DSP_regs {
-    DSP_reg_MailboxHiToDSP   = 0x0,
-    DSP_reg_MailboxLoToDSP   = 0x2,
-    DSP_reg_MailboxHiFromDSP = 0x4,
-    DSP_reg_MailboxLoFromDSP = 0x6,
-    DSP_reg_CSR              = 0xa
-} e_DSP_regs;
+typedef enum e_DSPI_regs {
+    DSPI_reg_MailboxHiToDSP   = 0x0,
+    DSPI_reg_MailboxLoToDSP   = 0x2,
+    DSPI_reg_MailboxHiFromDSP = 0x4,
+    DSPI_reg_MailboxLoFromDSP = 0x6,
+    DSPI_reg_CSR              = 0xa
+} e_DSPI_regs;
 
 typedef enum e_DSP_CSR {
     DSP_CSR_RES        = 0x0001,
