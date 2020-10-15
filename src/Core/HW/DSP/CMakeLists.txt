@@ -7,7 +7,7 @@ add_library(DSP STATIC
         DSP_instructions.h
         DSP_extended_instructions.c
         DSP_extended_instructions.h
-)
+        DSP_util.h)
 
 add_executable(
         DSP_standalone

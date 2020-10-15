@@ -3,6 +3,8 @@
 
 #include "default.h"
 
+#include <stdbool.h>
+
 #define DSP_CLOCK_FREQUENCY 81000000
 
 typedef union s_ax {
@@ -136,6 +138,23 @@ typedef enum e_DSP_regs {
     DSP_reg_ac1m = 0x1f,
 } e_DSP_regs;
 
+typedef enum e_DSP_cond {
+    DSP_cond_GE     = 0b0000,
+    DSP_cond_L      = 0b0001,
+    DSP_cond_G      = 0b0010,
+    DSP_cond_LE     = 0b0011,
+    DSP_cond_NE     = 0b0100,
+    DSP_cond_EQ     = 0b0101,
+    DSP_cond_NC     = 0b0110,
+    DSP_cond_C      = 0b0111,
+    DSP_cond_B32    = 0b1000,
+    DSP_cond_A32    = 0b1001,
+    DSP_cond_NZ     = 0b1100,
+    DSP_cond_ZR     = 0b1101,
+    DSP_cond_O      = 0b1110,
+    DSP_cond_ALWAYS = 0b1111,
+} e_DSP_cond;
+
 #define DSP_STACK_SIZE 0x20
 #define DSP_STACK_MASK 0x1f
 #define DSP_INSTR_TABLE_SIZE 0x100
@@ -223,18 +242,6 @@ typedef struct s_DSP {
     DSP_EXT_INSTR((*ext_instructions[DSP_EXT_INSTR_TABLE_SIZE]));
 
 } s_DSP;
-
-static inline void DSP_PUSH_STACK(s_DSP* DSP, unsigned index, u16 value) {
-    DSP->stacks[index][DSP->st[index]++] = value;
-}
-
-static inline u16 DSP_POP_STACK(s_DSP* DSP, unsigned index) {
-    return DSP->stacks[index][--DSP->st[index]];
-}
-
-static inline void DSP_ext_instruction(s_DSP* DSP, u8 instruction) {
-    DSP->ext_instructions[instruction](DSP, instruction);
-}
 
 void init_DSP(s_DSP* DSP, const char* IROM_file, const char* DROM_file);
 void step_DSP(s_DSP* DSP);

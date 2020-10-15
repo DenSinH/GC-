@@ -15,8 +15,19 @@ void init_DSP_table(s_DSP* DSP) {
             case 0x00:
                 DSP->instructions[i] = DSP_0000_0000;
                 break;
+            case 0x02:
+            case 0x03:
+                DSP->instructions[i] = DSP_0000_001r;
+                break;
             case 0x12:
                 DSP->instructions[i] = DSP_SBSET;
+                break;
+            case 0x16:
+                DSP->instructions[i] = DSP_SI;
+                break;
+            case 0x81:
+            case 0x89:
+                DSP->instructions[i] = DSP_CLR;
                 break;
             case 0x8a:
                 DSP->instructions[i] = DSP_M0;
