@@ -15,8 +15,22 @@ static inline u16 DSP_POP_STACK(s_DSP* DSP, unsigned index) {
     return DSP->stacks[index][--DSP->st[index]];
 }
 
+static inline u16* DSP_PEEK_STACK(s_DSP* DSP, unsigned index) {
+    return &DSP->stacks[index][DSP->st[index] - 1];
+}
+
 static inline void DSP_ext_instruction(s_DSP* DSP, u8 instruction) {
     DSP->ext_instructions[instruction](DSP, instruction);
+}
+
+static inline void DSP_FLAGS(s_DSP* DSP, i64 result, bool carry, bool overflow) {
+    DSP->sr.C = carry;
+    DSP->sr.O = overflow;
+    DSP->sr.OS |= overflow;
+    DSP->sr.Z = result == 0;
+    DSP->sr.S = result < 0;
+    DSP->sr.AS = ((i32)result) != result;  // above s32
+    DSP->sr.TT = ((result & 0xc0000000) == 0) || ((result & 0xc0000000) == 0xc0000000);
 }
 
 static inline bool DSP_condition(s_DSP* DSP, u8 cond) {

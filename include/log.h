@@ -184,16 +184,12 @@
     #define log_warn(message, ...) do { } while(0)
 #endif
 
-#if VERBOSITY <= VERBOSITY_ERROR
-    #define log_fatal(message, ...) do {                                \
-        CONSOLE_RED();                                               \
-        fprintf(stderr, "[FATAL] at %s:%d: ", __FILE__, __LINE__);   \
-        fprintf(stderr, message "\n", ##__VA_ARGS__);                \
-        /* we're not restoring the color here for any handlers */    \
-        exit(1);                                                     \
-    } while(0)
-#else
-    #define log_fatal(message, ...) do { } while(0)
-#endif
+#define log_fatal(message, ...) do {                                \
+    CONSOLE_RED();                                               \
+    fprintf(stderr, "[FATAL] at %s:%d: ", __FILE__, __LINE__);   \
+    fprintf(stderr, message "\n", ##__VA_ARGS__);                \
+    /* we're not restoring the color here for any handlers */    \
+    exit(1);                                                     \
+} while(0)
 
 #endif //GC__LOG_H

@@ -112,7 +112,10 @@ static u8 view_byte(const u8* memory, uint64_t off) {
         case 0x000 ... 0x017:
         case 0x800 ... 0x817:
         case 0xc00 ... 0xc17:
-            return memory[MASK_24MB(off)];
+            return global_system->memory[MASK_24MB(off)];
+        case 0xd00 ... 0xd1f:
+            // sneak ARAM in here (this is NOT actually the case)
+            return global_system->HW_regs.DSPI.DSP.ARAM[off & 0x00ffffff];
         default:
             return 0;
     }
@@ -293,7 +296,31 @@ s_GameCube* init() {
     add_register_data("ax0", &global_system->HW_regs.DSPI.DSP.ax[0], 4, DSP_tab);
     add_register_data("ax1", &global_system->HW_regs.DSPI.DSP.ax[1], 4, DSP_tab);
 
-    add_register_data("", NULL, 4, DSP_tab);
+    add_register_data("", NULL, 2, DSP_tab);
+    add_register_data("", NULL, 2, DSP_tab);
+
+    add_register_data("DMBH", &global_system->HW_regs.DSPI.DSP.DMBH, 2, DSP_tab);
+    add_register_data("DMBL", &global_system->HW_regs.DSPI.DSP.DMBL, 2, DSP_tab);
+    add_register_data("CMBH", &global_system->HW_regs.DSPI.DSP.CMBH, 2, DSP_tab);
+    add_register_data("CMBL", &global_system->HW_regs.DSPI.DSP.CMBL, 2, DSP_tab);
+
+    add_register_data("DSMAH", &global_system->HW_regs.DSPI.DSP.DSMAH, 2, DSP_tab);
+    add_register_data("DSMAL", &global_system->HW_regs.DSPI.DSP.DSMAL, 2, DSP_tab);
+    add_register_data("DSPA", &global_system->HW_regs.DSPI.DSP.DSPA, 2, DSP_tab);
+    add_register_data("DSCR", &global_system->HW_regs.DSPI.DSP.DSCR, 2, DSP_tab);
+    add_register_data("DSBL", &global_system->HW_regs.DSPI.DSP.DSBL, 2, DSP_tab);
+
+    add_register_data("", NULL, 2, DSP_tab);
+
+    add_register_data("ACSAH", &global_system->HW_regs.DSPI.DSP.ACSAH, 2, DSP_tab);
+    add_register_data("ACSAL", &global_system->HW_regs.DSPI.DSP.ACSAL, 2, DSP_tab);
+    add_register_data("ACEAH", &global_system->HW_regs.DSPI.DSP.ACEAH, 2, DSP_tab);
+    add_register_data("ACEAL", &global_system->HW_regs.DSPI.DSP.ACEAL, 2, DSP_tab);
+    add_register_data("ACCAH", &global_system->HW_regs.DSPI.DSP.ACCAH, 2, DSP_tab);
+    add_register_data("ACCAL", &global_system->HW_regs.DSPI.DSP.ACCAL, 2, DSP_tab);
+    add_register_data("ACDAT", &global_system->HW_regs.DSPI.DSP.ACDAT, 2, DSP_tab);
+
+    add_register_data("DIRQ", &global_system->HW_regs.DSPI.DSP.DIRQ, 2, DSP_tab);
 
     int HWIO_tab = add_register_tab("HWIO");
     for (int i = 0; i < 0x80; i++) {

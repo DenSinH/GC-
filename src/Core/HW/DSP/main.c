@@ -12,9 +12,8 @@ int main() {
 
     init_DSP(DSP, BASE_FILE_PATH "dsp_rom.bin", BASE_FILE_PATH "dsp_coef.bin");
 
-    while (1) {
-        step_DSP(DSP);
-    }
+    s_ac ac = {.raw = 0x00ffffffffffULL};
+    printf("%llx", ac.lmh);
 
     return 0;
 }

@@ -44,24 +44,15 @@ void init_HW_regs(s_hardware_registers* HW_regs) {
     init_GX_FIFO(&HW_regs->GX_FIFO);
 }
 
-#ifdef CHECK_HR_ACCESS_ALIGNMENT
-/* It's mainly useful to know when accesses that are too large happen for a section
- * Accesses that are too small are handled anyway, that's what the shift is for, but misaligned or
- * accesses that are too large can cause certain registers not to be updated when they should
- * */
 #define SECTION_READ_TEMPLATE(_section, _size, _section_shift) \
 if (HW_regs->_section.read[masked_address >> (_section_shift)]) \
     HW_regs->_section.read[masked_address >> (_section_shift)](&HW_regs->_section, masked_address, _size); \
+/* misaligned reads */ \
+if ((_size) > (8 << (_section_shift)) && HW_regs->_section.read[1 + (masked_address >> (_section_shift))]) \
+    HW_regs->_section.read[1 + (masked_address >> (_section_shift))](&HW_regs->_section, masked_address, _size); \
 if((masked_address & ((_size >> 3)) - 1) || (_size > 8 * (1 << _section_shift))) \
     log_warn("Misaligned or too large read access at %x (size %d)", address, _size); \
 return READ ## _size(HW_regs->_section.regs, masked_address)
-
-#else
-#define SECTION_READ_TEMPLATE(_section, _size, _section_shift) \
-if (HW_regs->_section.read[masked_address >> (_section_shift)]) \
-    HW_regs->_section.read[masked_address >> (_section_shift)](&HW_regs->_section, masked_address, _size); \
-return READ ## _size(HW_regs->_section.regs, masked_address)
-#endif
 
 #define HW_REG_READ_TEMPLATE(_size) \
 HW_REG_READ_TEMPLATE_SIGNATURE(_size) { \
@@ -104,23 +95,13 @@ HW_REG_READ_TEMPLATE(16)
 HW_REG_READ_TEMPLATE(32)
 HW_REG_READ_TEMPLATE(64)
 
-
-#ifdef CHECK_HR_ACCESS_ALIGNMENT
-/* Same argument as for misaligned read accesses
- * */
-#define SECTION_WRITE_TEMPLATE(_section, _size, _section_shift) \
-WRITE ## _size(HW_regs->_section.regs, masked_address, value); \
-if((masked_address & ((_size >> 3)) - 1) || (_size > 8 * (1 << _section_shift))) \
-    log_warn("Misaligned or too large write access at %x (size %d)", address, _size); \
-if (HW_regs->_section.write[masked_address >> (_section_shift)]) \
-    HW_regs->_section.write[masked_address >> (_section_shift)](&HW_regs->_section, masked_address, _size)
-
-#else
 #define SECTION_WRITE_TEMPLATE(_section, _size, _section_shift) \
 WRITE ## _size(HW_regs->_section.regs, masked_address, value); \
 if (HW_regs->_section.write[masked_address >> (_section_shift)]) \
-    HW_regs->_section.write[masked_address >> (_section_shift)](&HW_regs->_section, masked_address, _size)
-#endif
+    HW_regs->_section.write[masked_address >> (_section_shift)](&HW_regs->_section, masked_address, _size); \
+/* misaligned writes */ \
+if ((_size) > (8 << (_section_shift)) && HW_regs->_section.write[1 + (masked_address >> (_section_shift))]) \
+    HW_regs->_section.write[1 + (masked_address >> (_section_shift))](&HW_regs->_section, masked_address, _size) \
 
 #define HW_REG_WRITE_TEMPLATE(_size) \
 HW_REG_WRITE_TEMPLATE_SIGNATURE(_size) { \

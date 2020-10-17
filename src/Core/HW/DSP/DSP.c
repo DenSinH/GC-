@@ -25,6 +25,25 @@ void init_DSP_table(s_DSP* DSP) {
             case 0x16:
                 DSP->instructions[i] = DSP_SI;
                 break;
+            case 0x18:
+            case 0x19:
+                DSP->instructions[i] = DSP_LRRx;
+            case 0x1a:
+            case 0x1b:
+                DSP->instructions[i] = DSP_SRRx;
+                break;
+            case 0x1c ... 0x1f:
+                DSP->instructions[i] = DSP_MRR;
+                break;
+            case 0x20 ... 0x27:
+                DSP->instructions[i] = DSP_LRS;
+                break;
+            case 0x28 ... 0x2f:
+                DSP->instructions[i] = DSP_SRS;
+                break;
+            case 0x82:
+                DSP->instructions[i] = DSP_CMP;
+                break;
             case 0x81:
             case 0x89:
                 DSP->instructions[i] = DSP_CLR;
@@ -177,7 +196,7 @@ void init_DSP(s_DSP* DSP, const char* IROM_file, const char* DROM_file) {
 
     size_t size[2] = { sizeof(DSP->IROM), sizeof(DSP->DROM) };
     const char* file_name[2] = { IROM_file, DROM_file };
-    u8* dest[2] = { DSP->IROM, DSP->IRAM };
+    u8* dest[2] = { DSP->IROM, DSP->DROM };
 
     for (int i = 0; i < 2; i++) {
         FOPEN(&file, file_name[i], "rb");
@@ -248,11 +267,16 @@ void init_DSP(s_DSP* DSP, const char* IROM_file, const char* DROM_file) {
 
     DSP->r[DSP_reg_ac0m] = (u16*)&DSP->ac[0] + 1;  // m
     DSP->r[DSP_reg_ac1m] = (u16*)&DSP->ac[1] + 1;  // m
-
-    DSP->pc = 0x8000;  // start in IROM
 }
 
-void step_DSP(s_DSP* DSP) {
+int step_DSP(s_DSP* DSP) {
+    // return the amount of cycles an instruction took
+    // this allows us to have "higher order instructions", like BLOOP(I)
+
+    if (!DSP->started) {
+        return 1;
+    }
+
     u16 instr = DSP_read_imem(DSP, DSP->pc++);
-    DSP->instructions[instr >> 8](DSP, instr);
+    return DSP->instructions[instr >> 8](DSP, instr);
 }

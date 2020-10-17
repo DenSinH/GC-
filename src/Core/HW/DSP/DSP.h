@@ -26,7 +26,7 @@ typedef union s_ac {
     };
 
     struct {
-        u64 lmh: 40;
+        i64 lmh: 40;
     };
 
     u64 raw;
@@ -160,10 +160,13 @@ typedef enum e_DSP_cond {
 #define DSP_INSTR_TABLE_SIZE 0x100
 #define DSP_EXT_INSTR_TABLE_SIZE 0x100
 
-#define DSP_INSTR(_name) void _name(struct s_DSP* DSP, u16 instruction)
+#define DSP_INSTR(_name) int _name(struct s_DSP* DSP, u16 instruction)
 #define DSP_EXT_INSTR(_name) void _name(struct s_DSP* DSP, u8 instruction)
 
 typedef struct s_DSP {
+    // todo:
+    bool started;
+
     u8 ARAM[0x1000000];  // 16MB ARAM
     /*
      * Instruction memory:
@@ -192,7 +195,7 @@ typedef struct s_DSP {
      * */
     u8 DRAM[2 * 0x1000]; // 4Kword data RAM
     u8 DROM[2 * 0x800];  // 2Kword data ROM
-    u8 IRAM[2 * 0x1000]; // 4Kword instruction RAM
+    // IRAM is mapped to ARAM start
     u8 IROM[2 * 0x1000]; // 4Kword instruction ROM
 
     u16 ar[4];     // addressing registers
@@ -244,6 +247,6 @@ typedef struct s_DSP {
 } s_DSP;
 
 void init_DSP(s_DSP* DSP, const char* IROM_file, const char* DROM_file);
-void step_DSP(s_DSP* DSP);
+int step_DSP(s_DSP* DSP);
 
 #endif //GC__DSP_H

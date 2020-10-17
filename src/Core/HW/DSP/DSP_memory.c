@@ -7,7 +7,8 @@
 u16 DSP_read_imem(s_DSP* DSP, u16 address){
     switch (address >> 12) {
         case 0:
-            return READ16(DSP->IRAM, address << 1);
+            // IMEM is mapped to the start of ARAM
+            return READ16(DSP->ARAM, address << 1);
         case 8:
             return READ16(DSP->IROM, (address & 0x0fff) << 1);
         default:
@@ -19,7 +20,7 @@ void DSP_write_imem(s_DSP* DSP, u16 address, u16 value){
     // is it even writeable?
     switch (address >> 12) {
         case 0:
-            WRITE16(DSP->IRAM, address << 1, value);
+            WRITE16(DSP->ARAM, address << 1, value);
             return;
         default:
             log_fatal("[DSP] Invalid IMEM write: %04x", address);
@@ -29,20 +30,23 @@ void DSP_write_imem(s_DSP* DSP, u16 address, u16 value){
 u16 DSP_read_dmem(s_DSP* DSP, u16 address){
     switch (address >> 12) {
         case 0:
-            return READ16(DSP->IRAM, address << 1);
+            return READ16(DSP->ARAM, address << 1);
         case 8:
             return READ16(DSP->IROM, (address & 0x0fff) << 1);
         case 0xf:
             // IO read
+            log_dsp("DSP HWIO read <- [%04x]", address);
             switch (address) {
                 case DSP_IO_CMBH:
                     return DSP->CMBH;
                 case DSP_IO_CMBL:
+                    // M bit is cleared on read
+                    DSP->CMBH &= 0x7fff;
                     return DSP->CMBL;
                 case DSP_IO_DMBH:
-                    return DSP->DMBH;
+                    return DSP->DMBH & 0x8000;
                 case DSP_IO_DMBL:
-                    return DSP->DMBL;
+                    return 0;
                 case DSP_IO_DSMAH:
                     return DSP->DSMAH;
                 case DSP_IO_DSMAL:
@@ -81,22 +85,22 @@ u16 DSP_read_dmem(s_DSP* DSP, u16 address){
 void DSP_write_dmem(s_DSP* DSP, u16 address, u16 value){
     switch (address >> 12) {
         case 0:
-            WRITE16(DSP->IRAM, address << 1, value);
+            WRITE16(DSP->DRAM, address << 1, value);
             return;
         case 0xf:
             // IO read
+            log_dsp("DSP HWIO write %04x -> [%04x]", value, address);
             switch (address) {
                 case DSP_IO_CMBH:
-                    DSP->CMBH = value;
-                    return;
                 case DSP_IO_CMBL:
-                    DSP->CMBL = value;
+                    log_dsp("DSP attempted write to CMBH/L");
                     return;
                 case DSP_IO_DMBH:
                     DSP->DMBH = value;
                     return;
                 case DSP_IO_DMBL:
                     DSP->DMBL = value;
+                    DSP->DMBH |= 0x8000; // M bit set on writes to L reg
                     return;
                 case DSP_IO_DSMAH:
                     DSP->DSMAH = value;

@@ -4,8 +4,21 @@
 #include "default.h"
 #include <stdbool.h>
 
-#define ADD_OVERFLOW32(x, y, result) ((((x) ^ (result)) & ((y) ^ (result))) >> 31) != 0
-#define ADD_CARRY(x, y) (u32)(x) > ~((u32)(y))
+static inline bool ADD_OVERFLOW64(u64 x, u64 y, u64 result) {
+    return (((x ^ result) & (y ^ result)) >> 63) != 0;
+}
+
+static inline bool ADD_OVERFLOW32(u32 x, u32 y, u32 result) {
+    return (((x ^ result) & (y ^ result)) >> 31) != 0;
+}
+
+static inline bool ADD_OVERFLOW16(u16 x, u16 y, u16 result) {
+    return (((x ^ result) & (y ^ result)) >> 15) != 0;
+}
+
+static inline bool ADD_CARRY(u32 x, u32 y) {
+    return (u32)x > ~((u32)y);
+}
 
 #define ROTL32(uval, n) (((uval) << (n)) | ((uval) >> (32 - (n))))
 #define ROTR32(uval, n) (((uval) >> (n)) | ((uval) << (32 - (n))))
