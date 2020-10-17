@@ -28,7 +28,7 @@
 #ifndef NDEBUG
 // change to change verbosity / component logging:
 #define VERBOSITY VERBOSITY_WARN
-#define COMPONENT_FLAGS (COMPONENT_DSP | COMPONENT_DSP_VERBOSE)
+#define COMPONENT_FLAGS (0)
 
 #define CHECK_SPR_ACCESS
 #define CHECK_CP_COMMAND

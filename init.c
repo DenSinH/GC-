@@ -322,6 +322,10 @@ s_GameCube* init() {
 
     add_register_data("DIRQ", &global_system->HW_regs.DSPI.DSP.DIRQ, 2, DSP_tab);
 
+    add_register_data("", NULL, 2, DSP_tab);
+
+    add_register_data("PC", &global_system->HW_regs.DSPI.DSP.pc, 2, DSP_tab);
+
     int HWIO_tab = add_register_tab("HWIO");
     for (int i = 0; i < 0x80; i++) {
         sprintf(name, "CP%02x", i);

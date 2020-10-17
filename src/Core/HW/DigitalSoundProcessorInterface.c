@@ -2,6 +2,7 @@
 
 #include "log.h"
 #include "core_utils.h"
+#include "../system.h"
 
 #include "const.h"
 
@@ -12,8 +13,6 @@ const static u32 CPU_CYCLES_PER_DSP_STEP = CLOCK_FREQUENCY / DSP_CLOCK_FREQUENCY
 #endif
 
 #ifdef DO_DEBUGGER
-#include "../system.h"
-
 void do_step_DSP(s_DSPI* DSPI) {
     if (DSPI->step_DSP) {
         DSPI->system->paused = true;
@@ -27,24 +26,52 @@ void do_step_DSP(s_DSPI* DSPI) {
 #endif
 
 /* DSP initialization: DSP is supposed to do nothing, then the CPU reads the mailbox until no mail is left
- * The CPU starts a DMA -> ARAM (IRAM region) for the stub of the exception vectors. The RESET vector will jump to
- * IROM.
+ * The CPU starts a DMA -> ARAM (IRAM region) for the stub of the exception vectors. The RESET vector will HALT the DSP.
+ * The CPU must unhalt the DSP by writing to CSR. Then the DSP will jump to IROM and start doing stuff.
  * Then the CPU waits for mail.
  *
  * The DMA completing might raise an interrupt in the PI (will not in this case)
  * I am unsure what actually starts the DSP, for now I'll just set a bool in the DSP.
  * */
 
+static inline void start_DSP(s_DSPI* DSPI) {
+    DSPI->DSP.started = true;
+    DSPI->DSP.config |= DSP_CR_INIT;
+
+    DSPI->DSP_step_event.time = *DSPI->system->scheduler.timer;
+    add_event(&DSPI->system->scheduler, &DSPI->DSP_step_event);
+}
+
+static inline void check_DSPI_interrupts(s_DSPI* DSPI) {
+    // strategy from Dolpin: interrupt mask is always right above interrupt, doing this checks all interrupts at once
+    if ((DSPI->DSPCSR & (DSPI->DSPCSR >> 1)) | (DSP_CSR_DSPINT | DSP_CSR_ARINT | DSP_CSR_AIDINT)) {
+        // immediately raise interrupt
+        set_PI_intsr(DSPI->PI, PI_intr_DSP, 0);
+    }
+}
+
+static void DSPI_interrupt(s_DSPI* DSPI, e_DSP_CSR interrupt) {
+    DSPI->DSPCSR |= interrupt;
+    check_DSPI_interrupts(DSPI);
+}
+
 SCHEDULER_EVENT(DSPI_DSP_step_event) {
     s_DSPI* DSPI = (s_DSPI*)caller;
 
+    // assert(!DSP_halted(&DSPI->DSP));
     int cycles = step_DSP(&DSPI->DSP);
 
     do_step_DSP(DSPI);
 
-    // reschedule event (we always keep this in the scheduler)
-    event->time += cycles * CPU_CYCLES_PER_DSP_STEP;
-    add_event(&DSPI->system->scheduler, event);
+    if (DSP_halted(&DSPI->DSP)) {
+        DSPI->DSPCSR |= DSP_CSR_HALT;
+        log_dsp("DSP halted, not re-adding event");
+    }
+    else if (DSPI->DSP.started) {
+        // reschedule event (we always keep this in the scheduler)
+        event->time += cycles * CPU_CYCLES_PER_DSP_STEP;
+        add_event(&DSPI->system->scheduler, event);
+    }
 }
 
 SCHEDULER_EVENT(DSPI_DSP_AR_DMA_done) {
@@ -71,13 +98,16 @@ SCHEDULER_EVENT(DSPI_DSP_AR_DMA_done) {
         memcpy(DSPI->DSP.ARAM + DSPI->AR_DMA_ARADDR, DSPI->system->memory + MASK_24MB(DSPI->AR_DMA_MMADDR), length);
 
         // todo: is this the signal for starting?
-        if (!DSPI->DSP.started) {
-            DSPI->DSP.started = true;
+        // it would work: the DSP should only run once a reset vector region exists
+        if (!DSPI->DSP.started && DSPI->AR_DMA_ARADDR == 0) {
+            start_DSP(DSPI);
         }
     }
 
     // DMA done
     DSPI->DSPCSR &= ~DSP_CSR_DSPDMASTATUS;
+    DSPI->DSPCSR |= DSP_CSR_ARINT;
+    check_DSPI_interrupts(DSPI);
 }
 
 HW_REG_READ_PRECALL(read_DSP_MailboxHiFromDSP, DSPI) {
@@ -88,17 +118,22 @@ HW_REG_READ_PRECALL(read_DSP_MailboxHiFromDSP, DSPI) {
 HW_REG_READ_PRECALL(read_DSP_MailboxLoFromDSP, DSPI) {
     log_dsp("CPU read DSP mail (lo) (%04x)", DSPI->DSP.DMBL);
     DSPI->DSP.DMBH &= 0x7fff;  // clear M bit
-    WRITE16(DSPI->regs, DSPI_reg_MailboxHiFromDSP, DSPI->DSP.DMBL);
+    WRITE16(DSPI->regs, DSPI_reg_MailboxLoFromDSP, DSPI->DSP.DMBL);
 }
 
 HW_REG_WRITE_CALLBACK(write_DSP_MailboxHiToDSP, DSPI) {
     log_dsp("CPU send DSP mail (%04x)", READ16(DSPI->regs, DSPI_reg_MailboxHiFromDSP));
-    DSPI->DSP.CMBH = READ16(DSPI->regs, DSPI_reg_MailboxHiFromDSP);
+    DSPI->DSP.CMBH = READ16(DSPI->regs, DSPI_reg_MailboxHiToDSP);
+}
+
+HW_REG_READ_PRECALL(read_DSP_MailboxHiToDSP, DSPI) {
+    log_dsp("CPU read CPU -> DSP mail status (%04x)", DSPI->DSP.CMBH);
+    WRITE16(DSPI->regs, DSPI_reg_MailboxHiToDSP, DSPI->DSP.CMBH & 0x8000);
 }
 
 HW_REG_WRITE_CALLBACK(write_DSP_MailboxLoToDSP, DSPI) {
     log_dsp("CPU send DSP mail (lo) (%04x)", READ16(DSPI->regs, DSPI_reg_MailboxLoFromDSP));
-    DSPI->DSP.CMBL = READ16(DSPI->regs, DSPI_reg_MailboxLoFromDSP);
+    DSPI->DSP.CMBL = READ16(DSPI->regs, DSPI_reg_MailboxLoToDSP);
 }
 
 HW_REG_WRITE_CALLBACK(write_DSP_CSR, DSPI) {
@@ -107,7 +142,17 @@ HW_REG_WRITE_CALLBACK(write_DSP_CSR, DSPI) {
     if (value & DSP_CSR_RES) {
         // reset DSP this happens "instantly"
     }
-    DSPI->DSPCSR = value & ~(DSP_CSR_RES);
+
+    if (DSPI->DSP.started && DSP_halted(&DSPI->DSP) && !DSPI->DSP_step_event.active) {
+        log_dsp("DSP unhalted, adding step event");
+        unhalt_DSP(&DSPI->DSP);
+        // DSPI->system->paused = true;
+        DSPI->DSP_step_event.time = *DSPI->system->scheduler.timer;
+        add_event(&DSPI->system->scheduler, &DSPI->DSP_step_event);
+    }
+
+    DSPI->DSPCSR = value & ~(DSP_CSR_RES | DSP_CSR_DSPINT | DSP_CSR_ARINT | DSP_CSR_AIDINT);
+    check_DSPI_interrupts(DSPI);
 }
 
 HW_REG_READ_PRECALL(read_DSP_CSR, DSPI) {
@@ -124,7 +169,6 @@ HW_REG_WRITE_CALLBACK(write_DSP_AR_DMA_ARADDR, DSPI) {
 
 HW_REG_WRITE_CALLBACK(write_DSP_AR_DMA_CNT_H, DSPI) {
     DSPI->AR_DMA_CNT = READ32(DSPI->regs, DSPI_reg_AR_DMA_CNT_H);
-    // DSPI->system->paused = true;
 }
 
 HW_REG_WRITE_CALLBACK(write_DSP_AR_DMA_CNT_L, DSPI) {
@@ -145,6 +189,7 @@ HW_REG_INIT_FUNCTION(DSPI) {
     DSPI->read[DSPI_reg_CSR >> DSP_SHIFT] = read_DSP_CSR;
     DSPI->read[DSPI_reg_MailboxHiFromDSP >> DSP_SHIFT] = read_DSP_MailboxHiFromDSP;
     DSPI->read[DSPI_reg_MailboxLoFromDSP >> DSP_SHIFT] = read_DSP_MailboxLoFromDSP;
+    DSPI->read[DSPI_reg_MailboxHiToDSP >> DSP_SHIFT]   = read_DSP_MailboxHiToDSP;
 
     DSPI->write[DSPI_reg_CSR >> DSP_SHIFT] = write_DSP_CSR;
     DSPI->write[DSPI_reg_MailboxHiToDSP >> DSP_SHIFT] = write_DSP_MailboxHiToDSP;
@@ -158,10 +203,8 @@ HW_REG_INIT_FUNCTION(DSPI) {
 
     DSPI->DSP_step_event = (s_event) {
         .caller = DSPI,
-        .callback = DSPI_DSP_step_event,
-        .time = CPU_CYCLES_PER_DSP_STEP
+        .callback = DSPI_DSP_step_event
     };
-    add_event(&DSPI->system->scheduler, &DSPI->DSP_step_event);
 
     DSPI->DSP_DMA_done_event = (s_event) {
             .caller = DSPI,

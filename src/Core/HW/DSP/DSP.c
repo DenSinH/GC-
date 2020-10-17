@@ -4,6 +4,7 @@
 #include "DSP_memory.h"
 #include "DSP_instructions.h"
 #include "DSP_extended_instructions.h"
+#include "DSP_util.h"
 
 #include <memory.h>
 #include <stdio.h>
@@ -28,6 +29,7 @@ void init_DSP_table(s_DSP* DSP) {
             case 0x18:
             case 0x19:
                 DSP->instructions[i] = DSP_LRRx;
+                break;
             case 0x1a:
             case 0x1b:
                 DSP->instructions[i] = DSP_SRRx;
@@ -267,6 +269,10 @@ void init_DSP(s_DSP* DSP, const char* IROM_file, const char* DROM_file) {
 
     DSP->r[DSP_reg_ac0m] = (u16*)&DSP->ac[0] + 1;  // m
     DSP->r[DSP_reg_ac1m] = (u16*)&DSP->ac[1] + 1;  // m
+
+    // todo: what does the exception vector region expect the RTI to do?
+    DSP_PUSH_STACK(DSP, 0, 0x8000);  // IROM start
+    DSP_PUSH_STACK(DSP, 1, 0x1e00);  // bits set by reset routine
 }
 
 int step_DSP(s_DSP* DSP) {
@@ -279,4 +285,23 @@ int step_DSP(s_DSP* DSP) {
 
     u16 instr = DSP_read_imem(DSP, DSP->pc++);
     return DSP->instructions[instr >> 8](DSP, instr);
+}
+
+void DSP_interrupt(s_DSP* DSP, e_DSP_int interrupt) {
+    DSP->config &= ~DSP_CR_HALT;
+    DSP_PUSH_STACK(DSP, 0, DSP->pc);
+    DSP_PUSH_STACK(DSP, 1, DSP->sr.raw);
+    DSP->pc = interrupt;
+}
+
+bool DSP_halted(s_DSP* DSP) {
+    return DSP->halted;
+}
+
+void halt_DSP(s_DSP* DSP) {
+    DSP->halted = true;
+}
+
+void unhalt_DSP(s_DSP* DSP) {
+    DSP->halted = false;
 }

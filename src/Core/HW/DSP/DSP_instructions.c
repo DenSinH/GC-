@@ -14,6 +14,23 @@ DSP_INSTR(DSP_unimplemented) {
     return 1;
 }
 
+static inline DSP_INSTR(DSP_HALT) {
+    log_dsp_instr("HALT");
+
+    DSP->halted = true;
+    return 1;
+}
+
+static inline DSP_INSTR(DSP_LR) {
+    u8 d = instruction & 0x1f;
+    u16 m = DSP_read_imem(DSP, DSP->pc++);
+    log_dsp_instr("LR r%x [%02x]", instruction & 0x1f, m);
+
+    *DSP->r[d] = DSP_read_dmem(DSP, m);
+
+    return 1;
+}
+
 static inline DSP_INSTR(DSP_LRI) {
     log_dsp_instr("LRI r%x #%02x", instruction & 0x1f, DSP_read_imem(DSP, DSP->pc));
 
@@ -74,12 +91,16 @@ DSP_INSTR(DSP_0000_0000) {
         case 0x00:
             log_dsp_instr("NOP");
             return 1;
+        case 0x21:
+            return DSP_HALT(DSP, instruction);
         case 0x40 ... 0x5f:
             return DSP_LOOP(DSP, instruction);
-        case 0x80 ... 0x9f:
-            return DSP_LRI(DSP, instruction);
         case 0x60 ... 0x7f:
             return DSP_BLOOP(DSP, instruction);
+        case 0x80 ... 0x9f:
+            return DSP_LRI(DSP, instruction);
+        case 0xc0 ... 0xdf:
+            return DSP_LR(DSP, instruction);
         default:
             return DSP_unimplemented(DSP, instruction);
     }
@@ -116,6 +137,14 @@ static inline DSP_INSTR(DSP_RET_cc) {
         DSP->pc = DSP_POP_STACK(DSP, 0);
     }
     return 2;
+}
+
+static inline DSP_INSTR(DSP_RTI) {
+    log_dsp_instr("RTI");
+
+    DSP->pc = DSP_POP_STACK(DSP, 0);
+    DSP->sr.raw = DSP_POP_STACK(DSP, 1);
+    return 1;
 }
 
 static inline DSP_INSTR(DSP_ANDF) {
@@ -168,6 +197,8 @@ DSP_INSTR(DSP_0000_001r) {
         case 0x02c0:
         case 0x03c0:
             return DSP_ANDCF(DSP, instruction);
+        case 0x02ff:
+            return DSP_RTI(DSP, instruction);
         default:
             return DSP_unimplemented(DSP, instruction);
     }

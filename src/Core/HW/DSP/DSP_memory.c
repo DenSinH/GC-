@@ -31,7 +31,8 @@ u16 DSP_read_dmem(s_DSP* DSP, u16 address){
     switch (address >> 12) {
         case 0:
             return READ16(DSP->ARAM, address << 1);
-        case 8:
+        case 1:
+            // COEF
             return READ16(DSP->IROM, (address & 0x0fff) << 1);
         case 0xf:
             // IO read

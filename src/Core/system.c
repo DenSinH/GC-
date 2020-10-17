@@ -6,6 +6,7 @@
 #include "system.h"
 #include "Gekko.h"
 #include "sleeping.h"
+#include "const.h"
 
 #include "flags.h"
 
@@ -30,20 +31,6 @@ s_GameCube* init_system() {
 #endif
     return GameCube;
 }
-
-#ifdef _WIN32
-#define ROOT_DIR "D:/Data/CProjects/GameCubeResources/Tests/"
-#else
-#define ROOT_DIR "/mnt/d/"
-#endif
-
-// #define TEST_DOL ROOT_DIR "Cube/Cube.dol"
-// #define TEST_DOL ROOT_DIR "Textures/Textures.dol"
-// #define TEST_DOL ROOT_DIR "Sprites/Sprites.dol"
-// #define TEST_DOL ROOT_DIR "Particles/Particles.dol"
-// #define TEST_DOL ROOT_DIR "HelloWorld/HelloWorld.dol"
-// #define TEST_DOL ROOT_DIR "Console/Console.dol"
-#define TEST_DOL ROOT_DIR "AudioPlayer/AudioPlayer.dol"
 
 void run_system(s_GameCube* system) {
     load_DOL_to_Gekko(&system->cpu, TEST_DOL);

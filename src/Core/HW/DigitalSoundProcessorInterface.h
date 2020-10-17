@@ -3,6 +3,8 @@
 
 #include "DSP/DSP.h"
 
+#include "ProcessorInterface.h"
+
 #include "default.h"
 #include "hwreg_utils.h"
 
@@ -45,6 +47,8 @@ typedef struct s_DSPI {
     HW_REG_WRITE_CALLBACK((*write[0x200 >> DSP_SHIFT]), DSPI);
     HW_REG_READ_PRECALL((*read[0x200 >> DSP_SHIFT]), DSPI);
     struct s_GameCube* system;
+
+    s_PI* PI;
 
     s_DSP DSP;
     s_event DSP_step_event;

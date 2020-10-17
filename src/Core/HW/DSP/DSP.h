@@ -155,6 +155,19 @@ typedef enum e_DSP_cond {
     DSP_cond_ALWAYS = 0b1111,
 } e_DSP_cond;
 
+typedef enum e_DSP_CR {
+    DSP_CR_EXTERNAL_INT = 0x0002,
+    DSP_CR_HALT         = 0x0004,
+    DSP_CR_INIT         = 0x0400,
+} e_DSP_CR;
+
+typedef enum e_DSP_int {
+    DSP_int_RESET = 0x0000,
+    DSP_int_STOVF = 0x0002,
+    DSP_int_ACCOV = 0x0004,
+    DSP_int_INT   = 0x000E,  // external
+} e_DSP_int;
+
 #define DSP_STACK_SIZE 0x20
 #define DSP_STACK_MASK 0x1f
 #define DSP_INSTR_TABLE_SIZE 0x100
@@ -166,6 +179,8 @@ typedef enum e_DSP_cond {
 typedef struct s_DSP {
     // todo:
     bool started;
+
+    bool halted;
 
     u8 ARAM[0x1000000];  // 16MB ARAM
     /*
@@ -247,6 +262,10 @@ typedef struct s_DSP {
 } s_DSP;
 
 void init_DSP(s_DSP* DSP, const char* IROM_file, const char* DROM_file);
+void DSP_interrupt(s_DSP* DSP, e_DSP_int interrupt);
+bool DSP_halted(s_DSP* DSP);
+void halt_DSP(s_DSP* DSP);
+void unhalt_DSP(s_DSP* DSP);
 int step_DSP(s_DSP* DSP);
 
 #endif //GC__DSP_H
