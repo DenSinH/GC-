@@ -1,6 +1,8 @@
 add_library(DSP STATIC
         DSP.c
         DSP.h
+        files/dsp_coef.h
+        files/dsp_rom.h
         DSP_memory.h
         DSP_memory.c
         DSP_instructions.c

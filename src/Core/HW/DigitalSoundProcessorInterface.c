@@ -269,5 +269,5 @@ HW_REG_INIT_FUNCTION(DSPI) {
             .callback = DSPI_DSP_AI_DMA_done
     };
 
-    init_DSP(&DSPI->DSP, DSP_ROM_PATH, DSP_COEF_PATH);
+    init_DSP(&DSPI->DSP);
 }

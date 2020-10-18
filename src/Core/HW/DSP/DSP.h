@@ -261,7 +261,7 @@ typedef struct s_DSP {
 
 } s_DSP;
 
-void init_DSP(s_DSP* DSP, const char* IROM_file, const char* DROM_file);
+void init_DSP(s_DSP* DSP);
 void DSP_interrupt(s_DSP* DSP, e_DSP_int interrupt);
 bool DSP_halted(s_DSP* DSP);
 void halt_DSP(s_DSP* DSP);

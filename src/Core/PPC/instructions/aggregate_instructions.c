@@ -117,6 +117,9 @@ GEKKO_INSTR(instr_011111) {
         case SUBFE_OPCODE_EXTENDED:
             subfe(cpu, instruction);
             return;
+        case SUBFZE_OPCODE_EXTENDED:
+            subfze(cpu, instruction);
+            return;
         case SUBFC_OPCODE_EXTENDED:
             subfc(cpu, instruction);
             return;

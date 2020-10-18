@@ -184,6 +184,27 @@ INLINE_GEKKO_INSTR(subfe) {
     cpu->GPR[instruction.general_DAB.D] = result;
 }
 
+INLINE_GEKKO_INSTR(subfze) {
+    GEKKO_INSTR_HEADER
+    log_cpu_verbose("subfze %08x", instruction.raw);
+
+    u32 carry = cpu->XER.CA;
+    u32 A = ~cpu->GPR[instruction.general_DAB.A];
+    u32 result = A + carry;
+
+    cpu->XER.CA = ADD_CARRY(A, carry);
+
+    if (instruction.general_DAB.OE) {
+        UPDATE_XER_OV(cpu->XER, ADD_OVERFLOW32(A, carry, result));
+    }
+
+    if (instruction.general_DAB.Rc) {
+        UPDATE_CR0_RESULT32(cpu, result);
+    }
+
+    cpu->GPR[instruction.general_DAB.D] = result;
+}
+
 INLINE_GEKKO_INSTR(subfc) {
     GEKKO_INSTR_HEADER
     log_cpu_verbose("subfe %08x", instruction.raw);
