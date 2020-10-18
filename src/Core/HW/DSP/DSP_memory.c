@@ -27,6 +27,13 @@ void DSP_write_imem(s_DSP* DSP, u16 address, u16 value){
     }
 }
 
+static inline void wrap_ACCA(s_DSP* DSP) {
+    if (DSP->ACCA > DSP->ACEA) {
+        DSP->ACCA = DSP->ACSA;
+        DSP_interrupt(DSP, DSP_int_ACCOV);
+    }
+}
+
 u16 DSP_read_dmem(s_DSP* DSP, u16 address){
     switch (address >> 12) {
         case 0:
@@ -59,19 +66,21 @@ u16 DSP_read_dmem(s_DSP* DSP, u16 address){
                 case DSP_IO_DSBL:
                     return DSP->DSBL;
                 case DSP_IO_ACSAH:
-                    return DSP->ACSAH;
+                    return DSP->ACSA >> 16;
                 case DSP_IO_ACSAL:
-                    return DSP->ACSAL;
+                    return (u16)DSP->ACSA;
                 case DSP_IO_ACEAH:
-                    return DSP->ACEAH;
+                    return DSP->ACEA >> 16;
                 case DSP_IO_ACEAL:
-                    return DSP->ACEAL;
+                    return (u16)DSP->ACEA;
                 case DSP_IO_ACCAH:
-                    return DSP->ACCAH;
+                    return DSP->ACCA >> 16;
                 case DSP_IO_ACCAL:
-                    return DSP->ACCAL;
+                    return (u16)DSP->ACCA;
                 case DSP_IO_ACDAT:
-                    return DSP->ACDAT;
+                    u16 value = READ16(DSP->ARAM, (DSP->ACCA++) << 1);
+                    wrap_ACCA(DSP);
+                    return value;
                 case DSP_IO_DIRQ:
                     return DSP->DIRQ;
                 default:
@@ -119,25 +128,31 @@ void DSP_write_dmem(s_DSP* DSP, u16 address, u16 value){
                     DSP->DSBL = value;
                     return;
                 case DSP_IO_ACSAH:
-                    DSP->ACSAH = value;
+                    DSP->ACSA = (DSP->ACSA & 0xffff) | ((u32)value << 16);
+                    wrap_ACCA(DSP);
                     return;
                 case DSP_IO_ACSAL:
-                    DSP->ACSAL = value;
+                    DSP->ACSA = (DSP->ACSA & 0xffff0000) | value;
+                    wrap_ACCA(DSP);
                     return;
                 case DSP_IO_ACEAH:
-                    DSP->ACEAH = value;
+                    DSP->ACEA = (DSP->ACEA & 0xffff) | ((u32)value << 16);
+                    wrap_ACCA(DSP);
                     return;
                 case DSP_IO_ACEAL:
-                    DSP->ACEAL = value;
+                    DSP->ACEA = (DSP->ACEA & 0xffff0000) | value;
+                    wrap_ACCA(DSP);
                     return;
                 case DSP_IO_ACCAH:
-                    DSP->ACCAH = value;
+                    DSP->ACCA = (DSP->ACCA & 0xffff) | ((u32)value << 16);
+                    wrap_ACCA(DSP);
                     return;
                 case DSP_IO_ACCAL:
-                    DSP->ACCAL = value;
+                    DSP->ACCA = (DSP->ACEA & 0xffff0000) | value;
+                    wrap_ACCA(DSP);
                     return;
                 case DSP_IO_ACDAT:
-                    DSP->ACDAT = value;
+                    // this register can't be written to
                     return;
                 case DSP_IO_DIRQ:
                     DSP->DIRQ = value & 1;

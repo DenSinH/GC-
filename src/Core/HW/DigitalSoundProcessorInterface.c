@@ -5,6 +5,7 @@
 #include "../system.h"
 
 #include "const.h"
+#include "helpers.h"
 
 const static u32 CPU_CYCLES_PER_DSP_STEP = CLOCK_FREQUENCY / DSP_CLOCK_FREQUENCY;
 
@@ -43,14 +44,15 @@ static inline void start_DSP(s_DSPI* DSPI) {
 }
 
 static inline void check_DSPI_interrupts(s_DSPI* DSPI) {
-    // strategy from Dolpin: interrupt mask is always right above interrupt, doing this checks all interrupts at once
-    if ((DSPI->DSPCSR & (DSPI->DSPCSR >> 1)) | (DSP_CSR_DSPINT | DSP_CSR_ARINT | DSP_CSR_AIDINT)) {
+    // strategy from Dolphin: interrupt mask is always right above interrupt, doing this checks all interrupts at once
+    if ((DSPI->DSPCSR & (DSPI->DSPCSR >> 1)) | (DSPI_CSR_DSPINT | DSPI_CSR_ARINT | DSPI_CSR_AIDINT)) {
         // immediately raise interrupt
+        log_dsp("Raising DSP interrupt");
         set_PI_intsr(DSPI->PI, PI_intr_DSP, 0);
     }
 }
 
-static void DSPI_interrupt(s_DSPI* DSPI, e_DSP_CSR interrupt) {
+static void DSPI_interrupt(s_DSPI* DSPI, e_DSPI_CSR interrupt) {
     DSPI->DSPCSR |= interrupt;
     check_DSPI_interrupts(DSPI);
 }
@@ -58,18 +60,18 @@ static void DSPI_interrupt(s_DSPI* DSPI, e_DSP_CSR interrupt) {
 SCHEDULER_EVENT(DSPI_DSP_step_event) {
     s_DSPI* DSPI = (s_DSPI*)caller;
 
-    // assert(!DSP_halted(&DSPI->DSP));
     int cycles = step_DSP(&DSPI->DSP);
 
     do_step_DSP(DSPI);
 
     if (DSPI->DSP.DIRQ) {
-        DSPI->DSPCSR |= DSP_CSR_DSPINT;
+        log_dsp("DSP interrupt raised");
+        DSPI->DSPCSR |= DSPI_CSR_DSPINT;
         check_DSPI_interrupts(DSPI);
     }
 
     if (DSP_halted(&DSPI->DSP)) {
-        DSPI->DSPCSR |= DSP_CSR_HALT;
+        DSPI->DSPCSR |= DSPI_CSR_HALT;
         log_dsp("DSP halted, not re-adding event");
     }
     else if (DSPI->DSP.started) {
@@ -87,8 +89,9 @@ SCHEDULER_EVENT(DSPI_DSP_AR_DMA_done) {
     /*
      * We are just going to transfer (memcpy) the whole DMA at once, then clear the DMA transfer bit in DSPCNT
      * */
-    // todo: this is wrong, but I'm not sure how else it's supposed to copy the entire reset vector region into ARAM
-    u32 length = 4 * (DSPI->AR_DMA_CNT & DSP_AR_DMA_LEN);
+    // Dolphin uses the length in bytes, but I'm not sure how else it's supposed to copy the entire reset vector region into ARAM
+    // I suspect the transfer length is measured in words
+    u32 length = (DSPI->AR_DMA_CNT & DSP_AR_DMA_LEN) << 2;
 #ifdef CHECK_DSP_DMA_ADDR
     assert(MASK_24MB(DSPI->AR_DMA_MMADDR) + length < sizeof(DSPI->system->memory) /* MMEM overflow */ );
     assert(DSPI->AR_DMA_ARADDR + length < sizeof(DSPI->DSP.ARAM) /* ARAM overflow */ );
@@ -110,8 +113,21 @@ SCHEDULER_EVENT(DSPI_DSP_AR_DMA_done) {
     }
 
     // DMA done
-    DSPI->DSPCSR &= ~DSP_CSR_DSPDMASTATUS;
-    DSPI->DSPCSR |= DSP_CSR_ARINT;
+    DSPI->DSPCSR &= ~DSPI_CSR_DSPDMASTATUS;
+    DSPI->DSPCSR |= DSPI_CSR_ARINT;
+    check_DSPI_interrupts(DSPI);
+}
+
+SCHEDULER_EVENT(DSPI_DSP_AI_DMA_done) {
+    log_dsp("Audio DMA done");
+
+    s_DSPI* DSPI = (s_DSPI*)caller;
+
+    // set DMA to have no bytes left (needed to be able to start a new DMA)
+    DSPI->AI_DMA_LEN = 0;
+
+    DSPI->DSPCSR |= DSPI_CSR_AIDINT;
+
     check_DSPI_interrupts(DSPI);
 }
 
@@ -141,10 +157,10 @@ HW_REG_WRITE_CALLBACK(write_DSP_MailboxLoToDSP, DSPI) {
     DSPI->DSP.CMBL = READ16(DSPI->regs, DSPI_reg_MailboxLoToDSP);
 }
 
-HW_REG_WRITE_CALLBACK(write_DSP_CSR, DSPI) {
+HW_REG_WRITE_CALLBACK(write_DSPI_CSR, DSPI) {
     u16 value = READ16(DSPI->regs, DSPI_reg_CSR);
 
-    if (value & DSP_CSR_RES) {
+    if (value & DSPI_CSR_RES) {
         // reset DSP this happens "instantly"
     }
 
@@ -156,15 +172,15 @@ HW_REG_WRITE_CALLBACK(write_DSP_CSR, DSPI) {
         add_event(&DSPI->system->scheduler, &DSPI->DSP_step_event);
     }
 
-    if (value & DSP_CSR_DSPINT) {
+    if (value & DSPI_CSR_DSPINT) {
         DSPI->DSP.DIRQ = 0;
     }
 
-    DSPI->DSPCSR = value & ~(DSP_CSR_RES | DSP_CSR_DSPINT | DSP_CSR_ARINT | DSP_CSR_AIDINT);
+    DSPI->DSPCSR = value & ~(DSPI_CSR_RES | DSPI_CSR_DSPINT | DSPI_CSR_ARINT | DSPI_CSR_AIDINT);
     check_DSPI_interrupts(DSPI);
 }
 
-HW_REG_READ_PRECALL(read_DSP_CSR, DSPI) {
+HW_REG_READ_PRECALL(read_DSPI_CSR, DSPI) {
     WRITE16(DSPI->regs, DSPI_reg_CSR, DSPI->DSPCSR);
 }
 
@@ -185,22 +201,49 @@ HW_REG_WRITE_CALLBACK(write_DSP_AR_DMA_CNT_L, DSPI) {
 
     // start DMA
     log_dsp("DMA started (%x bytes: MM[%08x] <-> AR[%06x])", DSPI->AR_DMA_CNT, DSPI->AR_DMA_MMADDR, DSPI->AR_DMA_ARADDR);
-    DSPI->DSPCSR |= DSP_CSR_DSPDMASTATUS;
+    DSPI->DSPCSR |= DSPI_CSR_DSPDMASTATUS;
 
     // transfer length has been measured on HW (gotten from Dolphin source:
     // https://github.com/dolphin-emu/dolphin/blob/master/Source/Core/Core/HW/DSP.cpp)
-    DSPI->DSP_DMA_done_event.time = *DSPI->system->scheduler.timer + (((DSPI->AR_DMA_CNT & DSP_AR_DMA_LEN) * 246) >> 5);
-    add_event(&DSPI->system->scheduler, &DSPI->DSP_DMA_done_event);
+    DSPI->DSP_AR_DMA_done_event.time = *DSPI->system->scheduler.timer + (((DSPI->AR_DMA_CNT & DSP_AR_DMA_LEN) * 246) >> 5);
+    add_event(&DSPI->system->scheduler, &DSPI->DSP_AR_DMA_done_event);
+}
+
+HW_REG_WRITE_CALLBACK(write_DSP_AI_DMA_CNT, DSPI) {
+    u16 DMACNT = READ16(DSPI->regs, DSPI_reg_AI_DMA_CNT);
+
+    // only do this if the DMA has not been started yet
+    if (!DSPI->AI_DMA_LEN) {
+        if (DMACNT & DSP_AI_DMA_START) {
+            DSPI->AI_DMA_LEN  = (DMACNT & ~DSP_AI_DMA_START) << 5;
+            u32 DMAADDR = READ32(DSPI->regs, DSPI_reg_AI_DMA_START);
+
+            log_dsp("Audio DMA: %x bytes starting from %x", DSPI->AI_DMA_LEN, DMAADDR);
+
+            if (DSPI->DSP_AI_DMA_done_event.active) {
+                log_fatal("Trying to start audio DMA while it is already in the scheduler");
+            }
+
+            // some arbitrary delay based on the length
+            DSPI->DSP_AI_DMA_done_event.time = *DSPI->system->scheduler.timer + DSPI->AI_DMA_LEN * 8;
+            add_event(&DSPI->system->scheduler, &DSPI->DSP_AI_DMA_done_event);
+        }
+    }
+}
+
+HW_REG_READ_PRECALL(read_DSP_AI_DMA_bytes_left, DSPI) {
+    WRITE16(DSPI->regs, DSPI_reg_AI_DMA_bytes_left, MIN(DSPI->AI_DMA_LEN, 0xffff));
 }
 
 HW_REG_INIT_FUNCTION(DSPI) {
 
-    DSPI->read[DSPI_reg_CSR >> DSP_SHIFT] = read_DSP_CSR;
-    DSPI->read[DSPI_reg_MailboxHiFromDSP >> DSP_SHIFT] = read_DSP_MailboxHiFromDSP;
-    DSPI->read[DSPI_reg_MailboxLoFromDSP >> DSP_SHIFT] = read_DSP_MailboxLoFromDSP;
-    DSPI->read[DSPI_reg_MailboxHiToDSP >> DSP_SHIFT]   = read_DSP_MailboxHiToDSP;
+    DSPI->read[DSPI_reg_CSR >> DSP_SHIFT] = read_DSPI_CSR;
+    DSPI->read[DSPI_reg_MailboxHiFromDSP >> DSP_SHIFT]  = read_DSP_MailboxHiFromDSP;
+    DSPI->read[DSPI_reg_MailboxLoFromDSP >> DSP_SHIFT]  = read_DSP_MailboxLoFromDSP;
+    DSPI->read[DSPI_reg_MailboxHiToDSP >> DSP_SHIFT]    = read_DSP_MailboxHiToDSP;
+    DSPI->read[DSPI_reg_AI_DMA_bytes_left >> DSP_SHIFT] = read_DSP_AI_DMA_bytes_left;
 
-    DSPI->write[DSPI_reg_CSR >> DSP_SHIFT] = write_DSP_CSR;
+    DSPI->write[DSPI_reg_CSR >> DSP_SHIFT] = write_DSPI_CSR;
     DSPI->write[DSPI_reg_MailboxHiToDSP >> DSP_SHIFT] = write_DSP_MailboxHiToDSP;
     DSPI->write[DSPI_reg_MailboxLoToDSP >> DSP_SHIFT] = write_DSP_MailboxLoToDSP;
     DSPI->write[DSPI_reg_AR_DMA_MMADDR_H >> DSP_SHIFT] = write_DSP_AR_DMA_MMADDR;
@@ -209,15 +252,21 @@ HW_REG_INIT_FUNCTION(DSPI) {
     DSPI->write[DSPI_reg_AR_DMA_ARADDR_L >> DSP_SHIFT] = write_DSP_AR_DMA_ARADDR;
     DSPI->write[DSPI_reg_AR_DMA_CNT_H >> DSP_SHIFT] = write_DSP_AR_DMA_CNT_H;
     DSPI->write[DSPI_reg_AR_DMA_CNT_L >> DSP_SHIFT] = write_DSP_AR_DMA_CNT_L;
+    DSPI->write[DSPI_reg_AI_DMA_CNT >> DSP_SHIFT] = write_DSP_AI_DMA_CNT;
 
     DSPI->DSP_step_event = (s_event) {
         .caller = DSPI,
         .callback = DSPI_DSP_step_event
     };
 
-    DSPI->DSP_DMA_done_event = (s_event) {
+    DSPI->DSP_AR_DMA_done_event = (s_event) {
             .caller = DSPI,
             .callback = DSPI_DSP_AR_DMA_done
+    };
+
+    DSPI->DSP_AI_DMA_done_event = (s_event) {
+            .caller = DSPI,
+            .callback = DSPI_DSP_AI_DMA_done
     };
 
     init_DSP(&DSPI->DSP, DSP_ROM_PATH, DSP_COEF_PATH);

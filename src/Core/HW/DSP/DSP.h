@@ -249,10 +249,10 @@ typedef struct s_DSP {
     u16 DSMAH, DSMAL;
     u16 DSPA, DSCR, DSBL;
 
-    u16 ACSAH, ACSAL;
-    u16 ACEAH, ACEAL;
-    u16 ACCAH, ACCAL;
-    u16 ACDAT;
+    u32 ACSA;
+    u32 ACEA;
+    u32 ACCA;
+    // ACDAT is not so much an actual register
 
     u16 DIRQ;
 

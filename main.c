@@ -28,7 +28,7 @@ int main() {
     global_system = init();
 
 #ifdef DO_BREAKPOINTS
-    global_system->paused = true;
+    global_system->paused = false;
 #endif
 
     atexit(exception_handler);

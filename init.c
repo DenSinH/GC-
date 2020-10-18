@@ -312,13 +312,9 @@ s_GameCube* init() {
 
     add_register_data("", NULL, 2, DSP_tab);
 
-    add_register_data("ACSAH", &global_system->HW_regs.DSPI.DSP.ACSAH, 2, DSP_tab);
-    add_register_data("ACSAL", &global_system->HW_regs.DSPI.DSP.ACSAL, 2, DSP_tab);
-    add_register_data("ACEAH", &global_system->HW_regs.DSPI.DSP.ACEAH, 2, DSP_tab);
-    add_register_data("ACEAL", &global_system->HW_regs.DSPI.DSP.ACEAL, 2, DSP_tab);
-    add_register_data("ACCAH", &global_system->HW_regs.DSPI.DSP.ACCAH, 2, DSP_tab);
-    add_register_data("ACCAL", &global_system->HW_regs.DSPI.DSP.ACCAL, 2, DSP_tab);
-    add_register_data("ACDAT", &global_system->HW_regs.DSPI.DSP.ACDAT, 2, DSP_tab);
+    add_register_data("ACSA", &global_system->HW_regs.DSPI.DSP.ACSA, 4, DSP_tab);
+    add_register_data("ACEA", &global_system->HW_regs.DSPI.DSP.ACEA, 4, DSP_tab);
+    add_register_data("ACCA", &global_system->HW_regs.DSPI.DSP.ACCA, 4, DSP_tab);
 
     add_register_data("DIRQ", &global_system->HW_regs.DSPI.DSP.DIRQ, 2, DSP_tab);
 
@@ -390,7 +386,7 @@ s_GameCube* init() {
     add_register_data("", NULL, 1, HWIO_tab);
 
     for (int i = 0; i < 0x200; i++) {
-        sprintf(name, "DSP%02x", i);
+        sprintf(name, "D%02x", i);
         add_register_data(name, &global_system->HW_regs.DSPI.regs[i], 1, HWIO_tab);
     }
 
