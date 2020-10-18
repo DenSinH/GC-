@@ -85,5 +85,4 @@ static inline u32 cttz(u32 x)
 #endif
 }
 
-
 #endif //GC__HELPERS_H

@@ -192,6 +192,9 @@ GEKKO_INSTR(instr_011111) {
         case LWZX_OPCODE_EXTENDED:
             lwzx(cpu, instruction);
             return;
+        case LWBRX_OPCODE_EXTENDED:
+            lwbrx(cpu, instruction);
+            return;
         case LHZX_OPCODE_EXTENDED:
             lhzx(cpu, instruction);
             return;

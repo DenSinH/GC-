@@ -70,4 +70,104 @@ static inline bool DSP_condition(s_DSP* DSP, u8 cond) {
     }
 }
 
+/*
+ * Dolphin's code seemed very efficient for this
+ * */
+
+static inline u16 DSP_increment_ar(s_DSP* DSP, int index) {
+    u32 ar = DSP->ar[index];
+    u32 wr = DSP->wr[index];
+
+    if (wr == 0xffff) {
+        // wrapping is not needed in this case
+        DSP->ar[index]++;
+        return DSP->ar[index];
+    }
+
+    u32 nar = ar + 1;
+    // basically: if the overflow from the addition operation is more than the wrapping amount, subtract it again
+    if ((nar ^ ar) > ((wr | 1) << 1)) {
+        nar -= wr + 1;
+    }
+
+    return DSP->ar[index] = nar;
+}
+
+static inline u16 DSP_decrement_ar(s_DSP* DSP, int index) {
+    u32 ar = DSP->ar[index];
+    u32 wr = DSP->wr[index];
+
+    if (wr == 0xffff) {
+        // wrapping is not needed in this case
+        DSP->ar[index]--;
+        return DSP->ar[index];
+    }
+
+    u32 nar = ar + wr;
+    // basically: if the overflow from the addition operation is more than the wrapping amount, subtract it again
+    if (((nar ^ ar) & ((wr | 1) << 1)) > wr) {
+        nar -= wr + 1;
+    }
+
+    return DSP->ar[index] = nar;
+}
+
+static inline u16 DSP_increase_ar(s_DSP* DSP, int index, i16 amount) {
+    u32 ar = DSP->ar[index];
+    u32 wr = DSP->wr[index];
+    i32 ix = amount;
+
+    if (wr == 0xffff) {
+        // wrapping is not needed in this case
+        DSP->ar[index] += amount;
+        return DSP->ar[index];
+    }
+
+    u32 mx = (wr | 1) << 1;
+    u32 nar = ar + ix;
+    u32 dar = (nar ^ ar ^ ix) & mx;
+
+    if (ix >= 0)
+    {
+        if (dar > wr)  // overflow
+            nar -= wr + 1;
+    }
+    else
+    {
+        if ((((nar + wr + 1) ^ nar) & dar) <= wr)
+            nar += wr + 1;
+    }
+
+    return DSP->ar[index] = nar;
+}
+
+static inline u16 DSP_decrease_ar(s_DSP* DSP, int index, i16 amount) {
+    u32 ar = DSP->ar[index];
+    u32 wr = DSP->wr[index];
+    i32 ix = amount;
+
+    if (wr == 0xffff) {
+        // wrapping is not needed in this case
+        DSP->ar[index] -= amount;
+        return DSP->ar[index];
+    }
+
+    u32 mx = (wr | 1) << 1;
+    u32 nar = ar - ix;
+    u32 dar = (nar ^ ar ^ ~ix) & mx;
+
+    if ((u32)ix > 0xFFFF8000)  // (ix < 0 && ix != -0x8000)
+    {
+        if (dar > wr)  // overflow
+            nar -= wr + 1;
+    }
+    else
+    {
+        if ((((nar + wr + 1) ^ nar) & dar) <= wr)  // underflow or below min for mask
+            nar += wr + 1;
+    }
+
+    return DSP->ar[index] = nar;
+}
+
 #endif //GC__DSP_UTIL_H

@@ -174,7 +174,8 @@ static inline DSP_INSTR(DSP_ILRRI) {
 
     log_dsp_instr("ILRRI ac%d.m, @ar%d", d, ss);
 
-    DSP->ac[d].m = DSP_read_imem(DSP, DSP->ar[ss]++);
+    DSP->ac[d].m = DSP_read_imem(DSP, DSP->ar[ss]);
+    DSP_increment_ar(DSP, ss);
 
     return 1;
 }
@@ -323,7 +324,8 @@ DSP_INSTR(DSP_LRRx) {
     switch (type) {
         case 0b010:
             log_dsp_instr("LRRI @ar%d, r%x", d, s);
-            *DSP->r[d] = DSP_read_dmem(DSP, DSP->ar[s]++);
+            *DSP->r[d] = DSP_read_dmem(DSP, DSP->ar[s]);
+            DSP_increment_ar(DSP, s);
             return 1;
         default:
             return DSP_unimplemented(DSP, instruction);
@@ -338,7 +340,8 @@ DSP_INSTR(DSP_SRRx) {
     switch (type) {
         case 0b010:
             log_dsp_instr("SRRI @ar%d, r%x", d, s);
-            DSP_write_dmem(DSP, DSP->ar[d]++, *DSP->r[s]);
+            DSP_write_dmem(DSP, DSP->ar[d], *DSP->r[s]);
+            DSP_increment_ar(DSP, d);
             return 1;
         default:
             return DSP_unimplemented(DSP, instruction);

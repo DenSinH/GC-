@@ -36,7 +36,7 @@ u16 DSP_read_dmem(s_DSP* DSP, u16 address){
             return READ16(DSP->IROM, (address & 0x0fff) << 1);
         case 0xf:
             // IO read
-            log_dsp("DSP HWIO read <- [%04x]", address);
+            log_dsp_verbose("DSP HWIO read <- [%04x]", address);
             switch (address) {
                 case DSP_IO_CMBH:
                     return DSP->CMBH;
@@ -90,7 +90,7 @@ void DSP_write_dmem(s_DSP* DSP, u16 address, u16 value){
             return;
         case 0xf:
             // IO read
-            log_dsp("DSP HWIO write %04x -> [%04x]", value, address);
+            log_dsp_verbose("DSP HWIO write %04x -> [%04x]", value, address);
             switch (address) {
                 case DSP_IO_CMBH:
                 case DSP_IO_CMBL:
@@ -140,7 +140,7 @@ void DSP_write_dmem(s_DSP* DSP, u16 address, u16 value){
                     DSP->ACDAT = value;
                     return;
                 case DSP_IO_DIRQ:
-                    DSP->DIRQ = value;
+                    DSP->DIRQ = value & 1;
                     return;
                 default:
                     // log fatal

@@ -1,6 +1,7 @@
 #include "DSP_extended_instructions.h"
 
 #include "DSP_memory.h"
+#include "DSP_util.h"
 
 #include "log.h"
 
@@ -49,14 +50,14 @@
 DSP_EXT_INSTR(DSP_EXT_DR) {
     // Decrement AR $arR
     log_dsp_verbose("DR %x (%x)", instruction & 3, instruction);
-    DSP->ar[instruction & 0x03]--;
+    DSP_decrement_ar(DSP, instruction & 3);
 }
 
 // xxxx xxxx 0000 10rr
 DSP_EXT_INSTR(DSP_EXT_IR) {
     // Increment AR $arR
     log_dsp_verbose("IR %x (%x)", instruction & 3, instruction);
-    DSP->ar[instruction & 0x03]++;
+    DSP_increment_ar(DSP, instruction & 3);
 }
 
 // xxxx xxxx 0000 11rr
@@ -65,7 +66,7 @@ DSP_EXT_INSTR(DSP_EXT_NR) {
     u8 reg = instruction & 0x03;
     log_dsp_verbose("NR %x (%x)", reg, instruction);
 
-    DSP->ar[reg] += DSP->ix[reg];
+    DSP_increase_ar(DSP, reg, DSP->ix[reg]);
 }
 
 // xxxx xxxx 0001 ddss
@@ -86,7 +87,8 @@ DSP_EXT_INSTR(DSP_EXT_S) {
     u8 ss = (instruction & 0x18) >> 3;
     log_dsp_verbose("S acS.S(%x) -> [ax%x] (%x)", ss, dd, instruction);
 
-    DSP_write_dmem(DSP, DSP->ar[dd]++, *DSP->r[DSP_reg_ac0l + ss]);
+    DSP_write_dmem(DSP, DSP->ar[dd], *DSP->r[DSP_reg_ac0l + ss]);
+    DSP_increment_ar(DSP, dd);
 }
 
 // xxxx xxxx 001s s1dd
@@ -98,7 +100,7 @@ DSP_EXT_INSTR(DSP_EXT_SN) {
     log_dsp_verbose("SN acS.S(%x) -> [ax%x] (%x)", ss, dd, instruction);
 
     DSP_write_dmem(DSP, DSP->ar[dd], *DSP->r[DSP_reg_ac0l + ss]);
-    DSP->ar[dd] += DSP->ix[dd];
+    DSP_increase_ar(DSP, dd, DSP->ix[dd]);
 }
 
 // xxxx xxxx 01dd d0ss
@@ -109,8 +111,9 @@ DSP_EXT_INSTR(DSP_EXT_L) {
     u8 ddd = (instruction & 0x38) >> 3;
     log_dsp_verbose("L ax/cD.D(%x) <- [ar%x] (%x)", ddd, ss, instruction);
 
-    u16 value = DSP_read_dmem(DSP, DSP->ar[ss]++);
+    u16 value = DSP_read_dmem(DSP, DSP->ar[ss]);
     *DSP->r[DSP_reg_ax0l + ddd] = value;
+    DSP_increment_ar(DSP, ss);
 
     if (DSP->sr.SXM && (DSP_reg_ax0l + ddd) >= DSP_reg_ac0m) {
         // 40 bit sign extend
@@ -129,7 +132,7 @@ DSP_EXT_INSTR(DSP_EXT_LN) {
 
     u16 value = DSP_read_dmem(DSP, DSP->ar[ss]);
     *DSP->r[DSP_reg_ax0l + ddd] = value;
-    DSP->ar[ss] += DSP->ix[ss];
+    DSP_increase_ar(DSP, ss, DSP->ix[ss]);
 
     if (DSP->sr.SXM && (DSP_reg_ax0l + ddd) >= DSP_reg_ac0m) {
         // 40 bit sign extend
@@ -147,8 +150,11 @@ DSP_EXT_INSTR(DSP_EXT_LS) {
     u8 dd = (instruction & 0x30) >> 4;
     log_dsp_verbose("LS\n    axD.D(%x) <- [ar0]\n    ac%x.m -> [ar3] (%x)", dd, s, instruction);
 
-    *DSP->r[DSP_reg_ax0l + dd] = DSP_read_dmem(DSP, DSP->ar[0]++);
-    DSP_write_dmem(DSP, DSP->ar[3]++, DSP->ac[s].m);
+    *DSP->r[DSP_reg_ax0l + dd] = DSP_read_dmem(DSP, DSP->ar[0]);
+    DSP_write_dmem(DSP, DSP->ar[3], DSP->ac[s].m);
+
+    DSP_increment_ar(DSP, 0);
+    DSP_increment_ar(DSP, 3);
 }
 
 // xxxx xxxx 10dd 010s
@@ -162,9 +168,10 @@ DSP_EXT_INSTR(DSP_EXT_LSN) {
     log_dsp_verbose("LSN\n    axD.D(%x) <- [ar0]\n    ac%x.m -> [ar3] (%x)", dd, s, instruction);
 
     *DSP->r[DSP_reg_ax0l + dd] = DSP_read_dmem(DSP, DSP->ar[0]);
-    DSP_write_dmem(DSP, DSP->ar[3]++, DSP->ac[s].m);
+    DSP_write_dmem(DSP, DSP->ar[3], DSP->ac[s].m);
 
-    DSP->ar[0] += DSP->ix[0];
+    DSP_increase_ar(DSP, 0, DSP->ix[0]);
+    DSP_increment_ar(DSP, 3);
 }
 
 // xxxx xxxx 10dd 100s
@@ -177,10 +184,11 @@ DSP_EXT_INSTR(DSP_EXT_LSM) {
     u8 dd = (instruction & 0x30) >> 4;
     log_dsp_verbose("LSM\n    axD.D(%x) <- [ar0]\n    ac%x.m -> [ar3] (%x)", dd, s, instruction);
 
-    *DSP->r[DSP_reg_ax0l + dd] = DSP_read_dmem(DSP, DSP->ar[0]++);
+    *DSP->r[DSP_reg_ax0l + dd] = DSP_read_dmem(DSP, DSP->ar[0]);
     DSP_write_dmem(DSP, DSP->ar[3], DSP->ac[s].m);
 
-    DSP->ar[3] += DSP->ix[3];
+    DSP_increment_ar(DSP, 0);
+    DSP_increase_ar(DSP, 3, DSP->ix[3]);
 }
 
 // xxxx xxxx 10dd 110s
@@ -197,8 +205,8 @@ DSP_EXT_INSTR(DSP_EXT_LSNM) {
     *DSP->r[DSP_reg_ax0l + dd] = DSP_read_dmem(DSP, DSP->ar[0]);
     DSP_write_dmem(DSP, DSP->ar[3], DSP->ac[s].m);
 
-    DSP->ar[0] += DSP->ix[0];
-    DSP->ar[3] += DSP->ix[3];
+    DSP_increase_ar(DSP, 0, DSP->ix[0]);
+    DSP_increase_ar(DSP, 3, DSP->ix[3]);
 }
 
 // xxxx xxxx 10dd 001s
@@ -210,8 +218,11 @@ DSP_EXT_INSTR(DSP_EXT_SL) {
     u8 dd = (instruction & 0x30) >> 4;
     log_dsp_verbose("SL\n    ac%x.m -> [ar3]\n    axD.D(%x) <- [ar0] (%x)", dd, s, instruction);
 
-    DSP_write_dmem(DSP, DSP->ar[3]++, DSP->ac[s].m);
-    *DSP->r[DSP_reg_ax0l + dd] = DSP_read_dmem(DSP, DSP->ar[0]++);
+    DSP_write_dmem(DSP, DSP->ar[3], DSP->ac[s].m);
+    *DSP->r[DSP_reg_ax0l + dd] = DSP_read_dmem(DSP, DSP->ar[0]);
+
+    DSP_increment_ar(DSP, 0);
+    DSP_increment_ar(DSP, 3);
 }
 
 // xxxx xxxx 10dd 011s
@@ -224,10 +235,11 @@ DSP_EXT_INSTR(DSP_EXT_SLN) {
     u8 dd = (instruction & 0x30) >> 4;
     log_dsp_verbose("SLN\n    ac%x.m -> [ar3]\n    axD.D(%x) <- [ar0] (%x)", dd, s, instruction);
 
-    DSP_write_dmem(DSP, DSP->ar[3]++, DSP->ac[s].m);
+    DSP_write_dmem(DSP, DSP->ar[3], DSP->ac[s].m);
     *DSP->r[DSP_reg_ax0l + dd] = DSP_read_dmem(DSP, DSP->ar[0]);
 
-    DSP->ar[0] += DSP->ix[0];
+    DSP_increase_ar(DSP, 0, DSP->ix[0]);
+    DSP_increment_ar(DSP, 3);
 }
 
 // xxxx xxxx 10dd 101s
@@ -241,9 +253,10 @@ DSP_EXT_INSTR(DSP_EXT_SLM) {
     log_dsp_verbose("SLM\n    ac%x.m -> [ar3]\n    axD.D(%x) <- [ar0] (%x)", dd, s, instruction);
 
     DSP_write_dmem(DSP, DSP->ar[3], DSP->ac[s].m);
-    *DSP->r[DSP_reg_ax0l + dd] = DSP_read_dmem(DSP, DSP->ar[0]++);
+    *DSP->r[DSP_reg_ax0l + dd] = DSP_read_dmem(DSP, DSP->ar[0]);
 
-    DSP->ar[3] += DSP->ix[3];
+    DSP_increment_ar(DSP, 0);
+    DSP_increase_ar(DSP, 3, DSP->ix[3]);
 }
 
 // xxxx xxxx 10dd 111s
@@ -259,8 +272,8 @@ DSP_EXT_INSTR(DSP_EXT_SLNM) {
     DSP_write_dmem(DSP, DSP->ar[3], DSP->ac[s].m);
     *DSP->r[DSP_reg_ax0l + dd] = DSP_read_dmem(DSP, DSP->ar[0]);
 
-    DSP->ar[0] += DSP->ix[0];
-    DSP->ar[3] += DSP->ix[3];
+    DSP_increase_ar(DSP, 0, DSP->ix[0]);
+    DSP_increase_ar(DSP, 3, DSP->ix[3]);
 }
 
 static inline bool same_page(u16 addr1, u16 addr2) {
@@ -293,8 +306,8 @@ DSP_EXT_INSTR(DSP_EXT_LD) {
     if (valid_page(DSP->ar[ss])) *DSP->r[DSP_reg_ax0l + (d << 1)] = DSP_read_dmem(DSP, DSP->ar[ss]);
     if (valid_page(DSP->ar[3])) *DSP->r[DSP_reg_ax1l + (r << 1)] = DSP_read_dmem(DSP, DSP->ar[3]);
 
-    DSP->ar[ss]++;
-    DSP->ar[3]++;
+    DSP_increment_ar(DSP, ss);
+    DSP_increment_ar(DSP, 3);
 }
 
 // xxxx xxxx 11sr 0011
@@ -311,8 +324,8 @@ DSP_EXT_INSTR(DSP_EXT_LDAX) {
     if (valid_page(DSP->ar[s])) *DSP->r[DSP_reg_ax0l + r] = DSP_read_dmem(DSP, DSP->ar[s]);
     if (valid_page(DSP->ar[3])) *DSP->r[DSP_reg_ax0l + r] = DSP_read_dmem(DSP, DSP->ar[3]);
 
-    DSP->ar[s]++;
-    DSP->ar[3]++;
+    DSP_increment_ar(DSP, s);
+    DSP_increment_ar(DSP, 3);
 }
 
 // xxxx xxxx 11dr 01ss
@@ -329,8 +342,8 @@ DSP_EXT_INSTR(DSP_EXT_LDN) {
     if (valid_page(DSP->ar[ss])) *DSP->r[DSP_reg_ax0l + (d << 1)] = DSP_read_dmem(DSP, DSP->ar[ss]);
     if (valid_page(DSP->ar[3])) *DSP->r[DSP_reg_ax1l + (r << 1)] = DSP_read_dmem(DSP, DSP->ar[3]);
 
-    DSP->ar[ss] += DSP->ix[ss];
-    DSP->ar[3]++;
+    DSP_increase_ar(DSP, ss, DSP->ix[ss]);
+    DSP_increment_ar(DSP, 3);
 }
 
 // xxxx xxxx 11sr 0111
@@ -347,8 +360,8 @@ DSP_EXT_INSTR(DSP_EXT_LDAXN) {
     if (valid_page(DSP->ar[s])) *DSP->r[DSP_reg_ax0l + r] = DSP_read_dmem(DSP, DSP->ar[s]);
     if (valid_page(DSP->ar[3])) *DSP->r[DSP_reg_ax0l + r] = DSP_read_dmem(DSP, DSP->ar[3]);
 
-    DSP->ar[s] += DSP->ix[s];
-    DSP->ar[3]++;
+    DSP_increase_ar(DSP, s, DSP->ix[s]);
+    DSP_increment_ar(DSP, 3);
 }
 
 // xxxx xxxx 11dr 10ss
@@ -365,8 +378,8 @@ DSP_EXT_INSTR(DSP_EXT_LDM) {
     if (valid_page(DSP->ar[ss])) *DSP->r[DSP_reg_ax0l + (d << 1)] = DSP_read_dmem(DSP, DSP->ar[ss]);
     if (valid_page(DSP->ar[3])) *DSP->r[DSP_reg_ax1l + (r << 1)] = DSP_read_dmem(DSP, DSP->ar[3]);
 
-    DSP->ar[ss]++;
-    DSP->ar[3] += DSP->ix[3];
+    DSP_increment_ar(DSP, ss);
+    DSP_increase_ar(DSP, 3, DSP->ix[3]);
 }
 
 // xxxx xxxx 11sr 1011
@@ -383,8 +396,8 @@ DSP_EXT_INSTR(DSP_EXT_LDAXM) {
     if (valid_page(DSP->ar[s])) *DSP->r[DSP_reg_ax0l + r] = DSP_read_dmem(DSP, DSP->ar[s]);
     if (valid_page(DSP->ar[3])) *DSP->r[DSP_reg_ax0l + r] = DSP_read_dmem(DSP, DSP->ar[3]);
 
-    DSP->ar[s]++;
-    DSP->ar[3] += DSP->ix[3];
+    DSP_increment_ar(DSP, s);
+    DSP_increase_ar(DSP, 3, DSP->ix[3]);
 }
 
 // xxxx xxxx 11dr 10ss
@@ -401,8 +414,8 @@ DSP_EXT_INSTR(DSP_EXT_LDNM) {
     if (valid_page(DSP->ar[ss])) *DSP->r[DSP_reg_ax0l + (d << 1)] = DSP_read_dmem(DSP, DSP->ar[ss]);
     if (valid_page(DSP->ar[3])) *DSP->r[DSP_reg_ax1l + (r << 1)] = DSP_read_dmem(DSP, DSP->ar[3]);
 
-    DSP->ar[ss] += DSP->ix[ss];
-    DSP->ar[3]  += DSP->ix[3];
+    DSP_increase_ar(DSP, ss, DSP->ix[ss]);
+    DSP_increase_ar(DSP, 3, DSP->ix[3]);
 }
 
 // xxxx xxxx 11dr 1111
@@ -419,8 +432,8 @@ DSP_EXT_INSTR(DSP_EXT_LDAXNM) {
     if (valid_page(DSP->ar[s])) *DSP->r[DSP_reg_ax0l + r] = DSP_read_dmem(DSP, DSP->ar[s]);
     if (valid_page(DSP->ar[3])) *DSP->r[DSP_reg_ax0l + r] = DSP_read_dmem(DSP, DSP->ar[3]);
 
-    DSP->ar[s] += DSP->ix[s];
-    DSP->ar[3] += DSP->ix[3];
+    DSP_increase_ar(DSP, s, DSP->ix[s]);
+    DSP_increase_ar(DSP, 3, DSP->ix[3]);
 }
 
 // 0000 0000

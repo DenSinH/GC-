@@ -1,6 +1,8 @@
 #include "instructions.h"
 #include "../MMU.h"
 
+#include "byteswap.h"
+
 GEKKO_INSTR(stw) {
     GEKKO_INSTR_HEADER
 
@@ -148,6 +150,14 @@ INLINE_GEKKO_INSTR(lwzx) {
 
     u32 EA = (instruction.general_DAB.A ? cpu->GPR[instruction.general_DAB.A] : 0) + cpu->GPR[instruction.general_DAB.B];
     cpu->GPR[instruction.general_DAB.D] = read32(&cpu->DMMU, EA);
+}
+
+INLINE_GEKKO_INSTR(lwbrx) {
+    GEKKO_INSTR_HEADER
+    log_cpu_verbose("lwzbrx %08x", instruction.raw);
+
+    u32 EA = (instruction.general_DAB.A ? cpu->GPR[instruction.general_DAB.A] : 0) + cpu->GPR[instruction.general_DAB.B];
+    cpu->GPR[instruction.general_DAB.D] = __bswap_32(read32(&cpu->DMMU, EA));
 }
 
 GEKKO_INSTR(stmw) {

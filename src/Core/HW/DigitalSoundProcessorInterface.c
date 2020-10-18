@@ -63,6 +63,11 @@ SCHEDULER_EVENT(DSPI_DSP_step_event) {
 
     do_step_DSP(DSPI);
 
+    if (DSPI->DSP.DIRQ) {
+        DSPI->DSPCSR |= DSP_CSR_DSPINT;
+        check_DSPI_interrupts(DSPI);
+    }
+
     if (DSP_halted(&DSPI->DSP)) {
         DSPI->DSPCSR |= DSP_CSR_HALT;
         log_dsp("DSP halted, not re-adding event");
@@ -149,6 +154,10 @@ HW_REG_WRITE_CALLBACK(write_DSP_CSR, DSPI) {
         // DSPI->system->paused = true;
         DSPI->DSP_step_event.time = *DSPI->system->scheduler.timer;
         add_event(&DSPI->system->scheduler, &DSPI->DSP_step_event);
+    }
+
+    if (value & DSP_CSR_DSPINT) {
+        DSPI->DSP.DIRQ = 0;
     }
 
     DSPI->DSPCSR = value & ~(DSP_CSR_RES | DSP_CSR_DSPINT | DSP_CSR_ARINT | DSP_CSR_AIDINT);

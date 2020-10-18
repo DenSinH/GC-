@@ -41,7 +41,7 @@ add_executable(GC_
         debugging.h
         init.c
         init.h
-        include/custom_threading.h custom_threading.c include/const.h)
+        include/custom_threading.h custom_threading.c include/const.h include/byteswap.h)
 
 # add link time optimizations for extra speed
 if( ipo_supported )
