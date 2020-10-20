@@ -155,9 +155,9 @@ static float accum_time;
 static OVERLAY_INFO(fps_counter) {
     accum_time += delta_time;
     SPRINTF(output, output_length, "FPS        : %.1f", (double)(global_system->flipper.frame) / accum_time);
-    if (accum_time > 1) {
-        accum_time = 0;
-        global_system->flipper.frame = 0;
+    if (accum_time > 3) {
+        global_system->flipper.frame = 10 * delta_time * (double)(global_system->flipper.frame) / accum_time;
+        accum_time = 10 * delta_time;
     }
 }
 

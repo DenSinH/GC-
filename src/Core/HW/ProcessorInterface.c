@@ -3,10 +3,10 @@
 
 #include "../PPC/interrupts.h"
 
-#ifndef NDEBUG
-// todo: unncessary, only for debugging
 #include "../system.h"
 
+#ifndef NDEBUG
+// todo: unncessary, only for debugging
 #include <stdio.h>
 #endif
 
