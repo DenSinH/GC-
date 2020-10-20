@@ -28,7 +28,7 @@ s_float_result float_round_to_int(s_FPSCR* FPSCR, bit_double value) {
         result.value.u = 0x80000000;
     }
     else {
-        result.value.u = (u32)value.d;
+        result.value.d = (float)((u32)value.d);
     }
 
     if (value.d == result.value.u) {

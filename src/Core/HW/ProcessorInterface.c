@@ -3,10 +3,12 @@
 
 #include "../PPC/interrupts.h"
 
+#ifndef NDEBUG
 // todo: unncessary, only for debugging
 #include "../system.h"
 
 #include <stdio.h>
+#endif
 
 void set_PI_intsr(s_PI* PI, e_PI_interrupt interrupt, int delay) {
     log_cpu("Set PI interrupt %x", interrupt);

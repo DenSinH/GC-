@@ -103,7 +103,8 @@ INLINE_GEKKO_INSTR(srawi) {
         }
     }
     else {
-        cpu->XER.CA = (cpu->GPR[instruction.rotate.S] & ((1 << n) - 1)) != 0;
+        // CA is set if the rS is negative and any 1 bits are shifted out
+        cpu->XER.CA = (cpu->GPR[instruction.rotate.S] & 0x80000000) && ((cpu->GPR[instruction.rotate.S] & ((1 << n) - 1)) != 0);
         cpu->GPR[instruction.rotate.A] = ((i32)cpu->GPR[instruction.rotate.S]) >> n;
     }
 

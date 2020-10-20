@@ -88,9 +88,9 @@ SCHEDULER_EVENT(DSPI_DSP_AR_DMA_done) {
 
     /*
      * We are just going to transfer (memcpy) the whole DMA at once, then clear the DMA transfer bit in DSPCNT
+     * Dolphin uses the length in bytes, but I'm not sure how else it's supposed to copy the entire reset vector region into ARAM
+     * I suspect the transfer length is measured in words
      * */
-    // Dolphin uses the length in bytes, but I'm not sure how else it's supposed to copy the entire reset vector region into ARAM
-    // I suspect the transfer length is measured in words
     u32 length = (DSPI->AR_DMA_CNT & DSP_AR_DMA_LEN) << 2;
 #ifdef CHECK_DSP_DMA_ADDR
     assert(MASK_24MB(DSPI->AR_DMA_MMADDR) + length < sizeof(DSPI->system->memory) /* MMEM overflow */ );

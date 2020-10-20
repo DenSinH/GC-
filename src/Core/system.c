@@ -25,7 +25,7 @@ s_GameCube* init_system() {
     GameCube->scheduler.timer = &GameCube->cpu.TBR.raw;
 
 #ifdef DO_BREAKPOINTS
-//    add_breakpoint(&GameCube->breakpoints, 0x80008638);
+//    add_breakpoint(&GameCube->breakpoints, 0x80005cdc);
 //    add_breakpoint(&GameCube->breakpoints, 0x00000500);
 //    add_breakpoint(&GameCube->breakpoints, 0x8000586c);
 #endif

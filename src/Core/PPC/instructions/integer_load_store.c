@@ -21,6 +21,15 @@ INLINE_GEKKO_INSTR(stwx) {
     write32(&cpu->DMMU, EA, cpu->GPR[instruction.general_SAB.S]);
 }
 
+INLINE_GEKKO_INSTR(stwux) {
+    GEKKO_INSTR_HEADER
+
+    log_cpu_verbose("stwux %08x", instruction.raw);
+    u32 EA = (instruction.general_SAd.A ? cpu->GPR[instruction.general_SAB.A] : 0) + cpu->GPR[instruction.general_SAB.B];
+    write32(&cpu->DMMU, EA, cpu->GPR[instruction.general_SAB.S]);
+    cpu->GPR[instruction.general_SAB.A] = EA;
+}
+
 GEKKO_INSTR(sth) {
     GEKKO_INSTR_HEADER
 
@@ -152,12 +161,22 @@ INLINE_GEKKO_INSTR(lwzx) {
     cpu->GPR[instruction.general_DAB.D] = read32(&cpu->DMMU, EA);
 }
 
+INLINE_GEKKO_INSTR(lwzux) {
+    GEKKO_INSTR_HEADER
+    log_cpu_verbose("lwzux %08x", instruction.raw);
+
+    u32 EA = (instruction.general_DAB.A ? cpu->GPR[instruction.general_DAB.A] : 0) + cpu->GPR[instruction.general_DAB.B];
+    cpu->GPR[instruction.general_DAB.D] = read32(&cpu->DMMU, EA);
+    cpu->GPR[instruction.general_DAB.A] = EA;
+}
+
 INLINE_GEKKO_INSTR(lwbrx) {
     GEKKO_INSTR_HEADER
     log_cpu_verbose("lwzbrx %08x", instruction.raw);
 
     u32 EA = (instruction.general_DAB.A ? cpu->GPR[instruction.general_DAB.A] : 0) + cpu->GPR[instruction.general_DAB.B];
-    cpu->GPR[instruction.general_DAB.D] = __bswap_32(read32(&cpu->DMMU, EA));
+    u32 word = read32(&cpu->DMMU, EA);
+    cpu->GPR[instruction.general_DAB.D] = __bswap_32(word);
 }
 
 GEKKO_INSTR(stmw) {
