@@ -16,7 +16,7 @@ struct DisassemblyViewer
 {
     uint32_t* PC;
     uint8_t* memory;
-    uint32_t (*valid_address_mask)(uint32_t address);
+    uint32_t (*valid_address_check)(uint32_t address);
 
 #ifdef DO_CAPSTONE
     csh handle;
@@ -37,6 +37,12 @@ struct DisassemblyViewer
     {
         ImGui::SetNextWindowSizeConstraints(ImVec2(-1, -1),    ImVec2(-1, -1));
         ImGui::SetNextWindowSize(ImVec2(400, (INSTRS_BEFORE_PC + INSTRS_AFTER_PC + 1) * 14), ImGuiCond_Once);
+
+        if (!memory || !valid_address_check) {
+            // if nullptr is passed to memory, we can't disassemble anything
+            // so just don't even start on the window then
+            return;
+        }
 
         if (!ImGui::Begin("Disassembly Viewer", p_open))
         {
@@ -60,11 +66,11 @@ struct DisassemblyViewer
         uint32_t current_PC = address;
 
         size_t count = INSTRS_BEFORE_PC + INSTRS_AFTER_PC + 1;
-        if (!valid_address_mask(address + (INSTRS_AFTER_PC << 2))) {
+        if (!valid_address_check(address + (INSTRS_AFTER_PC << 2))) {
             count -= INSTRS_AFTER_PC;
         }
 
-        if (!valid_address_mask(address - (INSTRS_BEFORE_PC << 2))) {
+        if (!valid_address_check(address - (INSTRS_BEFORE_PC << 2))) {
             count -= INSTRS_BEFORE_PC;
         }
         else {
@@ -74,7 +80,7 @@ struct DisassemblyViewer
 #ifdef DO_CAPSTONE
         count = disassemble(
                 &this->handle,
-                this->memory + valid_address_mask(address),
+                this->memory + valid_address_check(address),
                 count << 2,
                 address,
                 count,

@@ -42,8 +42,6 @@ struct MemoryViewer
     int             OptAddrDigitsCount;                         // = 0      // number of addr digits to display (default calculated based on maximum displayed addr).
     ImU32           HighlightColor;                             //          // background color of highlighted bytes.
     ImU8            (*ReadFn)(const ImU8* data, uint64_t off);    // = 0      // optional handler to read bytes.
-    void            (*WriteFn)(ImU8* data, uint64_t off, ImU8 d); // = 0      // optional handler to write bytes.
-    bool            (*HighlightFn)(const ImU8* data, uint64_t off);//= 0      // optional handler to return Highlight property (to support non-contiguous highlighting).
 
     uint8_t* mem_data;
     uint64_t mem_size;
@@ -77,9 +75,7 @@ struct MemoryViewer
         OptMidColsCount = 8;
         OptAddrDigitsCount = 0;
         HighlightColor = IM_COL32(255, 255, 255, 50);
-        ReadFn = NULL;
-        WriteFn = NULL;
-        HighlightFn = NULL;
+        ReadFn = nullptr;
 
         // State/Internals
         ContentsWidthChanged = false;
@@ -116,7 +112,7 @@ struct MemoryViewer
         Sizes() { memset(this, 0, sizeof(*this)); }
     };
 
-    void CalcSizes(Sizes& s, uint64_t base_display_addr)
+    void CalcSizes(Sizes& s, uint64_t base_display_addr) const
     {
         ImGuiStyle& style = ImGui::GetStyle();
         s.AddrDigitsCount = OptAddrDigitsCount;
@@ -134,7 +130,7 @@ struct MemoryViewer
         {
             s.PosAsciiStart = s.PosHexEnd + s.GlyphWidth * 1;
             if (OptMidColsCount > 0)
-                s.PosAsciiStart += (float)((Cols + OptMidColsCount - 1) / OptMidColsCount) * s.SpacingBetweenMidCols;
+                s.PosAsciiStart += (float)((float)(Cols + OptMidColsCount - 1) / OptMidColsCount) * s.SpacingBetweenMidCols;
             s.PosAsciiEnd = s.PosAsciiStart + Cols * s.GlyphWidth;
         }
         s.WindowWidth = s.PosAsciiEnd + style.ScrollbarSize + style.WindowPadding.x * 2 + s.GlyphWidth;
@@ -168,6 +164,11 @@ struct MemoryViewer
         if (Cols < 1)
             Cols = 1;
 
+        if (!mem_data || !ReadFn) {
+            // nullptr passed
+            return;
+        }
+
         Sizes s;
         CalcSizes(s, base_display_addr);
         ImGuiStyle& style = ImGui::GetStyle();
@@ -187,7 +188,7 @@ struct MemoryViewer
         ImGui::PushStyleVar(ImGuiStyleVar_FramePadding, ImVec2(0, 0));
         ImGui::PushStyleVar(ImGuiStyleVar_ItemSpacing, ImVec2(0, 0));
 
-        const uint64_t line_total_count = (uint64_t)((mem_size + Cols - 1) / Cols);
+        const auto line_total_count = (uint64_t)((mem_size + Cols - 1) / Cols);
         ImGuiListClipper clipper(line_total_count, s.LineHeight);
         const int lines_to_show = clipper.DisplayEnd - clipper.DisplayStart;
 
@@ -195,10 +196,6 @@ struct MemoryViewer
         else if (ImGui::IsKeyPressed(ImGui::GetKeyIndex(ImGuiKey_DownArrow)))  { CenterAddr += Cols; }
         else if (ImGui::IsKeyPressed(ImGui::GetKeyIndex(ImGuiKey_LeftArrow)))  { CenterAddr -= Cols * lines_to_show; }
         else if (ImGui::IsKeyPressed(ImGui::GetKeyIndex(ImGuiKey_RightArrow))) { CenterAddr += Cols * lines_to_show; }
-
-        bool data_next = false;
-
-        uint64_t preview_data_type_size = OptShowDataPreview ? DataTypeGetSize(PreviewDataType) : 0;
 
         // Draw vertical separator
         ImVec2 window_pos = ImGui::GetWindowPos();
@@ -209,9 +206,7 @@ struct MemoryViewer
         const ImU32 color_disabled = OptGreyOutZeroes ? ImGui::GetColorU32(ImGuiCol_TextDisabled) : color_text;
 
         const char* format_address = "%0*" _PRISizeT "x: ";
-        const char* format_data = "%0*" _PRISizeT "x";
-        const char* format_byte = "%02x";
-        const char* format_byte_space = "%02x ";
+        const char* format_byte_space = OptUpperCaseHex ? "%02X " : "%02x ";
 
         for (uint64_t line_i = 0; line_i < lines_to_show; line_i++) // display only visible lines
         {
@@ -224,69 +219,9 @@ struct MemoryViewer
             {
                 float byte_pos_x = s.PosHexStart + s.HexCellWidth * n;
                 if (OptMidColsCount > 0)
-                    byte_pos_x += (float)(n / OptMidColsCount) * s.SpacingBetweenMidCols;
+                    byte_pos_x += (float)((float)n / OptMidColsCount) * s.SpacingBetweenMidCols;
                 ImGui::SameLine(byte_pos_x);
 
-                // Draw highlight
-                bool is_highlight_from_user_range = (addr >= HighlightMin && addr < HighlightMax);
-                bool is_highlight_from_user_func = (HighlightFn && HighlightFn(mem_data, addr));
-                bool is_highlight_from_preview = (addr >= DataPreviewAddr && addr < DataPreviewAddr + preview_data_type_size);
-                if (is_highlight_from_user_range || is_highlight_from_user_func || is_highlight_from_preview)
-                {
-                    ImVec2 pos = ImGui::GetCursorScreenPos();
-                    float highlight_width = s.GlyphWidth * 2;
-                    bool is_next_byte_highlighted =  (addr + 1 < mem_size) && ((HighlightMax != (uint64_t)-1 && addr + 1 < HighlightMax) || (HighlightFn && HighlightFn(mem_data, addr + 1)));
-                    if (is_next_byte_highlighted || (n + 1 == Cols))
-                    {
-                        highlight_width = s.HexCellWidth;
-                        if (OptMidColsCount > 0 && n > 0 && (n + 1) < Cols && ((n + 1) % OptMidColsCount) == 0)
-                            highlight_width += s.SpacingBetweenMidCols;
-                    }
-                    draw_list->AddRectFilled(pos, ImVec2(pos.x + highlight_width, pos.y + s.LineHeight), HighlightColor);
-                }
-
-                if (DataEditingAddr == addr)
-                {
-                    // Display text input on current byte
-                    ImGui::PushID((void*)addr);
-                    if (DataEditingTakeFocus)
-                    {
-                        ImGui::SetKeyboardFocusHere();
-                        ImGui::CaptureKeyboardFromApp(true);
-                        sprintf(AddrInputBuf, format_data, s.AddrDigitsCount, base_display_addr + addr);
-                        sprintf(DataInputBuf, format_byte, ReadFn ? ReadFn(mem_data, addr) : mem_data[addr]);
-                    }
-                    ImGui::PushItemWidth(s.GlyphWidth * 2);
-                    struct UserData
-                    {
-                        // FIXME: We should have a way to retrieve the text edit cursor position more easily in the API, this is rather tedious. This is such a ugly mess we may be better off not using InputText() at all here.
-                        static int Callback(ImGuiInputTextCallbackData* data)
-                        {
-                            UserData* user_data = (UserData*)data->UserData;
-                            if (!data->HasSelection())
-                                user_data->CursorPos = data->CursorPos;
-                            if (data->SelectionStart == 0 && data->SelectionEnd == data->BufTextLen)
-                            {
-                                // When not editing a byte, always rewrite its content (this is a bit tricky, since InputText technically "owns" the master copy of the buffer we edit it in there)
-                                data->DeleteChars(0, data->BufTextLen);
-                                data->InsertChars(0, user_data->CurrentBufOverwrite);
-                                data->SelectionStart = 0;
-                                data->SelectionEnd = data->CursorPos = 2;
-                            }
-                            return 0;
-                        }
-                        char   CurrentBufOverwrite[3];  // Input
-                        int    CursorPos;               // Output
-                    };
-                    UserData user_data;
-                    user_data.CursorPos = -1;
-                    sprintf(user_data.CurrentBufOverwrite, format_byte, ReadFn ? ReadFn(mem_data, addr) : mem_data[addr]);
-                    ImGuiInputTextFlags flags = ImGuiInputTextFlags_CharsHexadecimal | ImGuiInputTextFlags_EnterReturnsTrue | ImGuiInputTextFlags_AutoSelectAll | ImGuiInputTextFlags_NoHorizontalScroll | ImGuiInputTextFlags_AlwaysInsertMode | ImGuiInputTextFlags_CallbackAlways;
-                    DataEditingTakeFocus = false;
-                    ImGui::PopItemWidth();
-                    ImGui::PopID();
-                }
-                else
                 {
                     // NB: The trailing space is not visible but ensure there's no gap that the mouse cannot click on.
                     ImU8 b = ReadFn ? ReadFn(mem_data, addr) : mem_data[addr];
@@ -368,7 +303,7 @@ struct MemoryViewer
     {
         IM_UNUSED(mem_data);
         ImGuiStyle& style = ImGui::GetStyle();
-        const char* format_range = OptUpperCaseHex ? "Range %08" PRIx64 "..%08" PRIx64 : "Range %08" PRIx64 "..%08" PRIx64;
+        const char* format_range = OptUpperCaseHex ? "Range %08" PRIX64 "..%08" PRIX64 : "Range %08" PRIx64 "..%08" PRIx64;
 
         // Options menu
         if (ImGui::Button("Options"))
@@ -440,40 +375,40 @@ struct MemoryViewer
         float x = s.GlyphWidth * 6.0f;
         bool has_value = DataPreviewAddr != (uint64_t)-1;
         if (has_value)
-            DrawPreviewData(DataPreviewAddr, mem_data, mem_size, PreviewDataType, DataFormat_Dec, buf, (uint64_t)IM_ARRAYSIZE(buf));
+            DrawPreviewData(DataPreviewAddr, PreviewDataType, DataFormat_Dec, buf, (uint64_t)IM_ARRAYSIZE(buf));
         ImGui::Text("Dec"); ImGui::SameLine(x); ImGui::TextUnformatted(has_value ? buf : "N/A");
         if (has_value)
-            DrawPreviewData(DataPreviewAddr, mem_data, mem_size, PreviewDataType, DataFormat_Hex, buf, (uint64_t)IM_ARRAYSIZE(buf));
+            DrawPreviewData(DataPreviewAddr, PreviewDataType, DataFormat_Hex, buf, (uint64_t)IM_ARRAYSIZE(buf));
         ImGui::Text("Hex"); ImGui::SameLine(x); ImGui::TextUnformatted(has_value ? buf : "N/A");
         if (has_value)
-            DrawPreviewData(DataPreviewAddr, mem_data, mem_size, PreviewDataType, DataFormat_Bin, buf, (uint64_t)IM_ARRAYSIZE(buf));
+            DrawPreviewData(DataPreviewAddr, PreviewDataType, DataFormat_Bin, buf, (uint64_t)IM_ARRAYSIZE(buf));
         buf[IM_ARRAYSIZE(buf) - 1] = 0;
         ImGui::Text("Bin"); ImGui::SameLine(x); ImGui::TextUnformatted(has_value ? buf : "N/A");
     }
 
     // Utilities for Data Preview
-    const char* DataTypeGetDesc(ImGuiDataType data_type) const
+    [[nodiscard]] static const char* DataTypeGetDesc(ImGuiDataType data_type)
     {
         const char* descs[] = { "Int8", "Uint8", "Int16", "Uint16", "Int32", "Uint32", "Int64", "Uint64", "Float", "Double" };
         IM_ASSERT(data_type >= 0 && data_type < ImGuiDataType_COUNT);
         return descs[data_type];
     }
 
-    uint64_t DataTypeGetSize(ImGuiDataType data_type) const
+    [[nodiscard]] static uint64_t DataTypeGetSize(ImGuiDataType data_type)
     {
         const uint64_t sizes[] = { 1, 1, 2, 2, 4, 4, 8, 8, sizeof(float), sizeof(double) };
         IM_ASSERT(data_type >= 0 && data_type < ImGuiDataType_COUNT);
         return sizes[data_type];
     }
 
-    const char* DataFormatGetDesc(DataFormat data_format) const
+    [[nodiscard]] static const char* DataFormatGetDesc(DataFormat data_format)
     {
         const char* descs[] = { "Bin", "Dec", "Hex" };
         IM_ASSERT(data_format >= 0 && data_format < DataFormat_COUNT);
         return descs[data_format];
     }
 
-    bool IsBigEndian() const
+    static bool IsBigEndian()
     {
         uint16_t x = 1;
         char c[2];
@@ -485,7 +420,7 @@ struct MemoryViewer
     {
         if (is_little_endian)
         {
-            uint8_t* dst = (uint8_t*)_dst;
+            auto* dst = (uint8_t*)_dst;
             uint8_t* src = (uint8_t*)_src + s - 1;
             for (int i = 0, n = (int)s; i < n; ++i)
                 memcpy(dst++, src--, 1);
@@ -505,7 +440,7 @@ struct MemoryViewer
         }
         else
         {
-            uint8_t* dst = (uint8_t*)_dst;
+            auto* dst = (uint8_t*)_dst;
             uint8_t* src = (uint8_t*)_src + s - 1;
             for (int i = 0, n = (int)s; i < n; ++i)
                 memcpy(dst++, src--, 1);
@@ -515,13 +450,13 @@ struct MemoryViewer
 
     void* EndianessCopy(void* dst, void* src, uint64_t size) const
     {
-        static void* (*fp)(void*, void*, uint64_t, int) = NULL;
-        if (fp == NULL)
+        static void* (*fp)(void*, void*, uint64_t, int) = nullptr;
+        if (fp == nullptr)
             fp = IsBigEndian() ? EndianessCopyBigEndian : EndianessCopyLittleEndian;
         return fp(dst, src, size, PreviewEndianess);
     }
 
-    const char* FormatBinary(const uint8_t* buf, int width) const
+    static const char* FormatBinary(const uint8_t* buf, int width)
     {
         IM_ASSERT(width <= 64);
         uint64_t out_n = 0;
@@ -539,7 +474,7 @@ struct MemoryViewer
     }
 
     // [Internal]
-    void DrawPreviewData(uint64_t addr, const ImU8* mem_data, uint64_t mem_size, ImGuiDataType data_type, DataFormat data_format, char* out_buf, uint64_t out_buf_size) const
+    void DrawPreviewData(uint64_t addr, ImGuiDataType data_type, DataFormat data_format, char* out_buf, uint64_t out_buf_size) const
     {
         uint8_t buf[8];
         uint64_t elem_size = DataTypeGetSize(data_type);
@@ -642,6 +577,7 @@ struct MemoryViewer
                 break;
             }
             case ImGuiDataType_COUNT:
+            default:
                 break;
         } // Switch
         IM_ASSERT(0); // Shouldn't reach
