@@ -23,7 +23,7 @@ SCHEDULER_EVENT(VI_halfline_count) {
         log_warn("Halfline Width is invalid (0)");
         event->time = (u64)-1;
     }
-    add_event(&VI->system->scheduler, event);
+    add_event(scheduler, event);
 }
 
 void VI_DI_intr(s_Gekko* cpu, s_event* event, const u32 index) {

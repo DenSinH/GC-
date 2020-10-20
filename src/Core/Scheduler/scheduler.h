@@ -4,22 +4,23 @@
 #include "default.h"
 #include <stdbool.h>
 
-#define SCHEDULER_EVENT(name) void name(void* caller, struct s_event* event)
 #define SCHEDULER_MAX_EVENTS 64
 
+typedef struct s_scheduler {
+    struct s_event* events[SCHEDULER_MAX_EVENTS];
+    size_t count;
+    u64* timer;
+} s_scheduler;
+
 // todo: string field in event to view top event name in debugger?
+#define SCHEDULER_EVENT(name) void name(void* caller, struct s_event* event, s_scheduler* scheduler)
+
 typedef struct s_event {
     bool active;   // signifies if event is in the scheduler or not
     SCHEDULER_EVENT((*callback));
     void* caller;
     u64 time;
 } s_event;
-
-typedef struct s_scheduler {
-    s_event* events[SCHEDULER_MAX_EVENTS];
-    size_t count;
-    u64* timer;
-} s_scheduler;
 
 /*
  * Idea: make a heap structure, add events sorted on time, remove events sorted on time, then check if callback is equal

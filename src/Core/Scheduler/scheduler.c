@@ -174,7 +174,7 @@ void do_events(s_scheduler* scheduler) {
     s_event* first = scheduler->events[ROOT];
     while (scheduler->count > 0 && first->time < *scheduler->timer) {
         first->active = false;
-        first->callback(first->caller, first);
+        first->callback(first->caller, first, scheduler);
 
         scheduler->events[ROOT] = scheduler->events[--scheduler->count];
         trickle_down(scheduler, ROOT);

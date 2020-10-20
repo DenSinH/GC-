@@ -77,7 +77,7 @@ SCHEDULER_EVENT(DSPI_DSP_step_event) {
     else if (DSPI->DSP.started) {
         // reschedule event (we always keep this in the scheduler)
         event->time += cycles * CPU_CYCLES_PER_DSP_STEP;
-        add_event(&DSPI->system->scheduler, event);
+        add_event(scheduler, event);
     }
 }
 

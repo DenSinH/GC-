@@ -30,7 +30,7 @@ void start_interrupt_poll(s_Gekko* cpu, int delay){
     if (!cpu->poll_intr_event.active && any_enabled(cpu)) {
         // start polling for interrupts again
         log_cpu("Request acknowledged");
-        cpu->poll_intr_event.time = *cpu->system->scheduler.timer + delay;
+        cpu->poll_intr_event.time = *scheduler->timer + delay;
         add_event(&cpu->system->scheduler, &cpu->poll_intr_event);
     }
 }
@@ -53,7 +53,7 @@ SCHEDULER_EVENT(DEC_intr) {
     // at this point, the event was popped from the heap
     // reschedule it to the next time it would overflow (very far away)
     cpu->DEC_intr_event.time += 0x100000000ULL;
-    add_event(&cpu->system->scheduler, &cpu->DEC_intr_event);
+    add_event(scheduler, &cpu->DEC_intr_event);
 }
 
 SCHEDULER_EVENT(handle_interrupts) {
@@ -79,10 +79,10 @@ SCHEDULER_EVENT(handle_interrupts) {
         }
 
         if (cpu->interrupts && any_enabled(cpu)) {
-            event->time = *cpu->system->scheduler.timer+ INTERRUPT_POLL_DELAY;
+            event->time = *scheduler->timer+ INTERRUPT_POLL_DELAY;
 
             // keep it in the scheduler
-            add_event(&cpu->system->scheduler, event);
+            add_event(scheduler, event);
         }
         // otherwise: do not keep it in the scheduler, it will be rescheduled once MSR.EE is enabled or when
         // interrupts that cannot fire are sent

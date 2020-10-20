@@ -35,14 +35,14 @@ SCHEDULER_EVENT(CP_frameswap_event) {
     }
 
     // reschedule event
-    if (CP->system->HW_regs.VI.HLW) {
-        event->time += LINES_PER_FRAME * 2 * 3 * 6 * CP->system->HW_regs.VI.HLW;
+    if (CP->VI->HLW) {
+        event->time += LINES_PER_FRAME * 2 * 3 * 6 * CP->VI->HLW;
     }
     else {
         // default value in case of "invalid" HLW
         event->time += LINES_PER_FRAME * 2 * 3 * 6 * 0x1AD;  // based on libOGC default initialized value
     }
-    add_event(&CP->system->scheduler, event);
+    add_event(scheduler, event);
 }
 
 
