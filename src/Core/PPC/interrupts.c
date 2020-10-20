@@ -30,7 +30,7 @@ void start_interrupt_poll(s_Gekko* cpu, int delay){
     if (!cpu->poll_intr_event.active && any_enabled(cpu)) {
         // start polling for interrupts again
         log_cpu("Request acknowledged");
-        cpu->poll_intr_event.time = *scheduler->timer + delay;
+        cpu->poll_intr_event.time = *cpu->system->scheduler.timer + delay;
         add_event(&cpu->system->scheduler, &cpu->poll_intr_event);
     }
 }
