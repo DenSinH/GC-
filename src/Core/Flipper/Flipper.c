@@ -72,10 +72,10 @@ static void debug_shader_init(s_Flipper* flipper, unsigned int shader) {
 
 static void debug_program_init(s_Flipper* flipper, unsigned int program) {
     int  success;
-    glGetProgramiv(flipper->draw_program, GL_LINK_STATUS, &success);
+    glGetProgramiv(program, GL_LINK_STATUS, &success);
     if(!success) {
         char infoLog[512];
-        glGetProgramInfoLog(flipper->draw_program, 512, NULL, infoLog);
+        glGetProgramInfoLog(program, 512, NULL, infoLog);
         log_fatal("Shader program linking failed: %s\n", infoLog);
     }
 }
