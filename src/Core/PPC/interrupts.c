@@ -30,8 +30,8 @@ void start_interrupt_poll(s_Gekko* cpu, int delay){
     if (!cpu->poll_intr_event.active && any_enabled(cpu)) {
         // start polling for interrupts again
         log_cpu("Request acknowledged");
-        cpu->poll_intr_event.time = *cpu->system->scheduler.timer + delay;
-        add_event(&cpu->system->scheduler, &cpu->poll_intr_event);
+        cpu->poll_intr_event.time = get_time(cpu->system->scheduler) + delay;
+        add_event(cpu->system->scheduler, &cpu->poll_intr_event);
     }
 }
 
@@ -79,7 +79,7 @@ SCHEDULER_EVENT(handle_interrupts) {
         }
 
         if (cpu->interrupts && any_enabled(cpu)) {
-            event->time = *scheduler->timer+ INTERRUPT_POLL_DELAY;
+            event->time = get_time(scheduler) + INTERRUPT_POLL_DELAY;
 
             // keep it in the scheduler
             add_event(scheduler, event);

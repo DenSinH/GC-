@@ -3,8 +3,9 @@ add_library(Core STATIC
         system.c
         Breakpoints/breakpoints.h
         Breakpoints/breakpoints.c
-        Scheduler/scheduler.c
+        Scheduler/scheduler.cpp
         Scheduler/scheduler.h
+        Scheduler/scheduler_impl.hpp
 )
 
 add_subdirectory(HW)
@@ -19,7 +20,7 @@ include_directories(${PROJECT_SOURCE_DIR}/include
         $<TARGET_PROPERTY:Flipper,INCLUDE_DIRECTORIES>
 )
 
-set_target_properties(Core PROPERTIES LINKER_LANGUAGE C)
+set_target_properties(Core PROPERTIES LINKER_LANGUAGE CXX)
 
 target_link_libraries(Core HW)
 target_link_libraries(Core PPC)

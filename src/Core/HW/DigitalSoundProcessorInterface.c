@@ -39,8 +39,8 @@ static inline void start_DSP(s_DSPI* DSPI) {
     DSPI->DSP.started = true;
     DSPI->DSP.config |= DSP_CR_INIT;
 
-    DSPI->DSP_step_event.time = *DSPI->system->scheduler.timer;
-    add_event(&DSPI->system->scheduler, &DSPI->DSP_step_event);
+    DSPI->DSP_step_event.time = get_time(DSPI->system->scheduler);
+    add_event(DSPI->system->scheduler, &DSPI->DSP_step_event);
 }
 
 static inline void check_DSPI_interrupts(s_DSPI* DSPI) {
@@ -168,8 +168,8 @@ HW_REG_WRITE_CALLBACK(write_DSPI_CSR, DSPI) {
         log_dsp("DSP unhalted, adding step event");
         unhalt_DSP(&DSPI->DSP);
         // DSPI->system->paused = true;
-        DSPI->DSP_step_event.time = *DSPI->system->scheduler.timer;
-        add_event(&DSPI->system->scheduler, &DSPI->DSP_step_event);
+        DSPI->DSP_step_event.time = get_time(DSPI->system->scheduler);
+        add_event(DSPI->system->scheduler, &DSPI->DSP_step_event);
     }
 
     if (value & DSPI_CSR_DSPINT) {
@@ -205,8 +205,8 @@ HW_REG_WRITE_CALLBACK(write_DSP_AR_DMA_CNT_L, DSPI) {
 
     // transfer length has been measured on HW (gotten from Dolphin source:
     // https://github.com/dolphin-emu/dolphin/blob/master/Source/Core/Core/HW/DSP.cpp)
-    DSPI->DSP_AR_DMA_done_event.time = *DSPI->system->scheduler.timer + (((DSPI->AR_DMA_CNT & DSP_AR_DMA_LEN) * 246) >> 5);
-    add_event(&DSPI->system->scheduler, &DSPI->DSP_AR_DMA_done_event);
+    DSPI->DSP_AR_DMA_done_event.time = get_time(DSPI->system->scheduler) + (((DSPI->AR_DMA_CNT & DSP_AR_DMA_LEN) * 246) >> 5);
+    add_event(DSPI->system->scheduler, &DSPI->DSP_AR_DMA_done_event);
 }
 
 HW_REG_WRITE_CALLBACK(write_DSP_AI_DMA_CNT, DSPI) {
@@ -225,8 +225,8 @@ HW_REG_WRITE_CALLBACK(write_DSP_AI_DMA_CNT, DSPI) {
             }
 
             // some arbitrary delay based on the length
-            DSPI->DSP_AI_DMA_done_event.time = *DSPI->system->scheduler.timer + DSPI->AI_DMA_LEN * 8;
-            add_event(&DSPI->system->scheduler, &DSPI->DSP_AI_DMA_done_event);
+            DSPI->DSP_AI_DMA_done_event.time = get_time(DSPI->system->scheduler) + DSPI->AI_DMA_LEN * 8;
+            add_event(DSPI->system->scheduler, &DSPI->DSP_AI_DMA_done_event);
         }
     }
 }

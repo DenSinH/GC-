@@ -16,7 +16,7 @@ typedef struct s_GameCube {
     s_Flipper flipper;
     s_hardware_registers HW_regs;
 
-    s_scheduler scheduler;
+    s_scheduler* scheduler;
 
     bool shutdown;
 

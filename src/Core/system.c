@@ -13,6 +13,8 @@
 s_GameCube* init_system() {
     s_GameCube* GameCube = malloc(sizeof(s_GameCube));
     memset(GameCube, 0x00, sizeof(struct s_GameCube));
+    GameCube->scheduler = create_scheduler(&GameCube->cpu.TBR.raw);
+
     GameCube->cpu.system = GameCube;
     GameCube->flipper.system = GameCube;
     init_Gekko(&GameCube->cpu);
@@ -21,9 +23,7 @@ s_GameCube* init_system() {
     GameCube->HW_regs.system = GameCube;
     init_HW_regs(&GameCube->HW_regs);
     GameCube->cpu.IMMU.HW_regs_ptr = GameCube->cpu.DMMU.HW_regs_ptr = &GameCube->HW_regs;
-
-    GameCube->scheduler.timer = &GameCube->cpu.TBR.raw;
-
+    
 #ifdef DO_BREAKPOINTS
 //    add_breakpoint(&GameCube->breakpoints, 0x80005cdc);
 //    add_breakpoint(&GameCube->breakpoints, 0x00000500);
@@ -42,8 +42,8 @@ void run_system(s_GameCube* system) {
             log_fatal("Jumped to invalid address: %08x", system->cpu.PC);
         }
 
-        if (should_do_events(&system->scheduler)) {
-            do_events(&system->scheduler);
+        if (should_do_events(system->scheduler)) {
+            do_events(system->scheduler);
         }
 
 #if defined(DO_BREAKPOINTS) || defined(DO_DEBUGGER)

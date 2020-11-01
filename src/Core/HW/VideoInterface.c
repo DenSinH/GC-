@@ -37,7 +37,7 @@ void VI_DI_intr(s_Gekko* cpu, s_event* event, const u32 index) {
 
     // reschedule event for next frame
     event->time += LINES_PER_FRAME * 2 * 3 * 6 * cpu->system->HW_regs.VI.HLW;
-    add_event(&cpu->system->scheduler, event);
+    add_event(cpu->system->scheduler, event);
 }
 
 SCHEDULER_EVENT(VI_DI0_intr) {
@@ -59,7 +59,7 @@ SCHEDULER_EVENT(VI_DI3_intr) {
 void schedule_DI_event(s_VI* VI, u32 index) {
     u32 HCT = VI->DI[index] & 0x3ff;
     u32 VCT = (VI->DI[index] >> 16) & 0x3ff;
-    u64 time = *VI->system->scheduler.timer;
+    u64 time = get_time(VI->system->scheduler);
 
     // VCT > (LINES_PER_FRAME >> 1)  <==> field is odd
     if ((VCT > (LINES_PER_FRAME >> 1)) ^ (VI->current_field & 1)) {
@@ -78,11 +78,11 @@ void schedule_DI_event(s_VI* VI, u32 index) {
 
     // reschedule event
     if (VI->DI_event[index].active) {
-        change_event(&VI->system->scheduler, &VI->DI_event[index], time);
+        reschedule_event(VI->system->scheduler, &VI->DI_event[index], time);
     }
     else {
         VI->DI_event[index].time = time;
-        add_event(&VI->system->scheduler, &VI->DI_event[index]);
+        add_event(VI->system->scheduler, &VI->DI_event[index]);
     }
 }
 
@@ -90,7 +90,7 @@ HW_REG_WRITE_CALLBACK(write_VI_HTR0, VI) {
     VI->HLW = READ16(VI->regs, VI_reg_HTR0) & 0x1ff;
 
     // change event to now to reset it
-    change_event(&VI->system->scheduler, &VI->halfline_count_event, *VI->system->scheduler.timer);
+    reschedule_event(VI->system->scheduler, &VI->halfline_count_event, get_time(VI->system->scheduler));
 
     // Display Interrupt events might have changed
     for (int i = 0; i < 4; i++) {
@@ -119,7 +119,7 @@ static inline void write_VI_DIx(s_VI* VI, const u32 index) {
         }
     }
     else if (VI->DI_event[index].active) {
-        remove_event(&VI->system->scheduler, &VI->DI_event[index]);
+        remove_event(VI->system->scheduler, &VI->DI_event[index]);
     }
 
     // clear VI interrupt from PI if none are active
@@ -174,7 +174,7 @@ HW_REG_INIT_FUNCTION(VI) {
             .time = (u64)-1,
             .caller = VI
     };
-    add_event(&VI->system->scheduler, &VI->halfline_count_event);
+    add_event(VI->system->scheduler, &VI->halfline_count_event);
 
 
     VI->write[VI_reg_DI0 >> VI_SHIFT] = write_VI_DI0;

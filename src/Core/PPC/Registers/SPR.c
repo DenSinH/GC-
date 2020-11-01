@@ -10,7 +10,7 @@ SPR_READ_FN(SPR_read_DEC) {
 SPR_WRITE_FN(SPR_write_DEC) {
     // we always keep the DEC event in the scheduler, because it can technically overflow again
     cpu->DEC = cpu->TBR.raw + (value << 3);   // 1 TBR tick is 8 clock cycles
-    change_event(&cpu->system->scheduler, &cpu->DEC_intr_event, cpu->DEC);
+    reschedule_event(cpu->system->scheduler, &cpu->DEC_intr_event, cpu->DEC);
 }
 
 
@@ -78,7 +78,7 @@ void init_SPRs(struct s_Gekko* cpu) {
         .caller = cpu,
         .time = 0xffffffff
     };
-    add_event(&cpu->system->scheduler, &cpu->DEC_intr_event);
+    add_event(cpu->system->scheduler, &cpu->DEC_intr_event);
 
     // todo: implement these
     cpu->SPR[SPR_MMCR0] = &cpu->default_SPR[SPR_MMCR0];

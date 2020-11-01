@@ -65,7 +65,7 @@ HW_REG_INIT_FUNCTION(CP) {
             .time = 0,  // immediately start doing it
             .caller = CP
     };
-    add_event(&CP->system->scheduler, &CP->frameswap_event);
+    add_event(CP->system->scheduler, &CP->frameswap_event);
 
     // set first draw command to have all arguments disabled
     // we only send draw commands when a new one is sent, so the very first draw command we send should be empty

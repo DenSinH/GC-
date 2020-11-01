@@ -22,7 +22,7 @@ static inline void recalculate_AISCNT(s_AI* AI) {
         return;
     }
 
-    u64 dt = *AI->system->scheduler.timer - AI->AISCNT_time;
+    u64 dt = get_time(AI->system->scheduler) - AI->AISCNT_time;
 
     // NOTE: we must always recalculate AISCNT BEFORE we change the sample rate
     AI->AISCNT = AI->AISCNT_prev + (dt / AI->ticks_per_sample);
@@ -37,19 +37,19 @@ static inline void flush_AISCNT(s_AI* AI) {
         AI->AISCNT = AI->AISCNT_prev;
     }
     else {
-        u64 dt = *AI->system->scheduler.timer - AI->AISCNT_time;
+        u64 dt = get_time(AI->system->scheduler) - AI->AISCNT_time;
 
         // NOTE: we must always recalculate AISCNT BEFORE we change the sample rate
         AI->AISCNT_prev = AI->AISCNT = AI->AISCNT_prev + (dt / AI->ticks_per_sample);
     }
     log_dsp("Flush AISCNT to %x", AI->AISCNT);
-    AI->AISCNT_time = *AI->system->scheduler.timer;
+    AI->AISCNT_time = get_time(AI->system->scheduler);
 }
 
 static inline void recalculate_AIINT_event(s_AI* AI) {
     // NOTE: we must always call this AFTER changing the sample rate
 #ifndef NDEBUG
-    assert(AI->AISCNT_time == *AI->system->scheduler.timer
+    assert(AI->AISCNT_time == get_time(AI->system->scheduler)
     /* AISCNT must be up to date before we can update the event */
     );
 #endif
@@ -57,7 +57,7 @@ static inline void recalculate_AIINT_event(s_AI* AI) {
     if (!(AI->AICR & AICR_PSTAT)) {
         // not playing
         if (AI->AIIT_event.active) {
-            remove_event(&AI->system->scheduler, &AI->AIIT_event);
+            remove_event(AI->system->scheduler, &AI->AIIT_event);
         }
         return;
     }
@@ -68,18 +68,12 @@ static inline void recalculate_AIINT_event(s_AI* AI) {
     }
 
     u64 dt = (AI->AIIT - AI->AISCNT) * AI->ticks_per_sample;
-    if (AI->AIIT_event.time == *AI->system->scheduler.timer + dt) {
+    if (AI->AIIT_event.time == get_time(AI->system->scheduler) + dt) {
         // event already up-to-date
         return;
     }
 
-    if (AI->AIIT_event.active) {
-        change_event(&AI->system->scheduler, &AI->AIIT_event, *AI->system->scheduler.timer + dt);
-    }
-    else {
-        AI->AIIT_event.time = *AI->system->scheduler.timer + dt;
-        add_event(&AI->system->scheduler, &AI->AIIT_event);
-    }
+    reschedule_event(AI->system->scheduler, &AI->AIIT_event, get_time(AI->system->scheduler) + dt);
 }
 
 SCHEDULER_EVENT(AI_AIINT_event) {
@@ -103,7 +97,7 @@ HW_REG_WRITE_CALLBACK(write_AI_CR, AI) {
 
     if (value & AICR_SCRESET) {
         // reset sample counter
-        AI->AISCNT_time = *AI->system->scheduler.timer;
+        AI->AISCNT_time = get_time(AI->system->scheduler);
         AI->AISCNT = 0;
         do_recalculate_AIINT_event = true;
     }
